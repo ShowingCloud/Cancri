@@ -42,3 +42,5 @@ gem 'mysql2'
 gem 'devise'
 gem 'therubyracer'
 
+gem 'thin'
+gem 'yaml_db'
