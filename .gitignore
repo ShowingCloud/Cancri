@@ -38,4 +38,4 @@ bower.json
 .powenv
 
 # Customized configuration file or database dump
-config/database.xml
+config/database.yml
