@@ -21,10 +21,7 @@
  *= require swiper.min
  *= require common
  *= require base
- *= require homepage
  *= require passport
- *= require_tree .
- *= require_self
  */
 .login-dialog .modal-dialog {
     width: 400px;
