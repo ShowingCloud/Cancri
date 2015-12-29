@@ -16,106 +16,29 @@
       </ul>
     </div>
     <div id="nav">
-      <div class="container-content">
-        <a href="/" class="logo col-l"></a>
-
-        <div class="nav-menu col-r">
-          <ul class="items">
-            <li class="item">
-              <a href="/">首页</a>
-            </li>
-            <li class="item">
-              <a href="<%= introduction_index_url %>">比赛</a>
-            </li>
-            <li class="item">
-              <a href="">新闻</a>
-            </li>
-            <li class="item">
-              <a href="">论坛</a>
-            </li>
-            <li class="item">
-              <a href="">关于</a>
-            </li>
-            <li class="item">
-              <a href="">联系</a>
-            </li>
-          </ul>
-          <div class="login-menu col-r">
-            <% if user_signed_in? %>
-                <%= current_user.nickname %>
-                <%= link_to destroy_user_session_path, method: :delete, data: {confirm: '确认退出登录吗?'}, title: '退出登录', :class => '' do %>
-                    退出
-                <% end %>
-            <% else %>
-                <%= link_to '注册', new_user_registration_path, :class => 'robodou-btn btn-register' %>
-                <%= link_to '登录', new_user_session_path, :class => 'robodou-btn btn-login' %>
-            <% end %>
-          </div>
-        </div>
-      </div>
+      <%= render 'layouts/nav_menu' %>
     </div>
   </div>
   <div id="competitions" class="">
     <div class="container-content">
-
-      <div class="com-item">
-        <div class="com-pic">
-          <img src="images/competion01.png" alt=""/>
-        </div>
-        <div class="com-dec">
-          <div class="dec-title">
-            少年科技组
-          </div>
-          <div class="dec-main">
-            这是少年科技组的文案,相关介绍等等
-          </div>
-          <button class="robodou-btn btn-sign-in">报名</button>
-        </div>
-      </div>
-      <div class="com-item">
-        <div class="com-pic">
-          <img src="images/competion01.png" alt=""/>
-        </div>
-        <div class="com-dec">
-          <div class="dec-title">
-            少年科技组
-          </div>
-          <div class="dec-main">
-            这是少年科技组的文案,相关介绍等等
-          </div>
-          <button class="robodou-btn btn-sign-in">报名</button>
-        </div>
-      </div>
-
-      <div class="com-item">
-        <div class="com-pic">
-          <img src="images/competion01.png" alt=""/>
-        </div>
-        <div class="com-dec">
-          <div class="dec-title">
-            少年科技组
-          </div>
-          <div class="dec-main">
-            这是少年科技组的文案,相关介绍等等
-          </div>
-          <button class="robodou-btn btn-sign-in">报名</button>
-        </div>
-      </div>
-
-      <div class="com-item">
-        <div class="com-pic">
-          <img src="images/competion01.png" alt=""/>
-        </div>
-        <div class="com-dec">
-          <div class="dec-title">
-            少年科技组
-          </div>
-          <div class="dec-main">
-            这是少年科技组的文案,相关介绍等等
-          </div>
-          <button class="robodou-btn btn-sign-in">报名</button>
-        </div>
-      </div>
+      <% if @events.present? %>
+          <% @events.each_with_index do |event, index| %>
+              <div class="com-item">
+                <div class="com-pic">
+                  <%= image_tag(event.cover_url(:middle)) %>
+                </div>
+                <div class="com-dec">
+                  <div class="dec-title">
+                    <%= event.name %>
+                  </div>
+                  <div class="dec-main">
+                    <%= event.name %>
+                  </div>
+                  <a href="/competitions/shows#<%= index+1 %>" class="robodou-btn btn-sign-in">报名</a>
+                </div>
+              </div>
+          <% end %>
+      <% end %>
     </div>
   </div>
   <div id="dynamic">
@@ -140,7 +63,7 @@
           </div>
         </div>
         <div class="dy-video col-r">
-          <embed src="/assets/kindeditor/plugins/ckplayer/ckplayer.swf" flashvars="p=0&f=/video/1008.mp4"
+          <embed src="/assets/kindeditor/plugins/ckplayer/ckplayer.swf" flashvars="i=/images/dy-video-bk.jpg&p=0&f=/video/1008.mp4"
                  allowFullscreen="true" type="application/x-shockwave-flash" width="547" height="318" autostart="false" loop="true">
           </embed>
           <div class="video-btn">
@@ -378,28 +301,6 @@
           <div class="swiper-button-next"></div>
           <div class="swiper-pagination swiper-pagination-black"></div>
         </div>
-      </div>
-    </div>
-  </div>
-  <div id="footer" class="container-layer">
-    <div class="container-content">
-      <div class="contact col-l">
-        <div class="contact-item">
-          <i class="fa fa-qq"></i>
-          1234567
-        </div>
-        <div class="contact-item">
-          <i class="fa fa-weixin"></i>
-          987654321
-        </div>
-        <div class="contact-item">
-          <i class="fa fa-phone"></i>
-          0210-112663536
-        </div>
-      </div>
-      <div class="address col-r">
-        <i class="fa fa-map-marker"></i>
-        上海市 徐汇区 钦州北路68号B3栋101
       </div>
     </div>
   </div>

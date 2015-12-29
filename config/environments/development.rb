@@ -13,7 +13,15 @@ Rails.application.configure do
   config.consider_all_requests_local = true
   config.action_controller.perform_caching = false
 
+  #Currently, Active Record suppresses errors raised within `after_rollback`/`after_commit` callbacks and only print them to the logs.
+  # In the next version, these errors will no longer be suppressed. Instead,
+  # the errors will propagate normally just like in other Active Record callbacks.
+  # You can opt into the new behavior and remove this warning by setting:
+  config.active_record.raise_in_transactional_callbacks = true
+
+
   # Don't care if the mailer can't send.
+  if config.respond_to?(:action_mailer)
   config.action_mailer.raise_delivery_errors = true
 
   config.action_mailer.default_url_options = {host: 'localhost', port: 3000}
@@ -31,6 +39,7 @@ Rails.application.configure do
       :domain => 'exmail.qq.com',
       :authentication => :login,
       :enable_starttls_auto => true}
+  end
 
 
   # Print deprecation notices to the Rails logger.

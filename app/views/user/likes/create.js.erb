@@ -1,0 +1,19 @@
+var vote = $(".vote>span");
+var icon = $(".btn-like[data-id='<%= @creative_activity.id %>']").find("i");
+<% if @is_present %>
+icon.next('span').text('取消赞');
+vote.text(parseInt(vote.text()) + 1);
+<% else %>
+<% if @creative_activity.likes.count(:user_id)>0 %>
+icon.next('span').text('赞');
+vote.text(parseInt(vote.text()) - 1);
+<% else %>
+icon.next('span').text('赞');
+vote.text(parseInt(vote.text()) - 1);
+<% end %>
+<% end %>
+<!--<% if @status %>-->
+//$.notify("<%= (@is_present ? '赞' : '取消赞') + '[' + @creative_activity.name + ']成功' %>", 'success');
+<!--<% else %>-->
+//$.notify('收藏切换过程出错', 'error');
+<!--<% end %>-->

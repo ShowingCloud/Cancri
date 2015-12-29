@@ -1,8 +1,29 @@
-<div class="list-group" style="margin-top: 40px;">
+<div class="menu-item clearfix">
+  <%= simple_form_for(current_user, html: {id: 'form_change_avatar', multipart: true}, url: user_update_avatar_path, method: :post) do |f| %>
+      <div class="avatar">
+        <%= image_tag(current_user.avatar_url(:middle), class: 'avatar-img') %>
+      </div>
+      <label class="edit-avatar" for="user_avatar">修改头像</label>
 
-  <a class="list-group-item" href="<%= user_preview_path %>">我的账户<span class="visible-xs pull-right">[ <%= current_user.nickname %>
-    ]</span></a>
-  <a class="list-group-item" href="<%= user_notification_path %>">消息通知</a>
-
-
+      <div class="username">
+        <div class="edit" data-edit="text" data-name="user[nickname]" title="点击编辑">
+          <%= current_user.nickname %>
+        </div>
+        <input type="hidden" name="user[nickname]" value="<%= current_user.nickname %>"/>
+      </div>
+      <div class="clearfix"></div>
+      <div class="edit-plus">
+        <%= f.file_field :avatar %>
+        <%= f.submit class: 'btn-user-update', value: '更新个人信息' %>
+      </div>
+  <% end %>
+</div>
+<div class="<%= "menu-item #{'active' if action_name=='profile'}" %>">
+  <a class="t-18" href="<%= user_profile_path %>">我的资料</a>
+</div>
+<div class="<%= "menu-item #{'active' if action_name=='comp' || action_name=='comp_show'}" %>">
+  <a href="<%= user_comp_path %>" class="t-18">我的比赛</a>
+</div>
+<div class="<%= "menu-item #{'active' if action_name=='creative_activity' || action_name=='activity_show'}" %>">
+  <a href="<%= user_creative_activity_path %>" class="t-18">我的作品</a>
 </div>

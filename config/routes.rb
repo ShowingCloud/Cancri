@@ -1,23 +1,21 @@
 Rails.application.routes.draw do
 
-  get 'introduction/index'
-  # resources :apply_roles do
-  #   collection do
-  #     post :apply_role
-  #   end
-  # end
 
   root to: 'home#index'
   get 'competition' => 'competitions#index'
   get 'competitions/team/:id' => 'competitions#team'
-  # get 'competitions/apply_in/:id' => 'competitions#apply_in'
+  get 'competitions/shows' => 'competitions#shows'
+  get 'competitions/login_in' => 'competitions#login_in'
   resources :competitions, only: [:index, :show] do
     collection do
       # post :valid_apply
       post :valid_create_team
       post :add_user_apply_info
       get :apply_in
+      get :event_teams
       post :reduce_team_amount
+      post :delete_team
+      post :leader_delete_player
       post :valid_team_code
       post :send_email_code
       post :reset_team_code_by_mobile
@@ -25,6 +23,7 @@ Rails.application.routes.draw do
     end
   end
   resources :creative_activities
+  resources :news
 
   devise_for :users, controllers: {sessions: 'users/sessions', registrations: 'users/registrations'}
   captcha_route
@@ -59,13 +58,18 @@ Rails.application.routes.draw do
   match 'user/mobile' => 'user#mobile', as: 'user_mobile', via: [:get, :post]
   match 'user/add_mobile' => 'user#add_mobile', as: 'user_add_mobile', via: [:get, :post]
   match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get, :post]
-
+  match 'user/comp' => 'user#comp', as: 'user_comp', via: [:get, :post]
+  match 'user/creative_activity' => 'user#creative_activity', as: 'user_creative_activity', via: [:get, :post]
+  get 'user/activity_show' => 'user#activity_show'
+  get 'user/comp_show' => 'user#comp_show'
+  post 'user/update_team_cover' => 'user#update_team_cover', as: 'user_update_team_cover'
+  get 'discourse/sso' => 'discourse_sso#sso'
   namespace :user do |u|
 
     resources :likes, only: [:index, :create, :destroy]
 
   end
-
+  get 'test' => 'test#index'
 
   # -----------------------------------------------------------
   # Admin
@@ -83,7 +87,11 @@ Rails.application.routes.draw do
     end
 
     resources :admins
-    resources :competitions
+    resources :competitions do
+      collection do
+        get :get_events
+      end
+    end
     resources :events do
       collection do
         get :teams
@@ -118,9 +126,17 @@ Rails.application.routes.draw do
     resources :schedules
     resources :referees
     resources :roles
+    resources :districts
+    resources :vouchers
 
   end
-
+  # This line mounts Refinery's routes at the root of your application.
+  # This means, any requests to the root URL of your application will go to Refinery::PagesController#home.
+  # If you would like to change where this extension is mounted, simply change the
+  # configuration option `mounted_path` to something different in config/initializers/refinery/core.rb
+  #
+  # We ask that you don't use the :as option here, as Refinery relies on it being the default of "refinery"
+  # mount Refinery::Core::Engine, at: Refinery::Core.mounted_path
   # -----------------------------------------------------------
   # -----------------------------------------------------------
 

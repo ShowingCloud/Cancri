@@ -25,10 +25,12 @@ class UserController < ApplicationController
     @user_profile = current_user.user_profile ||= current_user.build_user_profile
     if request.method == 'POST'
       # 过滤Profile参数
-      profile_params = params.require(:user_profile).permit(:username, :age, :school, :grade, :gender, :birthday, :address)
+      profile_params = params.require(:user_profile).permit(:username, :autograph, :age, :school, :grade, :gender, :bj, :birthday, :address)
       @user_profile.username = profile_params[:username]
+      @user_profile.autograph = profile_params[:autograph]
       @user_profile.school = profile_params[:school]
       @user_profile.grade = profile_params[:grade]
+      @user_profile.bj = profile_params[:bj]
       @user_profile.age = profile_params[:age]
       @user_profile.gender = profile_params[:gender]
       @user_profile.birthday = profile_params[:birthday]
@@ -46,6 +48,8 @@ class UserController < ApplicationController
   def update_avatar
     if current_user.update_attributes(params.require(:user).permit(:nickname, :avatar))
       flash[:success] = '个人信息更新成功'
+    elsif User.where(nickname: params[:user][:nickname]).where.not(id: current_user.id).take.present?
+      flash[:error] = params[:user][:nickname]+'已被使用,请使用其他昵称!'
     else
       flash[:error] = '个人信息更新失败'
     end
@@ -61,6 +65,54 @@ class UserController < ApplicationController
       flash[:success] = '头像已成功删除'
     end
     redirect_to user_profile_path
+  end
+
+  def comp
+    @user_events = TeamUserShip.includes(:event).where(user_id: current_user.id).select(:id, :event_id, :team_id).per_page_kaminari(params[:page]).per(params[:per])
+  end
+
+  def comp_show
+    @no_access = TeamUserShip.where(user_id: current_user.id, team_id: params[:id]).exists?
+    if @no_access
+      @team = Team.find(params[:id])
+      @players = TeamUserShip.includes(:user).where(team_id: params[:id])
+      @team_scores = Score.includes(:schedule, :team1, :team2).where(['team1_id = :value OR team2_id = :value', {:value => 3}]).select(:team1_id, :team2_id, :score1, :score2, :th, :comp_name, :kind).map { |s| {
+          team1: s.team1.identifier,
+          team2: s.team2.identifier,
+          identifier1: s.team1.identifier,
+          identifier2: s.team2.identifier,
+          cover1: ActionController::Base.helpers.asset_path(s.team1.cover_url(:small)),
+          cover2: ActionController::Base.helpers.asset_path(s.team2.cover_url(:small)),
+          score1: s.score1,
+          score2: s.score2,
+          th: s.th.to_s,
+          comp_name: s.schedule.name,
+          kind: t('kind.kind'+s.kind.to_s)
+      } }
+    end
+  end
+
+  def update_team_cover
+    @team = Team.find(params[:team][:id])
+    if current_user.id == @team.user_id
+      @team.update_attributes(params.require(:team).permit(:cover))
+      if @team.save
+        flash[:success] = '队伍头像上传成功'
+      else
+        flash[:error] = '队伍头像上传失败'
+      end
+    else
+      flash[:error] = '非法请求'
+    end
+    redirect_to '/user/comp_show?id='+params[:team][:id].to_s
+  end
+
+  def creative_activity
+    @creative_activities = CreativeActivity.where(user_id: current_user.id).per_page_kaminari(params[:page]).per(params[:per])
+  end
+
+  def activity_show
+    @creative_activity = CreativeActivity.find(params[:id])
   end
 
 

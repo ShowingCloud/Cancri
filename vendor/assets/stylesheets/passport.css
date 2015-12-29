@@ -45,7 +45,7 @@
     position: relative;
 }
 
-.form-group {
+.passport .form-group {
     position: relative;
     margin-bottom: 30px;
 }
@@ -54,7 +54,7 @@
     display: none;
 }
 
-.passport-input, .form-control {
+.passport .passport-input, .passport .form-control {
     outline: none;
     border: 1px solid #d2d2d2;
     font-size: 14px;
@@ -167,7 +167,8 @@
     width: 50%;
     display: inline-block;
 }
-.reset_password_mobile_code{
+
+.reset_password_mobile_code {
     width: 50%;
     display: inline-block;
 }
@@ -180,7 +181,7 @@
 
 }
 
-.form-control {
+.passport .form-control {
     padding: 0;
 }
 
@@ -209,8 +210,13 @@ input[name='captcha'] {
     position: relative;
 }
 
-.error {
-    background: rgba(0, 0, 0, 0) url("/img/wrong.jpg") no-repeat scroll 5px 0;
-    color: #777;
-    padding: 2px 0 2px 30px;
+/*.error {*/
+/*background: rgba(0, 0, 0, 0) url("/img/wrong.jpg") no-repeat scroll 5px 0;*/
+/*color: #777;*/
+/*padding: 2px 0 2px 30px;*/
+/*}*/
+.select-forget-password {
+    font-size: 20px;
+    margin-top: 50px;
+    margin-bottom: 95px
 }
