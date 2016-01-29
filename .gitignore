@@ -109,9 +109,6 @@ config/initializers/devise.rb
 config/initializers/secret_token.rb
 db/data.yml
 
-# needed for migration
-db/schema.rb
-
 # test data
 db/datadump/sessions.yml
 
