@@ -22,7 +22,7 @@ config/secrets.yml
 
 # these should all be checked in to normalise the environment:
 # Gemfile.lock, .ruby-version, .ruby-gemset
-Gemfile.lock
+#Gemfile.lock
 .ruby-version
 .ruby-gemset
 
