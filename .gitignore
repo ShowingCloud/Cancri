@@ -22,3 +22,4 @@
 /.idea
 
 #.ruby-version
+/config/config.yml
