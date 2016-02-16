@@ -50,4 +50,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # gem 'refinerycms-acts-as-indexed', '~> 2.0', '>= 2.0.1'
 # gem 'refinerycms-wymeditor', '~> 1.0', '>= 1.0.6'
 # gem 'refinerycms-authentication-devise', '~> 1.0', '>= 1.0.4'
+gem 'devise'
+gem 'simple_form'
+gem 'settingslogic'
 
