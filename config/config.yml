@@ -1,0 +1,16 @@
+defaults: &defaults
+
+  email_username: 'robodou@robodou.cn'
+  email_password: 'rbd123qwe'
+  email_form: 'DouMu<robodou@robodou.cn>'
+
+development:
+  <<: *defaults
+  domain: 'http://localhost:3000'
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
+  domain: 'http://robodou.cn'
