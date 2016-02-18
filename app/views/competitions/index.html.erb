@@ -1,0 +1,7 @@
+<div class="container">
+  <% @competitions.each do |comp| %>
+      <%= link_to competition_path(comp) do %>
+          comp.name
+      <% end %>
+  <% end %>
+</div>

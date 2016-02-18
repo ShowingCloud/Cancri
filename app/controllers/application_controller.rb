@@ -8,8 +8,22 @@ class ApplicationController < ActionController::Base
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up) { |u| u.permit(:nickname, :password, :password_confirmation, :remember_me) }
-    devise_parameter_sanitizer.permit(:sign_in) { |u| u.permit(:email, :password, :remember_me) }
+    devise_parameter_sanitizer.permit(:sign_in) { |u| u.permit(:login, :password, :remember_me) }
     devise_parameter_sanitizer.permit(:account_update) { |u| u.permit(:username, :email, :password, :password_confirmation, :current_password) }
   end
 
+  def render_404
+    render_optional_error_file(404)
+  end
+
+  def render_403
+    render_optional_error_file(403)
+  end
+
+  def render_optional_error_file(status_code)
+    status = status_code.to_s
+    fname = %w(404 403 422 500).include?(status) ? status : 'unknown'
+    render template: "/errors/#{fname}", format: [:html],
+           handler: [:erb], status: status, layout: 'application'
+  end
 end

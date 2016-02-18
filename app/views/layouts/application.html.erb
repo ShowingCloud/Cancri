@@ -2,24 +2,100 @@
 <html>
 <head>
   <title>Dome</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <%= csrf_meta_tags %>
   <%= action_cable_meta_tag %>
 
-  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => false %>
 </head>
 
 <body>
 
-<% if user_signed_in? %>
-    <%= current_user.nickname %>
-    <%= link_to destroy_user_session_path, method: :delete, data: {confirm: '确认退出登录吗?'}, title: '退出登录', class: '' do %>
-        退出登录
-    <% end %>
 
-<% else %>
-    <%= link_to '注册', new_user_registration_path %>
-    <%= link_to '登录', new_user_session_path %>
-<% end %>
+<div class="navbar-wrapper">
+  <nav class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand navbar-padding" href="/">豆姆科技</a>
+        <!-- begin visible xs -->
+        <% if user_signed_in? %>
+
+            <span class="navbar-padding navbar-brand pull-right visible-xs btn" data-toggle="collapse" data-target="#navbar_user" aria-expanded="false" aria-controls="navbar">
+              <i class="glyphicon glyphicon-user"></i>
+              <span class="caret"></span>
+            </span>
+        <% else %>
+            <a class="navbar-brand pull-right visible-xs " href="<%= new_user_registration_path %>">注册</a>
+            <a class="navbar-brand pull-right visible-xs " href="<%= new_user_session_path %>">登录</a>
+
+        <% end %>
+        <!-- end visible xs -->
+      </div>
+      <!-- begin hidden xs -->
+      <ul class="nav navbar-nav navbar-right hidden-xs">
+        <% if user_signed_in? %>
+
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon glyphicon-user"></i>
+                <%= current_user.nickname %>
+                <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <%= render 'layouts/user_menu' %>
+              </ul>
+            </li>
+
+        <% else %>
+
+            <li>
+              <%= link_to '登录', new_user_session_path %>
+            </li>
+            <li>
+              <a href="<%= new_user_registration_path %>">注册</a>
+            </li>
+        <% end %>
+      </ul>
+      <!-- end hidden xs -->
+      <!-- begin main menu -->
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li>
+            <a href="<%= competitions_path %>">比赛</a>
+          </li>
+          <li class="nav-divider"></li>
+          <li>
+            <a href="<%= "#" %>">ABOUT</a>
+          </li>
+          <li class="nav-divider"></li>
+          <li>
+            <a href="<%= "#" %>">CONTACT</a>
+          </li>
+
+
+        </ul>
+      </div>
+      <!-- end main menu -->
+      <!-- begin user menu visible xs -->
+      <div id="navbar_user" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav visible-xs">
+          <%= render 'layouts/user_menu' %>
+        </ul>
+      </div>
+      <!-- end user menu -->
+    </div>
+  </nav>
+</div>
+
+
+
 <%= yield %>
 <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 <% if flash.present? %>

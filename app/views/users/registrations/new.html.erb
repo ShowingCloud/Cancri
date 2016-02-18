@@ -10,10 +10,22 @@
           <%= f.input :nickname, placeholder: '请输入昵称' %>
           <%= f.input :password, placeholder: '请设置您的密码' %>
           <%= f.input :password_confirmation, placeholder: '请设置您的密码' %>
-
-          <div class="form-group">
-            <%= rucaptcha_input_tag(class: 'form-control', placeholder: '请输入验证码') %>
-          </div>
+          <% if request.post? && !verify_rucaptcha?(resource) %>
+              <div class="form-group string has-error">
+                <label class="string  control-label">
+                  验证码
+                </label>
+                <%= rucaptcha_input_tag(class: 'form-control', placeholder: '请输入验证码') %>
+                <span class="help-block">验证码不正确</span>
+              </div>
+          <% else %>
+              <div class="form-group string">
+                <label class="string  control-label">
+                  验证码
+                </label>
+                <%= rucaptcha_input_tag(class: 'form-control', placeholder: '请输入验证码') %>
+              </div>
+          <% end %>
           <div class="form-group">
             <a class="refresh-captcha" href="#">
               <%= rucaptcha_image_tag(alt: 'rucaptcha') %>
@@ -21,7 +33,7 @@
           </div>
 
           <div class="actions form-group form-group-lg">
-            <%= f.submit class: 'btn btn-success btn-block', value: '立即注册' %>
+            <%= f.submit '立即注册', class: 'btn btn-success btn-block', 'data-disable-with' => '正在注册' %>
           </div>
       <% end %>
 

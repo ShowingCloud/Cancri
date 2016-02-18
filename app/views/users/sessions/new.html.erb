@@ -7,7 +7,7 @@
     <div class="col-md-4">
       <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
 
-          <%= f.input :login, placeholder: '请输入昵称' %>
+          <%= f.input :login, placeholder: '请输入昵称/邮箱/手机' %>
           <%= f.input :password, placeholder: '请输入密码' %>
           <% if devise_mapping.rememberable? -%>
               <div class="field">
@@ -16,7 +16,7 @@
           <% end -%>
 
           <div class="actions form-group form-group-lg">
-            <%= f.submit class: 'btn btn-primary btn-block', value: '立即登录' %>
+            <%= f.submit class: 'btn btn-primary btn-block', value: '立即登录', 'data-disable-with' => '正在登录' %>
           </div>
       <% end %>
 
