@@ -5,6 +5,7 @@ zh-CN:
         email: '邮箱'
         mobile: '手机号'
         mobile_code: '验证码'
+        email_code: '邮箱验证码'
         username: '姓名'
         old_password: '原密码'
         new_password: '新密码'

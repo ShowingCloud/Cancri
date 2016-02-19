@@ -1,0 +1,19 @@
+<ul class="nav nav-tabs" role="tablist">
+  <li <%= 'class=active' if action_name == 'email' %>>
+    <a href="<%= user_email_path %>"><span class="hidden-xs">添加</span>邮箱</a>
+  </li>
+  <li <%= 'class=active' if action_name == 'preview' %>>
+    <a href="<%= user_preview_path %>"><span class="hidden-xs">信息</span>概览</a>
+  </li>
+
+  <li <%= 'class=active' if action_name == 'profile' %>>
+    <a href="<%= user_profile_path %>"><span class="hidden-xs">个人</span>资料</a>
+  </li>
+  <li <%= 'class=active' if action_name == 'password' %>>
+    <a href="<%= "#" %>"><span class="hidden-xs">修改</span>密码</a>
+  </li>
+  <li <%= 'class=active' if action_name == 'username' %>>
+    <a href="<%= "#" %>"><span class="hidden-xs"></span>手机号</a>
+  </li>
+</ul>
+<br>

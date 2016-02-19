@@ -1,6 +1,6 @@
 <% if current_user %>
     <li>
-      <a href="<%= "#" %>">我的账户<span class="visible-xs pull-right">[ <%= current_user.nickname %> ]</span></a>
+      <a href="<%= user_preview_path %>">我的账户<span class="visible-xs pull-right">[ <%= current_user.nickname %> ]</span></a>
     </li>
 
     <li class="divider hidden-xs"></li>

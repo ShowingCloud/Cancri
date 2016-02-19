@@ -97,7 +97,7 @@
 
 
 <%= yield %>
-<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+<%= javascript_include_tag 'application', 'data-turbolinks-track' => false %>
 <% if flash.present? %>
     <script type="text/javascript">
         <% flash.each do |f| %>

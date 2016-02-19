@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_one :user_profile
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -18,6 +19,7 @@ class User < ApplicationRecord
   end
 
   attr_accessor :login
+  attr_accessor :email_code
 
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup

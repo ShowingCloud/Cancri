@@ -1,2 +1,10 @@
-<h1>Competitions#show</h1>
-<p>Find me in app/views/competitions/show.html.erb</p>
+<div class="container">
+  <h1>Competitions#show</h1>
+
+  <p>Find me in app/views/competitions/show.html.erb</p>
+
+  <%= link_to "#{applies_comp_path}?comp_id=#{params[:id]}", class: 'btn btn-primary' do %>
+      报名
+  <% end %>
+
+</div>
