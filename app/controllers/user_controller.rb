@@ -12,16 +12,8 @@ class UserController < ApplicationController
     @user_profile = current_user.user_profile ||= current_user.build_user_profile
     if request.method == 'POST'
       # 过滤Profile参数
-      profile_params = params.require(:user_profile).permit(:username, :autograph, :age, :school, :grade, :gender, :bj, :birthday, :address)
-      @user_profile.username = profile_params[:username]
-      @user_profile.autograph = profile_params[:autograph]
-      @user_profile.school = profile_params[:school]
-      @user_profile.grade = profile_params[:grade]
-      @user_profile.bj = profile_params[:bj]
-      @user_profile.age = profile_params[:age]
-      @user_profile.gender = profile_params[:gender]
-      @user_profile.birthday = profile_params[:birthday]
-      @user_profile.address = profile_params[:address]
+      # profile_params = params.require(:user_profile).permit(:username, :autograph, :age, :school, :grade, :gender, :bj, :birthday, :address)
+      @user_profile.username = params[:username]
       if @user_profile.save
         flash[:success] = '详细信息更新成功'
       else
@@ -32,27 +24,22 @@ class UserController < ApplicationController
   end
 
   def email
-    # @current_email = current_user ||= current_user.build_user_profile
-
-    @current_email = User.new
     if request.method == 'POST'
-      @current_email.email = params[:email]
-      ec = EmailService.new(params[:email])
+      @current_user.email = params[:user][:email]
+      ec = EmailService.new(params[:user][:email])
       status, message = ec.validate?(params[:email_code], EmailService::TYPE_CODE_ADD_EMAIL_CODE)
       if status
-        profile_params = params.require(:user).permit(:email)
-        @current_email.email = profile_params[:email]
-        if @current_email.save
+        @current_user.email = params[:user][:email]
+        if @current_user.save
           flash[:success] = '邮箱添加成功'
         else
           flash[:error] = '邮箱添加失败'
         end
+        redirect_to user_email_path
       else
-        @current_email.email = params[:email]
+        @current_user.email = params[:user][:email]
         flash[:error] = message
       end
-
-      redirect_to user_email_path
     end
   end
 
@@ -80,22 +67,6 @@ class UserController < ApplicationController
     redirect_to user_profile_path
   end
 
-
-  # 修改密码请求
-  def passwd
-    if request.method == 'POST'
-
-      status, message = self.change_password(current_user.nickname, params[:user][:old_password], params[:user][:new_password], params[:user][:confirm_password])
-      if status
-        sign_out @user
-        redirect_to new_user_session_path
-
-        flash[:success] = message
-      else
-        flash[:error] = message
-      end
-    end
-  end
 
   #修改密码方法
   def change_password(nickname, old_password, new_password, confirm_password)
@@ -139,7 +110,7 @@ class UserController < ApplicationController
 
   def send_email_code
     ec = EmailService.new(params[:email])
-    data = ec.send_email_code(params[:email], params[:type], params[:ip])
+    data = ec.send_email_code(params[:email], 'ADD_EMAIL', request.ip)
     render json: data
   end
 

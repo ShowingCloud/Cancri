@@ -9,26 +9,22 @@
       </h1>
 
       <%= render 'user/tab' %>
-
       <div class="panel panel-default">
         <div class="panel-body">
-          <%= simple_form_for(@current_email, html: {}, url: user_email_path, method: :post) do |f| %>
+          <%= simple_form_for(@current_user, html: {}, url: user_email_path, method: :post) do |f| %>
               <div class="row">
                 <div class="col-xs-9">
-
-                  <div class="input-group">
-                    <input id="email" class="email-value string email required form-control" placeholder="请输入邮箱" type="email" name="[email]">
+                  <div class="input-group form-group email optional user_email">
+                    <input id="user_email" class="email-value string email optional form-control" type="email" name="user[email]" value="<%= @current_user.email %>">
                     <span class="input-group-addon btn btn-default user-add-email" id="basic-addon2">发送验证码</span>
                   </div>
-                  <br>
-
                   <div class="form-inputs">
                     <input id="email_code" class="string email required form-control" placeholder="请输入邮箱收到的验证码" type="text" name="[email_code]">
                   </div>
                   <br>
 
                   <div class="form-actions">
-                    <%= f.submit class: 'btn btn-primary', value: '添加邮箱' %>
+                    <%= f.submit class: 'btn btn-primary', value: '添加邮箱', 'data-disable-with' => '添加邮箱' %>
                   </div>
                 </div>
               </div>

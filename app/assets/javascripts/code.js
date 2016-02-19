@@ -12,8 +12,7 @@ $('.user-add-email').on('click', function () {
             url: '/user/send_email_code',
             type: 'post',
             data: {
-                "email": email,
-                "type": 'USER_ADD_EMAIL'
+                "email": email
             },
             success: function (data) {
                 alert(data[1]);

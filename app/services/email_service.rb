@@ -1,6 +1,6 @@
 class EmailService
 
-  TYPE_CODE_ADD_EMAIL_CODE = 'ADD_EMAIL_CODE'
+  TYPE_CODE_ADD_EMAIL_CODE = 'ADD_EMAIL'
 
   # 构造方法
   def initialize(email)
@@ -47,27 +47,24 @@ class EmailService
       return [FALSE, '验证码不正确或格式错误']
     end
 
-    # 获取验证码纪录，如果不存在返回 FALSE
-    row = EmailCode.find_by(email: @email, code: code, message_type: type)
+    row = EmailCode.find_by(email: @email, message_type: type)
     if row.nil?
-      return [FALSE, '验证码不正确']
+      return [FALSE, '该邮箱没发送过此类型验证码 或 验证码已超时']
     end
 
     # 检测是否超时及是否超过尝试次数
-    if (row.updated_at + 10 * 60 < Time.now) or (row.failed_attempts.to_i + 1 >= 5)
+    if (row.updated_at + 10.minutes < Time.now) or (row.failed_attempts.to_i + 1 > 5)
       row.destroy
       return [FALSE, '验证码已超时或尝试超过5次']
-    end
-
-    #检测验证码是否正确，如不正确增加1次尝试次数
-    if row.code == code
-      row.destroy
-      [TRUE, '验证码成功通过验证']
     else
-      row.failed_attempts = row.failed_attempts.to_i + 1
-      row.save
-      [FALSE, '验证码错误']
+      if row.code == code
+        row.destroy
+        [TRUE, '验证码成功通过验证']
+      else
+        row.failed_attempts = row.failed_attempts.to_i + 1
+        row.save
+        [FALSE, '验证码不正确']
+      end
     end
   end
-
 end
