@@ -12,8 +12,16 @@ class UserController < ApplicationController
     @user_profile = current_user.user_profile ||= current_user.build_user_profile
     if request.method == 'POST'
       # 过滤Profile参数
-      # profile_params = params.require(:user_profile).permit(:username, :autograph, :age, :school, :grade, :gender, :bj, :birthday, :address)
-      @user_profile.username = params[:username]
+      profile_params = params.require(:user_profile).permit(:username, :autograph, :age, :school, :grade, :gender, :bj, :birthday, :address)
+      @user_profile.username = profile_params[:username]
+      @user_profile.autograph = profile_params[:autograph]
+      @user_profile.school = profile_params[:school]
+      @user_profile.grade = profile_params[:grade]
+      @user_profile.bj = profile_params[:bj]
+      @user_profile.age = profile_params[:age]
+      @user_profile.gender = profile_params[:gender]
+      @user_profile.birthday = profile_params[:birthday]
+      @user_profile.address = profile_params[:address]
       if @user_profile.save
         flash[:success] = '详细信息更新成功'
       else
@@ -35,7 +43,7 @@ class UserController < ApplicationController
         else
           flash[:error] = '邮箱添加失败'
         end
-        redirect_to user_email_path
+        redirect_to user_preview_path
       else
         @current_user.email = params[:user][:email]
         flash[:error] = message

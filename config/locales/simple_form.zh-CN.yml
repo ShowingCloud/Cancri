@@ -7,6 +7,7 @@ zh-CN:
         mobile_code: '验证码'
         email_code: '邮箱验证码'
         username: '姓名'
+        login: '账号'
         old_password: '原密码'
         new_password: '新密码'
         password_confirmation: '确认密码'

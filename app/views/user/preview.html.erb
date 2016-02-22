@@ -10,15 +10,18 @@
 
       <%= render 'user/tab' %>
       <div class="panel panel-default">
+
         <div class="panel-body">
           <%= link_to user_profile_path do %>
-
+              <%= image_tag(@current_user.avatar_url(:middle), class: 'img-thumbnail') %>
           <% end %>
         </div>
         <ul class="list-group">
-          <li class="list-group-item">
-            <%= @current_user.nickname %>
-          </li>
+          <% if @current_user.email.present? %>
+              <li class="list-group-item">
+                邮箱：<%= @current_user.email %>
+              </li>
+          <% end %>
           <li class="list-group-item">
             昵称：<a href="<%= user_profile_path %>"><%= @current_user.nickname %></a>
           </li>
