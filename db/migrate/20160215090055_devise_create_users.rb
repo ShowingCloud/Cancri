@@ -8,6 +8,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.string :nickname
       t.string :avatar
       t.string :validate_status, default: '0'
+      t.string :private_token
 
       ## Recoverable
       t.string :reset_password_token
