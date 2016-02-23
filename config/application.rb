@@ -10,7 +10,7 @@ Bundler.require(*Rails.groups)
 
 module Dome
   class Application < Rails::Application
-    config.autoload_paths << "#{Rails.root}/app/uploaders"
+    config.autoload_paths << "#{Rails.root}/app/uploaders/avatar_uploader.rb"
     config.time_zone = 'Asia/Shanghai'
     config.active_record.default_timezone = :local
     config.i18n.default_locale = 'zh-CN'
