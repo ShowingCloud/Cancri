@@ -33,19 +33,19 @@ class UserController < ApplicationController
 
   def email
     if request.method == 'POST'
-      @current_user.email = params[:user][:email]
+      current_user.email = params[:user][:email]
       ec = EmailService.new(params[:user][:email])
       status, message = ec.validate?(params[:email_code], EmailService::TYPE_CODE_ADD_EMAIL_CODE)
       if status
-        @current_user.email = params[:user][:email]
-        if @current_user.save
+        current_user.email = params[:user][:email]
+        if current_user.save
           flash[:success] = '邮箱添加成功'
           redirect_to user_preview_path
         else
           flash[:error] = '邮箱添加失败'
         end
       else
-        @current_user.email = params[:user][:email]
+        current_user.email = params[:user][:email]
         flash[:error] = message
       end
     end
@@ -53,19 +53,19 @@ class UserController < ApplicationController
 
   def mobile
     if request.method == 'POST'
-      @current_user.mobile_info = params[:user][:mobile_info]
+      current_user.mobile_info = params[:user][:mobile_info]
       sms = SMSService.new(params[:user][:mobile_info])
       status, message = sms.validate?(params[:email_code], SMSService::TYPE_CODE_ADD_MOBILE)
       if status
-        @current_user.mobile = params[:user][:mobile_info]
-        if @current_user.save
+        current_user.mobile = params[:user][:mobile_info]
+        if current_user.save
           flash[:success] = '手机添加成功'
           redirect_to user_mobile_path
         else
           flash[:error] = '手机添加失败'
         end
       else
-        @current_user.mobile_info = params[:user][:mobile_info]
+        current_user.mobile_info = params[:user][:mobile_info]
         flash[:error] = message
       end
     end
@@ -131,9 +131,9 @@ class UserController < ApplicationController
       return [FALSE, '密码只包含数字、字母、特殊字符']
     end
 
-    if @current_user.valid_password?(old_password)
-      @current_user.password = new_password
-      if @current_user.save
+    if current_user.valid_password?(old_password)
+      current_user.password = new_password
+      if current_user.save
         [TRUE, '密码已成功修改，请重新登录。']
       else
         [FALSE, '密码修改过程出错']

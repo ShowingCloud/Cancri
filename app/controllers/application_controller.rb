@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :set_current_user
 
   protected
 
@@ -19,11 +18,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def set_current_user
-    unless current_user.nil?
-      @current_user = current_user
-    end
-  end
+
 
   def render_404
     render_optional_error_file(404)

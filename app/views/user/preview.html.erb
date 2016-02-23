@@ -13,24 +13,24 @@
 
         <div class="panel-body">
           <%= link_to user_profile_path do %>
-              <%= image_tag(@current_user.avatar_url(:middle), class: 'img-thumbnail') %>
+              <%= image_tag(current_user.avatar_url(:middle), class: 'img-thumbnail') %>
           <% end %>
         </div>
         <ul class="list-group">
-          <% if @current_user.email.present? %>
+          <% if current_user.email.present? %>
               <li class="list-group-item">
-                邮箱：<%= @current_user.email %>
+                邮箱：<%= current_user.email %>
               </li>
           <% end %>
           <li class="list-group-item">
-            昵称：<a href="<%= user_profile_path %>"><%= @current_user.nickname %></a>
+            昵称：<a href="<%= user_profile_path %>"><%= current_user.nickname %></a>
           </li>
 
           <li class="list-group-item">
-            最近登录时间：<%= @current_user.last_sign_in_at.try(:strftime, "%Y-%m-%d %H:%I:%S") %>
+            最近登录时间：<%= current_user.last_sign_in_at.try(:strftime, "%Y-%m-%d %H:%I:%S") %>
           </li>
           <li class="list-group-item">
-            最近登录IP：<%= @current_user.last_sign_in_ip %>
+            最近登录IP：<%= current_user.last_sign_in_ip %>
           </li>
         </ul>
       </div>

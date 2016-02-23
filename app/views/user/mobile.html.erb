@@ -15,11 +15,11 @@
               已认证的手机: <%= current_user.mobile %>
               <a href="#" class="btn btn-xs btn-info show-update-mobile">更换手机</a>
           <% else %>
-              <%= simple_form_for(@current_user, html: {}, url: user_mobile_path, method: :post) do |f| %>
+              <%= simple_form_for(current_user, html: {}, url: user_mobile_path, method: :post) do |f| %>
                   <div class="row">
                     <div class="col-xs-9">
                       <div class="input-group form-group mobile_info optional user_mobile">
-                        <input id="user_mobile" class="mobile-value string mobile_info optional form-control" type="text" placeholder="请输入要添加的手机" name="user[mobile_info]" value="<%= @current_user.mobile_info %>">
+                        <input id="user_mobile" class="mobile-value string mobile_info optional form-control" type="text" placeholder="请输入要添加的手机" name="user[mobile_info]" value="<%= current_user.mobile_info %>">
                         <span class="input-group-addon btn btn-default user-add-mobile" id="basic-addon2">发送验证码</span>
                       </div>
                       <div class="form-inputs">

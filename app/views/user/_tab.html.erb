@@ -1,5 +1,5 @@
 <ul class="nav nav-tabs" role="tablist">
-  <% if @current_user.email.blank? %>
+  <% if current_user.email.blank? %>
       <li <%= 'class=active' if action_name == 'email' %>>
         <a href="<%= user_email_path %>"><span class="hidden-xs">认证</span>邮箱</a>
       </li>
