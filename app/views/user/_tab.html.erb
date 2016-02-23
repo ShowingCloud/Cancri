@@ -1,7 +1,7 @@
 <ul class="nav nav-tabs" role="tablist">
   <% if @current_user.email.blank? %>
       <li <%= 'class=active' if action_name == 'email' %>>
-        <a href="<%= user_email_path %>"><span class="hidden-xs">添加</span>邮箱</a>
+        <a href="<%= user_email_path %>"><span class="hidden-xs">认证</span>邮箱</a>
       </li>
   <% end %>
   <li <%= 'class=active' if action_name == 'preview' %>>
@@ -12,10 +12,10 @@
     <a href="<%= user_profile_path %>"><span class="hidden-xs">个人</span>资料</a>
   </li>
   <li <%= 'class=active' if action_name == 'passwd' %>>
-    <a href="<%= "#" %>"><span class="hidden-xs">修改</span>密码</a>
+    <a href="<%= user_passwd_path %>"><span class="hidden-xs">修改</span>密码</a>
   </li>
-  <li <%= 'class=active' if action_name == 'username' %>>
-    <a href="<%= "#" %>"><span class="hidden-xs"></span>手机号</a>
+  <li <%= 'class=active' if action_name == 'mobile' %>>
+    <a href="<%= user_mobile_path %>"><span class="hidden-xs">认证</span>手机</a>
   </li>
 </ul>
 <br>

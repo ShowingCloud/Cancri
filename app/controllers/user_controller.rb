@@ -40,12 +40,45 @@ class UserController < ApplicationController
         @current_user.email = params[:user][:email]
         if @current_user.save
           flash[:success] = '邮箱添加成功'
+          redirect_to user_preview_path
         else
           flash[:error] = '邮箱添加失败'
         end
-        redirect_to user_preview_path
       else
         @current_user.email = params[:user][:email]
+        flash[:error] = message
+      end
+    end
+  end
+
+  def mobile
+    if request.method == 'POST'
+      @current_user.mobile_info = params[:user][:mobile_info]
+      sms = SMSService.new(params[:user][:mobile_info])
+      status, message = sms.validate?(params[:email_code], SMSService::TYPE_CODE_ADD_MOBILE)
+      if status
+        @current_user.mobile = params[:user][:mobile_info]
+        if @current_user.save
+          flash[:success] = '手机添加成功'
+          redirect_to user_mobile_path
+        else
+          flash[:error] = '手机添加失败'
+        end
+      else
+        @current_user.mobile_info = params[:user][:mobile_info]
+        flash[:error] = message
+      end
+    end
+  end
+
+
+  def passwd
+    if request.method == 'POST'
+      status, message = self.change_password(params[:user][:old_password], params[:user][:new_password], params[:user][:password_confirmation])
+      if status
+        flash[:success] = message
+        redirect_to new_user_session_path
+      else
         flash[:error] = message
       end
     end
@@ -77,12 +110,7 @@ class UserController < ApplicationController
 
 
   #修改密码方法
-  def change_password(nickname, old_password, new_password, confirm_password)
-    user = User.find_by_nickname(nickname)
-    unless user.present?
-      return [FALSE, '用户不存在']
-    end
-
+  def change_password(old_password, new_password, confirm_password)
     unless old_password.present?
       return [FALSE, '原密码不能为空']
     end
@@ -91,22 +119,21 @@ class UserController < ApplicationController
       return [FALSE, '新密码不能为空']
     end
 
-    unless new_password.length <= 20 && new_password.length >= 6
-      return [FALSE, '新密码只能为6-20位']
+    unless new_password.length <= 30 && new_password.length >= 2
+      return [FALSE, '新密码只能为2-30位']
     end
 
     unless confirm_password == new_password
       return [FALSE, '新密码两次输入不一致']
     end
 
-    unless user.valid_password?(old_password)
-      return [FALSE, '原密码不正确']
+    unless /\A[\x21-\x7e]+\Z/.match(confirm_password) != nil
+      return [FALSE, '密码只包含数字、字母、特殊字符']
     end
 
-
-    if user.valid_password?(old_password)
-      user.password = new_password
-      if user.save
+    if @current_user.valid_password?(old_password)
+      @current_user.password = new_password
+      if @current_user.save
         [TRUE, '密码已成功修改，请重新登录。']
       else
         [FALSE, '密码修改过程出错']
@@ -118,8 +145,13 @@ class UserController < ApplicationController
 
   def send_email_code
     ec = EmailService.new(params[:email])
-    data = ec.send_email_code(params[:email], 'ADD_EMAIL', request.ip)
+    data = ec.send_email_code('ADD_EMAIL', request.ip)
     render json: data
   end
 
+  def send_add_mobile_code
+    sms = SMSService.new(params[:mobile])
+    data = sms.send_code('ADD_MOBILE', request.ip)
+    render json: data
+  end
 end

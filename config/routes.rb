@@ -29,7 +29,9 @@ Rails.application.routes.draw do
   match 'user/update_avatar' => 'user#update_avatar', as: 'user_update_avatar', via: [:post]
   match 'user/remove_avatar' => 'user#remove_avatar', as: 'user_remove_avatar', via: [:post]
   match 'user/passwd' => 'user#passwd', as: 'user_passwd', via: [:get, :post]
+  match 'user/mobile' => 'user#mobile', as: 'user_mobile', via: [:get, :post]
   match 'user/send_email_code' => 'user#send_email_code', as: 'user_send_email_code', via: [:post]
+  match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]
 
 
   match '*path', via: :all, to: 'home#error_404'

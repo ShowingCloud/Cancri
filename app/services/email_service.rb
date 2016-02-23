@@ -8,7 +8,7 @@ class EmailService
   end
 
 
-  def send_email_code(email, type, ip)
+  def send_email_code(type, ip)
     unless Regular.is_email?(@email)
       return [FALSE, '邮箱格式错误']
     end
@@ -28,7 +28,7 @@ class EmailService
       return [FALSE, '验证码发送间隔为2分钟']
     end
 
-    status = UserMailer.user_add_email_code(email, code).deliver
+    status = UserMailer.user_add_email_code(@email, code).deliver
     if status != nil
       [TRUE, '验证码已发送到您的邮箱']
     else

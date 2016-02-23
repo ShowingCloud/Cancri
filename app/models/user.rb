@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_one :user_profile
+  has_one :user_profile, :dependent => :destroy
 
   mount_uploader :avatar, AvatarUploader
 
@@ -10,8 +10,8 @@ class User < ApplicationRecord
          :timeoutable, :authentication_keys => [:login]
   # :confirmable
 
-  validates :nickname, presence: true, uniqueness: true, length: {in: 2..10} #, format: {with: /\A1[34578][0-9]{9}\Z/i, message: '格式不正确'}
-
+  validates :nickname, presence: true, uniqueness: true, length: {in: 2..10}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含中文、数字、字母、下划线'}
+  validates :password, presence: true, length: {in: 6..30}, format: {with: /\A[\x21-\x7e]+\Z/i, message: '密码只能包含数字、字母、特殊字符'}, on: :create
 
   def email_changed?
     false
@@ -23,6 +23,7 @@ class User < ApplicationRecord
 
   attr_accessor :login
   attr_accessor :email_code
+  attr_accessor :mobile_info
 
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
