@@ -1,5 +1,8 @@
-# source 'https://rubygems.org'
-source 'https://ruby.taobao.org'
+if ENV['USE_OFFICE_SOURCE']
+  source 'https://rubygems.org'
+else
+  source 'https://ruby.taobao.org'
+end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '>= 5.0.0.beta2', '< 5.1'
@@ -58,3 +61,5 @@ gem 'rucaptcha', '~> 0.3.2'
 
 gem 'carrierwave'
 gem 'mini_magick'
+gem 'rails-admin-scaffold'
+gem 'kaminari', github: 'amatsuda/kaminari'

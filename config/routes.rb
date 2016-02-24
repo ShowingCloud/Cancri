@@ -33,6 +33,25 @@ Rails.application.routes.draw do
   match 'user/send_email_code' => 'user#send_email_code', as: 'user_send_email_code', via: [:post]
   match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]
 
+  # -----------------------------------------------------------
+  # Admin
+  # -----------------------------------------------------------
+
+  get '/admin/' => 'admin#index'
+
+  namespace :admin do |admin|
+
+    resources :accounts, only: [:new, :index, :create, :destroy] do
+      collection do
+        get :change_password
+        post :change_password_post
+      end
+    end
+
+    resources :admins
+
+  end
+
 
   match '*path', via: :all, to: 'home#error_404'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
