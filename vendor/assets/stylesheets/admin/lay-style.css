@@ -1,0 +1,28 @@
+.dropdown-width {
+    min-width: 128px;
+}
+
+ul li {
+    list-style: none;
+}
+
+.navbar .navbar-brand {
+    height: inherit;
+    /*!important;*/
+}
+
+#notice {
+    display: none;
+}
+
+.table tbody tr td {
+    vertical-align: middle;
+    /*!important;*/
+}
+
+.admin-search-field {
+    width: 90px;
+    display: -moz-inline-box;
+    display: inline-block;
+}
+
