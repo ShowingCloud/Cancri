@@ -23,8 +23,6 @@
             <ul class="dropdown-width dropdown-menu">
               <li data-search-option="job_number"><a><%= t('simple_form.labels.defaults.job_number') %></a></li>
               <li data-search-option="name"><a><%= t('simple_form.labels.defaults.name') %></a></li>
-              <li data-search-option="permissions"><a><%= t('simple_form.labels.defaults.permissions') %></a></li>
-              <li data-search-option="position"><a><%= t('simple_form.labels.defaults.position') %></a></li>
               <li data-search-option="id"><a>ID</a></li>
             </ul>
           </div>
@@ -74,8 +72,10 @@
           <%= link_to edit_admin_admin_path(admin), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>
           <% end %>
-          <%= link_to [:admin, admin], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
-              <i class="icon-trash bigger-120"></i>
+          <% unless @current_admin.id == admin.id %>
+              <%= link_to [:admin, admin], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+                  <i class="icon-trash bigger-120"></i>
+              <% end %>
           <% end %>
         </td>
       </tr>

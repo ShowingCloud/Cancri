@@ -49,6 +49,11 @@ Rails.application.routes.draw do
     end
 
     resources :admins
+    resources :users
+    resources :organizers
+    resources :schedules
+    resources :roles
+    resources :districts
 
   end
 

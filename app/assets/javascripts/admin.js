@@ -10,4 +10,6 @@
 //= require admin/bootstrap-datepicker.min
 //= require admin/bootstrap-timepicker.min
 //= require admin/bootbox.min
+//= require admin/admin
+//= require admin/chosen.jquery.min
 //= require admin/jquery.nestable.min

@@ -126,11 +126,40 @@
             <span class="menu-text"> 首页 </span>
           </a>
         </li>
-
+        <li class="<%= params[:controller] == 'admin/users' ? 'active' : '' %>">
+          <a href="<%= admin_users_path %>">
+            <i class="icon-user"></i>
+            <span class="menu-text"> 用户 </span>
+          </a>
+        </li>
         <li class="<%= params[:controller] == 'admin/admins' ? 'active' : '' %>">
           <a href="<%= admin_admins_path %>">
             <i class="icon-gear"></i>
             <span class="menu-text"> 管理员 </span>
+          </a>
+        </li>
+        <li class="<%= params[:controller] == 'admin/organizers' ? 'active' : '' %>">
+          <a href="<%= admin_organizers_path %>">
+            <i class="icon-home"></i>
+            <span class="menu-text"> 单位 </span>
+          </a>
+        </li>
+        <li class="<%= params[:controller] == 'admin/districts' ? 'active' : '' %>">
+          <a href="<%= admin_districts_path %>">
+            <i class="icon-globe"></i>
+            <span class="menu-text"> 区县 </span>
+          </a>
+        </li>
+        <li class="<%= params[:controller] == 'admin/schedules' ? 'active' : '' %>">
+          <a href="<%= admin_schedules_path %>">
+            <i class="icon-calendar"></i>
+            <span class="menu-text"> 赛程名 </span>
+          </a>
+        </li>
+        <li class="<%= params[:controller] == 'admin/roles' ? 'active' : '' %>">
+          <a href="<%= admin_roles_path %>">
+            <i class="icon-leaf"></i>
+            <span class="menu-text"> 角色 </span>
           </a>
         </li>
 

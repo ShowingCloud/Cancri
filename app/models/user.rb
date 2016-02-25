@@ -1,5 +1,7 @@
 class User < ApplicationRecord
   has_one :user_profile, :dependent => :destroy
+  has_many :user_roles
+  has_many :roles, through: :user_roles
 
   mount_uploader :avatar, AvatarUploader
 
