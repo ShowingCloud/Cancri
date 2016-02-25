@@ -15,4 +15,3 @@
 //= require bootstrap.min
 //= require notify
 //= //require turbolinks
-//= require_tree .
