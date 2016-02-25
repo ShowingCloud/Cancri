@@ -12,7 +12,7 @@ class Admin::AdminsController < AdminController
     if params[:field].present? && params[:keyword].present?
       @admins = Admin.all.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"]).page(params[:page]).per(params[:per])
     else
-      @admins = Admin.all.page(params[:page]).per(1)
+      @admins = Admin.all.page(params[:page]).per(params[:per])
     end
   end
 
