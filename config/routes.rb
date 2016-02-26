@@ -1,10 +1,9 @@
 Rails.application.routes.draw do
 
-  get 'applies/comp'
-
   root to: 'home#index'
   resources :competitions, only: [:index, :show] do
     collection do
+      get :apply_event
 
     end
   end
@@ -54,6 +53,26 @@ Rails.application.routes.draw do
     resources :schedules
     resources :roles
     resources :districts
+
+    resources :competitions do
+      collection do
+        get :get_events
+      end
+    end
+    resources :events do
+      collection do
+        get :teams
+        get :scores
+        get :add_score
+        post :add_score
+        get :edit_score
+        post :edit_score
+        post :create_team
+        post :add_team_player
+        post :delete_team_player
+        post :delete_team
+      end
+    end
 
   end
 

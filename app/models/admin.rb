@@ -6,6 +6,7 @@ class Admin < ApplicationRecord
   validates :password, length: {minimum: 6, maximum: 20}, allow_blank: true
   validates :password, presence: true, on: :create
   validates :name, presence: true
+  validates :permissions, presence: true
 
   PERMISSIONS = {
       super_admin: '超级管理员',

@@ -4,6 +4,7 @@ class CreateCompetitions < ActiveRecord::Migration[5.0]
       t.string :name, null: false
       t.text :description
       t.string :cover
+      t.text :body_html
       t.string :guide_units # 指导单位
       t.string :organizer_units # 主办单位
       t.string :help_units # 协办单位
@@ -12,8 +13,6 @@ class CreateCompetitions < ActiveRecord::Migration[5.0]
       t.text :video
       t.text :file
       t.integer :status
-      t.integer :team_min_num
-      t.integer :team_max_num
       t.datetime :apply_start_time
       t.datetime :apply_end_time
       t.datetime :start_time

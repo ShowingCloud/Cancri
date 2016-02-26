@@ -16,7 +16,7 @@
 <div class="navbar navbar-default" id="navbar">
   <div class="navbar-container" id="navbar-container">
     <div class="navbar-header pull-left">
-      <a href="#" class="navbar-brand">
+      <a href="/admin" class="navbar-brand">
         <small><i class="icon-leaf"></i> 豆姆科技管理后台</small>
       </a>
     </div>
@@ -120,12 +120,6 @@
       </div>
       <!-- #sidebar-shortcuts -->
       <ul class="nav nav-list">
-        <li class="<%= params[:controller] == 'admin' ? 'active' : '' %>">
-          <a href="<%= admin_path %>">
-            <i class="icon-dashboard"></i>
-            <span class="menu-text"> 首页 </span>
-          </a>
-        </li>
         <li class="<%= params[:controller] == 'admin/users' ? 'active' : '' %>">
           <a href="<%= admin_users_path %>">
             <i class="icon-user"></i>
@@ -160,6 +154,18 @@
           <a href="<%= admin_roles_path %>">
             <i class="icon-leaf"></i>
             <span class="menu-text"> 角色 </span>
+          </a>
+        </li>
+        <li class="<%= params[:controller] == 'admin/competitions' ? 'active' : '' %>">
+          <a href="<%= admin_competitions_path %>">
+            <i class="icon-beaker"></i>
+            <span class="menu-text"> 比赛 </span>
+          </a>
+        </li>
+        <li class="<%= params[:controller] == 'admin/events' ? 'active' : '' %>">
+          <a href="<%= admin_events_path %>">
+            <i class="icon-hand-right"></i>
+            <span class="menu-text"> 项目 </span>
           </a>
         </li>
 

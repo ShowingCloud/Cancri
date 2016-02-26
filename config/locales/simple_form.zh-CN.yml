@@ -31,7 +31,7 @@ zh-CN:
         age: '年龄'
         position: '职位'
         permissions: '权限'
-        job_number: '工号'
+        job_number: '账号'
         current_sign_in_at: '最后登录时间'
         description: '描述'
         start_time: '开始时间'
@@ -85,7 +85,7 @@ zh-CN:
       # When using html, text and mark won't be used.
       # html: '<abbr title="required">*</abbr>'
     error_notification:
-      default_message: "很抱歉出现了错误。。。"
+      default_message: "很抱歉, 操作出现了错误。。。"
     # Labels and hints examples
     # labels:
     #   defaults:
