@@ -102,7 +102,9 @@
 <% if flash.present? %>
     <script type="text/javascript">
         <% flash.each do |f| %>
-        $.notify("<%= f[1] %>", "<%= f[0] %>");
+        if ("<%= f[1] %>" != 'true') {
+            $.notify("<%= f[1] %>", "<%= f[0] %>");
+        }
         <% end %>
     </script>
 <% end %>

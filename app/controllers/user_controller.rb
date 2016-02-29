@@ -32,6 +32,10 @@ class UserController < ApplicationController
   end
 
   def email
+    if params[:return_uri].present?
+      return_uri = params[:return_uri]
+      session[:return_apply_event] = return_uri
+    end
     if request.method == 'POST'
       current_user.email = params[:user][:email]
       ec = EmailService.new(params[:user][:email])
@@ -40,7 +44,12 @@ class UserController < ApplicationController
         current_user.email = params[:user][:email]
         if current_user.save
           flash[:success] = '邮箱添加成功'
-          redirect_to user_preview_path
+          if session[:return_apply_event].present?
+            redirect_to session[:return_apply_event]
+            session[:return_apply_event] = nil
+          else
+            redirect_to user_preview_path
+          end
         else
           flash[:error] = '邮箱添加失败'
         end

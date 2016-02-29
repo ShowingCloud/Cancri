@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   resources :competitions, only: [:index, :show] do
     collection do
       get :apply_event
-
+      post :update_apply_info
     end
   end
 

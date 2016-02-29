@@ -12,5 +12,6 @@
  *
  *= require bootstrap.min
  *= require bootstrap-theme.min
+ *= require bootstrap-dialog
  *= require_self
  */

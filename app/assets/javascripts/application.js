@@ -13,6 +13,8 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap.min
+//= require bootstrap-dialog
+//= require competitions
 //= require code
 //= require notify
 //= //require turbolinks

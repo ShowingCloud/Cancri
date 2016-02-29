@@ -223,8 +223,12 @@ zh-CN:
   group:
     primary: '小学组'
     middle: '中学组'
+    junior: '初中组'
+    high: '高中组'
     group1: '小学组'
     group2: '中学组'
+    group3: '初中组'
+    group4: '高中组'
   activerecord:
     models:
       user: '用户'
