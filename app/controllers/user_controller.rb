@@ -11,21 +11,25 @@ class UserController < ApplicationController
     # 获取Profile
     @user_profile = current_user.user_profile ||= current_user.build_user_profile
     if request.method == 'POST'
-      # 过滤Profile参数
-      profile_params = params.require(:user_profile).permit(:username, :autograph, :age, :school, :grade, :gender, :bj, :birthday, :address)
-      @user_profile.username = profile_params[:username]
-      @user_profile.autograph = profile_params[:autograph]
-      @user_profile.school = profile_params[:school]
-      @user_profile.grade = profile_params[:grade]
-      @user_profile.bj = profile_params[:bj]
-      @user_profile.age = profile_params[:age]
-      @user_profile.gender = profile_params[:gender]
-      @user_profile.birthday = profile_params[:birthday]
-      @user_profile.address = profile_params[:address]
-      if @user_profile.save
-        flash[:success] = '详细信息更新成功'
+      if params[:user_profile].present?
+        # 过滤Profile参数
+        profile_params = params.require(:user_profile).permit(:username, :school, :bj, :address)
+        @user_profile.username = profile_params[:username]
+        @user_profile.autograph = profile_params[:autograph]
+        @user_profile.school = profile_params[:school]
+        @user_profile.grade = profile_params[:grade]
+        @user_profile.bj = profile_params[:bj]
+        @user_profile.age = profile_params[:age]
+        @user_profile.gender = profile_params[:gender]
+        @user_profile.birthday = profile_params[:birthday]
+        @user_profile.address = profile_params[:address]
+        if @user_profile.save
+          flash[:success] = '详细信息更新成功'
+        else
+          flash[:error] = '详细信息更新失败'
+        end
       else
-        flash[:error] = '详细信息更新失败'
+        flash[:error] = '不能提交空信息'
       end
       redirect_to user_profile_path
     end
@@ -96,12 +100,16 @@ class UserController < ApplicationController
 
   # 更新头像和 nickname
   def update_avatar
-    if current_user.update_attributes(params.require(:user).permit(:nickname, :avatar))
-      flash[:success] = '个人信息更新成功'
-    elsif User.where(nickname: params[:user][:nickname]).where.not(id: current_user.id).take.present?
-      flash[:error] = params[:user][:nickname]+'已被使用,请使用其他昵称!'
+    if params[:user].present?
+      if current_user.update_attributes(params.require(:user).permit(:nickname, :avatar))
+        flash[:success] = '个人信息更新成功'
+      elsif User.where(nickname: params[:user][:nickname]).where.not(id: current_user.id).take.present?
+        flash[:error] = params[:user][:nickname]+'已被使用,请使用其他昵称!'
+      else
+        flash[:error] = '个人信息更新失败'
+      end
     else
-      flash[:error] = '个人信息更新失败'
+      flash[:error] = '昵称不能为空'
     end
     redirect_to user_profile_path
   end

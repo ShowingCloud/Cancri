@@ -49,8 +49,7 @@ class Admin::AdminsController < AdminController
   # PATCH/PUT /admin/admins/1
   # PATCH/PUT /admin/admins/1.json
   def update
-    # puts '123'
-    # puts employee_params
+
     # render nothing: true
     respond_to do |format|
       if @admin.update(admin_params)

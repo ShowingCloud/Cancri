@@ -1,10 +1,12 @@
 <div class="container">
-  <h1>Competitions#show</h1>
-
-  <p>Find me in app/views/competitions/show.html.erb</p>
-
-  <%= link_to "#{applies_comp_path}?comp_id=#{params[:id]}", class: 'btn btn-primary' do %>
-      报名
+  <h1 class="page-header"><%= @competition.name %> 详细信息页面</h1>
+  <% @events.each do |ev| %>
+      <p>
+        <%= ev.name %>
+        <%= link_to "#{apply_event_competitions_path}?eid=#{ev.id}", class: 'btn btn-xs btn-primary' do %>
+            去报名
+        <% end %>
+      </p>
   <% end %>
 
 </div>

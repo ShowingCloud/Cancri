@@ -1,7 +1,9 @@
 <div class="container">
+  <h1 class="page-header">大赛列表页面</h1>
+
   <% @competitions.each do |comp| %>
       <%= link_to competition_path(comp) do %>
-          comp.name
+          <h2><%= comp.name %></h2>
       <% end %>
   <% end %>
 </div>

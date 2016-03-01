@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     collection do
       get :apply_event
       post :update_apply_info
+      post :leader_create_team
     end
   end
 
@@ -15,6 +16,13 @@ Rails.application.routes.draw do
                        confirmations: 'users/confirmations'}
   mount RuCaptcha::Engine => '/rucaptcha'
 
+  resources :accounts, only: [:new, :create, :destroy] do
+    collection do
+      post :validate_captcha
+      get :reset_password
+      post :reset_password_post
+    end
+  end
 
   # -----------------------------------------------------------
   # User
