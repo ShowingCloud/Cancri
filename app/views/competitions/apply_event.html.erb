@@ -5,8 +5,35 @@
 
       <div>
         <% if @already_apply.present? %>
-            你已经报名该比赛,你可以邀请其他伙伴加入该队伍<br><br>
+            你已经报名该比赛,你可以邀请其他伙伴加入该队伍
+            <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="shuru">去邀请</button>
+            <br><br>
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-center" id="exampleModalLabel">邀请队员</h4>
+                  </div>
+                  <div class="modal-body">
+                    <form>
+                      <div class="form-group">
+                        <label for="invited-email" class="control-label">信息:</label>
+                        <input type="text" class="form-control" autocomplete="off" name="invited-email" data-id="1" id="invited-email">
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary invite-player-submit" data-name="<%= @already_apply.team_id %>" data-event="<%= @event.name %>">邀请</button>
+                  </div>
+                </div>
+              </div>
+            </div>
         <% end %>
+
         <div class=""></div>
         <ul class="nav nav-tabs" role="tablist">
           <li role="presentation" class="active">
@@ -24,7 +51,7 @@
             <% if @teams.present? %>
                 <div class="panel-body">
                   <% @teams.each do |team| %>
-                      <%= team.name %>
+                      <div class="<%= 'leader-team' if team.id == @already_apply.team_id %>"><%= team.name %></div>
                   <% end %>
                 </div>
 
@@ -48,7 +75,7 @@
                       <label for="username" class="col-sm-2 control-label">姓名 :</label>
 
                       <div class="col-sm-10">
-                        <input type="text" class="form-control" value="<%= current_user.user_profile.username %>" id="username" placeholder="请输入姓名">
+                        <input type="text" class="form-control" value="<%= current_user.user_profile.try(:username) %>" id="username" placeholder="请输入姓名">
                       </div>
                     </div>
 
@@ -56,14 +83,14 @@
                       <label for="school" class="col-sm-2 control-label">学校 :</label>
 
                       <div class="col-sm-10">
-                        <input type="text" class="form-control" value="<%= current_user.user_profile.school %>" id="school" placeholder="请输入学校">
+                        <input type="text" class="form-control" value="<%= current_user.user_profile.try(:school) %>" id="school" placeholder="请输入学校">
                       </div>
                     </div>
                     <div class="form-group">
                       <label for="grade" class="col-sm-2 control-label">年级 :</label>
 
                       <div class="col-sm-10">
-                        <input type="text" class="form-control" value="<%= current_user.user_profile.grade %>" id="grade" placeholder="请输入年级">
+                        <input type="text" class="form-control" value="<%= current_user.user_profile.try(:grade) %>" id="grade" placeholder="请输入年级">
                       </div>
                     </div>
 

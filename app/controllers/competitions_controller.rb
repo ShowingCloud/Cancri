@@ -1,5 +1,5 @@
 class CompetitionsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show]
+  before_action :authenticate_user!, except: [:index, :show, :invite]
   before_action :set_competition, only: [:show]
 
   def index
@@ -74,6 +74,35 @@ class CompetitionsController < ApplicationController
       end
     end
     render json: result
+  end
+
+  def leader_invite_player
+    if request.method == 'POST' && params[:invited_email].present?
+      user = User.where(email: params[:invited_email]).exists?
+      ## 未验证
+      unless user
+        code = SecureRandom.uuid.gsub('-', '')
+        has_invited = Invite.where(email: params[:invited_email], invite_type: 'LEADER_INVITE').exists?
+        if has_invited
+          render json: [false, '已被邀请，请不要重复邀请']
+        else
+          invite_action = Invite.create!(email: params[:invited_email], code: code, invite_type: 'LEADER_INVITE', user_id: current_user.id, team_id: params[:td])
+          if invite_action.save
+            status = UserMailer.leader_invite_player(current_user.user_profile.username, params[:invited_email], code, params[:event_name], params[:team_name], params[:td]).deliver
+            if status
+              render json: [true, '邀请已经发送到'+params[:invited_email].to_s]
+            else
+              render json: [false, '邀请失败']
+              invite_action.delete
+            end
+          end
+        end
+      end
+    end
+  end
+
+  def invite
+
   end
 
   protected

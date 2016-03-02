@@ -3,6 +3,7 @@ require 'rexml/document'
 class SMSService
 
   TYPE_CODE_ADD_MOBILE = 'ADD_MOBILE'
+  TYPE_CODE_RESET_PASSWORD = 'RESET_PASSWORD'
 
   #接口变量定义
   URL = 'http://smsapi.c123.cn/OpenPlatform/OpenApi'; #接口地址
@@ -12,7 +13,7 @@ class SMSService
   CHANNEL_ID = Settings.sms_channel; #通道组编号
   SIGNATURE_ID = ''; #签名编号 ,可以为空时，使用系统默认的编号
   SEND_TIME = ''; #发送时间,可以为空表示立即发送,yyyyMMddHHmmss 如:20130721182038
-  WAIT_MINUTE = 2; # 发送间隔
+  WAIT_MINUTE = 1; # 发送间隔
   EFFECTIVE_TIME = 10; # 有效时间
   ALLOW_VALIDATE_TIMES = 5; # 允许尝试次数
   IS_TEST = false; # 测试模式不发送短信
@@ -55,6 +56,8 @@ class SMSService
     user = User.find_by(mobile: @mobile)
     if user.present? and type == TYPE_CODE_ADD_MOBILE
       return [FALSE, '该手机已经被使用']
+    elsif user.blank? and type == TYPE_CODE_RESET_PASSWORD
+      return [FALSE, '该手机还没有被认证']
     end
     code = get_mobile_code # 获取随机码
     row = MobileCode.find_by(mobile: @mobile, message_type: type) # 检测是否已经存在同类型记录
@@ -69,8 +72,10 @@ class SMSService
       return [FALSE, "验证码发送间隔为#{WAIT_MINUTE}分钟"]
     end
     # 根据类型发送不同消息
-    status = FALSE
-    status = send_code_for_add_mobile(code) if type == TYPE_CODE_ADD_MOBILE
+    status = true
+    # status = FALSE
+    # status = send_code_for_add_mobile(code) if type == TYPE_CODE_ADD_MOBILE
+    # status = send_code_for_reset_password(code) if type == TYPE_CODE_RESET_PASSWORD
     if status
       [TRUE, '验证码发送成功']
     else
@@ -93,7 +98,7 @@ class SMSService
     # 获取验证码纪录，如果不存在返回 FALSE
     row = MobileCode.find_by(mobile: @mobile, message_type: type)
     if row.nil?
-      return [FALSE, '该邮箱没发送过此类型验证码 或 验证码已超时']
+      return [FALSE, '请获取该手机验证码']
     end
 
     # 检测是否超时及是否超过尝试次数
@@ -103,7 +108,9 @@ class SMSService
     else
       #检测验证码是否正确，如不正确增加1次尝试次数
       if row.code == code
-        row.destroy
+        unless type != TYPE_CODE_RESET_PASSWORD
+          row.destroy
+        end
         [TRUE, '验证码成功通过验证']
       else
         row.failed_attempts = row.failed_attempts.to_i + 1
@@ -134,6 +141,12 @@ class SMSService
   #发送验证码 － 添加手机号
   def send_code_for_add_mobile(code)
     message = "您正通过手机为您的豆姆账户添加手机号信息，验证码为：#{code}，#{EFFECTIVE_TIME}分钟内有效，请尽快完成验证。"
+    send(message)
+  end
+
+  #发送验证码 － 找回密码
+  def send_code_for_reset_password(code)
+    message = "您正通过手机找回在豆姆的账户密码，验证码为：#{code}，#{EFFECTIVE_TIME}分钟内有效，请尽快完成验证。"
     send(message)
   end
 

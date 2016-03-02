@@ -4,6 +4,8 @@
 // 补全确认报名所需信息
 var chinese = /^[\u4E00-\u9FA5]+$/; // 汉字
 var z_s = /^[a-zA-Z0-9]+$/; // 字母数字
+var pd_exp = /^[\x21-\x7e]+$/; //数字、字母、特殊字符
+var email_exp = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})+$/;
 $('.update-apply-info-submit').on('click', function (event) {
     event.preventDefault();
     var username = trim($('#username').val());

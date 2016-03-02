@@ -4,8 +4,10 @@ Rails.application.routes.draw do
   resources :competitions, only: [:index, :show] do
     collection do
       get :apply_event
+      get :invite
       post :update_apply_info
       post :leader_create_team
+      post :leader_invite_player
     end
   end
 
@@ -20,6 +22,7 @@ Rails.application.routes.draw do
     collection do
       post :validate_captcha
       get :reset_password
+      post :send_code
       post :reset_password_post
     end
   end

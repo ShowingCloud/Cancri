@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+  <!--<title></title>-->
+</head>
+<body>
+<h1 class="text-center"><%= @leader %> 邀请你参加 <%= @event %>比赛</h1>
+
+<h3 class="text-center">队伍名称为: <%= @team_name %></h3>
+
+<p>
+  <a href="http://localhost:3000/competitions/invite?code=<%= @code %>?email=<%= @email %>?t=<%= @t %>" class="btn btn-info btn-lg">立即加入</a>
+</p>
+
+<p class="text-center">如果按钮无法点击，请直接访问以下链接：</p>
+
+<p class="text-center">http://localhost:3000/competitions/invite?code=<%= @code %>?email=<%= @email %>?t=<%= @t %></p>
+
+</body>
+</html>

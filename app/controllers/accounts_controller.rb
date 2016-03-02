@@ -11,8 +11,14 @@ class AccountsController < ApplicationController
     @reset_password = ResetPassword.new
   end
 
+  def send_code
+    sms = SMSService.new(params[:mobile])
+    data = sms.send_code(params[:type], request.ip)
+    render json: data
+  end
+
   def reset_password_post
-    if @current_user.present?
+    if current_user.present?
       redirect_to root_path
       return
     end
@@ -27,7 +33,7 @@ class AccountsController < ApplicationController
 
   def validate_captcha
     if request.method == 'POST'
-      if verify_rucaptcha? (params[:captcha])
+      if verify_rucaptcha? params[:_rucaptcha]
         result = [true, '校验码正确']
       else
         result = [false, '校验码输入错误']
