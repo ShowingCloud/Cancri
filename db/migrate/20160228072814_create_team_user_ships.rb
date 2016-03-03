@@ -13,6 +13,6 @@ class CreateTeamUserShips < ActiveRecord::Migration[5.0]
     add_index :team_user_ships, :event_id
     add_index :team_user_ships, [:team_id, :user_id], unique: true
     add_index :team_user_ships, [:event_id, :user_id], unique: true
-    add_index :team_user_ships, [:event_id, :team_id], unique: true
+    add_index :team_user_ships, [:event_id, :team_id, :user_id], unique: true
   end
 end

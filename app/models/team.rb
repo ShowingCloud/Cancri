@@ -4,6 +4,7 @@ class Team < ApplicationRecord
   belongs_to :district
   has_many :team_user_ships, :dependent => :destroy
   has_many :users, through: :team_user_ship
+  has_many :invites
   mount_uploader :cover, CoverUploader
 
   GROUP = {primary: 1, middle: 2, junior: 3, high: 4}

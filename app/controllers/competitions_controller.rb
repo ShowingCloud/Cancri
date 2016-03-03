@@ -1,6 +1,7 @@
 class CompetitionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show, :invite]
   before_action :set_competition, only: [:show]
+  layout 'invite', only: [:invite]
 
   def index
     @competitions = Competition.all
@@ -103,6 +104,44 @@ class CompetitionsController < ApplicationController
 
   def invite
 
+    invited_email = params[:email]
+    invited_code = params[:code]
+    # unless invited_code.present? && invited_email.present?
+    #   flash[:notice]='不规范请求'
+    #   redirect_to root_path
+    # end
+    @add_info = InvitePlayer.new
+    if request.method == 'GET'
+      if invited_email.present? && invited_code.present?
+        @is_invite = Invite.where(email: invited_email, code: invited_code).joins(:team, :user_profile).where("teams.id = invites.team_id", "invites.user_id=user_profiles.user_id").select("teams.name as team_name", "user_profiles.username as leader", :email, :code).take
+        if @is_invite.present?
+          @add_info.leader = @is_invite.leader
+          @add_info.team_name = @is_invite.team_name
+        else
+          flash[:notice] = '该链接已失效或不存在'
+          redirect_to root_path
+        end
+      else
+        flash[:notice]='不规范请求'
+        redirect_to(root_path) and return
+      end
+    end
+
+    if request.method == 'POST'
+      nickname = params[:invite_player][:nickname]
+      username = params[:invite_player][:username]
+      grade = params[:invite_player][:grade]
+      school = params[:invite_player][:school]
+      email = params[:invite_player][:email]
+      code = params[:invite_player][:code]
+      @add_info = InvitePlayer.new(email: email, code: code, nickname: nickname, username: username, grade: grade, school: school, password: params[:invite_player][:password])
+      if @add_info.save
+        flash[:notice] = '您已成功加入此队'
+        redirect_to root_path
+      else
+        render :invite
+      end
+    end
   end
 
   protected

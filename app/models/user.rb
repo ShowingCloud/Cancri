@@ -4,6 +4,7 @@ class User < ApplicationRecord
   has_many :roles, through: :user_roles
   has_many :team_user_ships, foreign_key: :user_id
   has_and_belongs_to_many :teams
+  has_many :invites
   mount_uploader :avatar, AvatarUploader
 
   # Include default devise modules. Others available are:

@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     collection do
       get :apply_event
       get :invite
+      post :invite
       post :update_apply_info
       post :leader_create_team
       post :leader_invite_player
