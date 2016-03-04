@@ -28,6 +28,12 @@ Rails.application.routes.draw do
     end
   end
 
+  use_doorkeeper do
+    controllers applications: 'oauth/applications', authorized_applications: 'oauth/authorized_applications'
+  end
+
+  mount API::Dispatch => '/api'
+
   # -----------------------------------------------------------
   # User
   # -----------------------------------------------------------

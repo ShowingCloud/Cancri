@@ -12,14 +12,6 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update) { |u| u.permit(:username, :email, :password, :password_confirmation, :current_password) }
   end
 
-  def email_exist
-    unless current_user.email.present?
-      render text: 'meiyouyouxiang'
-    end
-  end
-
-
-
   def render_404
     render_optional_error_file(404)
   end

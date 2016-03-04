@@ -8,6 +8,12 @@ Bundler.require(*Rails.groups)
 
 module Dome
   class Application < Rails::Application
+
+
+    config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
+    config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
+    config.autoload_paths.push(*%W(#{config.root}/lib))
+
     config.time_zone = 'Asia/Shanghai'
     config.active_record.default_timezone = :local
     config.i18n.default_locale = 'zh-CN'
