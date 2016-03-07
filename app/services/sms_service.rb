@@ -108,7 +108,7 @@ class SMSService
     else
       #检测验证码是否正确，如不正确增加1次尝试次数
       if row.code == code
-        # row.destroy
+        row.destroy
         [TRUE, '验证码成功通过验证']
       else
         row.failed_attempts = row.failed_attempts.to_i + 1
