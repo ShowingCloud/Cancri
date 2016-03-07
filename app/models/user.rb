@@ -5,13 +5,14 @@ class User < ApplicationRecord
   has_many :team_user_ships, foreign_key: :user_id
   has_and_belongs_to_many :teams
   has_many :invites
+  has_many :access_grants, dependent: :delete_all
   mount_uploader :avatar, AvatarUploader
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :timeoutable, :authentication_keys => [:login]
+         :timeoutable, :omniauthable, :authentication_keys => [:login]
   # :confirmable
 
   validates :nickname, presence: true, uniqueness: true, length: {in: 2..10}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含中文、数字、字母、下划线'}
@@ -29,6 +30,7 @@ class User < ApplicationRecord
   attr_accessor :login
   attr_accessor :email_code
   attr_accessor :mobile_info
+  attr_accessor :return_url
 
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
@@ -36,6 +38,15 @@ class User < ApplicationRecord
       where(conditions).where(['nickname = :value OR email = :value OR mobile = :value', {:value => login}]).first
     else
       where(conditions).first
+    end
+  end
+
+  def self.from_omniauth(auth)
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user.provider = auth.provider
+      user.uid = auth.uid
+      user.email = auth.info.email
+      user.password = Devise.friendly_token[0, 20]
     end
   end
 end

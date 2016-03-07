@@ -1,5 +1,5 @@
 class CompetitionsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show, :invite]
+  before_action :require_user, except: [:index, :show, :invite]
   before_action :set_competition, only: [:show]
   layout 'invite', only: [:invite]
 

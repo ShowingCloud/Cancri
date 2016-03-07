@@ -46,6 +46,7 @@ group :development do
   gem 'spring'
   gem 'quiet_assets'
   gem 'better_errors'
+  gem 'grape-swagger'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -64,3 +65,12 @@ gem 'mini_magick'
 gem 'rails-admin-scaffold'
 gem 'kaminari', github: 'amatsuda/kaminari'
 gem 'virtus'
+
+gem 'grape'
+gem 'active_model_serializers', '0.9.2'
+gem 'grape-active_model_serializers'
+gem 'doorkeeper'
+gem 'omniauth'
+gem 'oauth'
+gem 'oauth2'
+gem 'omniauth-oauth2'

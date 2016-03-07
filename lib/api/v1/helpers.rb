@@ -26,7 +26,7 @@ module API
 
       # user helpers
       def current_user
-        @current_user ||= User.find_by_id(doorkeeper_token.resource_owner_id) if doorkeeper_token
+        # @current_user ||= User.find_by_id(doorkeeper_token.resource_owner_id) if doorkeeper_token
       end
 
       def authenticate!
@@ -36,7 +36,6 @@ module API
       def owner?(obj)
         return false if current_user.blank?
         return false if obj.blank?
-        return true if admin?
 
         if obj.is_a?(User)
           return obj.id == current_user.id
@@ -45,10 +44,6 @@ module API
         end
       end
 
-      def admin?
-        return false if current_user.blank?
-        current_user.admin?
-      end
 
       def error_404!
         error!({'error' => 'Page not found'}, 404)
@@ -56,16 +51,6 @@ module API
 
       private
 
-      def doorkeeper_token
-        @_doorkeeper_token ||= Doorkeeper::OAuth::Token.authenticate(
-            decorated_request,
-            *Doorkeeper.configuration.access_token_methods
-        )
-      end
-
-      def decorated_request
-        Doorkeeper::Grape::AuthorizationDecorator.new(request)
-      end
     end
   end
 end

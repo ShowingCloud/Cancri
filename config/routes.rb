@@ -19,6 +19,12 @@ Rails.application.routes.draw do
                        confirmations: 'users/confirmations'}
   mount RuCaptcha::Engine => '/rucaptcha'
 
+  # ios Provider
+  match '/auth/login/authorize' => 'auth#authorize', via: :all
+  match '/auth/login/access_token' => 'auth#access_token', via: :all
+  match '/auth/login/user' => 'auth#user', via: :all
+  match '/oauth/token' => 'auth#access_token', via: :all
+
   resources :accounts, only: [:new, :create, :destroy] do
     collection do
       post :validate_captcha
@@ -28,11 +34,9 @@ Rails.application.routes.draw do
     end
   end
 
-  use_doorkeeper do
-    controllers applications: 'oauth/applications', authorized_applications: 'oauth/authorized_applications'
-  end
-
-  mount API::Dispatch => '/api'
+  # use_doorkeeper do
+  #   controllers applications: 'oauth/applications', authorized_applications: 'oauth/authorized_applications'
+  # end
 
   # -----------------------------------------------------------
   # User
@@ -49,6 +53,9 @@ Rails.application.routes.draw do
   match 'user/mobile' => 'user#mobile', as: 'user_mobile', via: [:get, :post]
   match 'user/send_email_code' => 'user#send_email_code', as: 'user_send_email_code', via: [:post]
   match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]
+
+  mount API::Dispatch => '/'
+
 
   # -----------------------------------------------------------
   # Admin

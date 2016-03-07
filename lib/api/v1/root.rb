@@ -1,15 +1,14 @@
 module API
-  require 'doorkeeper/grape/helpers'
 
   module V1
     class Root < Grape::API
-      version 'v1'
+      version 'v1', using: :path
       prefix 'api'
 
       default_error_formatter :json
       content_type :json, 'application/json'
       format :json
-      # formatter :json, Grape::Formatter::ActiveModelSerializers
+      formatter :json, Grape::Formatter::ActiveModelSerializers
 
       rescue_from :all do |e|
         case e
@@ -31,7 +30,6 @@ module API
         end
       end
 
-      helpers Doorkeeper::Grape::Helpers
       helpers API::V1::Helpers
 
 
