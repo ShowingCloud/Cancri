@@ -2,13 +2,14 @@ $('.invite-player-submit').click(function () {
     var invited_email = $('#invited-email').val();
     var event_name = $(this).attr('data-event');
     var td = $(this).attr('data-name');
+    var ed = $(this).attr('data-id');
     var team_name = $('.leader-team').text();
     if (email_exp.test(invited_email)) {
         $.ajax({
             url: '/competitions/leader_invite_player',
             type: 'post',
             data: {
-                "invited_email": invited_email, "event_name": event_name, "team_name": team_name, "td": td
+                "invited_email": invited_email, "event_name": event_name, "team_name": team_name, "td": td, "ed": ed
             },
             success: function (data) {
                 alert(data[1]);

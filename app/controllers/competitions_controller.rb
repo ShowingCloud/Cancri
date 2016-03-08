@@ -15,7 +15,7 @@ class CompetitionsController < ApplicationController
     @event = Event.find(params[:eid])
     @districts = District.all
     @teams = Team.includes(:team_user_ships).where(event_id: params[:eid])
-    @already_apply = TeamUserShip.where(event_id: params[:eid], user_id: current_user.id).select(:team_id).take
+    @already_apply = TeamUserShip.where(event_id: params[:eid], user_id: current_user.id).select(:team_id, :event_id).take
 
   end
 
@@ -79,9 +79,17 @@ class CompetitionsController < ApplicationController
 
   def leader_invite_player
     if request.method == 'POST' && params[:invited_email].present?
-      user = User.where(email: params[:invited_email]).exists?
-      ## 未验证
-      unless user
+      user = User.where(email: params[:invited_email]).select(:id).take
+      if user.present?
+        is_player = TeamUserShip.where(team_id: params[:td], user_id: user.id).take
+        if is_player
+          render json: [false, '该用户已是该队队员']
+        else
+          TeamUserShip.create!(team_id: params[:td], user_id: user.id, event_id: params[:ed], status: false)
+          render json: [true, '已向该验证用户发送邀请消息']
+        end
+        ## 未验证
+      else
         code = SecureRandom.uuid.gsub('-', '')
         has_invited = Invite.where(email: params[:invited_email], invite_type: 'LEADER_INVITE').exists?
         if has_invited
