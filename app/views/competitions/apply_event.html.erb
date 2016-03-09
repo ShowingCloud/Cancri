@@ -18,10 +18,10 @@
                     <h4 class="modal-title text-center" id="exampleModalLabel">邀请队员</h4>
                   </div>
                   <div class="modal-body">
-                    <form>
+                    <form method="get" action="/competitions" class="navbar-form navbar-left" role="search">
                       <div class="form-group">
-                        <label for="invited-email" class="control-label">信息:</label>
-                        <input type="text" class="form-control" autocomplete="off" name="invited-email" data-id="1" id="invited-email">
+                        <label for="term" class="control-label">信息:</label>
+                        <input type="text" class="form-control invited-email" autocomplete="off" value="<%= params[:search].presence %>" name="term" id="invited-email search">
                       </div>
                     </form>
                   </div>

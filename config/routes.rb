@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       post :reset_password_post
     end
   end
+  mount Soulmate::Server, :at => '/sm'
 
   # use_doorkeeper do
   #   controllers applications: 'oauth/applications', authorized_applications: 'oauth/authorized_applications'

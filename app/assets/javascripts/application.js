@@ -14,7 +14,24 @@
 //= require jquery_ujs
 //= require bootstrap.min
 //= require bootstrap-dialog
+//= require jquery.soulmate
 //= require competitions
 //= require code
 //= require notify
 //= //require turbolinks
+$(document).ready(function () {
+    render = function (term, data, type) {
+        return term;
+    };
+    select = function (term, data, type) {
+        console.log("Selected " + term);
+    };
+    $('#search').soulmate({
+        url: '/sm/search',
+        types: ['user'],
+        renderCallback: render,
+        selectCallback: select,
+        minQueryLength: 2,
+        maxResults: 5
+    });
+});

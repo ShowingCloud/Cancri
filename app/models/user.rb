@@ -18,6 +18,16 @@ class User < ApplicationRecord
   validates :nickname, presence: true, uniqueness: true, length: {in: 2..10}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含中文、数字、字母、下划线'}
   validates :password, length: {in: 6..30}, format: {with: /\A[\x21-\x7e]+\Z/i, message: '密码只能包含数字、字母、特殊字符'}, allow_nil: true
   validates :password, presence: true, on: :create
+  after_create :create_soulmate
+
+  def to_hash
+    user_json = {
+        id: self.id,
+        term: self.email,
+        score: self.sign_in_count
+    }
+    JSON.parse(user_json.to_json)
+  end
 
   def email_changed?
     false
@@ -48,5 +58,11 @@ class User < ApplicationRecord
       user.email = auth.info.email
       user.password = Devise.friendly_token[0, 20]
     end
+  end
+
+  private
+
+  def create_soulmate
+    Soulmate::Loader.new("user").add self.to_hash
   end
 end
