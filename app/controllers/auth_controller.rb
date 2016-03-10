@@ -1,8 +1,8 @@
 class AuthController < ApplicationController
-  before_filter :authenticate_user_from_token!, :except => [:access_token]
+  before_action :authenticate_user_from_token!, :except => [:access_token]
 
-  before_filter :authenticate_user!, :except => [:access_token]
-  skip_before_filter :verify_authenticity_token, :only => [:access_token]
+  before_action :authenticate_user!, :except => [:access_token]
+  skip_before_action :verify_authenticity_token, :only => [:access_token]
 
   def authorize
 
@@ -35,18 +35,22 @@ class AuthController < ApplicationController
   end
 
   def user
-    hash = {
-        provider: 'login',
-        id: current_user.id.to_s,
-        info: {
-            email: current_user.email,
-            private_token: current_user.private_token
-        },
-        extra: {
-            nickname: current_user.nickname
-        }
+    if params[:oauth_token].present?
+      hash = {
+          provider: 'login',
+          id: current_user.id.to_s,
+          info: {
+              email: current_user.email,
+              private_token: current_user.private_token
+          },
+          extra: {
+              nickname: current_user.nickname
+          }
 
-    }
+      }
+    else
+      hash={error: '非法请求'}
+    end
 
     render :json => hash.to_json
   end

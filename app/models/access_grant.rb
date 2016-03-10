@@ -12,7 +12,7 @@ class AccessGrant < ActiveRecord::Base
   end
 
   def self.prune!
-    delete_all(["created_at < ?", 1.days.ago])
+    where(["created_at < ?", 1.days.ago]).delete_all
   end
 
   def redirect_uri_for(redirect_uri)
