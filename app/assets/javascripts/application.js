@@ -16,6 +16,7 @@
 //= require bootstrap-dialog
 //= require jquery.soulmate
 //= require competitions
+//= require message-bus
 //= require code
 //= require notify
 //= //require turbolinks
@@ -33,5 +34,18 @@ $(document).ready(function () {
         selectCallback: select,
         minQueryLength: 2,
         maxResults: 5
+    });
+    //MessageBus.start(); // call once at startup
+
+    // how often do you want the callback to fire in ms
+    MessageBus.callbackInterval = 500;
+    channel = '/channel';
+    if (window.roomid) {
+        channel = channel + '/' + window.roomid
+    }
+    MessageBus.subscribe(channel, function (data) {
+        $("#chats-content").append("<tr><td>" + data.content + "</td><td>" + data.time + "</td></tr>");
+        $("#content").val('');
+        // data shipped from server
     });
 });

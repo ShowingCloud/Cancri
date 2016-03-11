@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       post :leader_invite_player
     end
   end
+  resource :chats
 
   devise_for :users, path: 'account', controllers: {
                        sessions: 'users/sessions',

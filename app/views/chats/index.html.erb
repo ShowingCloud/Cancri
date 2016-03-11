@@ -1,0 +1,36 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Chats</h1>
+<%= link_to 'Chat1', root_path(roomid: 'chat1') %>
+&nbsp;
+&nbsp;
+<%= link_to 'Chat2', root_path(roomid: 'chat2') %>
+
+<table style="margin: 20px 40px">
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody id='chats-content'>
+    <% $chats[@channel].each do |chat| %>
+      <tr>
+        <td>
+          <%= chat[:content] %>
+        </td>
+        <td>
+          <%= chat[:time] %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= form_tag  "/chats?roomid=#{params[:roomid]}", method: 'post', remote: true do%>
+  <div class='row'>
+    <input type="text" name="content" id="content" value="" />
+  </div>
+  <input type="submit" name="submit" id="submit" value="Submit" />
+<% end %>
+

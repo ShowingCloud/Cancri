@@ -10,6 +10,11 @@
   <%= action_cable_meta_tag %>
 
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => false %>
+  <script type="text/javascript" charset="utf-8">
+      <% if params[:roomid] %>
+      window.roomid = '<%= params[:roomid] %>';
+      <% end %>
+  </script>
 </head>
 
 <body>
