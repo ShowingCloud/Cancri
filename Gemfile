@@ -1,7 +1,7 @@
 if ENV['USE_OFFICE_SOURCE']
   source 'https://rubygems.org'
 else
-  source 'https://ruby.taobao.org'
+  source 'https://gems.ruby-china.org'
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -74,3 +74,7 @@ gem 'omniauth'
 gem 'oauth'
 gem 'oauth2'
 gem 'omniauth-oauth2'
+gem 'sinatra', github: 'sinatra/sinatra'
+gem 'rack-contrib', '~> 1.2.0'
+gem 'soulmate', :require => 'soulmate/server'
+
