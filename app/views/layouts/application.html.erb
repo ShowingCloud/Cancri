@@ -175,15 +175,6 @@
         MessageBus.subscribe(channel, function (data) {
             notify(data.content);
         });
-        var userAgent = navigator.userAgent.toLowerCase();
-        var safari = userAgent.match(/version\/([\d.]+)/)[1];
-        if (safari) {
-            MessageBus.subscribe(channel, function (data) {
-                $.notify(data.content);
-                $("#content").val('');
-            });
-        }
-
     </script>
 <% end %>
 </body>
