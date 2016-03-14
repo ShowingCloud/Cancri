@@ -116,8 +116,7 @@
                 title = "桌面提醒";
                 content = "您看到此条信息桌面提醒设置成功";
             }
-            var iconUrl = "/images/send_ok.png";
-
+            var iconUrl = "/assets/icon.png";
             if (window.webkitNotifications) {
                 //chrome老版本
                 if (window.webkitNotifications.checkPermission() == 0) {
@@ -174,14 +173,17 @@
             channel = channel + '/' + window.roomid;
         }
         MessageBus.subscribe(channel, function (data) {
-            var userAgent = navigator.userAgent;
-            if (userAgent.indexOf("Safari") > -1) {
-                $.notify('推送内容: ' + data.content);
-            } else {
-                notify('推送内容: ' + data.content);
-            }
-            $("#content").val('');
+            notify(data.content);
         });
+        var userAgent = navigator.userAgent.toLowerCase();
+        var safari = userAgent.match(/version\/([\d.]+)/)[1];
+        if (safari) {
+            MessageBus.subscribe(channel, function (data) {
+                $.notify(data.content);
+                $("#content").val('');
+            });
+        }
+
     </script>
 <% end %>
 </body>
