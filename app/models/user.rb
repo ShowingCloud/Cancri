@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_and_belongs_to_many :teams
   has_many :invites
   has_many :access_grants, dependent: :delete_all
+  has_many :notifications
   mount_uploader :avatar, AvatarUploader
 
   # Include default devise modules. Others available are:

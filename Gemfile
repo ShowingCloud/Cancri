@@ -77,4 +77,4 @@ gem 'omniauth-oauth2'
 gem 'sinatra', github: 'sinatra/sinatra'
 gem 'rack-contrib', '~> 1.2.0'
 gem 'soulmate', :require => 'soulmate/server'
-
+gem 'message_bus', '~>1.0.16'

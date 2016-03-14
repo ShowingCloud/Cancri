@@ -84,6 +84,9 @@ class UserController < ApplicationController
     end
   end
 
+  def notification
+    @notifications = current_user.notifications
+  end
 
   def passwd
     if request.method == 'POST'

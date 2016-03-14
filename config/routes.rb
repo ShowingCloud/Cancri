@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     end
   end
   resource :chats
+  resource :notifications
 
   devise_for :users, path: 'account', controllers: {
                        sessions: 'users/sessions',
@@ -55,6 +56,7 @@ Rails.application.routes.draw do
   match 'user/mobile' => 'user#mobile', as: 'user_mobile', via: [:get, :post]
   match 'user/send_email_code' => 'user#send_email_code', as: 'user_send_email_code', via: [:post]
   match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]
+  match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get]
 
   mount API::Dispatch => '/'
 

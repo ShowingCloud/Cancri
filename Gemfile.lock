@@ -6,8 +6,17 @@ GIT
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
 
+GIT
+  remote: git://github.com/sinatra/sinatra.git
+  revision: 4c7d38eb1b2cc02ce51029f28e0c3c34ca12ccfd
+  specs:
+    sinatra (2.0.0.pre.alpha)
+      rack (= 2.0.0.alpha)
+      rack-protection (~> 1.5)
+      tilt (~> 2.0)
+
 GEM
-  remote: https://ruby.taobao.org/
+  remote: https://gems.ruby-china.org/
   specs:
     actioncable (5.0.0.beta2)
       actionpack (= 5.0.0.beta2)
@@ -131,8 +140,11 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
+    message_bus (1.0.16)
+      rack (>= 1.1.3)
+      redis
     method_source (0.8.2)
-    mime-types (2.99)
+    mime-types (2.99.1)
     mini_magick (4.4.0)
     mini_portile2 (2.0.0)
     minitest (5.8.4)
@@ -165,8 +177,12 @@ GEM
       json
     rack-accept (0.4.5)
       rack (>= 0.4)
+    rack-contrib (1.2.0)
+      rack (>= 0.9.1)
     rack-mount (0.8.3)
       rack (>= 1.0.0)
+    rack-protection (1.5.3)
+      rack
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (5.0.0.beta2)
@@ -214,6 +230,11 @@ GEM
     simple_form (3.2.1)
       actionpack (> 4, < 5.1)
       activemodel (> 4, < 5.1)
+    soulmate (1.1.0)
+      multi_json (>= 1.0)
+      redis (>= 3.0)
+      sinatra (>= 1.0)
+      vegas (>= 0.1.0)
     spring (1.6.3)
     sprockets (3.5.2)
       concurrent-ruby (~> 1.0)
@@ -233,6 +254,8 @@ GEM
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    vegas (0.1.11)
+      rack (>= 1.0.0)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -265,6 +288,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   kaminari!
+  message_bus (~> 1.0.16)
   mini_magick
   mysql2 (~> 0.4.2)
   oauth
@@ -273,6 +297,7 @@ DEPENDENCIES
   omniauth-oauth2
   puma
   quiet_assets
+  rack-contrib (~> 1.2.0)
   rails (>= 5.0.0.beta2, < 5.1)
   rails-admin-scaffold
   redis (~> 3.0)
@@ -280,6 +305,8 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   settingslogic
   simple_form
+  sinatra!
+  soulmate
   spring
   sqlite3
   turbolinks
