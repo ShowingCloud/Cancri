@@ -173,6 +173,7 @@
             channel = channel + '/' + window.roomid;
         }
         MessageBus.subscribe(channel, function (data) {
+            console.log(data);
             notify(data.content);
         });
     </script>
