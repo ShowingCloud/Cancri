@@ -83,10 +83,14 @@ class CompetitionsController < ApplicationController
       if user.present?
         is_player = TeamUserShip.where(team_id: params[:td], user_id: user.id).take
         if is_player
-          render json: [false, '该用户已是该队队员']
+          render json: [false, '该用户已是该队队员或已被邀请']
         else
           TeamUserShip.create!(team_id: params[:td], user_id: user.id, event_id: params[:ed], status: false)
-          render json: [true, '已向该验证用户发送邀请消息']
+          notify = Notification.create!(user_id: user.id, message_type: '队长邀请队员', content: current_user.user_profile.username.to_s+'邀请你参加'+params[:event_name]+'比赛项目,队伍为:'+params[:team_name], team_id: params[:td])
+
+          if notify.save
+            render json: [true, '已向该验证用户发送邀请消息']
+          end
         end
         ## 未验证
       else

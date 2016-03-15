@@ -7,17 +7,34 @@
       <h1 class="page-header">
         我的消息
       </h1>
+      <% if @notifications.present? %>
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <% @notifications.each do |no| %>
+                  <ul>
+                    <li>
+                      <a href="<%= "/user/notify?id=#{no.id}" %>">
+                        <div>
+                          <%= no.read ? '已读' : '未读' %>
+                          <%= no.content %>
+                        </div>
+                      </a>
+                    </li>
+                  </ul>
+                  <br>
+              <% end %>
+            </div>
 
-      <div class="panel panel-default">
+          </div>
+          <nav>
+            <%= paginate @notifications %>
+          </nav>
+      <% else %>
+          <div class="alert alert-info">
+            <p> 暂无消息</p>
+          </div>
+      <% end %>
 
-        <div class="panel-body">
-          <% @notifications.each do |no| %>
-              <%= no.content %>
-              <br>
-          <% end %>
-        </div>
-
-      </div>
     </div>
   </div>
 </div>

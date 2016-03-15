@@ -18,16 +18,16 @@
                     <h4 class="modal-title text-center" id="exampleModalLabel">邀请队员</h4>
                   </div>
                   <div class="modal-body">
-                    <form method="get" action="/competitions" class="navbar-form navbar-left" role="search">
-                      <div class="form-group">
-                        <label for="term" class="control-label">信息:</label>
-                        <input type="text" class="form-control invited-email" autocomplete="off" value="<%= params[:search].presence %>" name="term" id="invited-email search">
+                    <form>
+                      <div class="">
+                        <label for="invited-email" class="control-label">信息:</label>
+                        <input type="text" class="form-control" name="invited-email" data-id="1" id="invited-email">
                       </div>
                     </form>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary invite-player-submit" data-name="<%= @already_apply.team_id %>" data-id="<%= @already_apply.event_id %>" data-event="<%= @event.name %>">邀请</button>
+                    <button type="button" class="btn btn-primary invite-player-submit" data-name="<%= @already_apply.team_id %>" data-event="<%= @event.name %>" data-id="<%= @event.id %>">邀请</button>
                   </div>
                 </div>
               </div>

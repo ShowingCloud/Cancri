@@ -33,6 +33,15 @@
               <i class="glyphicon glyphicon-user"></i>
               <span class="caret"></span>
             </span>
+            <a href="<%= user_notification_path %>">
+              <span class="navbar-padding navbar-brand pull-right visible-xs btn" aria-controls="navbar">
+               <i class="glyphicon glyphicon-bell"></i>
+                <% if current_user.notifications.unread.count > 0 %>
+                <span class="badge badge-cart-count"><%= current_user.notifications.unread.count %></span>
+                <% end %>
+            </span>
+            </a>
+            <input type="hidden" class="current-user-room" value="<%= current_user.private_token %>">
         <% else %>
             <a class="navbar-brand pull-right visible-xs " href="<%= new_user_registration_path %>">注册</a>
             <a class="navbar-brand pull-right visible-xs " href="<%= new_user_session_path %>">登录</a>
@@ -43,7 +52,14 @@
       <!-- begin hidden xs -->
       <ul class="nav navbar-nav navbar-right hidden-xs">
         <% if user_signed_in? %>
-            <input type="hidden" class="current-user-room" value="<%= current_user.private_token %>">
+            <li>
+              <a href="<%= user_notification_path %>" class="navbar-brand badge-cart">
+                <i class="glyphicon glyphicon-bell"></i>
+                <% if current_user.notifications.unread.count > 0 %>
+                    <span class="badge badge-notify-count"><%= current_user.notifications.unread.count %></span>
+                <% end %>
+              </a>
+            </li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <i class="glyphicon glyphicon-user"></i>
@@ -53,7 +69,7 @@
                 <%= render 'layouts/user_menu' %>
               </ul>
             </li>
-
+            <input type="hidden" class="current-user-room" value="<%= current_user.private_token %>">
         <% else %>
 
             <li>
@@ -173,8 +189,9 @@
             channel = channel + '/' + window.roomid;
         }
         MessageBus.subscribe(channel, function (data) {
-            console.log(data);
+            $('.badge-notify-count').text(data.count);
             notify(data.content);
+            $('#content').val('');
         });
     </script>
 <% end %>

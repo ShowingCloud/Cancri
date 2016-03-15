@@ -85,7 +85,14 @@ class UserController < ApplicationController
   end
 
   def notification
-    @notifications = current_user.notifications
+    @notifications = current_user.notifications.page(params[:page]).per(params[:per])
+    if params[:id].present?
+      @notification = Notification.find(params[:id])
+    end
+  end
+
+  def notify_show
+    @notification = current_user.notifications.where(id: params[:id]).take
   end
 
   def passwd
