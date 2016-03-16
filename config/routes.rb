@@ -35,32 +35,6 @@ Rails.application.routes.draw do
       post :reset_password_post
     end
   end
-  mount Soulmate::Server, :at => '/sm'
-
-  # use_doorkeeper do
-  #   controllers applications: 'oauth/applications', authorized_applications: 'oauth/authorized_applications'
-  # end
-
-  # -----------------------------------------------------------
-  # User
-  # -----------------------------------------------------------
-
-  get 'user' => redirect('/user/preview')
-
-  match 'user/preview' => 'user#preview', as: 'user_preview', via: [:get, :post]
-  match 'user/email' => 'user#email', as: 'user_email', via: [:get, :post]
-  match 'user/profile' => 'user#profile', as: 'user_profile', via: [:get, :post]
-  match 'user/update_avatar' => 'user#update_avatar', as: 'user_update_avatar', via: [:post]
-  match 'user/remove_avatar' => 'user#remove_avatar', as: 'user_remove_avatar', via: [:post]
-  match 'user/passwd' => 'user#passwd', as: 'user_passwd', via: [:get, :post]
-  match 'user/mobile' => 'user#mobile', as: 'user_mobile', via: [:get, :post]
-  match 'user/send_email_code' => 'user#send_email_code', as: 'user_send_email_code', via: [:post]
-  match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]
-  match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get]
-  get '/user/notify' => 'user#notify_show'
-
-  mount API::Dispatch => '/'
-
 
   # -----------------------------------------------------------
   # Admin
@@ -89,6 +63,7 @@ Rails.application.routes.draw do
         get :get_events
       end
     end
+    resources :competition_schedules
     resources :events do
       collection do
         get :teams
@@ -103,8 +78,33 @@ Rails.application.routes.draw do
         post :delete_team
       end
     end
-
   end
+
+  mount Soulmate::Server, :at => '/sm'
+
+  # use_doorkeeper do
+  #   controllers applications: 'oauth/applications', authorized_applications: 'oauth/authorized_applications'
+  # end
+
+  # -----------------------------------------------------------
+  # User
+  # -----------------------------------------------------------
+
+  get 'user' => redirect('/user/preview')
+
+  match 'user/preview' => 'user#preview', as: 'user_preview', via: [:get, :post]
+  match 'user/email' => 'user#email', as: 'user_email', via: [:get, :post]
+  match 'user/profile' => 'user#profile', as: 'user_profile', via: [:get, :post]
+  match 'user/update_avatar' => 'user#update_avatar', as: 'user_update_avatar', via: [:post]
+  match 'user/remove_avatar' => 'user#remove_avatar', as: 'user_remove_avatar', via: [:post]
+  match 'user/passwd' => 'user#passwd', as: 'user_passwd', via: [:get, :post]
+  match 'user/mobile' => 'user#mobile', as: 'user_mobile', via: [:get, :post]
+  match 'user/send_email_code' => 'user#send_email_code', as: 'user_send_email_code', via: [:post]
+  match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]
+  match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get]
+  get '/user/notify' => 'user#notify_show'
+
+  mount API::Dispatch => '/'
 
 
   match '*path', via: :all, to: 'home#error_404'

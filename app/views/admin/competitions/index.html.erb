@@ -64,6 +64,9 @@
           <%= link_to edit_admin_competition_path(comp), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit icon-only"></i>
           <% end %>
+          <%= link_to edit_admin_competition_schedule_path(comp), title: '进程', class: 'btn btn-xs btn-info' do %>
+              <i class="icon-edit icon-filter"></i>
+          <% end %>
           <%= link_to [:admin, comp], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash icon-only"></i>
           <% end %>

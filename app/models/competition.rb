@@ -1,5 +1,6 @@
 class Competition < ApplicationRecord
   has_many :events
+  has_many :competition_schedules
 
 
   validates :name, presence: true, length: {maximum: 50}, uniqueness: true
