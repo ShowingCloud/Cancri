@@ -103,6 +103,7 @@ Rails.application.routes.draw do
   match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]
   match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get]
   get '/user/notify' => 'user#notify_show'
+  post '/user/agree_invite_info' => 'user#agree_invite_info'
 
   mount API::Dispatch => '/'
 

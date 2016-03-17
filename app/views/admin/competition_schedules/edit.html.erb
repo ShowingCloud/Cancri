@@ -1,0 +1,113 @@
+<h1 class="page-header">
+
+  <%= @comp_schedule.first.competition.name %> -- 赛事进程
+
+</h1>
+<% if @comp_schedule.first.start_time.present? %>
+    <div style="width: 500px">
+      <table class="table table-bordered table-hover table-striped">
+        <thead>
+        <tr>
+          <th>进程名称</th>
+          <th>时间段</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <% @comp_schedule.each do |cs| %>
+            <tr>
+              <td><%= cs.name %></td>
+              <td><%= "#{cs.start_time}" %><%= " － #{cs.end_time}" if cs.end_time.present? %></td>
+              <td>
+                <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+                  <a class="green" href="#">
+                    <i class="icon-pencil bigger-130"></i>
+                  </a>
+                  <a class="red" href="#">
+                    <i class="icon-trash bigger-130"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+    <%= simple_form_for([:admin, @one_cs]) do |f| %>
+        <%= f.error_notification %>
+
+        <div class="form-inputs">
+          <%= f.input :name %>
+          <%= f.hidden_field :competition_id, value: params[:id] %>
+          <%= f.input :start_time %>
+          <%= f.input :end_time %>
+          <!--<div class="form-group string required competition_schedule_start_time">-->
+          <!--<label class="string required control-label" for="competition_schedule_start_time">-->
+          <!--<abbr title="必填字段">*</abbr>-->
+          <!--开始时间-->
+          <!--</label>-->
+
+          <!--<div class="bootstrap-timepicker">-->
+          <!--<input id="competition_schedule_start_time" data-control="timeForm" class="string required form-control" type="text" name="competition_schedule[start_time]">-->
+          <!--</div>-->
+          <!--</div>-->
+          <!--<div class="form-group string optional competition_schedule_end_time">-->
+          <!--<label class="string optional control-label datetime" for="competition_schedule_end_time">结束时间</label>-->
+
+          <!--<div class="bootstrap-timepicker">-->
+          <!--<input id="competition_schedule_end_time" data-control="timeForm" class="string optional form-control" type="text" name="competition_schedule[end_time]">-->
+          <!--</div>-->
+          <!--</div>-->
+
+        </div>
+        <div class="form-actions">
+          <button data-control="formFormat" type="submit" class="btn btn-primary">
+            <i class="icon-ok"></i>
+            新建进程
+          </button>
+          <!---->
+        </div>
+    <% end %>
+<% else %>
+    <%= simple_form_for([:admin, @comp_schedule]) do |f| %>
+        <%= f.error_notification %>
+
+        <div class="form-inputs">
+          <%= f.input :name %>
+          <%= f.hidden_field :competition_id, value: params[:id] %>
+          <%= f.input :start_time %>
+          <%= f.input :end_time %>
+          <!--<div class="form-group string required competition_schedule_start_time">-->
+          <!--<label class="string required control-label" for="competition_schedule_start_time">-->
+          <!--<abbr title="必填字段">*</abbr>-->
+          <!--开始时间-->
+          <!--</label>-->
+
+          <!--<div class="bootstrap-timepicker">-->
+          <!--<input id="competition_schedule_start_time" data-control="timeForm" class="string required form-control" type="text" name="competition_schedule[start_time]">-->
+          <!--</div>-->
+          <!--</div>-->
+          <!--<div class="form-group string optional competition_schedule_end_time">-->
+          <!--<label class="string optional control-label datetime" for="competition_schedule_end_time">结束时间</label>-->
+
+          <!--<div class="bootstrap-timepicker">-->
+          <!--<input id="competition_schedule_end_time" data-control="timeForm" class="string optional form-control" type="text" name="competition_schedule[end_time]">-->
+          <!--</div>-->
+          <!--</div>-->
+
+        </div>
+        <div class="form-actions">
+          <button data-control="formFormat" type="submit" class="btn btn-primary">
+            <i class="icon-ok"></i>
+            提交
+          </button>
+          <a href="<%= admin_competition_schedules_path %>" class="btn btn-default">
+            <i class="icon-remove"></i>
+            取消
+          </a>
+        </div>
+    <% end %>
+<% end %>
+
+

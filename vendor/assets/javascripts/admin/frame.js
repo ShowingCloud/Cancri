@@ -42,7 +42,7 @@ $(function () {
     });
     $('input[data-control="timeForm"]').timepicker({
         minuteStep: 1,
-        showSeconds: true,
+        showSeconds: false,
         showMeridian: false
     });
     //时间组件合并

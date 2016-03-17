@@ -1,3 +1,55 @@
+// 点击接受邀请出现确认或更新报名信息
+$('.agree-leader-invite').on('click', function () {
+    $('.add-agree-invited-info').removeClass('hide');
+});
+// 提交接受邀请报名信息
+$('.agree-invited-info-submit').click(function () {
+    var username = trim($('#username').val());
+    var school = trim($('#school').val());
+    var grade = trim($('#grade').val());
+    var ed = $(this).attr('data-name');
+    var td = $(this).attr('data-id');
+    if ((username.length > 4) || (username.length < 2)) {
+        alert('请输入2-4位的真实姓名');
+        $("#username").focus();
+        return false;
+    }
+    //if (age) {
+    //    alert('请正确输入年龄');
+    //    $("#age").focus();
+    //    return false;
+    //}
+    if (school == '') {
+        alert('学校不能为空');
+        $("#school").focus();
+        return false;
+    }
+    if (grade == '') {
+        alert('年级不能为空');
+        $("#grade").focus();
+        return false;
+    }
+    //if (email_exp.test(invited_email)) {
+    $.ajax({
+        url: '/user/agree_invite_info',
+        type: 'post',
+        data: {
+            "username": username, "school": school, "grade": grade, "td": td, "ed": ed
+        },
+        success: function (data) {
+            alert(data[1]);
+
+        },
+        error: function (data) {
+            alert(data[1]);
+        }
+    });
+
+    //} else {
+    //    alert("邮箱格式不正确");
+    //}
+});
+
 $('.invite-player-submit').click(function () {
     var invited_email = $('#invited-email').val();
     var event_name = $(this).attr('data-event');

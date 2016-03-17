@@ -11,9 +11,61 @@
           <% unless @notification.read %>
               <% @notification.update_attributes(read: 1) %>
           <% end %>
-          <%= @notification.content %>
-          <% if @notification.team_id.present? %>
-              <button>接受邀请</button>
+
+          <% if @notification.team_id.present? && @event.status==0 %>
+              <%= @event.invited %>
+              <%= @notification.content %>
+              <span class="agree-leader-invite btn btn-xs btn-primary">接受邀请</span>
+
+
+              <div class="hide add-agree-invited-info">
+                <hr>
+                <div class="col-md-7">
+                  <div class="panel panel-info">
+                    <div class="panel-heading">
+                      请确认或添加报名信息
+                    </div>
+                    <div class="panel-body">
+
+                      <div class="form-horizontal">
+                        <div class="form-group">
+                          <label for="username" class="col-sm-2 control-label">姓名 :</label>
+
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" value="<%= current_user.user_profile.try(:username) %>" id="username" placeholder="请输入姓名">
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="school" class="col-sm-2 control-label">学校 :</label>
+
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" value="<%= current_user.user_profile.try(:school) %>" id="school" placeholder="请输入学校">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="grade" class="col-sm-2 control-label">年级 :</label>
+
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" value="<%= current_user.user_profile.try(:grade) %>" id="grade" placeholder="请输入年级">
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="col-sm-offset-2 col-sm-10">
+                            <button class="btn btn-info btn-block agree-invited-info-submit" data-id="<%= @notification.team_id %>" data-name="<%= @event.id %>">提交</button>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+          <% else %>
+              <h3>该比赛项目已停止报名,无法接受邀请</h3>
+              <br>
+              <%= @notification.content %>
           <% end %>
       <% else %>
           <div class="alert alert-info">
