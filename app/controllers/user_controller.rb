@@ -93,6 +93,54 @@ class UserController < ApplicationController
 
   def notify_show
     @notification = current_user.notifications.where(id: params[:id]).take
+    @event= Event.joins(:teams, :team_user_ships).where("teams.id=?", 1).where("events.id=teams.event_id").where("teams.id=team_user_ships.team_id").where("team_user_ships.user_id=?", current_user.id).select(:id, :status, "team_user_ships.status as invited").first
+  end
+
+  def agree_invite_info
+    t_u = TeamUserShip.where(event_id: params[:ed], team_id: params[:td], user_id: current_user.id).take
+    if t_u.status
+      status = true
+      message = '您已经是该队队员'
+    else
+      if params[:username].present? and params[:school].present? and params[:grade].present?
+        user = UserProfile.find_by(user_id: current_user.id)
+        if user.present?
+          user.username = params[:username]
+          user.age = params[:age]
+          user.school = params[:school]
+          user.grade = params[:grade]
+          user.bj = params[:bj]
+          if user.save
+            status = true
+            message = '个人信息确认成功'
+          else
+            status = false
+            message = '个人信息更新失败'
+          end
+        else
+          up = UserProfile.create!(user_id: current_user.id, username: params[:username], age: params[:age], school: params[:school], grade: params[:grade], bj: params[:bj])
+          if up.save
+            status = true
+            message = '个人信息添加成功'
+          else
+            status = false
+            message = '个人信息添加失败'
+          end
+        end
+      else
+        status = false
+        message = '个人信息输入不完整'
+      end
+      if status
+        t_u.status= true
+        if t_u.save
+          message='接受成功'
+        else
+          message=message+'//但接受失败'
+        end
+      end
+    end
+    render json: [status, message]
   end
 
   def passwd
