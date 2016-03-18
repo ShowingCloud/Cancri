@@ -26,6 +26,7 @@ module API
 
       # user helpers
       def current_user
+        @current_user = User.find_by(private_token: params[:private_token]) if params[:private_token]
         # @current_user ||= User.find_by_id(doorkeeper_token.resource_owner_id) if doorkeeper_token
       end
 

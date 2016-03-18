@@ -63,7 +63,11 @@ Rails.application.routes.draw do
         get :get_events
       end
     end
-    resources :competition_schedules
+    resources :competition_schedules do
+      collection do
+        post :update_cs
+      end
+    end
     resources :events do
       collection do
         get :teams
