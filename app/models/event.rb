@@ -39,7 +39,7 @@ class Event < ApplicationRecord
     else
       errors[:end_time] << '比赛报名起始时间和比赛起始时间为必填项'
     end
-    if parent_id == id
+    if self.parent_id == self.id
       errors[:parent_id] << '所属项目不能是自己'
     end
   end
