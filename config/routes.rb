@@ -82,6 +82,7 @@ Rails.application.routes.draw do
         post :delete_team
       end
     end
+    resources :news
   end
 
   mount Soulmate::Server, :at => '/sm'

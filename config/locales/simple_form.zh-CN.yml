@@ -68,13 +68,7 @@ zh-CN:
         likes_count: '点赞数'
         expert_score: '专家评分'
         last_score: '最终分数'
-
-
-
-
-
-
-
+        news_type: '新闻类型'
 
     "yes": '是'
     "no": '否'

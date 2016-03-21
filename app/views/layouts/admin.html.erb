@@ -156,6 +156,12 @@
             <span class="menu-text"> 角色 </span>
           </a>
         </li>
+        <li class="<%= params[:controller] == 'admin/news' ? 'active' : '' %>">
+          <a href="<%= admin_news_index_path %>">
+            <i class="icon-comment-alt"></i>
+            <span class="menu-text"> 新闻 </span>
+          </a>
+        </li>
         <li class="<%= params[:controller] == 'admin/competitions' ? 'active' : '' %>">
           <a href="<%= admin_competitions_path %>">
             <i class="icon-beaker"></i>

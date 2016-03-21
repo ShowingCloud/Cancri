@@ -1,4 +1,5 @@
 class Admin < ApplicationRecord
+  has_many :news
   has_secure_password
   include AccountConcern
 

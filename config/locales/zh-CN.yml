@@ -229,6 +229,17 @@ zh-CN:
     group2: '中学组'
     group3: '初中组'
     group4: '高中组'
+  news_type:
+    cp_apply: '赛事 | 报名'
+    cp_score: '赛事 | 成绩'
+    vol_recruit: '志愿者 | 招募'
+    act_apply: '活动 | 报名'
+    act_report: '活动 | 报道'
+    news_type1: '赛事 | 报名'
+    news_type2: '赛事 | 成绩'
+    news_type3: '志愿者 | 招募'
+    news_type4: '活动 | 报名'
+    news_type5: '活动 | 报道'
   activerecord:
     models:
       user: '用户'
