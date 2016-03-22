@@ -156,6 +156,12 @@
             <span class="menu-text"> 角色 </span>
           </a>
         </li>
+        <li class="<%= params[:controller] == 'admin/news_types' ? 'active' : '' %>">
+          <a href="<%= admin_news_types_path %>">
+            <i class="icon-list"></i>
+            <span class="menu-text"> 新闻类型 </span>
+          </a>
+        </li>
         <li class="<%= params[:controller] == 'admin/news' ? 'active' : '' %>">
           <a href="<%= admin_news_index_path %>">
             <i class="icon-comment-alt"></i>

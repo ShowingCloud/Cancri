@@ -32,6 +32,20 @@ module API
             render @unread_notify
           end
 
+          params do
+            requires :identifier, type: String, desc: '队伍编号'
+          end
+          get '/event_info' do
+            users = TeamUserShip.joins(:team).where("teams.identifier=?", params[:identifier]).where("team_user_ships.team_id=teams.id").pluck(:user_id)
+            @user_info = UserProfile.where(user_id: users).map { |x| {
+                username: x.try(:username),
+                school: x.try(:school),
+                grade: x.try(:grade).to_i
+            } }
+            render user: @user_info
+          end
+
+
         end
 
       end

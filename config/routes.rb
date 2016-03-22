@@ -83,7 +83,13 @@ Rails.application.routes.draw do
       end
     end
     resources :news
+    resources :news_types
   end
+  namespace :kindeditor do
+    post '/upload' => 'assets#create'
+    get '/filemanager' => 'assets#list'
+  end
+
 
   mount Soulmate::Server, :at => '/sm'
 

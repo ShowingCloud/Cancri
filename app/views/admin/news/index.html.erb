@@ -39,7 +39,6 @@
     <th>ID</th>
     <th><%= t('simple_form.labels.defaults.name') %></th>
     <th>类型</th>
-    <th>内容</th>
     <th>发布人</th>
     <th>发布时间</th>
     <th>更新时间</th>
@@ -48,21 +47,15 @@
   </thead>
 
   <tbody>
-  <% @news.each do |news| %>
+  <% @news_array.each do |news| %>
       <tr>
-        <td><%= news.id %></td>
-        <td><%= news.name %></td>
-        <td><%= t('news_type.news_type'+news.news_type.to_s) %></td>
+        <td><%= news[:id] %></td>
+        <td><%= news[:name] %></td>
         <td>
-          <% if news.content.length > 20 %>
-              <%= "#{(news.content).at(0..20)}......" %>
-          <% else %>
-              <%= news.content %>
-          <% end %>
-        </td>
-        <td><%= news.admin.try(:name) %></td>
-        <td><%= news.created_at.try(:strftime, '%Y-%m-%d %H:%M:%S') %></td>
-        <td><%= news.updated_at.try(:strftime, '%Y-%m-%d %H:%M:%S') %></td>
+          <%= news[:type] %>
+        <td><%= news[:publisher] %></td>
+        <td><%= news[:created_at].try(:strftime, '%Y-%m-%d %H:%M:%S') %></td>
+        <td><%= news[:updated_at].try(:strftime, '%Y-%m-%d %H:%M:%S') %></td>
 
         <td><%= link_to [:admin, news], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>

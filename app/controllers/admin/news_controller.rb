@@ -1,13 +1,26 @@
 class Admin::NewsController < AdminController
   before_action :set_news, only: [:show, :edit, :update, :destroy]
 
+  before_action do
+    authenticate_permissions(['admin'])
+  end
+
   # GET /admin/news
   # GET /admin/news.json
   def index
     if params[:field].present? && params[:keyword].present?
       @news = News.all.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"]).page(params[:page]).per(params[:per])
     else
-      @news = News.all.page(params[:page]).per(params[:per])
+      @news = News.left_joins(:admin).where("admins.id=news.admin_id").select(:id, :name, :content, :news_type, :created_at, :updated_at, "admins.name as admin_name").all.page(params[:page]).per(params[:per])
+      @news_array = @news.map { |n| {
+          id: n.id,
+          name: n.name,
+          content: n.content,
+          publisher: n.admin_name,
+          type: n.news_type.split(',').map { |x| NewsType.find(x.to_i).name }.join(' , '),
+          created_at: n.created_at,
+          updated_at: n.updated_at
+      } }
     end
   end
 
@@ -73,6 +86,12 @@ class Admin::NewsController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def news_params
-    params.require(:news).permit!
+    params.require(:news).permit(:name, {:news_type => []}, :content, :cover, :admin_id).tap do |list|
+      if params[:news][:news_type].present?
+        list[:news_type] = params[:news][:news_type].join(',')
+      else
+        list[:news_type] = nil
+      end
+    end
   end
 end

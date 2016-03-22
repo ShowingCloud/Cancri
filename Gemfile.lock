@@ -7,6 +7,14 @@ GIT
       activesupport (>= 3.0.0)
 
 GIT
+  remote: git://github.com/javyliu/rails_kindeditor.git
+  revision: 611d26652a734e290bf8fe71be4ebd7d61246a2d
+  specs:
+    rails_kindeditor (0.4.6)
+      carrierwave
+      mini_magick
+
+GIT
   remote: git://github.com/sinatra/sinatra.git
   revision: 4c7d38eb1b2cc02ce51029f28e0c3c34ca12ccfd
   specs:
@@ -300,6 +308,7 @@ DEPENDENCIES
   rack-contrib (~> 1.2.0)
   rails (>= 5.0.0.beta2, < 5.1)
   rails-admin-scaffold
+  rails_kindeditor!
   redis (~> 3.0)
   rucaptcha (~> 0.3.2)
   sass-rails (~> 5.0)
