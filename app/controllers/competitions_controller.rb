@@ -15,8 +15,10 @@ class CompetitionsController < ApplicationController
     @event = Event.find(params[:eid])
     @districts = District.all
     @teams = Team.includes(:team_user_ships).where(event_id: params[:eid])
-    @already_apply = TeamUserShip.where(event_id: params[:eid], user_id: current_user.id).select(:team_id, :event_id).take
-
+    @already_apply = TeamUserShip.includes(:team).where(event_id: params[:eid], user_id: current_user.id).take
+    if @already_apply.present?
+      @team_players = TeamUserShip.where(team_id: @already_apply.team_id).count
+    end
   end
 
   def update_apply_info
@@ -108,6 +110,60 @@ class CompetitionsController < ApplicationController
               render json: [false, '邀请失败']
               invite_action.delete
             end
+          end
+        end
+      end
+    end
+  end
+
+  def apply_join_team
+    if params[:leader].present? && params[:td].present? && params[:ed].present? && current_user.validate_status=='1'
+      if TeamUserShip.where(team_id: params[:td], event_id: params[:ed], user_id: current_user.id).exists?
+        result = [false, '您已经申请过或已是该队队员']
+      else
+        t_u = TeamUserShip.create!(event_id: params[:ed], team_id: params[:td], user_id: current_user.id, status: false)
+        if t_u.save
+          info = Team.joins(:event).where(id: params[:td]).where("teams.event_id=events.id").select("teams.name as team_name", "events.name as event_name").first
+          notify = Notification.create!(user_id: params[:leader], content: current_user.user_profile.username+'申请加入您在比赛项目－'+ info.event_name.to_s + '中创建的队伍－'+info.team_name, t_u_id: t_u.id, message_type: '申请加入队伍')
+          if notify.save
+            result = [true, '申请成功，已向队长发出消息，等待队长同意']
+          else
+            t_u.delete
+            result = [false, '申请失败']
+          end
+        else
+          result = [false, '申请失败']
+        end
+      end
+    else
+      result = [false, '个人信息或参数不完整']
+    end
+    render json: result
+  end
+
+  def leader_agree_apply
+    if params[:tud].present?
+      t_u = TeamUserShip.includes(:team).find(params[:tud])
+      if t_u.team.user_id != current_user.id
+        flash[:error] = '非法请求'
+      else
+        info = Team.joins(:event).where(id: t_u.team_id).where("teams.event_id=events.id").select("teams.name as team_name", "events.name as event_name").first
+        if params[:reject].present? && params[:reject]=='1'
+          Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长拒绝了你的申请，您未能加入该队', message_type: '拒绝申请')
+          if t_u.delete
+            flash[:success] = '拒绝成功'
+            redirect_to "/user/notify?id=#{params[:nd]}"
+          else
+            flash[:error] = '拒绝失败'
+          end
+        else
+          t_u.status = true
+          if t_u.save
+            flash[:success] = '接受成功'
+            Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长同意了你的申请，您已成功加入了该队', message_type: '同意申请')
+            redirect_to "/user/notify?id=#{params[:nd]}"
+          else
+            flash[:error] = '接受失败'
           end
         end
       end

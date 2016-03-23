@@ -53,10 +53,10 @@ class SMSService
     if MobileCode.where('created_at > ?', Time.now - 300).count > 10
       return [FALSE, '发送密度过大，请稍等重试']
     end
-    user = User.find_by(mobile: @mobile)
-    if user.present? and type == TYPE_CODE_ADD_MOBILE
+    user = User.where(mobile: @mobile).exists?
+    if user and type == TYPE_CODE_ADD_MOBILE
       return [FALSE, '该手机已经被使用']
-    elsif user.blank? and type == TYPE_CODE_RESET_PASSWORD
+    elsif !user and type == TYPE_CODE_RESET_PASSWORD
       return [FALSE, '该手机还没有被认证']
     end
     code = get_mobile_code # 获取随机码
@@ -72,10 +72,10 @@ class SMSService
       return [FALSE, "验证码发送间隔为#{WAIT_MINUTE}分钟"]
     end
     # 根据类型发送不同消息
-    status = true
-    # status = FALSE
-    # status = send_code_for_add_mobile(code) if type == TYPE_CODE_ADD_MOBILE
-    # status = send_code_for_reset_password(code) if type == TYPE_CODE_RESET_PASSWORD
+    # status = true
+    status = FALSE
+    status = send_code_for_add_mobile(code) if type == TYPE_CODE_ADD_MOBILE
+    status = send_code_for_reset_password(code) if type == TYPE_CODE_RESET_PASSWORD
     if status
       [TRUE, '验证码发送成功']
     else
@@ -123,7 +123,7 @@ class SMSService
   private
 
   def get_mobile_code
-    rand(1000..9999)
+    rand(100000..999999)
   end
 
   def http_send_message(message)

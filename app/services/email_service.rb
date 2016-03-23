@@ -12,10 +12,14 @@ class EmailService
     unless Regular.is_email?(@email)
       return [FALSE, '邮箱格式错误']
     end
+    user = User.where(email: @email).exists?
+    if user and type == TYPE_CODE_ADD_EMAIL_CODE
+      return [FALSE, '该邮箱已经被使用了']
+    end
     if EmailCode.where('created_at > ?', Time.now - 300).count > 10
       return [FALSE, '发送密度过大，请稍等重试']
     end
-    code = rand(1000..9999) # 获取随机码
+    code = rand(100000..999999) # 获取随机码
     row = EmailCode.find_by(email: @email, message_type: type) # 检测是否已经存在同类型记录
     if row.nil?
       EmailCode.create!(email: @email, code: code, message_type: type, ip: ip) # 如果不存在则直接生成新记录

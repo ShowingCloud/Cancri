@@ -4,7 +4,7 @@ class Regular
   end
 
   def self::is_mobile_code?(code)
-    /^\d{4}$/.match(code) != nil
+    /^\d{6}$/.match(code) != nil
   end
 
   def self::is_email?(email)

@@ -9,6 +9,8 @@ Rails.application.routes.draw do
       post :update_apply_info
       post :leader_create_team
       post :leader_invite_player
+      post :apply_join_team
+      post :leader_agree_apply
     end
   end
   resource :chats

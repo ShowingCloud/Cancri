@@ -12,7 +12,7 @@
               <% @notification.update_attributes(read: 1) %>
           <% end %>
 
-          <% if @notification.team_id.present? && @event.status==0 %>
+          <% if @notification.team_id.present? && @notification.message_type=='队长邀请队员' && @event.status==0 %>
               <%= @event.invited %>
               <%= @notification.content %>
               <span class="agree-leader-invite btn btn-xs btn-primary">接受邀请</span>
@@ -62,6 +62,21 @@
                   </div>
                 </div>
               </div>
+          <% elsif @notification.message_type=='申请加入队伍' && @notification.t_u_id.present? && @event.status==0 %>
+              <%= @notification.content %>
+              <% if @has_agree==2 %>
+                  <label class="label label-danger">已拒绝申请</label>
+              <% elsif @has_agree %>
+                  <label class="label label-info">已同意申请</label>
+              <% else %>
+                  <%= link_to "#{leader_agree_apply_competitions_path}?tud=#{@notification.t_u_id.to_s}&nd=#{params[:id]}", data: {confirm: '确认同意加入吗?', method: :post}, title: '同意加入', class: 'btn btn-xs btn-primary' do %>
+                      同意加入
+                  <% end %>
+                  <%= link_to "#{leader_agree_apply_competitions_path}?tud=#{@notification.t_u_id.to_s}&nd=#{params[:id]}&reject=1", data: {confirm: '确认拒绝加入吗?', method: :post}, title: '同意加入', class: 'btn btn-xs btn-danger' do %>
+                      拒绝加入
+                  <% end %>
+              <% end %>
+
           <% else %>
               <h3>该比赛项目已停止报名,无法接受邀请</h3>
               <br>

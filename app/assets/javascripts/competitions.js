@@ -6,6 +6,32 @@ var chinese = /^[\u4E00-\u9FA5]+$/; // 汉字
 var z_s = /^[a-zA-Z0-9]+$/; // 字母数字
 var pd_exp = /^[\x21-\x7e]+$/; //数字、字母、特殊字符
 var email_exp = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})+$/;
+
+
+$('.user-apply-join-team').on('click', function (event) {
+    event.preventDefault();
+    var ed = $(this).attr('data-name');
+    var td = $(this).attr('data-id');
+    var ud = $(this).attr('data-leader');
+    if (ed && td && ud) {
+        $.ajax({
+            url: '/competitions/apply_join_team',
+            type: 'post',
+            data: {"ed": ed, "td": td, "leader": ud},
+            success: function (data) {
+                if (data[0]) {
+                    alert(data[1]);
+                    window.location.reload();
+                } else {
+                    alert(data[1]);
+                }
+            }
+        });
+    }
+
+});
+
+
 $('.update-apply-info-submit').on('click', function (event) {
     event.preventDefault();
     var username = trim($('#username').val());

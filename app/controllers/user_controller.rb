@@ -85,7 +85,7 @@ class UserController < ApplicationController
   end
 
   def notification
-    @notifications = current_user.notifications.page(params[:page]).per(params[:per])
+    @notifications = current_user.notifications.page(params[:page]).per(params[:per]).order('created_at desc')
     if params[:id].present?
       @notification = Notification.find(params[:id])
     end
@@ -93,6 +93,14 @@ class UserController < ApplicationController
 
   def notify_show
     @notification = current_user.notifications.where(id: params[:id]).take
+
+    if @notification.present? && @notification.t_u_id.present? && !TeamUserShip.exists?(@notification.t_u_id.to_i)
+      @has_agree = 2
+    elsif @notification.present? && @notification.t_u_id.present? && TeamUserShip.find(@notification.t_u_id.to_i).status
+      @has_agree = true
+    else
+      @has_agree = false
+    end
     @event= Event.joins(:teams, :team_user_ships).where("teams.id=?", 1).where("events.id=teams.event_id").where("teams.id=team_user_ships.team_id").where("team_user_ships.user_id=?", current_user.id).select(:id, :status, "team_user_ships.status as invited").first
   end
 

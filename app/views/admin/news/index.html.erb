@@ -57,13 +57,13 @@
         <td><%= news[:created_at].try(:strftime, '%Y-%m-%d %H:%M:%S') %></td>
         <td><%= news[:updated_at].try(:strftime, '%Y-%m-%d %H:%M:%S') %></td>
 
-        <td><%= link_to [:admin, news], title: '查看', class: 'btn btn-xs btn-warn' do %>
+        <td><%= link_to "/admin/news/#{news[:id]}", title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>
           <% end %>
           <%= link_to edit_admin_news_path(news), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>
           <% end %>
-          <%= link_to [:admin, news], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+          <%= link_to "/admin/news/#{news[:id]}", method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash bigger-120"></i>
           <% end %></td>
       </tr>

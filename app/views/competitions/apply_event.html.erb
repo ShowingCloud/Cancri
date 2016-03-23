@@ -4,7 +4,10 @@
   <% else %>
 
       <div>
-        <% if @already_apply.present? %>
+        <% if @already_apply.present? && !@already_apply.status %>
+            <p>您已经申请加入<%= @already_apply.team.name %>,请等待队长同意</p>
+        <% end %>
+        <% if @already_apply.present? && @already_apply.status && @already_apply.team.user_id == current_user.id && @event.team_max_num > @team_players %>
             你已经报名该比赛,你可以邀请其他伙伴加入该队伍
             <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="shuru">去邀请</button>
             <br><br>
@@ -34,7 +37,6 @@
             </div>
         <% end %>
 
-        <div class=""></div>
         <ul class="nav nav-tabs" role="tablist">
           <li role="presentation" class="active">
             <a href="#home" aria-controls="home" role="tab" data-toggle="tab">已有队伍</a></li>
@@ -51,8 +53,63 @@
             <% if @teams.present? %>
                 <div class="panel-body">
                   <% @teams.each do |team| %>
-                      <div class="<%= 'leader-team' if team.id == @already_apply.team_id %>"><%= team.name %></div>
+                      <% if @already_apply.present? && team.id == @already_apply.team_id %>
+                          <div class="leader-team"><%= team.name %></div>
+                      <% else %>
+                          <div><%= team.name %></div>
+                      <% end %>
+                      <% unless @already_apply.present? %>
+                          <span class="btn btn-xs btn-primary user-apply-join-team" data-id="<%= team.id %>" data-name="<%= team.event_id %>" data-leader="<%= team.user_id %>">申请加入</span>
+                      <% end %>
+                      <!--<button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#update-info-show" data-whatever="shuru">申请加入</button>-->
                   <% end %>
+                  <br><br>
+
+                  <div class="modal fade" id="update-info-show" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title text-center" id="exampleModalLabel">请确认或添加报名信息</h4>
+                        </div>
+                        <div class="modal-body">
+                          <form>
+                            <div class="form-horizontal">
+                              <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label">姓名 :</label>
+
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" value="<%= current_user.user_profile.try(:username) %>" id="username" placeholder="请输入姓名">
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="school" class="col-sm-2 control-label">学校 :</label>
+
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" value="<%= current_user.user_profile.try(:school) %>" id="school" placeholder="请输入学校">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label for="grade" class="col-sm-2 control-label">年级 :</label>
+
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" value="<%= current_user.user_profile.try(:grade) %>" id="grade" placeholder="请输入年级">
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                  <button class="btn btn-info btn-block add-team-info-submit">提交</button>
+                                </div>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
             <% else %>

@@ -18,5 +18,4 @@
 //= require message-bus
 //= require code
 //= require notify
-//= require kindeditor
 //= //require turbolinks
