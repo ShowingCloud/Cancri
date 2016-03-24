@@ -60,4 +60,69 @@
       <%= @event.end_time.try(:strftime, '%Y-%m-%d %H:%M') %>
     </li>
   </ul>
+  <input type="hidden" value="<%= @event.id %>" name="event-identifier">
+</div>
+
+<style>
+    .add-relation-car {
+        list-style-type: none;
+        display: none;
+        padding: 10px;
+        margin-top: 10px
+    }
+
+    #score-attribute > label {
+        float: left;
+        margin: 3px 5px;
+        width: 160px;
+        height: 30px;
+        font-size: 15px;
+    }
+</style>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    成绩属性
+    <button class="open-add-score-attribute btn btn-xs btn-primary pull-right">添加</button>
+  </div>
+
+
+  <div class="add-relation-car panel-body">
+    <div class="form-group">
+      <div class="selected-info">
+      </div>
+      <div class="clearfix"></div>
+      <div id="score-attribute">
+        <label style="margin-left:5px;font-size: 25px" id="select-all-score-attribute"><input type="checkbox" name="select_all" class="select-all-score-attribute" autocomplete="off">
+          全选</label>
+        <button class="select-series btn-xm btn-success hidden">请选择子属性</button>
+        <button class="add-all-score-attribute btn-xm btn-primary hidden">添加所选属性</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div>
+  <% if @score_attributes.present? %>
+      <table class="table table-bordered table-hover table-striped">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>名称</th>
+          <th>删除</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @score_attributes.each do |sa| %>
+            <tr class="<%= "hide-tr#{sa.id}" %>">
+              <td><%= sa.id %></td>
+              <td><%= sa.score_attribute.name %></td>
+              <td>
+                <span class="btn btn-xs btn-danger delete-event-sa" data-id="<%= sa.id %>" title="删除"><i class="glyphicon glyphicon-trash"></i></span>
+              </td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+  <% end %>
 </div>

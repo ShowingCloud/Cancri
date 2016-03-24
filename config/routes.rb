@@ -82,10 +82,13 @@ Rails.application.routes.draw do
         post :add_team_player
         post :delete_team_player
         post :delete_team
+        post :add_score_attributes
+        post :delete_score_attribute
       end
     end
     resources :news
     resources :news_types
+    resources :score_attributes
   end
   namespace :kindeditor do
     post '/upload' => 'assets#create'

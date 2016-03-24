@@ -244,6 +244,7 @@ zh-CN:
       news: '新闻'
       news_type: '新闻类型'
       district: '区县'
+      score_attribute: '成绩属性'
   views:
     pagination:
         first: "首页"

@@ -1,6 +1,10 @@
 class Admin::EventsController < AdminController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
 
+  before_action do
+    authenticate_permissions(['editor', 'admin'])
+  end
+
   # GET /admin/events
   # GET /admin/events.json
   def index
@@ -14,7 +18,8 @@ class Admin::EventsController < AdminController
   # GET /admin/events/1
   # GET /admin/events/1.json
   def show
-    @users = User.where(validate_status: 1)
+    # @users = User.where(validate_status: 1)
+    @score_attributes = EventSaShip.where(event_id: params[:id])
   end
 
 
@@ -25,6 +30,37 @@ class Admin::EventsController < AdminController
 
   # GET /admin/events/1/edit
   def edit
+  end
+
+  def add_score_attributes
+    if request.method == 'POST'
+      ed = params[:ed]
+      sa_ids = params[:sa_ids]
+      if sa_ids.present?
+        respond_to do |format|
+          sa_ids.each do |sa_id|
+            esa = EventSaShip.where(event_id: ed, score_attribute_id: sa_id).take
+            unless esa.present?
+              EventSaShip.create!(event_id: ed, score_attribute_id: sa_id)
+            end
+          end
+          [status: TRUE]
+          flash[:notice]= '所选属性已成功添加'
+          format.html {
+            render json: status
+          }
+        end
+      end
+    end
+  end
+
+  def delete_score_attribute
+    if params[:sa_id].present? && EventSaShip.delete(params[:sa_id])
+      result = [true, '删除成功']
+    else
+      result = [false, '删除失败']
+    end
+    render json: result
   end
 
   # POST /admin/events

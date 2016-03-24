@@ -2,7 +2,8 @@ class Event < ApplicationRecord
   belongs_to :competition
   has_many :teams
   has_many :team_user_ships #, through: :team
-  has_many :event_schedules
+  has_many :event_sa_ships
+  has_many :score_attributes, through: :event_sa_ships
 
   mount_uploader :cover, EventUploader
 
