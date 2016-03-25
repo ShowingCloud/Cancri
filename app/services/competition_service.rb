@@ -16,4 +16,11 @@ class CompetitionService
         } }
     } }
   end
+
+  def self.get_event_score_attrs(event_id)
+    EventSaShip.includes(:score_attribute, :score_attribute_parent).where(event_id: event_id, is_parent: 0).order('parent_id asc').map { |s| {
+        id: s.id,
+        name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name
+    } }
+  end
 end

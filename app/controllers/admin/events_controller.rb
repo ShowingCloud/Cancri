@@ -19,7 +19,10 @@ class Admin::EventsController < AdminController
   # GET /admin/events/1.json
   def show
     # @users = User.where(validate_status: 1)
-    @score_attributes = EventSaShip.where(event_id: params[:id])
+    @score_attributes = EventSaShip.includes(:score_attribute).where(event_id: params[:id], level: 1).map { |s| {
+        id: s.id,
+        name: s.is_parent ? s.score_attribute.name+": "+ EventSaShip.where(parent_id: s.score_attribute_id, level: 2).map { |sa| sa.score_attribute.name }.join(' , ') : s.score_attribute.name
+    } }
   end
 
 
@@ -36,29 +39,47 @@ class Admin::EventsController < AdminController
     if request.method == 'POST'
       ed = params[:ed]
       sa_ids = params[:sa_ids]
-      if sa_ids.present?
-        respond_to do |format|
-          sa_ids.each do |sa_id|
-            esa = EventSaShip.where(event_id: ed, score_attribute_id: sa_id).take
-            unless esa.present?
-              EventSaShip.create!(event_id: ed, score_attribute_id: sa_id)
-            end
+      parent_id = params[:parent_id]
+      if sa_ids.present? && parent_id.present?
+        parent_sa = EventSaShip.where(event_id: ed, score_attribute_id: parent_id, level: 1).take
+        if parent_sa.present?
+          unless parent_sa.is_parent
+            parent_sa.update_attributes!(is_parent: 1)
           end
-          [status: TRUE]
-          flash[:notice]= '所选属性已成功添加'
-          format.html {
-            render json: status
-          }
+        else
+          EventSaShip.create!(event_id: ed, score_attribute_id: parent_id, is_parent: 1)
+        end
+        sa_ids.each do |sa_id|
+          esa = EventSaShip.where(event_id: ed, score_attribute_id: sa_id, parent_id: parent_id).take
+          unless esa.present?
+            EventSaShip.create!(event_id: ed, score_attribute_id: sa_id, parent_id: parent_id, level: 2)
+          end
+        end
+      elsif sa_ids.present?
+        sa_ids.each do |sa_id|
+          esa = EventSaShip.where(event_id: ed, score_attribute_id: sa_id, level: 1, is_parent: 0).take
+          unless esa.present?
+            EventSaShip.create!(event_id: ed, score_attribute_id: sa_id)
+          end
         end
       end
+      flash[:notice]= '所选属性已成功添加'
+      render json: true
     end
   end
 
   def delete_score_attribute
-    if params[:sa_id].present? && EventSaShip.delete(params[:sa_id])
-      result = [true, '删除成功']
+    if params[:sa_id].present?
+      sa = EventSaShip.find(params[:sa_id])
+      if sa.is_parent && EventSaShip.where(['id = :sa_id OR parent_id = :value', {:sa_id => params[:sa_id], :value => sa.score_attribute_id}]).delete_all
+        result = [true, '删除成功']
+      elsif EventSaShip.delete(params[:sa_id])
+        result = [true, '删除成功']
+      else
+        result = [false, '删除失败']
+      end
     else
-      result = [false, '删除失败']
+      result = [false, '不规范请求']
     end
     render json: result
   end
@@ -114,4 +135,5 @@ class Admin::EventsController < AdminController
   def event_params
     params.require(:event).permit!
   end
+
 end
