@@ -10,10 +10,17 @@ class UserController < ApplicationController
   def profile
     # 获取Profile
     @user_profile = current_user.user_profile ||= current_user.build_user_profile
+    @user_roles = current_user.user_roles.pluck(:role_id)
     if request.method == 'POST'
       if params[:user_profile].present?
         # 过滤Profile参数
-        profile_params = params.require(:user_profile).permit(:username, :school, :bj, :address)
+        profile_params = params.require(:user_profile).permit(:username, :school, :bj, :address, :grade, {:roles => []}).tap do |list|
+          if params[:user_profile][:roles].present?
+            list[:roles] = params[:user_profile][:roles].join(',')
+          else
+            list[:roles] = nil
+          end
+        end
         @user_profile.username = profile_params[:username]
         @user_profile.autograph = profile_params[:autograph]
         @user_profile.school = profile_params[:school]
@@ -23,6 +30,7 @@ class UserController < ApplicationController
         @user_profile.gender = profile_params[:gender]
         @user_profile.birthday = profile_params[:birthday]
         @user_profile.address = profile_params[:address]
+        @user_profile.roles = profile_params[:roles]
         if @user_profile.save
           flash[:success] = '详细信息更新成功'
         else

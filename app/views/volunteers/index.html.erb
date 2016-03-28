@@ -1,0 +1,12 @@
+<div class="container">
+  <h1>志愿者页面</h1>
+
+  <%= @competitions.first.name %>
+  <% if current_user.user_profile.roles.split(',').include?('志愿者') %>
+      <span class="btn btn-warning">申请成为该比赛裁判身份</span>
+  <% else %>
+      <span class="btn btn-warning">去成为比赛志愿者</span>
+  <% end %>
+
+
+</div>

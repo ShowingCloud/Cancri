@@ -155,7 +155,8 @@
         <tr>
           <th>ID</th>
           <th>名称</th>
-          <th>删除</th>
+          <th>备注</th>
+          <th>操作</th>
         </tr>
         </thead>
         <tbody>
@@ -163,7 +164,9 @@
             <tr class="<%= "hide-tr#{sa[:id]}" %>">
               <td><%= sa[:id] %></td>
               <td><%= sa[:name] %></td>
+              <td id="<%= "sa-desc#{sa[:id]}" %>"><%= sa[:desc] %></td>
               <td>
+                <span class="btn btn-xs btn-warning edit-event-sa-desc" data-id="<%= sa[:id] %>" data-text="<%= sa[:name] %>" title="添加描述"><i class="glyphicon glyphicon-edit"></i></span>
                 <span class="btn btn-xs btn-danger delete-event-sa" data-id="<%= sa[:id] %>" title="删除"><i class="glyphicon glyphicon-trash"></i></span>
               </td>
             </tr>

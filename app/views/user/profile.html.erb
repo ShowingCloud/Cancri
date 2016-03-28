@@ -49,6 +49,19 @@
                   <div class="form-inputs">
                     <%= f.input :username %>
                     <%= f.input :school %>
+                    <div class="form-group string optional user_profile_roles">
+                      <label class="string optional control-label" for="user_profile_roles">身份</label>
+                      <br>
+                      <%= label_tag '学生' %>
+                      <% Role.all.each do |r| %>
+                          <% if r.name!='教师' %>
+                              <%= check_box_tag 'user_profile[roles][]', r.name, (true if @user_profile.roles.present? && @user_profile.roles.split(',').include?(r.name.to_s)) %>
+                              <%= label_tag r.name %>
+                          <% elsif r.name=='教师' && @user_roles.include?(r.id) %>
+                              <%= label_tag '老师' %>
+                          <% end %>
+                      <% end %>
+                    </div>
                     <%= f.input :grade %>
                     <%= f.input :address %>
                   </div>

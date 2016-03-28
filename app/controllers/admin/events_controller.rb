@@ -18,11 +18,35 @@ class Admin::EventsController < AdminController
   # GET /admin/events/1
   # GET /admin/events/1.json
   def show
-    # @users = User.where(validate_status: 1)
-    @score_attributes = EventSaShip.includes(:score_attribute).where(event_id: params[:id], level: 1).map { |s| {
+    # @score_attributes = EventSaShip.includes(:score_attribute).where(event_id: params[:id], level: 1).map { |s| {
+    #     id: s.id,
+    #     name: s.is_parent ? s.score_attribute.name+": "+ EventSaShip.where(parent_id: s.score_attribute_id, level: 2).map { |sa| sa.score_attribute.name }.join(' , ') : s.score_attribute.name,
+    #     desc: s.desc
+    # } }
+
+    @score_attributes = EventSaShip.includes(:score_attribute, :score_attribute_parent).where(event_id: params[:id], is_parent: 0).order('parent_id asc').map { |s| {
         id: s.id,
-        name: s.is_parent ? s.score_attribute.name+": "+ EventSaShip.where(parent_id: s.score_attribute_id, level: 2).map { |sa| sa.score_attribute.name }.join(' , ') : s.score_attribute.name
+        name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name,
+        desc: s.desc.blank? ? nil : s.desc
     } }
+  end
+
+  def edit_event_sa_desc
+    desc = params[:desc]
+    sa_id = params[:sa_id]
+    if desc.present? && sa_id.present?
+      sa_ship = EventSaShip.find(sa_id)
+      sa_ship.desc = desc
+      if sa_ship.save
+        result = [true, '操作成功 ']
+      else
+        result = [false, '更改失败']
+      end
+
+    else
+      result = [false, '参数不完整']
+    end
+    render json: result
   end
 
 

@@ -14,6 +14,11 @@ Rails.application.routes.draw do
     end
   end
   resource :chats
+  resources :volunteers, only: [:index] do
+    collection do
+      post :apply_comp_volunteer
+    end
+  end
   resource :notifications
 
   devise_for :users, path: 'account', controllers: {
@@ -84,6 +89,7 @@ Rails.application.routes.draw do
         post :delete_team
         post :add_score_attributes
         post :delete_score_attribute
+        post :edit_event_sa_desc
       end
     end
     resources :news

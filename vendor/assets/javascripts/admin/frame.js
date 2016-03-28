@@ -34,6 +34,69 @@ $(function () {
         }
     });
 
+    $('.edit-event-sa-desc').on('click', function () {
+        var name = $(this).attr('data-text');
+        var sa_id = $(this).attr('data-id');
+        var desc = document.getElementById("sa-desc" + sa_id).innerHTML;
+
+        // 更改窗口
+        BootstrapDialog.show({
+            title: name + ' 的备注编辑为:',
+            message: ' <input type="text" value="' + desc + '" id="after-edit-desc"  class="form-control">',
+            cssClass: 'login-dialog ',
+            buttons: [
+                {
+                    label: '更改(enter)',
+                    cssClass: 'btn-primary',
+                    hotkey: 13, // 按 'enter' 键发送修改请求
+                    // 点击更改按钮后的动作
+                    action: function (dialogItself) {
+                        var after_edit_desc = $('#after-edit-desc').val();
+
+                        // 更改请求
+                        $.ajax({
+                            url: '/admin/events/edit_event_sa_desc',
+                            type: 'post',
+                            data: {"sa_id": sa_id, "desc": after_edit_desc},
+                            success: function (data) {
+                                if (data[0]) {
+                                    document.getElementById("sa-desc" + sa_id).innerHTML = after_edit_desc;
+                                    // 更改成功提示信息
+                                    BootstrapDialog.show({
+                                        title: data[1],
+                                        cssClass: 'login-dialog',
+                                        message: '成功修改为：' + after_edit_desc,
+                                        buttons: [
+                                            {
+                                                label: 'OK(enter)',
+                                                hotkey: 13, // 按 'enter' 键关掉提示信息
+                                                action: function (dialogItself) {
+                                                    dialogItself.close();
+                                                }
+                                            }
+                                        ]
+                                    });
+                                }
+                                else {
+                                    alert(data[1]);
+                                }
+                            }
+                        });
+                        dialogItself.close();
+                    }
+                },
+                // 取消更改按钮
+                {
+                    label: '取消(esc)',
+                    hotkey: 27, // 按 'esc' 键取消修改
+                    action: function (dialogItself) {
+                        dialogItself.close();
+                    }
+                }
+            ]
+        });
+    });
+
     //删除两边空格
     function trim(str) {
         return str.replace(/(^\s*)|(\s*$)/g, "");
