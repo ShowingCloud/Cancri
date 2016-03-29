@@ -15,6 +15,13 @@ GIT
       mini_magick
 
 GIT
+  remote: git://github.com/kikyous/rack.git
+  revision: 1aded61cedb07e8f0bea3b46522c4167b352c0ca
+  specs:
+    rack (2.0.0.alpha)
+      json
+
+GIT
   remote: git://github.com/sinatra/sinatra.git
   revision: 4c7d38eb1b2cc02ce51029f28e0c3c34ca12ccfd
   specs:
@@ -183,8 +190,6 @@ GEM
     puma (3.2.0)
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
-    rack (2.0.0.alpha)
-      json
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-contrib (1.2.0)
@@ -312,6 +317,7 @@ DEPENDENCIES
   omniauth-oauth2
   puma
   quiet_assets
+  rack!
   rack-contrib (~> 1.2.0)
   rack-cors
   rails (>= 5.0.0.beta2, < 5.1)
