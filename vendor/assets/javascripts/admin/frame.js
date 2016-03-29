@@ -1,5 +1,58 @@
 $(function () {
 
+    var chosen_select = $(".chosen-select");
+    chosen_select.chosen();
+    $('.open-add-player').on('click', function () {
+        var event_id = $(this).attr('data-id');
+        var event_name = $(this).attr('data-name');
+        $('#added-event-id').val(event_id);
+        $('.event-name').text(event_name);
+    });
+
+    $('#modal-form,#add-team-form').on('shown.bs.modal', function () {
+        $(this).find('.chosen-container').each(function () {
+            $(this).find('a:first-child').css('width', '420px');
+            $(this).find('.chosen-drop').css('width', '420px');
+            $(this).find('.chosen-search input').css('width', '410px');
+
+        });
+        $(this).find('.chosen-container-multi').css('width', '420px');
+        $(this).find('.team-name-foc').focus();
+    });
+    // 分配裁判到项目
+    $('.add-event-worker-submit').on('click', function () {
+        var user_ids = $("#window-select-event-worker").val();
+        var event_id = $('#added-event-id').val();
+        console.log(user_ids);
+        if (user_ids != null) {
+            $.ajax({
+                url: '/admin/competitions/add_event_worker',
+                type: 'post',
+                data: {
+                    "ed": event_id,
+                    "user_ids": user_ids
+                },
+                success: function (data) {
+                    if (data[0]) {
+                        if (data[1].indexOf('添加失败') >= 0) {
+                            alert(data[1]);
+                        } else {
+                            alert('所选裁判添加成功');
+                        }
+                        window.location.reload();
+                    } else {
+                        alert(data[1]);
+                    }
+                }
+            });
+        } else {
+            alert('请选择裁判');
+        }
+
+
+    });
+
+
     add_score_attribute_init();
 
     $('.select-tl-sa').on("click", function () {

@@ -68,8 +68,11 @@ Rails.application.routes.draw do
     resources :competitions do
       collection do
         get :get_events
+        post :add_event_worker
       end
     end
+    get '/competitions/worker/:id' => 'competitions#worker'
+
     resources :competition_schedules do
       collection do
         post :update_cs

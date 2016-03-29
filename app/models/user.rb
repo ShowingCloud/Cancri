@@ -7,6 +7,8 @@ class User < ApplicationRecord
   has_many :invites
   has_many :access_grants, dependent: :delete_all
   has_many :notifications
+  has_many :comp_workers
+  has_many :event_workers
   mount_uploader :avatar, AvatarUploader
 
   # Include default devise modules. Others available are:

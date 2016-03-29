@@ -4,6 +4,7 @@ class Event < ApplicationRecord
   has_many :team_user_ships #, through: :team
   has_many :event_sa_ships
   has_many :score_attributes, through: :event_sa_ships
+  has_many :event_workers
 
   mount_uploader :cover, EventUploader
 

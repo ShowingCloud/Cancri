@@ -1,0 +1,79 @@
+<h1 class="page-header">
+  <%= @competition.name %> -- 裁判分配
+
+</h1>
+
+<table class="table table-bordered table-hover table-striped">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>赛事名称</th>
+    <th>裁判</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @events.each do |e| %>
+      <tr>
+        <td><%= e.id %></td>
+        <td><%= e.name %></td>
+        <td> </td>
+
+        <td>
+          <div class=" action-buttons">
+            <a href="#modal-form" role="button" class="open-add-player" data-id="<%= e.id %>" data-name="<%= e.name %>" data-toggle="modal">
+              <span class="btn btn-xs btn-warning">分配</span>
+            </a>
+          </div>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+
+
+<div id="modal-form" class="modal" tabindex="-1">
+  <div class="modal-dialog" style="width: 500px">
+    <div class="modal-content">
+      <div class="widget-header model-header" style="height: 30px;background-color: #f7f7f7">
+        <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+        <h4 class="blue smaller">请为<strong> <span class="event-name"></span> </strong>分配裁判</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12 col-sm-5 col-md-6">
+            <div class="form-group">
+              <div>
+                <select data-placeholder="请选择裁判" multiple="" class="chosen-select tag-input-style" id="window-select-event-worker">
+                  <option value=""></option>
+                  <% @comp_workers.each do |ck| %>
+                      <option value="<%= ck.user_id %>" class="aa"><%= ck.user.user_profile.username %></option>
+                  <% end %>
+                </select>
+              </div>
+            </div>
+
+            <input class="input-large" type="hidden" id="added-event-id" value=""/>
+
+            <div class="space-4"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-sm" data-dismiss="modal">
+          <i class="icon-remove"></i>
+          取消
+        </button>
+
+        <button class="btn btn-sm btn-primary add-event-worker-submit">
+          <i class="icon-ok"></i>
+          提交
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

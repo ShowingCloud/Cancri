@@ -1,5 +1,5 @@
 class Admin::CompetitionsController < AdminController
-  before_action :set_competition, only: [:show, :edit, :update, :destroy]
+  before_action :set_competition, only: [:show, :edit, :update, :destroy, :worker]
   before_action do
     authenticate_permissions(['admin'])
   end
@@ -21,6 +21,36 @@ class Admin::CompetitionsController < AdminController
       events = Event.where(competition_id: params[:id], level: 1).select(:id, :name, :parent_id, :is_father)
     end
     render json: events
+  end
+
+  def worker
+    @events = Event.joins(:event_workers).where(competition_id: @competition.id).where("event_workers.event_id = events.id")
+    @comp_workers = CompWorker.includes(:user).where(competition_id: params[:id], status: 1)
+  end
+
+  def add_event_worker
+    user_ids = params[:user_ids]
+    ed = params[:ed]
+    puts 'nihao'
+    puts user_ids
+    if user_ids.length == 0
+      result = [false, '选择的裁判人数不能为零']
+    else
+      message = ''
+      user_ids.each do |ud|
+        ewe = EventWorker.where(event_id: ed, user_id: ud).exists?
+        unless ewe
+          ew = EventWorker.create!(event_id: ed, user_id: ud)
+          if ew.save
+            message = '添加成功' + message.to_s
+          else
+            message = '添加失败' + message.to_s
+          end
+        end
+      end
+      result = [true, message]
+    end
+    render json: result
   end
 
   # GET /admin/competitions/1
