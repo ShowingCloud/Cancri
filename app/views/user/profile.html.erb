@@ -54,13 +54,24 @@
                       <br>
                       <%= label_tag '学生' %>
                       <% Role.all.each do |r| %>
-                          <% if r.name!='教师' %>
+                          <% if r.name=='教师' && @user_profile.roles.split(',').include?(r.name.to_s) %>
+                              <%= label_tag '老师' %> <%= "(待审核)" if !@th_role_status %>
+                          <% else %>
                               <%= check_box_tag 'user_profile[roles][]', r.name, (true if @user_profile.roles.present? && @user_profile.roles.split(',').include?(r.name.to_s)) %>
                               <%= label_tag r.name %>
-                          <% elsif r.name=='教师' && @user_roles.include?(r.id) %>
-                              <%= label_tag '老师' %>
                           <% end %>
                       <% end %>
+                    </div>
+                    <%= f.input :teacher_no %>
+                    <div>
+                      <% if @user_profile.certificate.present? %>
+                          <%= image_tag(current_user.user_profile.certificate_url(:middle)) %>
+                      <% end %>
+                    </div>
+                    <div class="form-group">
+                      <label for="user_avatar">上传教师证</label>
+                      <%= f.file_field :certificate %>
+                      <p class="help-block">格式：jpg jpeg gif png</p>
                     </div>
                     <%= f.input :grade %>
                     <%= f.input :address %>

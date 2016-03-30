@@ -1,5 +1,5 @@
 class Admin::CompetitionsController < AdminController
-  before_action :set_competition, only: [:show, :edit, :update, :destroy, :worker]
+  before_action :set_competition, only: [:show, :edit, :update, :destroy, :events, :workers]
   before_action do
     authenticate_permissions(['admin'])
   end
@@ -23,16 +23,37 @@ class Admin::CompetitionsController < AdminController
     render json: events
   end
 
-  def worker
-    @events = Event.joins(:event_workers).where(competition_id: @competition.id).where("event_workers.event_id = events.id")
-    @comp_workers = CompWorker.includes(:user).where(competition_id: params[:id], status: 1)
+  def events
+    @events = Event.find_by_sql("select a.id,a.name,group_concat(event_workers.user_id) as user_ids,count(event_workers.user_id) as worker_count from events a left join event_workers on a.id = event_workers.event_id where a.competition_id=#{params[:id]} GROUP BY a.id").map { |e| {
+        id: e.id,
+        name: e.name,
+        worker_count: e.worker_count,
+        workers: e.user_ids.blank? ? nil : e.user_ids.split(',').map { |x| [x.to_i, UserProfile.find(x.to_i).username] }
+    } }
+    @events_workers = CompWorker.find_by_sql("select a.user_id as user_id,user_profiles.username as username from comp_workers a left join user_profiles on a.user_id = user_profiles.user_id where a.competition_id=#{params[:id]} and a.status=1 GROUP BY a.user_id")
+  end
+
+  def workers
+    @worker_events = CompWorker.find_by_sql("select a.user_id as user_id,group_concat(events.name) as events,count(event_workers.event_id) as count,user_profiles.username as username,count(event_workers.event_id) as eds, group_concat(event_workers.event_id) from comp_workers a left join event_workers on event_workers.user_id = a.user_id left join events on events.id = event_workers.event_id left join user_profiles on a.user_id = user_profiles.user_id where a.competition_id=#{params[:id]} and a.status=1 GROUP BY a.user_id")
+  end
+
+  def delete_event_worker
+    if params[:ud].present? && params[:ed].present?
+      ew = EventWorker.where(user_id: params[:ud], event_id: params[:ed]).take.delete
+      if ew.delete
+        result = [true, '删除成功']
+      else
+        result = [false, '删除失败']
+      end
+    else
+      result=[false, '不规范操作']
+    end
+    render json: result
   end
 
   def add_event_worker
     user_ids = params[:user_ids]
     ed = params[:ed]
-    puts 'nihao'
-    puts user_ids
     if user_ids.length == 0
       result = [false, '选择的裁判人数不能为零']
     else

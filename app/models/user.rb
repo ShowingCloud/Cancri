@@ -9,6 +9,8 @@ class User < ApplicationRecord
   has_many :notifications
   has_many :comp_workers
   has_many :event_workers
+  accepts_nested_attributes_for :user_profile, allow_destroy: true
+  delegate :username, :gender, to: :user_profile, allow_nil: true
   mount_uploader :avatar, AvatarUploader
 
   # Include default devise modules. Others available are:

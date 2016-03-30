@@ -1,13 +1,16 @@
 <h1 class="page-header">
   <%= @competition.name %> -- 裁判分配
 
+  <small class="pull-right">
+    <a href="<%= "/admin/competitions/workers/#{params[:id]}" %>" class="btn btn-default" title="裁判对应项目">
+      裁判对应项目</a>
+  </small>
 </h1>
 
 <table class="table table-bordered table-hover table-striped">
   <thead>
   <tr>
-    <th>ID</th>
-    <th>赛事名称</th>
+    <th>比赛项目</th>
     <th>裁判</th>
     <th>操作</th>
   </tr>
@@ -16,13 +19,19 @@
   <tbody>
   <% @events.each do |e| %>
       <tr>
-        <td><%= e.id %></td>
-        <td><%= e.name %></td>
-        <td> </td>
-
+        <td><%= e[:name] %>
+          <span id="<%= "worker-count-#{e[:id]}" %>" class="badge <%= "hide" if e[:worker_count]==0 %>"> <%= e[:worker_count] %></span>
+        </td>
+        <td>
+          <% if e[:workers].present? %>
+              <% e[:workers].each do |u| %>
+                  <span class="selected-mark <%= "hide#{u[0]}#{e[:id]}" %>"><%= u[1] %>&nbsp;&nbsp;<a onclick="delete_event_worker(<%= u[0] %>,<%= e[:id] %>);" title="删除">x </a></span>
+              <% end %>
+          <% end %>
+        </td>
         <td>
           <div class=" action-buttons">
-            <a href="#modal-form" role="button" class="open-add-player" data-id="<%= e.id %>" data-name="<%= e.name %>" data-toggle="modal">
+            <a href="#modal-form" role="button" class="open-add-player" data-id="<%= e[:id] %>" data-name="<%= e[:name] %>" data-toggle="modal">
               <span class="btn btn-xs btn-warning">分配</span>
             </a>
           </div>
@@ -49,8 +58,8 @@
               <div>
                 <select data-placeholder="请选择裁判" multiple="" class="chosen-select tag-input-style" id="window-select-event-worker">
                   <option value=""></option>
-                  <% @comp_workers.each do |ck| %>
-                      <option value="<%= ck.user_id %>" class="aa"><%= ck.user.user_profile.username %></option>
+                  <% @events_workers.each do |ck| %>
+                      <option value="<%= ck.user_id %>"><%= ck.username %></option>
                   <% end %>
                 </select>
               </div>

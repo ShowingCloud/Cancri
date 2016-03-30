@@ -69,6 +69,7 @@ zh-CN:
         expert_score: '专家评分'
         last_score: '最终分数'
         news_type: '新闻类型'
+        teacher_no: '教室编号'
 
     "yes": '是'
     "no": '否'

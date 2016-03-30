@@ -11,14 +11,28 @@ class UserController < ApplicationController
     # 获取Profile
     @user_profile = current_user.user_profile ||= current_user.build_user_profile
     @user_roles = current_user.user_roles.pluck(:role_id)
+    @th_role_status = UserRole.where(user_id: current_user.id, role_id: 1).first.status # 教师
     if request.method == 'POST'
       if params[:user_profile].present?
         # 过滤Profile参数
-        profile_params = params.require(:user_profile).permit(:username, :school, :bj, :address, :grade, {:roles => []}).tap do |list|
+        profile_params = params.require(:user_profile).permit(:username, :school, :bj, :address, :teacher_no, :certificate, :grade, {:roles => []}).tap do |list|
           if params[:user_profile][:roles].present?
             list[:roles] = params[:user_profile][:roles].join(',')
           else
             list[:roles] = nil
+          end
+        end
+        message = ''
+        if profile_params[:roles].present? && profile_params[:roles].include?('教师')
+          unless profile_params[:teacher_no].present? && profile_params[:certificate].present?
+            flash[:error] = '选择教师身份时，请填写教师编号和上传教师证件'
+            return false
+          end
+          th_role = UserRole.create!(user_id: current_user.id, role_id: 1) # 教师
+          if th_role.save
+            message = '您的老师身份已提交审核，审核通过后会在［消息］中告知您！'
+          else
+            message
           end
         end
         @user_profile.username = profile_params[:username]
@@ -31,10 +45,12 @@ class UserController < ApplicationController
         @user_profile.birthday = profile_params[:birthday]
         @user_profile.address = profile_params[:address]
         @user_profile.roles = profile_params[:roles]
+        @user_profile.teacher_no = profile_params[:teacher_no]
+        @user_profile.certificate = profile_params[:certificate]
         if @user_profile.save
-          flash[:success] = '详细信息更新成功'
+          flash[:success] = '更新成功'+ '-' +message
         else
-          flash[:error] = '详细信息更新失败'
+          flash[:error] = '更新失败'+ '-'+message
         end
       else
         flash[:error] = '不能提交空信息'

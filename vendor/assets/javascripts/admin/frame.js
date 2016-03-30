@@ -432,3 +432,28 @@ function add_score_attribute_init() {
         });
     });
 }
+
+function delete_event_worker(ud, ed) {
+    if (ud && ed) {
+        $.ajax({
+            url: '/admin/competitions/delete_event_worker',
+            type: 'post',
+            dataType: 'json',
+            data: {"ud": ud, "ed": ed},
+            success: function (result) {
+                if (result[0]) {
+                    $('.hide' + ud + ed).addClass('hide');
+                    var worker_c_n = document.getElementById('worker-count-' + ed).innerHTML;
+                    document.getElementById('worker-count-' + ed).innerHTML = (worker_c_n - 1);
+                    if (worker_c_n - 1 == 0) {
+                        $("#worker-count-" + ed).addClass('hide');
+                    }
+                } else {
+                    alert(result[1])
+                }
+
+            }
+        });
+    }
+
+}
