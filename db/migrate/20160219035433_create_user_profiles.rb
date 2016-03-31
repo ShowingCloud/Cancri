@@ -13,15 +13,20 @@ class CreateUserProfiles < ActiveRecord::Migration[5.0]
       t.string :bj # 班级
       t.string :autograph # 个性签名
       t.string :address
+      t.string :district
       t.date :birthday
       t.string :address
+      t.string :teacher_no
+      t.string :certificate
 
       t.timestamps
     end
     add_index :user_profiles, :user_id, unique: true
     add_index :user_profiles, :school
     add_index :user_profiles, :gender
-    add_index :user_profiles, :student_code #, unique: true
-    add_index :user_profiles, :identity_card #, unique: true
+    add_index :user_profiles, :grade
+    add_index :user_profiles, :student_code
+    add_index :user_profiles, :identity_card
+    add_index :user_profiles, :district
   end
 end

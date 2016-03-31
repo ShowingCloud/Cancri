@@ -10,8 +10,7 @@ class UserController < ApplicationController
   def profile
     # 获取Profile
     @user_profile = current_user.user_profile ||= current_user.build_user_profile
-    @user_roles = current_user.user_roles.pluck(:role_id)
-    @th_role_status = UserRole.where(user_id: current_user.id, role_id: 1).first.status # 教师
+    @th_role_status = UserRole.where(user_id: current_user.id, role_id: 1).first # 教师
     if request.method == 'POST'
       if params[:user_profile].present?
         # 过滤Profile参数
@@ -24,8 +23,8 @@ class UserController < ApplicationController
         end
         message = ''
         if profile_params[:roles].present? && profile_params[:roles].include?('教师')
-          unless profile_params[:teacher_no].present? && profile_params[:certificate].present?
-            flash[:error] = '选择教师身份时，请填写教师编号和上传教师证件'
+          unless profile_params[:teacher_no].present? && profile_params[:certificate].present? && profile_params[:school].present? && profile_params[:username].present?
+            flash[:error] = '选择教师身份时，请填写姓名、学校、教师编号、和上传教师证件'
             return false
           end
           th_role = UserRole.create!(user_id: current_user.id, role_id: 1) # 教师

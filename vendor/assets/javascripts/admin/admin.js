@@ -2,6 +2,44 @@
  * Created by huaxiukun on 16/2/25.
  */
 $(function () {
+    // 教师审核
+    $(".teacher-apply-status [name='teacher-apply']").on('click', function () {
+        var status = $(".teacher-apply-status [name='teacher-apply']:checked").val();
+        if (status == 1) {
+            $(".teacher-apply-level").removeClass('hide');
+        } else {
+            $(".teacher-apply-level").addClass('hide');
+        }
+    });
+    $('.review-teacher-info-submit').on('click', function () {
+        var level;
+        var status = $(".teacher-apply-status [name='teacher-apply']:checked").val();
+        var ud = $(this).attr('data-id');
+        console.log(status);
+        if ((status == '1' || status == '1') && ud != '') {
+            level = $(".teacher-apply-level [name='teacher-apply-level']:checked").val();
+            $.ajax({
+                url: '/admin/checks/review_teacher',
+                type: 'post',
+                data: {
+                    "status": status, "level": level, "ud": ud
+                },
+                success: function (data) {
+                    if (data[0]) {
+                        alert(data[1]);
+                        window.location.reload();
+                    } else {
+                        alert(data[1]);
+                    }
+                }
+            });
+        } else {
+            alert('请选择审核结果');
+        }
+
+        $(".teacher-apply-status [name='teacher-apply']").prop("checked", false);
+        $(".teacher-apply-level [name='teacher-apply-level']").prop("checked", false);
+    });
     $('.btn-search-toggle').on('click', function () {
         $('.form-search-toggle').toggleClass('hide show');
     });

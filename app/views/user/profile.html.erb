@@ -48,20 +48,20 @@
                 <div class="col-sm-12">
                   <div class="form-inputs">
                     <%= f.input :username %>
-                    <%= f.input :school %>
                     <div class="form-group string optional user_profile_roles">
                       <label class="string optional control-label" for="user_profile_roles">身份</label>
                       <br>
                       <%= label_tag '学生' %>
                       <% Role.all.each do |r| %>
-                          <% if r.name=='教师' && @user_profile.roles.split(',').include?(r.name.to_s) %>
-                              <%= label_tag '老师' %> <%= "(待审核)" if !@th_role_status %>
+                          <% if r.name=='教师' && @th_role_status.present? %>
+                              <%= label_tag '老师' %> <%= "(待审核)" if @th_role_status.status.blank? %>
                           <% else %>
                               <%= check_box_tag 'user_profile[roles][]', r.name, (true if @user_profile.roles.present? && @user_profile.roles.split(',').include?(r.name.to_s)) %>
                               <%= label_tag r.name %>
                           <% end %>
                       <% end %>
                     </div>
+                    <%= f.input :school %>
                     <%= f.input :teacher_no %>
                     <div>
                       <% if @user_profile.certificate.present? %>

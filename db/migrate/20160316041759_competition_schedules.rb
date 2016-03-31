@@ -5,6 +5,7 @@ class CompetitionSchedules < ActiveRecord::Migration[5.0]
       t.string :name, null: false
       t.string :start_time
       t.string :end_time
+      t.timestamps
     end
     add_index :competition_schedules, :competition_id
     add_index :competition_schedules, :name

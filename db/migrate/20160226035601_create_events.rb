@@ -11,6 +11,7 @@ class CreateEvents < ActiveRecord::Migration[5.0]
       t.text :body_html
       t.integer :status
       t.text :against
+      t.integer :timer
       t.integer :team_min_num
       t.integer :team_max_num
       t.datetime :apply_start_time
@@ -27,6 +28,7 @@ class CreateEvents < ActiveRecord::Migration[5.0]
     add_index :events, :apply_start_time
     add_index :events, :team_max_num
     add_index :events, :end_time
+    add_index :events, :timer
 
   end
 end

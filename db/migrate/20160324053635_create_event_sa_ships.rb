@@ -6,6 +6,7 @@ class CreateEventSaShips < ActiveRecord::Migration[5.0]
       t.boolean :is_parent, null: false, default: false
       t.integer :parent_id
       t.integer :level, null: false, default: 1
+      t.string :desc
       t.timestamps
     end
 

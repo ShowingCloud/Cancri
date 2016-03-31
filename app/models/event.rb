@@ -5,7 +5,7 @@ class Event < ApplicationRecord
   has_many :event_sa_ships
   has_many :score_attributes, through: :event_sa_ships
   has_many :event_workers
-
+  TIMER = {wu: 0, app: 1, saidao: 2, has_limit: 3} # 3 有时限但不记录时间
   mount_uploader :cover, EventUploader
 
   validates :name, presence: true
