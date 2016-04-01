@@ -16,7 +16,7 @@
                       <a href="<%= "/user/notify?id=#{no.id}" %>">
                         <div>
                           <%= no.read ? '已读' : '未读' %>
-                          <%= no.content %>
+                          <%= no.content[0..20] %>
                         </div>
                       </a>
                     </li>

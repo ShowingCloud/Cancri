@@ -76,11 +76,12 @@
                       拒绝加入
                   <% end %>
               <% end %>
-
           <% else %>
-              <h3>该比赛项目已停止报名,无法接受邀请</h3>
+              <% if @notification.message_type=='队长邀请队员' %>
+                  <h3>该比赛项目已停止报名,无法接受邀请</h3>
+              <% end %>
               <br>
-              <%= @notification.content %>
+              <%= @notification.content.html_safe %>
           <% end %>
       <% else %>
           <div class="alert alert-info">

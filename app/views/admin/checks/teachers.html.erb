@@ -1,87 +1,92 @@
 <h1 class="page-header">
   待审核教师列表
   <small class="pull-right">
-    <a href="" class="btn btn-default" title="待审核裁判">
+    <a href="/admin/checks/teacher_list" class="btn btn-default" title="待审核裁判">
+      教师列表</a>
+    <a href="/admin/checks/referees" class="btn btn-default" title="待审核裁判">
       待审核裁判</a>
-
   </small>
 </h1>
-
-<table class="table table-bordered table-hover table-striped">
-  <thead>
-  <tr>
-    <th>姓名</th>
-    <th>学校</th>
-    <th>教师编号</th>
-    <th>证件</th>
-    <th>操作</th>
-  </tr>
-  </thead>
-
-  <tbody>
-  <% @teachers.each do |th| %>
+<% if @teacher_array.present? %>
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
       <tr>
-        <td><%= th[:username] %></td>
-        <td><%= th[:school] %></td>
-        <td><%= th[:num] %></td>
-        <td>
-          <% if th[:certificate].present? %>
-              <a href="<%= "#modal-form-#{th[:id]}" %>" role="button" data-toggle="modal">
-                教师证
-              </a>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>学校</th>
+        <th>教师编号</th>
+        <th>操作</th>
+      </tr>
+      </thead>
 
-              <div id="<%= "modal-form-#{th[:id]}" %>" class="modal" tabindex="-1">
-                <div class="modal-dialog">
-                  <div class="modal-content" style="width: 700px">
-                    <div class="widget-header model-header">
-                      <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
-                      <h4 class="blue smaller text-center"><%= th[:username] %> - <%= th[:num] %>
-                        - <%= th[:school] %></h4>
-                    </div>
+      <tbody>
+      <% @teacher_array.each do |th| %>
+          <tr>
+            <td><%= th[:username] %></td>
+            <td><%= th[:gender]==1 ? '男' : '女' %></td>
+            <td><%= th[:school] %></td>
+            <td><%= th[:num] %></td>
+            <td>
+              <% if th[:certificate].present? %>
+                  <a href="<%= "#modal-form-#{th[:id]}" %>" role="button" data-toggle="modal" class="btn btn-xs btn-warning">
+                    审核
+                  </a>
 
-                    <div class="modal-body overflow-visible">
-                      <div class="row">
-                        <div class="col-xs-12 col-sm-8 col-md-8">
-                          <img class="img-thumbnail" width="450" src="<%= th[:certificate] %>">
+                  <div id="<%= "modal-form-#{th[:id]}" %>" class="modal" tabindex="-1">
+                    <div class="modal-dialog">
+                      <div class="modal-content" style="width: 700px">
+                        <div class="widget-header model-header">
+                          <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+                          <h4 class="blue smaller text-center"><%= th[:username] %>  - <%= th[:gender]==1 ? '男' : '女' %>
+                            - <%= th[:num] %>
+                            - <%= th[:school] %></h4>
                         </div>
-                        <div class="col-xs-12 col-sm-3 col-md-3 teacher-apply-status">
-                          <h2>审核结果</h2>
-                          <label class=""><input name="teacher-apply" value="1" type="radio"/> 通过</label>&nbsp;&nbsp;
-                          <label class=""><input name="teacher-apply" value="0" type="radio"/> 未通过</label>
 
-                          <div class="teacher-apply-level">
-                            <h3>级别</h3>
-                            <label class=""><input name="teacher-apply-level" value="1" type="radio"/> 校级</label>
-                            <label class=""><input name="teacher-apply-level" value="2" type="radio"/> 区级</label>
-                            <label class=""><input name="teacher-apply-level" value="3" type="radio"/> 市级</label>
+                        <div class="modal-body overflow-visible">
+                          <div class="row">
+                            <div class="col-xs-12 col-sm-8 col-md-8">
+                              <img class="img-thumbnail" width="450" src="<%= th[:certificate] %>">
+                            </div>
+                            <div class="col-xs-12 col-sm-3 col-md-3 teacher-apply-status">
+                              <h2>审核结果</h2>
+                              <label class=""><input name="teacher-apply" value="1" type="radio"/> 通过</label>&nbsp;&nbsp;
+                              <label class=""><input name="teacher-apply" value="0" type="radio"/> 未通过</label>
+
+                              <div class="teacher-apply-level hide">
+                                <h3>级别</h3>
+                                <label class=""><input name="teacher-apply-level" value="3" type="radio"/> 校级</label>
+                                <label class=""><input name="teacher-apply-level" value="2" type="radio"/> 区级</label>
+                                <label class=""><input name="teacher-apply-level" value="1" type="radio"/> 市级</label>
+                              </div>
+
+                            </div>
                           </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button class="btn btn-sm" data-dismiss="modal">
+                            <i class="icon-remove"></i>
+                            取消
+                          </button>
 
+                          <button class="btn btn-sm btn-primary review-teacher-info-submit" data-id="<%= th[:user_id] %>">
+                            <i class="icon-ok"></i>
+                            提交
+                          </button>
                         </div>
                       </div>
                     </div>
-                    <div class="modal-footer">
-                      <button class="btn btn-sm" data-dismiss="modal">
-                        <i class="icon-remove"></i>
-                        取消
-                      </button>
-
-                      <button class="btn btn-sm btn-primary review-teacher-info-submit" data-id="<%= th[:user_id] %>">
-                        <i class="icon-ok"></i>
-                        提交
-                      </button>
-                    </div>
                   </div>
-                </div>
-              </div>
-          <% end %>
-        </td>
-        <td>
-          <%= link_to "", title: '查看', class: '' do %>
-              <span class="btn btn-xs btn-warning">审核</span>
-          <% end %>
-        </td>
-      </tr>
-
-  <% end %>
-  </tbody>
-</table>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <nav>
+      <%= paginate @teachers %>
+    </nav>
+<% else %>
+    <div class="alert alert-success">
+      暂无未审核教师
+    </div>
+<% end %>

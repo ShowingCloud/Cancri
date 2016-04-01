@@ -23,7 +23,7 @@ class User < ApplicationRecord
   validates :nickname, presence: true, uniqueness: true, length: {in: 2..10}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含中文、数字、字母、下划线'}
   validates :password, length: {in: 6..30}, format: {with: /\A[\x21-\x7e]+\Z/i, message: '密码只能包含数字、字母、特殊字符'}, allow_nil: true
   validates :password, presence: true, on: :create
-  after_create :create_soulmate
+  after_create :create_soulmate, :push_notify
 
   def to_hash
     user_json = {
@@ -69,5 +69,9 @@ class User < ApplicationRecord
 
   def create_soulmate
     Soulmate::Loader.new("user").add self.to_hash
+  end
+
+  def push_notify
+    Notification.create!(user_id: id, content: '您已成功注册豆姆账户，前往个人中心验证邮箱会有更多权限<a href="/user/email">去验证</a>')
   end
 end

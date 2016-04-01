@@ -75,7 +75,11 @@ Rails.application.routes.draw do
     get '/competitions/events/:id' => 'competitions#events'
     get '/competitions/workers/:id' => 'competitions#workers'
     get '/checks/teachers' => 'checks#teachers'
+    get '/checks/teacher_list' => 'checks#teacher_list'
+    get '/checks/referee_list' => 'checks#referee_list'
+    get '/checks/referees' => 'checks#referees'
     post '/checks/review_teacher' => 'checks#review_teacher'
+    post '/checks/review_referee' => 'checks#review_referee'
 
     resources :competition_schedules do
       collection do
