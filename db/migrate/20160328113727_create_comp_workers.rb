@@ -8,7 +8,7 @@ class CreateCompWorkers < ActiveRecord::Migration[5.0]
     end
     add_index :comp_workers, :user_id
     add_index :comp_workers, :competition_id
-    add_index :comp_workers, [:competition_id, :user_id, :worker_type], unique: true
+    add_index :comp_workers, [:competition_id, :user_id, :worker_type], unique: true, name: 'index_comp_workers'
     add_index :comp_workers, [:competition_id, :user_id]
   end
 end
