@@ -170,6 +170,34 @@ class CompetitionsController < ApplicationController
     end
   end
 
+
+  def delete_team
+    team = Team.find(params[:id])
+    if team.user_id == current_user.id
+      team.destroy
+      t_u = TeamUserShip.where(team_id: params[:id])
+      if team.destroy && t_u.destroy_all
+        result = [true, '解散队伍成功!']
+      else
+        result = [false, '解散队伍失败!']
+      end
+    else
+      result = [false, '您不是该队队长，无法解散队伍!']
+    end
+    render json: result
+  end
+
+  def leader_delete_player
+    t_u = TeamUserShip.where(user_id: params[:user_id], team_id: params[:team_id]).take
+    t_u.destroy
+    if t_u.destroy
+      result = [true, '清退成功!']
+    else
+      result = [false, '清退失败!']
+    end
+    render json: result
+  end
+
   def invite
 
     invited_email = params[:email]
