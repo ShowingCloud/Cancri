@@ -11,6 +11,8 @@ Rails.application.routes.draw do
       post :leader_invite_player
       post :apply_join_team
       post :leader_agree_apply
+      post :delete_team
+      post :leader_delete_player
     end
   end
   resource :chats

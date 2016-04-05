@@ -32,20 +32,15 @@ module API
             render @unread_notify
           end
 
+          desc '根据队伍'
           params do
             requires :identifier, type: String, desc: '队伍编号'
           end
           get '/team_players' do
-            users = TeamUserShip.joins(:team).where("teams.identifier=?", params[:identifier]).where("team_user_ships.team_id=teams.id").pluck(:user_id)
-            @user_info = UserProfile.where(user_id: users).map { |x| {
-                username: x.try(:username),
-                school: x.try(:school),
-                grade: x.try(:grade).to_i
-            } }
-            render user: @user_info
+            team = Team.joins(:event).joins('INNER JOIN competitions ON competitions.id = events.competition_id').where(identifier: '12345').select(:name, :id, 'events.name as event_name', 'events.competition_id as comp_id', 'competitions.name as comp_name').take
+            aa = TeamUserShip.joins('INNER JOIN user_profiles ON user_profiles.user_id = team_user_ships.user_id').where(team_id: 1).select('user_profiles.username', 'user_profiles.school', 'user_profiles.grade', 'user_profiles.gender')
+            render team_name: team.name, event_name: team.event_name, comp_name: team.comp_name, user: aa
           end
-
-
         end
 
       end
