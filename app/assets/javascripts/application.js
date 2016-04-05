@@ -18,4 +18,5 @@
 //= require message-bus
 //= require code
 //= require notify
+//= require base
 //= //require turbolinks

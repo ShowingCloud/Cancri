@@ -1,15 +1,166 @@
-<div class="container">
-  <h1>Home#index</h1>
+<!--<div class="container">-->
+<!--<h1>Home#index</h1>-->
 
-  <p>Find me in app/views/home/index.html.erb</p>
+<!--<p>Find me in app/views/home/index.html.erb</p>-->
 
-  <br><br>
-  <% if current_user %>
-      <%= form_tag "/notifications", method: 'post', remote: true do %>
-          <div class="input-group" style="width: 400px">
-            <input type="text" class="form-control" name="content" id="content" value="" placeholder="输入后回车或提交">
-            <input type="submit" class="btn btn-default" name="submit" id="submit" value="提交"/>
+<!--<br><br>-->
+<!--
+<% if current_user %>-->
+    <!--<%= form_tag "/notifications", method: 'post', remote: true do %>-->
+        <!--<div class="input-group" style="width: 400px">-->
+        <!--<input type="text" class="form-control" name="content" id="content" value="" placeholder="输入后回车或提交">-->
+        <!--<input type="submit" class="btn btn-default" name="submit" id="submit" value="提交"/>-->
+        <!--</div>-->
+        <!--
+    <% end %>-->
+    <!--
+<% end %>-->
+<!--</div>-->
+
+<div id="main" class="main" data-src="<%= image_path('homepage/bk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="banner" class="col-sm-9 col-xs-12">
+        <div class="banner-inner">
+          <div class="slider" data-src="<%= image_path('homepage/slider-border.png') %>">
+            <div class="slider-win">
+              <ul class="items">
+                <li class="item"><a href="#"><img
+                data-src="<%= image_path('homepage/slider-01.png') %>"/></a></li>
+                <li class="item"><a href="#"><img
+                data-src="<%= image_path('homepage/slider-01.png') %>"/></a></li>
+                <li class="item"><a href="#"><img
+                data-src="<%= image_path('homepage/slider-01.png') %>"/></a></li>
+              </ul>
+              <div class="slider-controller">
+                <span class="slider-prev"></span>
+                <span class="slider-next"></span>
+              </div>
+            </div>
           </div>
-      <% end %>
-  <% end %>
+          <div class="intro" data-src="<%= image_path('homepage/intro-bk.png') %>">
+            <div class="sec-t">
+              2016 机器人嘉年华
+            </div>
+            <div class="sec-c">
+              这是一场机器人爱好者的盛会，“展示、分享、互动”是贯穿始终的主题。这里有是时代前沿的高科技产品、这里有爱好者们创作的优秀作品、也有精彩的主题邀请赛……我们将机器人元素融入娱乐、游艺与交流，让孩子们感受竞技之外的创意体验。
+              <br/>
+              <a class="more-link">
+                <i class="glyphicon glyphicon-triangle-right"></i>&nbsp;更多
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="sidebar" class="hidden-xs">
+        <div class="sidebar-inner">
+          <div class="sec-t" data-src="<%= image_path('homepage/sidebar-title-bk.png') %>">
+            近期比赛&活动
+          </div>
+          <div class="sec-c">
+            <ul class="items">
+              <li class="item">
+                <a class="item-img" href="" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
+                  <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
+                </a>
+                <a class="item-link" href="">
+                  2016 西南位育杯
+                </a>
+              </li>
+              <li class="item">
+                <a class="item-img" href="" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
+                  <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
+                </a>
+                <a class="item-link" href="">
+                  2016 西南位育杯
+                </a>
+              </li>
+              <li class="item">
+                <a class="item-img" href="" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
+                  <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
+                </a>
+                <a class="item-link" href="">
+                  2016 西南位育杯
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div id="board" class="col-sm-9 col-xs-12">
+        <div class="board-inner">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="board-item" data-src="<%= image_path('homepage/board-bk.png') %>">
+                <div class="sec-t">
+                  个人积分
+                </div>
+                <div class="sec-c">
+                  敬请期待
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="board-item" data-src="<%= image_path('homepage/board-bk.png') %>">
+                <div class="sec-t">
+                  学校积分
+                </div>
+                <div class="sec-c">
+                  敬请期待
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="board-item" data-src="<%= image_path('homepage/board-bk.png') %>">
+                <div class="sec-t">
+                  老师积分
+                </div>
+                <div class="sec-c">
+                  敬请期待
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="login-modal">
+  <div class="modal-dialog">
+    <div class="login-content" data-src="<%= image_path('homepage/login-border.png') %>">
+      <div class="sec-t">
+        登录我的robodou
+      </div>
+      <div class="sec-c">
+        <div class="login-form">
+          <label class="input-row">
+            用户名 <input type="text"/>
+          </label>
+          <label class="input-row">
+            密码 <input type="password"/>
+          </label>
+
+          <div class="btn-row">
+            <button class="btn-robodou btn-robodou-login-modal" data-src="<%= image_path('homepage/login-btn-modal-bk.png') %>">登
+              录
+            </button>
+          </div>
+          <a href="">忘记密码</a>
+        </div>
+      </div>
+      <div class="sec-f">
+        <a href="<%= new_user_registration_path %>">注 册</a>
+      </div>
+    </div>
+  </div>
 </div>

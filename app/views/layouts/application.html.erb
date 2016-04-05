@@ -14,102 +14,50 @@
 
 <body>
 
-
-<div class="navbar-wrapper">
-  <nav class="navbar navbar-default navbar-static-top" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand navbar-padding" href="/">豆姆科技</a>
-        <!-- begin visible xs -->
-        <% if user_signed_in? %>
-
-            <span class="navbar-padding navbar-brand pull-right visible-xs btn" data-toggle="collapse" data-target="#navbar_user" aria-expanded="false" aria-controls="navbar">
-              <i class="glyphicon glyphicon-user"></i>
-              <span class="caret"></span>
-            </span>
-            <a href="<%= user_notification_path %>">
-              <span class="navbar-padding navbar-brand pull-right visible-xs btn" aria-controls="navbar">
-               <i class="glyphicon glyphicon-bell"></i>
-                <% if current_user.notifications.unread.count > 0 %>
-                <span class="badge badge-cart-count"><%= current_user.notifications.unread.count %></span>
-                <% end %>
-            </span>
-            </a>
-            <input type="hidden" class="current-user-room" value="<%= current_user.private_token %>">
-        <% else %>
-            <a class="navbar-brand pull-right visible-xs " href="<%= new_user_registration_path %>">注册</a>
-            <a class="navbar-brand pull-right visible-xs " href="<%= new_user_session_path %>">登录</a>
-
-        <% end %>
-        <!-- end visible xs -->
+<div id="top" data-src="<%= image_path('homepage/top-bk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="logo pull-left">
+          <a href="">
+            <img data-src="<%= image_path('homepage/logo.png') %>" src="" alt=""/>
+          </a>
+        </div>
+        <div class="user-info pull-right">
+          <div class="un-login">
+            <button class="btn-robodou btn-robodou-login"
+                    data-src="<%= image_path('homepage/btn-login-bk.png') %>" data-toggle="modal"
+                    data-target="#login-modal">登录我的robodou
+            </button>
+          </div>
+          <div class="login-info hide">
+            <div>Jack</div>
+          </div>
+        </div>
       </div>
-      <!-- begin hidden xs -->
-      <ul class="nav navbar-nav navbar-right hidden-xs">
-        <% if user_signed_in? %>
-            <li>
-              <a href="<%= user_notification_path %>" class="navbar-brand badge-cart">
-                <i class="glyphicon glyphicon-bell"></i>
-                <% if current_user.notifications.unread.count > 0 %>
-                    <span class="badge badge-notify-count"><%= current_user.notifications.unread.count %></span>
-                <% end %>
-              </a>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="glyphicon glyphicon-user"></i>
-                <%= current_user.nickname %>
-                <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <%= render 'layouts/user_menu' %>
-              </ul>
-            </li>
-            <input type="hidden" class="current-user-room" value="<%= current_user.private_token %>">
-        <% else %>
-
-            <li>
-              <%= link_to '登录', new_user_session_path %>
-            </li>
-            <li>
-              <a href="<%= new_user_registration_path %>">注册</a>
-            </li>
-        <% end %>
-      </ul>
-      <!-- end hidden xs -->
-      <!-- begin main menu -->
-      <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-          <li>
-            <a href="<%= competitions_path %>">比赛</a>
-          </li>
-          <li class="nav-divider"></li>
-          <li>
-            <a href="<%= volunteers_path %>">志愿者</a>
-          </li>
-          <li class="nav-divider"></li>
-          <li>
-            <a href="<%= "#" %>">CONTACT</a>
-          </li>
-
-
-        </ul>
-      </div>
-      <!-- end main menu -->
-      <!-- begin user menu visible xs -->
-      <div id="navbar_user" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav visible-xs">
-          <%= render 'layouts/user_menu' %>
-        </ul>
-      </div>
-      <!-- end user menu -->
     </div>
-  </nav>
+  </div>
 </div>
+<div id="nav" class="navbar">
+  <div class="container">
+    <div class="row">
+      <div class="collapse navbar-collapse" id="nav-menu">
+        <ul class="nav navbar-nav">
+          <li><a href="#">首页</a></li>
+          <li><a href="#">新闻</a></li>
+          <li><a href="#">比赛</a></li>
+          <li><a href="#">荣誉榜</a></li>
+          <li><a href="#">活动</a></li>
+          <li><a href="#">选手风采</a></li>
+          <li><a href="#">我在现场</a></li>
+          <li><a href="#">志愿者</a></li>
+          <li><a href="#">下载</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 
@@ -127,72 +75,77 @@
 <% if current_user %>
     <script type="text/javascript" charset="utf-8">
 
-        function notify(title, content) {
-            if (!title && !content) {
-                title = "桌面提醒";
-                content = "您看到此条信息桌面提醒设置成功";
-            }
-            var iconUrl = "/assets/icon.png";
-            if (window.webkitNotifications) {
-                //chrome老版本
-                if (window.webkitNotifications.checkPermission() == 0) {
-                    var notif = window.webkitNotifications.createNotification(iconUrl, title, content);
-                    notif.display = function () {
-                    };
-                    notif.onerror = function () {
-                    };
-                    notif.onclose = function () {
-                    };
-                    notif.onclick = function () {
-                        this.cancel();
-                    };
-                    notif.replaceId = 'Meteoric';
-                    notif.show();
-                } else {
-                    window.webkitNotifications.requestPermission($jy.notify);
+        $(function () {
+            function notify(title, content) {
+                if (!title && !content) {
+                    title = "桌面提醒";
+                    content = "您看到此条信息桌面提醒设置成功";
+                }
+                var iconUrl = "/assets/icon.png";
+                if (window.webkitNotifications) {
+                    //chrome老版本
+                    if (window.webkitNotifications.checkPermission() == 0) {
+                        var notif = window.webkitNotifications.createNotification(iconUrl, title, content);
+                        notif.display = function () {
+                        };
+                        notif.onerror = function () {
+                        };
+                        notif.onclose = function () {
+                        };
+                        notif.onclick = function () {
+                            this.cancel();
+                        };
+                        notif.replaceId = 'Meteoric';
+                        notif.show();
+                    } else {
+                        window.webkitNotifications.requestPermission($jy.notify);
+                    }
+                }
+                else if ("Notification" in window) {
+                    // 判断是否有权限
+                    if (Notification.permission === "granted") {
+                        var notification = new Notification(title, {
+                            "icon": iconUrl,
+                            "body": content
+                        });
+                    }
+                    //如果没权限，则请求权限
+                    else if (Notification.permission !== 'denied') {
+                        Notification.requestPermission(function (permission) {
+                            // Whatever the user answers, we make sure we store the
+                            // information
+                            if (!('permission' in Notification)) {
+                                Notification.permission = permission;
+                            }
+                            //如果接受请求
+                            if (permission === "granted") {
+                                var notification = new Notification(title, {
+                                    "icon": iconUrl,
+                                    "body": content
+                                });
+                            }
+                        });
+                    }
                 }
             }
-            else if ("Notification" in window) {
-                // 判断是否有权限
-                if (Notification.permission === "granted") {
-                    var notification = new Notification(title, {
-                        "icon": iconUrl,
-                        "body": content
-                    });
-                }
-                //如果没权限，则请求权限
-                else if (Notification.permission !== 'denied') {
-                    Notification.requestPermission(function (permission) {
-                        // Whatever the user answers, we make sure we store the
-                        // information
-                        if (!('permission' in Notification)) {
-                            Notification.permission = permission;
-                        }
-                        //如果接受请求
-                        if (permission === "granted") {
-                            var notification = new Notification(title, {
-                                "icon": iconUrl,
-                                "body": content
-                            });
-                        }
-                    });
-                }
-            }
-        }
 
-        window.roomid = $('.current-user-room').val();
-        MessageBus.start(); // call once at startup
+            window.roomid = $('.current-user-room').val();
+            MessageBus.start(); // call once at startup
 
-        MessageBus.callbackInterval = 500;
-        channel = '/channel';
-        if (window.roomid) {
-            channel = channel + '/' + window.roomid;
-        }
-        MessageBus.subscribe(channel, function (data) {
-            $('.badge-notify-count').text(data.count);
-            notify(data.content);
-            $('#content').val('');
-        });
+            MessageBus.callbackInterval = 500;
+            channel = '/channel';
+            if (window.roomid) {
+                channel = channel + '/' + window.roomid;
+            }
+            MessageBus.subscribe(channel, function (data) {
+                $('.badge-notify-count').text(data.count);
+                notify(data.content);
+                $('#content').val('');
+            });
+
+
+
+        })
     </script>
 <% end %>
 </body>
