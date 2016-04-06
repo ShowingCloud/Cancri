@@ -13,6 +13,16 @@ module API
         end
 
         params do
+          requires :school_type, type: String, desc: '学校类别'
+          requires :district, type: String, desc: '区县'
+        end
+
+        get '/school' do
+          schools = School.where(school_type: params[:school_type], district: params[:district]).select(:id, :name)
+          render schools: schools
+        end
+
+        params do
           requires :private_token, type: String, desc: 'Private Token'
         end
 
