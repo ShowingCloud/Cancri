@@ -19,20 +19,32 @@
     <div class="row">
       <div class="col-xs-12">
         <div class="logo pull-left">
-          <a href="">
+          <a href="/">
             <img data-src="<%= image_path('homepage/logo.png') %>" src="" alt=""/>
           </a>
         </div>
         <div class="user-info pull-right">
-          <div class="un-login">
-            <button class="btn-robodou btn-robodou-login"
-                    data-src="<%= image_path('homepage/btn-login-bk.png') %>" data-toggle="modal"
-                    data-target="#login-modal">登录我的robodou
-            </button>
-          </div>
-          <div class="login-info hide">
-            <div>Jack</div>
-          </div>
+          <% if user_signed_in? %>
+              <div class="login-info">
+                <div><%= current_user.nickname %></div>
+                <%= link_to destroy_user_session_path, method: :delete, data: {confirm: '确认退出登录吗?'}, title: '退出登录', class: '' do %>
+                    退出登录
+                <% end %>
+                <a href="<%= user_notification_path %>" class="navbar-brand badge-cart">
+                  <i class="glyphicon glyphicon-bell"></i>
+                  <% if current_user.notifications.unread.count > 0 %>
+                      <span class="badge badge-notify-count"><%= current_user.notifications.unread.count %></span>
+                  <% end %>
+                </a>
+              </div>
+          <% else %>
+              <div class="un-login">
+                <button class="btn-robodou btn-robodou-login"
+                        data-src="<%= image_path('homepage/btn-login-bk.png') %>" data-toggle="modal"
+                        data-target="#login-modal">登录我的robodou
+                </button>
+              </div>
+          <% end %>
         </div>
       </div>
     </div>
@@ -43,7 +55,7 @@
     <div class="row">
       <div class="collapse navbar-collapse" id="nav-menu">
         <ul class="nav navbar-nav">
-          <li><a href="#">首页</a></li>
+          <li><a href="/">首页</a></li>
           <li><a href="#">新闻</a></li>
           <li><a href="#">比赛</a></li>
           <li><a href="#">荣誉榜</a></li>
@@ -142,7 +154,6 @@
                 notify(data.content);
                 $('#content').val('');
             });
-
 
 
         })
