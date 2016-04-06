@@ -1,9 +1,39 @@
-<div class="container">
-  <h1 class="page-header">大赛列表页面</h1>
+<!--<div class="container">-->
+<!--
+<% @competitions.each do |comp| %>-->
+    <!--<%= link_to competition_path(comp) do %>-->
+        <!--<h2><%= comp.name %></h2>-->
+        <!--
+    <% end %>-->
+    <!--
+<% end %>-->
+<!--</div>-->
 
-  <% @competitions.each do |comp| %>
-      <%= link_to competition_path(comp) do %>
-          <h2><%= comp.name %></h2>
-      <% end %>
-  <% end %>
+<div id="main" class="main" data-src="<%= image_path('homepage/bk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="match-list">
+        <div class="sec-t">
+          <div class="year-select">
+            <select name="" id="">
+              <option value="">2015</option>
+              <option value="">2016</option>
+              <option value="">2017</option>
+            </select>
+          </div>
+        </div>
+        <div class="sec-c">
+          <div class="list">
+            <div class="col-xs-12 col-sm-6 col-md-4">
+              <a href="">
+                <div class="item">
+                  <img src="" alt="" data-src="<%= image_path('homepage/sidebar-item01.png') %>"/>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
