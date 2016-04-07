@@ -24,4 +24,33 @@ class CompetitionService
         desc: s.desc.blank? ? nil : s.desc
     } }
   end
+
+  def self.post_team_scores(ed, schedule_name, kind, th, t1d, t2d, score_attribute, score1, score2, note)
+    if kind == 2 # 对抗
+      if t2d.blank? || score2.blank?
+        result = [false, '对抗赛下，队伍和成绩均为两个信息']
+      else
+        score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, team2_id: t2d, score1: score1, score2: score2, note: note)
+        if score.save
+          result = [true, '成绩保存成功!']
+        else
+          result = [false, '成绩保存失败!']
+        end
+      end
+    elsif kind ==1 # 评分
+      if score_attribute.blank?
+        result = [false, '评分模式下，成绩属性必填']
+      else
+        score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, score_attribute: score_attribute, score1: score1, note: note)
+        if score.save
+          result = [true, '成绩保存成功!']
+        else
+          result = [false, '成绩保存失败!']
+        end
+      end
+    else
+      result = [false, '赛制数据不合法']
+    end
+    result
+  end
 end
