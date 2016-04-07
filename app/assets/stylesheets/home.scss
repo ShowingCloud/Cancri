@@ -32,6 +32,24 @@ ul {
   background-size: cover;
 }
 
+#top .login-info {
+  font-size: 18px;
+  color: #FFFFFF;
+  margin-top: 20px;
+}
+
+#top .login-info a {
+  margin: 0 10px;
+}
+
+#top .login-info .badge-notify-count {
+  margin-top: -20px;
+}
+
+#top .un-login {
+  margin-top: 20px;
+}
+
 #nav .navbar-nav > li > a {
   padding: 10px 30px;
   color: #FFFFFF;
@@ -318,7 +336,7 @@ ul {
   left: 0;
 }
 
-#register .register-inner .sec-c .input-row .rucaptcha-image{
+#register .register-inner .sec-c .input-row .rucaptcha-image {
   height: 32px;
   width: 80px;
   position: absolute;
@@ -337,7 +355,7 @@ ul {
   float: right;
 }
 
-#register .register-inner .sec-c .input-row input.rucaptcha{
+#register .register-inner .sec-c .input-row input.rucaptcha {
   width: 80px;
   margin-right: 80px;
 }
@@ -638,14 +656,13 @@ ul {
 }
 
 #login-modal {
-
 }
 
 #login-modal .login-content {
   background: transparent no-repeat center center;
   width: 389px;
-  height: 411px;
   margin: 0 auto;
+  padding: 60px 0;
 }
 
 #login-modal .login-content .sec-t {
@@ -688,6 +705,7 @@ ul {
   border: 1px solid #C8EFFF;
   width: 160px;
   display: block;
+  padding-left: 12px;
 }
 
 #login-modal .login-content .login-form {
@@ -1125,4 +1143,27 @@ ul {
 
 #volunteer .volunteer-inner .sec-c .sec-middle .text {
   color: #FFFFFF;
+}
+
+#match-list .sec-t {
+  text-align: center;
+}
+
+#match-list .sec-c {
+  text-align: center;
+}
+
+#match-list .sec-c .item{
+  width: 340px;
+  height: 220px;
+  background: transparent no-repeat center center;
+  margin: 40px auto;
+  padding: 4px;
+}
+
+#match-list .sec-c .item .item-t{
+  color: #89BFFF;
+  font-size: 14px;
+  text-align: center;
+  margin: 0 auto 4px;
 }

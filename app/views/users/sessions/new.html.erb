@@ -1,30 +1,42 @@
-<div class="container">
-  <h1 class="page-header">
-    用户登录
-  </h1>
+<div id="main" class="main" data-src="<%= image_path('homepage/bk.png') %>">
+  <div id="login-modal">
+    <div class="login-content" data-src="<%= image_path('homepage/login-border.png') %>">
+      <div class="sec-t">
+        登录我的robodou
+      </div>
+      <div class="sec-c">
+        <div class="login-form">
+          <form action="/account/sign_in" novalidate="novalidate" method="post">
+            <input name="utf8" type="hidden" value="✓">
+            <input type="hidden" name="authenticity_token" value="">
+            <label class="input-row">
+              用户名 <input type="text" name="user[login]"/>
+            </label>
+            <label class="input-row">
+              密码 <input type="password" name="user[password]"/>
+            </label>
 
-  <div class="row">
-    <div class="col-md-4">
-      <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-
-          <%= f.input :login, placeholder: '请输入昵称/邮箱/手机' %>
-          <%= f.input :password, placeholder: '请输入密码' %>
-          <% if devise_mapping.rememberable? -%>
-              <div class="field">
-                <%= f.check_box :remember_me %> 记住我
-              </div>
-          <% end -%>
-
-          <div class="actions form-group form-group-lg">
-            <%= f.submit class: 'btn btn-primary btn-block', value: '立即登录', 'data-disable-with' => '正在登录' %>
-          </div>
-      <% end %>
-
-      <p class="clearfix text-right">
-        <a href="<%= new_user_registration_path %>">注册</a>
-        <br>
-        <a href="<%= new_password_path(resource_name) %>">忘记密码?</a>
-      </p>
+            <div class="btn-row">
+              <button class="btn-robodou btn-robodou-login-modal" data-src="<%= image_path('homepage/login-btn-modal-bk.png') %>">登
+                录
+              </button>
+            </div>
+          </form>
+          <a href="<%= %>">忘记密码</a>
+        </div>
+      </div>
+      <div class="sec-f">
+        <a href="<%= new_user_registration_path %>">注 册</a>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
     </div>
   </div>
 </div>

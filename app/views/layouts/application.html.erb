@@ -26,23 +26,21 @@
         <div class="user-info pull-right">
           <% if user_signed_in? %>
               <div class="login-info">
-                <div><%= current_user.nickname %></div>
-                <%= link_to destroy_user_session_path, method: :delete, data: {confirm: '确认退出登录吗?'}, title: '退出登录', class: '' do %>
-                    退出登录
-                <% end %>
-                <a href="<%= user_notification_path %>" class="navbar-brand badge-cart">
+                <a class="nickname" href="<%= user_preview_path %>"><%= current_user.nickname %></a>
+                <a href="<%= user_notification_path %>">
                   <i class="glyphicon glyphicon-bell"></i>
                   <% if current_user.notifications.unread.count > 0 %>
                       <span class="badge badge-notify-count"><%= current_user.notifications.unread.count %></span>
                   <% end %>
                 </a>
+                <%= link_to destroy_user_session_path, method: :delete, data: {confirm: '确认退出登录吗?'}, title: '退出登录', class: 'login-out' do %>
+                    <i class="glyphicon glyphicon-off"></i>
+                <% end %>
               </div>
           <% else %>
               <div class="un-login">
-                <button class="btn-robodou btn-robodou-login"
-                        data-src="<%= image_path('homepage/btn-login-bk.png') %>" data-toggle="modal"
-                        data-target="#login-modal">登录我的robodou
-                </button>
+                <a class="btn-robodou btn-robodou-login" href="<%= new_user_session_path %>" data-src="<%= image_path('homepage/btn-login-bk.png') %>" data-toggle="modal">登录我的robodou
+                </a>
               </div>
           <% end %>
         </div>
