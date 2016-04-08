@@ -144,7 +144,7 @@ $('#reset_password_password').blur(function () {
 });
 
 $('.refresh-captcha').on('click', function () {
-    var src = $("img[alt='rucaptcha']").attr('src');
+    var src = $("img.rucaptcha-image").attr('src');
     $('.refresh-captcha').find('img').attr('src', src.split('cha/')[0] + 'cha/?' + (new Date()).getTime());
 });
 

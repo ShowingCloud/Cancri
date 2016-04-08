@@ -7,13 +7,13 @@
             注册我的robodou
           </div>
           <div class="sec-c">
-            <form action="<%= registration_path(resource_name) %>" novalidate="novalidate" class="simple_form new_user" id="new_user" method="post">
+            <form novalidate="novalidate" class="simple_form new_user" id="new_user" action="<%= "/account" %>" accept-charset="UTF-8" method="post">
               <input name="utf8" type="hidden" value="✓">
               <input type="hidden" name="authenticity_token" value="">
 
               <label class="input-row">
                 用户名
-                <input type="text" name="user[nickname]" value=""/>
+                <input type="text" name="user[nickname]" value="<%= resource.nickname %>"/>
                 <% if request.post? && devise_error_messages! %>
                     <span class="tips"><%= resource.errors[:nickname].each.first %></span>
                 <% end %>
@@ -39,15 +39,13 @@
                 <a class="refresh-captcha" href="#">
                   <%= rucaptcha_image_tag(title: '点击刷新验证码') %>
                 </a>
-                <input class="rucaptcha" name="_rucaptcha" type="text" autocorrect="off" autocapitalize="off" pattern="[0-9a-z]*" maxlength="4" autocomplete="off"/>
+                <%= rucaptcha_input_tag %>
                 <% if request.post? && !verify_rucaptcha?(resource) %>
                     <span class="tips">验证码不正确</span>
                 <% end %>
               </label>
-              <label class="input-row text-center">
-                <button class="btn-robodou btn-robodou-register" data-src="<%= image_path('homepage/btn-register-bk.png') %>">
-                  注册
-                </button>
+              <label class="text-center">
+                <input class="btn-robodou btn-robodou-register" data-src="<%= image_path('homepage/btn-register-bk.png') %>" type="submit" value="注册"/>
               </label>
             </form>
           </div>

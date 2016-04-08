@@ -327,6 +327,10 @@ ul {
   position: relative;
 }
 
+#register .register-inner .sec-c .text-center {
+  display: block;
+}
+
 #register .register-inner .sec-c .input-row .tips {
   color: red;
   font-size: 12px;
@@ -1153,7 +1157,7 @@ ul {
   text-align: center;
 }
 
-#match-list .sec-c .item{
+#match-list .sec-c .item {
   width: 340px;
   height: 220px;
   background: transparent no-repeat center center;
@@ -1161,9 +1165,104 @@ ul {
   padding: 4px;
 }
 
-#match-list .sec-c .item .item-t{
+#match-list .sec-c .item .item-t {
   color: #89BFFF;
   font-size: 14px;
   text-align: center;
   margin: 0 auto 4px;
+}
+
+#match-info {
+
+}
+
+#match-info .sec-t {
+  background: transparent no-repeat bottom center;
+  font-size: 36px;
+  color: #8FD9DF;
+  text-align: center;
+  margin: 30px auto;
+}
+
+#match-info .sec-c {
+
+}
+
+#match-info .sec-c .download {
+  background: transparent no-repeat bottom center;
+  width: 680px;
+  margin: 20px auto;
+  color: #B4E7EB;
+}
+
+#match-info .sec-c .download .items {
+  display: block;
+  overflow: hidden;
+  text-align: center;
+}
+
+#match-info .sec-c .download .items .item {
+  display: inline-block;
+  margin: 0 40px;
+}
+
+#match-info .sec-c .download .download-block {
+  display: block;
+  margin-bottom: 10px;
+}
+
+#match-info .sec-c .match-dec {
+  width: 1017px;
+  background: transparent no-repeat center center;
+  margin: 40px auto;
+  color: #B4E7EB;
+  padding: 4px;
+  border: 1px solid #B4E7EB;
+}
+
+#match-info .sec-c .match-dec .items {
+  margin: 0;
+  border-top: 1px solid #AEF6F8;
+}
+
+#match-info .sec-c .match-dec .items .item {
+
+  padding: 20px 100px;
+}
+
+#match-info .sec-c .match-dec .items .item:nth-child(2n) {
+  background: rgba(49, 98, 104, .3);
+}
+
+#match-info .sec-c .match-dec .items .item:nth-child(2n-1) {
+  background: rgba(86, 147, 154, .3);
+}
+
+#match-info .sec-c .match-dec .items .item .item-t {
+  cursor: pointer;
+  color: #54BCD3;
+  font-size: 24px;
+}
+
+#match-info .sec-c .match-dec .items .item .item-t .glyphicon {
+  float: right;
+}
+
+#match-info .sec-c .match-dec .items .item .item-c {
+  margin: 20px 0;
+}
+
+#match-info .sec-c .apply-in{
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.btn-apply-match{
+  border: 1px solid #AEF6F8;
+  background: transparent;
+  font-size: 24px;
+  color: #AEF6F8;
+  padding: 0 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 5px #Aef;
 }

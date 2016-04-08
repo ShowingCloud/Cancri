@@ -6,6 +6,7 @@ $(function () {
         lazyload.init();
         rucaptcha.init();
         authenticity_token.init();
+        match_info_toggle.init();
     };
 
     var lazyload = {
@@ -58,6 +59,14 @@ $(function () {
         }
     };
 
+    var match_info_toggle = {
+        init: function () {
+            var b = $('.match-toggle');
+            b.parent().on('click',function(){
+                $(this).parent().find('.item-c').slideToggle(300);
+            });
+        }
+    };
 
     action();
 
