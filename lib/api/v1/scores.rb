@@ -20,13 +20,12 @@ module API
           requires :th, type: Integer, desc: '第几场'
           requires :team1_id, type: Integer, desc: '队伍1'
           optional :team2_id, type: Integer, desc: '队伍2'
-          optional :score_attribute, type: String, desc: '成绩属性'
-          requires :score1, type: String, desc: '成绩1'
+          requires :score1, type: Hash, desc: '成绩1'
           optional :score2, type: String, desc: '成绩2'
           optional :note, type: String, desc: '备注'
         end
         post '/score' do
-          result = CompetitionService.post_team_scores(params[:event_id], params[:schedule_name], params[:kind], params[:th], params[:team1_id], params[:team2_id], params[:score_attribute], params[:score1], params[:score2], params[:note])
+          result = CompetitionService.post_team_scores(params[:event_id], params[:schedule_name], params[:kind], params[:th], params[:team1_id], params[:team2_id], params[:score1], params[:score2], params[:note])
           render status: result[0], message: result[1]
         end
       end
