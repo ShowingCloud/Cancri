@@ -70,6 +70,7 @@ zh-CN:
         last_score: '最终分数'
         news_type: '新闻类型'
         teacher_no: '教室编号'
+        host_year: '举办年份'
 
     "yes": '是'
     "no": '否'

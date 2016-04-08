@@ -1,14 +1,14 @@
 class CreateScores < ActiveRecord::Migration[5.0]
   def change
     create_table :scores do |t|
-      t.integer :event_id
-      t.integer :schedule_name
-      t.integer :kind
-      t.integer :th
-      t.integer :team1_id
+      t.integer :event_id, null: false
+      t.string :schedule_name, null: false
+      t.integer :kind, null: false
+      t.integer :th, null: false
+      t.integer :team1_id, null: false
       t.integer :team2_id
       t.string :score_attribute
-      t.string :score1
+      t.string :score1, null: false
       t.string :score2
       t.text :note
       t.integer :user_id
