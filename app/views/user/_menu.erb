@@ -1,7 +1,17 @@
-<div class="list-group" style="margin-top: 40px;">
-
-  <a class="list-group-item" href="<%= user_preview_path %>">我的账户<span class="visible-xs pull-right">[ <%= current_user.nickname %>
-    ]</span></a>
-  <a class="list-group-item" href="<%= user_notification_path %>">通知消息</a>
-  <a class="list-group-item" href="<%= "#" %>">我的比赛</a>
+<div class="sidebar">
+  <a href="<%= user_preview_path %>" class="center-list active" data-src="<%= image_path('homepage/center-list-active.png') %>">
+    个人信息
+  </a>
+  <a class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
+    参赛信息
+  </a>
+  <a href="<%= user_notification_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
+    消息通知
+  </a>
+  <a class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
+    我的积分
+  </a>
+  <a class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
+    调戏小豆
+  </a>
 </div>

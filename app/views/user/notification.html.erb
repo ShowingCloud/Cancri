@@ -1,40 +1,79 @@
-<div class="container">
-  <div class="row">
-    <div class="col-xs-12 col-sm-3 hidden-xs">
-      <%= render 'user/menu' %>
-    </div>
-    <div class="col-xs-12 col-sm-9">
-      <h1 class="page-header">
-        我的消息
-      </h1>
-      <% if @notifications.present? %>
-          <div class="panel panel-default">
-            <div class="panel-body">
-              <% @notifications.each do |no| %>
-                  <ul>
-                    <li>
-                      <a href="<%= "/user/notify?id=#{no.id}" %>">
-                        <div>
-                          <%= no.read ? '已读' : '未读' %>
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
+        <div class="sec-t">
+          <div class="avatar" data-src="<%= image_path('homepage/avatar-bk.png') %>">
+            <div class="avatar-img">
+              <img width="111px" height="111px" src="" alt=""/>
+            </div>
+            <div class="username">Jack</div>
+          </div>
+          <%= render 'user/menu' %>
+        </div>
+        <div class="sec-c">
+          <div class="content">
+            <div class="message-panel">
+              <% if @notifications.present? %>
+                  <% @notifications.each do |no| %>
+                      <div class="message" data-src="<%= image_path('homepage/message.png') %>">
+                        <div class="msg-time">2016-03-17 <%= no.read ? '已读' : '未读' %></div>
+                        <div class="msg-inner">
                           <%= no.content[0..20] %>
                         </div>
-                      </a>
-                    </li>
-                  </ul>
-                  <br>
+                        <div class="msg-control">
+                          <a class="btn-robodou btn-msg" href="<%= "/user/notify?id=#{no.id}" %>">查看详情</a>
+                        </div>
+                      </div>
+                      <div class="message" data-src="<%= image_path('homepage/message.png') %>">
+                        <div class="msg-time">2016-03-17 <%= no.read ? '已读' : '未读' %></div>
+                        <div class="msg-inner">
+                          <%= no.content[0..20] %>
+                        </div>
+                        <div class="msg-control">
+                          <a class="btn-robodou btn-msg" href="<%= "/user/notify?id=#{no.id}" %>">查看详情</a>
+                        </div>
+                      </div>
+                      <div class="message" data-src="<%= image_path('homepage/message.png') %>">
+                        <div class="msg-time">2016-03-17 <%= no.read ? '已读' : '未读' %></div>
+                        <div class="msg-inner">
+                          <%= no.content[0..20] %>
+                        </div>
+                        <div class="msg-control">
+                          <a class="btn-robodou btn-msg" href="<%= "/user/notify?id=#{no.id}" %>">查看详情</a>
+                        </div>
+                      </div>
+                      <div class="message" data-src="<%= image_path('homepage/message.png') %>">
+                        <div class="msg-time">2016-03-17 <%= no.read ? '已读' : '未读' %></div>
+                        <div class="msg-inner">
+                          <%= no.content[0..20] %>
+                        </div>
+                        <div class="msg-control">
+                          <a class="btn-robodou btn-msg" href="<%= "/user/notify?id=#{no.id}" %>">查看详情</a>
+                        </div>
+                      </div>
+                  <% end %>
+                  <nav>
+                    <%= paginate @notifications %>
+                  </nav>
+              <% else %>
+                  <div class="alert alert-info">
+                    <p> 暂无消息</p>
+                  </div>
               <% end %>
             </div>
-
           </div>
-          <nav>
-            <%= paginate @notifications %>
-          </nav>
-      <% else %>
-          <div class="alert alert-info">
-            <p> 暂无消息</p>
-          </div>
-      <% end %>
-
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
     </div>
   </div>
 </div>

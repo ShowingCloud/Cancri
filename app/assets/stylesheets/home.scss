@@ -781,6 +781,10 @@ ul {
   color: #E4F9FF;
 }
 
+#user-center .sec-t .sidebar .center-list:hover {
+  text-decoration: none;
+}
+
 #user-center .sec-c {
   float: left;
   padding: 90px 0 0 0;
@@ -921,6 +925,7 @@ ul {
   border-radius: 30px;
   width: 550px;
   padding: 30px;
+  color: #A7DBEE;
 }
 
 #user-center .sec-c .message-panel .message {
@@ -950,13 +955,14 @@ ul {
 }
 
 .btn-msg {
-  width: 60px;
   line-height: 14px;
   font-size: 12px;
   color: #A7DBEE;
   border: 1px solid #CCF1FF;
-  background: rgba(180, 223, 255, .3);
+  background: rgba(180, 223, 255, 0.3);
   border-radius: 5px;
+  padding: 2px 5px;
+  display: inline-block;
 }
 
 #user-center .sec-c .point {
@@ -1166,7 +1172,7 @@ ul {
 }
 
 #match-list .sec-c .item .item-t {
-  color: #89BFFF;
+  color: #C9E3FF;
   font-size: 14px;
   text-align: center;
   margin: 0 auto 4px;
@@ -1178,10 +1184,11 @@ ul {
 
 #match-info .sec-t {
   background: transparent no-repeat bottom center;
-  font-size: 36px;
-  color: #8FD9DF;
+  font-size: 32px;
+  color: #C9E3FF;
   text-align: center;
   margin: 30px auto;
+  padding: 12px 0;
 }
 
 #match-info .sec-c {
@@ -1193,6 +1200,7 @@ ul {
   width: 680px;
   margin: 20px auto;
   color: #B4E7EB;
+  padding-top: 10px;
 }
 
 #match-info .sec-c .download .items {
@@ -1240,8 +1248,8 @@ ul {
 
 #match-info .sec-c .match-dec .items .item .item-t {
   cursor: pointer;
-  color: #54BCD3;
-  font-size: 24px;
+  color: #C9E3FF;
+  font-size: 16px;
 }
 
 #match-info .sec-c .match-dec .items .item .item-t .glyphicon {
@@ -1250,14 +1258,15 @@ ul {
 
 #match-info .sec-c .match-dec .items .item .item-c {
   margin: 20px 0;
+  display: none;
 }
 
-#match-info .sec-c .apply-in{
+#match-info .sec-c .apply-in {
   text-align: center;
   margin-bottom: 40px;
 }
 
-.btn-apply-match{
+.btn-apply-match {
   border: 1px solid #AEF6F8;
   background: transparent;
   font-size: 24px;
