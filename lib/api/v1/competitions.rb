@@ -13,6 +13,15 @@ module API
           render @competitions
         end
 
+        desc '获取某大赛下比赛项目'
+        params do
+          requires :comp_id, type: Integer
+        end
+        get '/events' do
+          @events = CompetitionService.get_events(params[:comp_id])
+          render events: @events
+        end
+
 
         # params do
         #   requires :private_token, type: String, desc: 'Private Token'

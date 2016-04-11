@@ -29,37 +29,53 @@ class CompetitionService
     if kind == 2 # 对抗
       if t2d.blank? || score2.blank?
         result = [false, '对抗模式下，队伍和成绩均为两个信息']
+      elsif score1.length!=1 || (score1.first[1] != '1' && score1.first[1] != '0') || (score2 != '0' && score2 != '1')
+        result = [false, '对抗模式下，比分只能为1或0']
       else
-        score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, team2_id: t2d, score1: score1[0], score2: score2, note: note)
-        if score.save
-          result = [true, '成绩保存成功!']
+        a_s = Score.where(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, team2_id: t2d, score1: score1.first[1], score2: score2).take
+        if a_s.present?
+          result = [false, '该成绩已登记，请检查场次或其他信息']
         else
-          result = [false, '成绩保存失败!']
+          score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, team2_id: t2d, score1: score1.first[1], score2: score2, note: note)
+          if score.save
+            result = [true, '成绩保存成功!']
+          else
+            result = [false, '成绩保存失败!']
+          end
         end
       end
     elsif kind ==1 # 评分
       if score1.blank?
         result = [false, '请至少输入一项成绩']
       else
-        r=[]
-        score1.each do |s|
-          score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, score_attribute: s[0], score1: s[1], note: note)
-          if score.save
-            r = [true]+r
-          else
-            r = [s[0]]+r
-          end
-        end
-        if r.count(true)== score1.length
-          r = [true, '保存成功']
+        a_s = Score.where(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d).take
+        if a_s.present?
+          result = [false, '该成绩已登记，请检查场次或其他信息']
         else
-          r = [false, r.delete(true).join(',')+'保存失败']
+          r=[]
+          score1.each do |s|
+            score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, score_attribute: s[0], score1: s[1], note: note)
+            if score.save
+              r = [true]+r
+            else
+              r = [s[0]]+r
+            end
+          end
+          if r.count(true)== score1.length
+            r = [true, '保存成功']
+          else
+            r = [false, r.delete(true).join(',')+'保存失败']
+          end
+          result = r
         end
-        result = r
       end
     else
       result = [false, '赛制数据不合法']
     end
     result
+  end
+
+  def self.get_events(comp_id)
+    Event.where(competition_id: comp_id).joins(:teams).where('teams.event_id=events.id')
   end
 end
