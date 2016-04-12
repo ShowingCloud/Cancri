@@ -51,6 +51,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def require_mobile_or_email
+    if current_user.present?
+      current_user.mobile.present? || current_user.email.present?
+    else
+      require_user
+    end
+  end
+
   protected
 
   def configure_permitted_parameters

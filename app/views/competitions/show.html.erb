@@ -12,6 +12,7 @@
                 <a class="download-block" href="">
                   <img src="" alt="" data-src="<%= image_path('homepage/download-icon.png') %>"/>
                 </a>
+
                 <p>2016XX比赛时间安排</p>
               </li>
               <li class="item">
@@ -109,7 +110,7 @@
             </ul>
           </div>
           <div class="apply-in">
-            <%= link_to apply_event_competitions_path, class: 'btn-robodou btn-apply-match' do %>
+            <%= link_to "#{apply_event_competitions_path}?cd=#{@competition.id}", class: 'btn-robodou btn-apply-match' do %>
                 报 名
             <% end %>
           </div>

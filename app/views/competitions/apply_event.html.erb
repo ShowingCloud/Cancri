@@ -9,7 +9,13 @@
           <div>项目名称</div>
           <div class="" data-src="<%= image_path('homepage/select-bk.png') %>">
             <div class="">
+              <select>
+                <option>请选择项目</option>
+                <% @events.each do |e| %>
+                    <option value="<%= e.id %>"><%= e.name %></option>
+                <% end %>
 
+              </select>
             </div>
           </div>
         </div>

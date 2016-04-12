@@ -8,16 +8,30 @@ class CompetitionsController < ApplicationController
   end
 
   def show
-    @events = Event.where(competition_id: @competition.id)
   end
 
   def apply_event
-    @event = Event.find(params[:eid])
-    @districts = District.all
-    @teams = Team.includes(:team_user_ships).where(event_id: params[:eid])
-    @already_apply = TeamUserShip.includes(:team).where(event_id: params[:eid], user_id: current_user.id).take
-    if @already_apply.present?
-      @team_players = TeamUserShip.where(team_id: @already_apply.team_id).count
+    if require_mobile_or_email
+      @competition = Competition.find(params[:cd])
+      @events = Event.where(competition_id: params[:cd], is_father: false).select(:name, :id)
+      #   @teams = Team.includes(:team_user_ships).where(event_id: params[:eid])
+      #   @already_apply = TeamUserShip.includes(:team).where(event_id: params[:eid], user_id: current_user.id).take
+      #   if @already_apply.present?
+      #     @team_players = TeamUserShip.where(team_id: @already_apply.team_id).count
+      #   end
+    else
+      redirect_to "/competitions/#{params[:cd]}", notice: '继续操作前请验证手机或邮箱'
+    end
+  end
+
+  def search_team
+    event_id = params[:ed]
+    team_name = params[:team_name]
+    if event_id.present? && team_name.present?
+      @teams = Team.find_by_sql("select a.id,a.name,a.teacher,up.username as leader, up.school as school,count(tu.team_id) as players,events.team_max_num as max_num from teams a inner join events on events.id=a.event_id inner join user_profiles up on a.user_id = up.user_id inner join team_user_ships tu on a.id = tu.team_id where a.event_id =#{event_id} and a.name like '%#{team_name}%' GROUP BY a.id")
+      render json: [true, @teams]
+    else
+      render json: [false, ['参数不完整']]
     end
   end
 

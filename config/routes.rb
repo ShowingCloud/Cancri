@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     collection do
       get :apply_event
       get :invite
+      get :search_team
       post :invite
       post :update_apply_info
       post :leader_create_team
@@ -44,6 +45,7 @@ Rails.application.routes.draw do
       post :reset_password_post
     end
   end
+  resources :test
 
   # -----------------------------------------------------------
   # Admin
