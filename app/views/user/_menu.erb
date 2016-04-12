@@ -1,3 +1,9 @@
+<div class="avatar" data-src="<%= image_path('homepage/avatar-bk.png') %>">
+  <div class="avatar-img">
+    <%= image_tag(current_user.avatar_url(:middle), class: 'img-thumbnail') %>
+  </div>
+  <div class="username"><%= current_user.nickname %></div>
+</div>
 <div class="sidebar">
   <a href="<%= user_preview_path %>" class="center-list active" data-src="<%= image_path('homepage/center-list-active.png') %>">
     个人信息

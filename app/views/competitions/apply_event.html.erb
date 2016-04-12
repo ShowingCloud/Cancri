@@ -1,24 +1,54 @@
-<div id="main" class="main">
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
   <div class="container">
     <div class="row">
-      <div class="sec-t" data-src="">
-        <%= @competition.name %>报名
-      </div>
-      <div class="sec-c">
-        <div class="event-panel">
-          <div>项目名称</div>
-          <div class="" data-src="<%= image_path('homepage/select-bk.png') %>">
-            <div class="">
-              <select>
-                <option>请选择项目</option>
+      <div class="event" id="event">
+        <div class="sec-t" data-src="<%= image_path('homepage/match-info-t-bk.png') %>">
+          <%= @competition.name %>报名
+        </div>
+        <div class="sec-c">
+          <div class="event-panel">
+            <div class="title">项目名称</div>
+            <div class="event-select" data-src="<%= image_path('homepage/select-bk.png') %>">
+              <select class="selected-display">
+                <option value="0">请选择项目</option>
                 <% @events.each do |e| %>
-                    <option value="<%= e.id %>"><%= e.name %></option>
+                    <option class="event-option" value="<%= e.id %>"><%= e.name %></option>
                 <% end %>
-
               </select>
             </div>
           </div>
+          <div class="team-panel">
+            <div class="team-search">
+              <input type="text" class="team-search-input"/>
+              <button data-ajax-get="/competitions/search_team" class="btn btn-search-team">查询</button>
+            </div>
+            <div class="team-list">
+              <table>
+                <thead>
+                <tr>
+                  <th>队伍</th>
+                  <th>队长</th>
+                  <th>指导老师</th>
+                  <th>学校</th>
+                  <th> </th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
       </div>
     </div>
   </div>
