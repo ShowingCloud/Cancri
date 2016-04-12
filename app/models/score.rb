@@ -5,5 +5,5 @@ class Score < ApplicationRecord
   validates :th, presence: true
   validates :team1_id, presence: true
   validates :score1, presence: true
-  mount_uploader :note_img, NoteImgUploader
+  mount_uploader :confirm_sign, NoteImgUploader
 end
