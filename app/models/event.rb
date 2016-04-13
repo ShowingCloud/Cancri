@@ -5,6 +5,8 @@ class Event < ApplicationRecord
   has_many :event_sa_ships
   has_many :score_attributes, through: :event_sa_ships
   has_many :event_workers
+  has_many :child_events, class_name: Event, foreign_key: :parent_id
+  belongs_to :parent_event, class_name: Event, foreign_key: :parent_id
   TIMER = {wu: 0, app: 1, saidao: 2, has_limit: 3} # 3 有时限但不记录时间
   mount_uploader :cover, EventUploader
 
@@ -17,7 +19,7 @@ class Event < ApplicationRecord
   # validates :apply_end_time, presence: true
   # validates :start_time, presence: true
   # validates :end_time, presence: true
-  validate :validate_datetime_parent
+  # validate :validate_datetime_parent
   before_save :update_level
 
   def update_level

@@ -11,6 +11,7 @@ class CreateScores < ActiveRecord::Migration[5.0]
       t.string :score1, null: false
       t.string :score2
       t.text :note
+      t.string :confirm_sign
       t.integer :user_id
 
       t.timestamps

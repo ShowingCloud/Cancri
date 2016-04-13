@@ -84,6 +84,6 @@ class CompetitionService
   end
 
   def self.get_events(comp_id)
-    Event.where(competition_id: comp_id).joins(:teams).where('teams.event_id=events.id')
+    Team.find_by_sql("select concat(a.name,'(',b.group,')') as eg, b.group from events a join teams b on a.id = b.event_id GROUP BY eg")
   end
 end

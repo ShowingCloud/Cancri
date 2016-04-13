@@ -8,7 +8,7 @@ class CreateSchools < ActiveRecord::Migration[5.0]
       t.timestamps
     end
     add_index :schools, :school_type
-    add_index :schools, [:name, :school_type], unique: true
+    add_index :schools, [:district, :school_type, :name], unique: true, name: 'index_schools'
     add_index :schools, :district
     add_index :schools, [:school_type, :district]
   end

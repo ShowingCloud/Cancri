@@ -44,6 +44,7 @@ group :development do
   gem 'web-console', '~> 3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem 'roo'
   gem 'quiet_assets'
   gem 'better_errors'
   gem 'grape-swagger'
@@ -60,7 +61,7 @@ gem 'simple_form'
 gem 'settingslogic'
 gem 'rucaptcha', '~> 0.3.2'
 
-gem 'carrierwave'
+gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 gem 'mini_magick'
 gem 'rails-admin-scaffold'
 gem 'kaminari', github: 'amatsuda/kaminari'

@@ -5,7 +5,7 @@ class CreateUserProfiles < ActiveRecord::Migration[5.0]
       t.string :username
       t.integer :gender
       t.integer :age
-      t.string :school
+      t.integer :school
       t.string :student_code # 学籍号
       t.string :identity_card, length: {in: 18} # 身份证
       t.string :nationality # 民族

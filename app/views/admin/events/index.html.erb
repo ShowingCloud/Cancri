@@ -39,6 +39,8 @@
     <th>ID</th>
     <th><%= t('simple_form.labels.defaults.name') %></th>
     <th><%= t('simple_form.labels.defaults.competition_id') %></th>
+    <th>组别</th>
+    <th>组名</th>
     <th>项目状态</th>
     <th>每队人数</th>
     <th>操作</th>
@@ -51,6 +53,8 @@
         <td><%= event.id %></td>
         <td><%= event.name %></td>
         <td><%= event.competition.try(:name) %></td>
+        <td><%= event.parent_event.name if event.level==2 %></td>
+        <td><%= show_status(event.is_father) if event.is_father %></td>
         <td><%= t('status.status'+event.status.to_s) %></td>
         <td><%= "#{event.team_min_num}-" if event.team_min_num != event.team_max_num %><%= event.team_max_num %></td>
         <td>
@@ -58,12 +62,14 @@
           <%= link_to [:admin, event], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>
           <% end %>
-          <%= link_to "#{teams_admin_events_path}?id=#{event.id}", title: '队伍', class: 'btn btn-xs btn-primary' do %>
-              <i class="icon-flag-alt bigger-120"></i>
-          <% end %>
-          <%= link_to "#{scores_admin_events_path}?id=#{event.id}", title: '成绩列表', class: 'btn btn-xs btn-success' do %>
-              <i class="icon-book icon-only"></i>
-          <% end %>
+          <!--<%= link_to "#{teams_admin_events_path}?id=#{event.id}", title: '队伍', class: 'btn btn-xs btn-primary' do %>-->
+              <!--<i class="icon-flag-alt bigger-120"></i>-->
+              <!--
+          <% end %>-->
+          <!--<%= link_to "#{scores_admin_events_path}?id=#{event.id}", title: '成绩列表', class: 'btn btn-xs btn-success' do %>-->
+              <!--<i class="icon-book icon-only"></i>-->
+              <!--
+          <% end %>-->
           <%= link_to edit_admin_event_path(event), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>
           <% end %>
