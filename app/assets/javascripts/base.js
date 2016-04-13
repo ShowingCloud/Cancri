@@ -109,7 +109,7 @@ $(function () {
                                             var tLeader = '<td>' + v.leader + '</td>';
                                             var tTeacher = '<td>' + v.teacher + '</td>';
                                             var tSchool = '<td>' + v.school + '</td>';
-                                            var tBtn = '<td>' + (v.players == v.max_num ? '队伍已满' : '<button>加入</button>') + '</td>';
+                                            var tBtn = '<td>' + (v.players == v.max_num ? '队伍已满' : '<button class="btn-robodou btn-join-team">加入</button>') + '</td>';
                                             tr.append(tName).append(tLeader).append(tTeacher).append(tSchool).append(tBtn);
                                             target.append(tr);
                                         })

@@ -18,23 +18,22 @@
             </div>
           </div>
           <div class="team-panel">
-            <div class="team-search">
+            <div class="team-search" data-src="<%= image_path('homepage/select-bk.png') %>">
               <input type="text" class="team-search-input"/>
-              <button data-ajax-get="/competitions/search_team" class="btn btn-search-team">查询</button>
+              <button data-ajax-get="/competitions/search_team" class="btn btn-search-team">查 询</button>
             </div>
             <div class="team-list">
               <table>
                 <thead>
                 <tr>
-                  <th>队伍</th>
-                  <th>队长</th>
-                  <th>指导老师</th>
-                  <th>学校</th>
-                  <th> </th>
+                  <th class="col-n">队伍</th>
+                  <th class="col-l">队长</th>
+                  <th class="col-t">指导老师</th>
+                  <th class="col-s">学校</th>
+                  <th class="col-o"> </th>
                 </tr>
                 </thead>
                 <tbody>
-
                 </tbody>
               </table>
             </div>
