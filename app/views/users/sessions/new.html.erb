@@ -6,22 +6,21 @@
       </div>
       <div class="sec-c">
         <div class="login-form">
-          <form action="/account/sign_in" novalidate="novalidate" method="post">
-            <input name="utf8" type="hidden" value="✓">
-            <input type="hidden" name="authenticity_token" value="">
-            <label class="input-row">
-              用户名 <input type="text" name="user[login]"/>
-            </label>
-            <label class="input-row">
-              密码 <input type="password" name="user[password]"/>
-            </label>
+          <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
 
-            <div class="btn-row">
-              <button class="btn-robodou btn-robodou-login-modal" data-src="<%= image_path('homepage/login-btn-modal-bk.png') %>">登
-                录
-              </button>
-            </div>
-          </form>
+              <label class="input-row">
+                用户名 <input type="text" name="user[login]" value="<%= resource.login %>"/>
+              </label>
+              <label class="input-row">
+                密码 <input type="password" name="user[password]"/>
+              </label>
+
+              <div class="btn-row">
+                <button class="btn-robodou btn-robodou-login-modal" data-src="<%= image_path('homepage/login-btn-modal-bk.png') %>">登
+                  录
+                </button>
+              </div>
+          <% end %>
           <a href="<%= %>">忘记密码</a>
         </div>
       </div>
