@@ -2,7 +2,9 @@ class CreateCompetitions < ActiveRecord::Migration[5.0]
   def change
     create_table :competitions do |t|
       t.string :name, null: false
+      t.string :host_year, null: false
       t.text :description
+      t.text :emc_contact
       t.string :cover
       t.text :body_html
       t.string :guide_units # 指导单位
@@ -23,6 +25,7 @@ class CreateCompetitions < ActiveRecord::Migration[5.0]
     end
 
     add_index :competitions, :name, unique: true
+    add_index :competitions, :host_year
     add_index :competitions, :status
     add_index :competitions, :start_time
     add_index :competitions, :end_time
