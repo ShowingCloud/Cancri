@@ -5,7 +5,7 @@ $(function () {
     var action = function () {
         lazyload.init();
         rucaptcha.init();
-        authenticity_token.init();
+        //authenticity_token.init();
         match_info_toggle.init();
         event_select.init();
         search_team.init();
@@ -52,14 +52,14 @@ $(function () {
         }
     };
 
-    var authenticity_token = {
-        init: function () {
-            var a = $('[name="authenticity_token"]');
-            if (a) {
-                a.attr({'value': $('meta[name="csrf-token"]').attr('content')});
-            }
-        }
-    };
+    //var authenticity_token = {
+    //    init: function () {
+    //        var a = $('[name="authenticity_token"]');
+    //        if (a) {
+    //            a.attr({'value': $('meta[name="csrf-token"]').attr('content')});
+    //        }
+    //    }
+    //};
 
     var match_info_toggle = {
         init: function () {
@@ -121,9 +121,10 @@ $(function () {
                             }
                         };
                         $.ajax(option);
-                    }else{
+                    } else {
                         alert('请输入汉字、数字和字母');
-                    };
+                    }
+                    ;
                 })
             }
         }
