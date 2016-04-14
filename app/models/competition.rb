@@ -5,7 +5,7 @@ class Competition < ApplicationRecord
 
 
   validates :name, presence: true, length: {maximum: 50}, uniqueness: true
-  validates :host_year, presence: true, length: 4, numericality: true
+  validates :host_year, presence: true, length: {is: 4}, numericality: true
 
   validates :status, presence: true
   STATUS = {
