@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       post :leader_agree_apply
       post :delete_team
       post :leader_delete_player
+      post :already_apply
     end
   end
   resource :chats

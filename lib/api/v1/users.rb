@@ -47,9 +47,9 @@ module API
             requires :identifier, type: String, desc: '队伍编号'
           end
           get '/team_players' do
-            team = Team.joins(:event).joins('INNER JOIN competitions ON competitions.id = events.competition_id').where(identifier: params[:identifier]).select(:name, :id, 'events.name as event_name', 'events.competition_id as comp_id', 'competitions.name as comp_name').take
+            team = Team.joins(:event).joins('INNER JOIN competitions comp ON comp.id = events.competition_id').where(identifier: params[:identifier]).select(:name, :id, 'events.name as event_name', 'events.competition_id as comp_id', 'comp.name as comp_name').take
             if team.present?
-              aa = TeamUserShip.joins('INNER JOIN user_profiles ON user_profiles.user_id = team_user_ships.user_id').where(team_id: team.id).select('user_profiles.username', 'user_profiles.school', 'user_profiles.grade', 'user_profiles.gender')
+              aa = TeamUserShip.joins('INNER JOIN user_profiles up ON up.user_id = team_user_ships.user_id').where(team_id: team.id).select('up.username', 'up.grade', 'up.gender')
               render result: [true, [team_name: team.name, event_name: team.event_name, comp_name: team.comp_name, user: aa]]
             else
               render result: [false, '该队伍编码不存在']

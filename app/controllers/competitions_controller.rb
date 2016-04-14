@@ -13,7 +13,7 @@ class CompetitionsController < ApplicationController
   def apply_event
     if require_mobile_or_email
       @competition = Competition.find(params[:cd])
-      @events = Event.where(competition_id: params[:cd], is_father: false).select(:name, :id)
+      @events = Event.where(competition_id: params[:cd], is_father: false).select(:name, :id, :team_max_num)
       #   @teams = Team.includes(:team_user_ships).where(event_id: params[:eid])
       #   @already_apply = TeamUserShip.includes(:team).where(event_id: params[:eid], user_id: current_user.id).take
       #   if @already_apply.present?
@@ -22,6 +22,20 @@ class CompetitionsController < ApplicationController
     else
       redirect_to "/competitions/#{params[:cd]}", notice: '继续操作前请验证手机或邮箱'
     end
+  end
+
+  def already_apply
+    if params[:ed].present?
+      a_p = TeamUserShip.where(event_id: params[:ed], user_id: current_user.id).take
+      if a_p.present?
+        result =[true, '已报名']
+      else
+        result = [false, '未报名']
+      end
+    else
+      result=[false, '参数不完整']
+    end
+    render json: result
   end
 
   def search_team
