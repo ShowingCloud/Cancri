@@ -32,7 +32,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         respond_with resource
       end
     else
-      respond_with resource
+      render action: 'new'
     end
 
     # if resource.persisted?
