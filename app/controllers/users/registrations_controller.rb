@@ -15,7 +15,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     yield resource if block_given?
 
-    if verify_rucaptcha?(resource) && resource.save
+    if verify_rucaptcha?(resource) && resource.persisted?
       if resource.active_for_authentication?
         set_flash_message :notice, :signed_up if is_flashing_format?
         sign_up(resource_name, resource)

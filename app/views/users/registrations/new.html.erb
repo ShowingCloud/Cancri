@@ -7,47 +7,44 @@
             注册我的robodou
           </div>
           <div class="sec-c">
-            <form novalidate="novalidate" class="simple_form new_user" id="new_user" action="<%= "/account" %>" accept-charset="UTF-8" method="post">
-              <input name="utf8" type="hidden" value="✓">
-              <input type="hidden" name="authenticity_token" value="">
-
-              <label class="input-row">
-                用户名
-                <input type="text" name="user[nickname]" value="<%= resource.nickname %>"/>
-                <% if request.post? && devise_error_messages! %>
-                    <span class="tips"><%= resource.errors[:nickname].each.first %></span>
-                <% end %>
-              </label>
-              <label class="input-row">
-                密码
-                <input type="password" name="user[password]" value=""/>
-                <% if request.post? && devise_error_messages! %>
-                    <span class="tips"><%= resource.errors[:password].each.first %></span>
-                <% end %>
-              </label>
-              <label class="input-row">
-                确认密码
-                <input type="password" name="user[password_confirmation]" value=""/>
-                <% if request.post? && devise_error_messages! %>
-                    <% resource.errors[:password_confirmation].each do |msg| %>
-                        <span class="tips"><%= msg %></span>
-                    <% end %>
-                <% end %>
-              </label>
-              <label class="input-row">
-                验证码
-                <a class="refresh-captcha" href="#">
-                  <%= rucaptcha_image_tag(title: '点击刷新验证码') %>
-                </a>
-                <%= rucaptcha_input_tag %>
-                <% if request.post? && !verify_rucaptcha?(resource) %>
-                    <span class="tips">验证码不正确</span>
-                <% end %>
-              </label>
-              <label class="text-center">
-                <input class="btn-robodou btn-robodou-register" data-src="<%= image_path('homepage/btn-register-bk.png') %>" type="submit" value="注册"/>
-              </label>
-            </form>
+            <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+                <label class="input-row">
+                  用户名
+                  <input type="text" name="user[nickname]" value="<%= resource.nickname %>"/>
+                  <% if request.post? && devise_error_messages! %>
+                      <span class="tips"><%= resource.errors[:nickname].each.first %></span>
+                  <% end %>
+                </label>
+                <label class="input-row">
+                  密码
+                  <input type="password" name="user[password]" value=""/>
+                  <% if request.post? && devise_error_messages! %>
+                      <span class="tips"><%= resource.errors[:password].each.first %></span>
+                  <% end %>
+                </label>
+                <label class="input-row">
+                  确认密码
+                  <input type="password" name="user[password_confirmation]" value=""/>
+                  <% if request.post? && devise_error_messages! %>
+                      <% resource.errors[:password_confirmation].each do |msg| %>
+                          <span class="tips"><%= msg %></span>
+                      <% end %>
+                  <% end %>
+                </label>
+                <label class="input-row">
+                  验证码
+                  <a class="refresh-captcha" href="#">
+                    <%= rucaptcha_image_tag(title: '点击刷新验证码') %>
+                  </a>
+                  <%= rucaptcha_input_tag %>
+                  <% if request.post? && !verify_rucaptcha?(resource) %>
+                      <span class="tips">验证码不正确</span>
+                  <% end %>
+                </label>
+                <label class="text-center">
+                  <input class="btn-robodou btn-robodou-register" data-src="<%= image_path('homepage/btn-register-bk.png') %>" type="submit" value="注册"/>
+                </label>
+            <% end %>
           </div>
         </div>
       </div>
@@ -63,10 +60,4 @@
     </div>
   </div>
 </div>
-
-
-
-
-
-
 
