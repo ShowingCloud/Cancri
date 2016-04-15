@@ -1,0 +1,40 @@
+<h1 class="page-header">
+  教师列表
+  <small class="pull-right">
+    <a href="/admin/checks/teachers" class="btn btn-default" title="待审核教师">
+      待审核教师</a>
+  </small>
+</h1>
+<table class="table table-bordered table-hover table-striped">
+  <thead>
+  <tr>
+    <th>姓名</th>
+    <th>性别</th>
+    <th>级别</th>
+    <th>手机</th>
+    <th>学校</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @teacher_array.each do |th| %>
+      <tr>
+        <td><%= th[:username] %></td>
+        <td><%= th[:gender] == 1 ? '男' : '女' %></td>
+        <td>
+          <% if th[:role]=='1' %>
+              <label class="label label-danger">市级</label>
+          <% elsif th[:role]=='2' %>
+              <label class="label label-warning">区级</label>
+          <% elsif th[:role]=='3' %>
+              <label class="label label-info">校级</label>
+          <% end %>
+        </td>
+        <td><%= th[:mobile] %></td>
+        <td><%= th[:school] %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+<nav>
+  <%= paginate @teachers %>
+</nav>

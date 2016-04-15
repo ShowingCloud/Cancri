@@ -1,0 +1,80 @@
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
+        <div class="sec-t">
+          <%= render 'user/menu' %>
+        </div>
+        <div class="sec-c">
+          <div class="content">
+            <div class="user-panel">
+              <div class="user-row">
+                <span class="row-name">昵称</span>
+                <span class="row-content edit-input" data-input="text"><%= current_user.nickname %></span>
+              </div>
+              <div class="user-row">
+                <span class="row-name">手机号</span>
+                <span class="row-content edit-input" data-input="text">13312345432</span>
+                <span class="row-tip">已验证</span>
+              </div>
+              <div class="user-row">
+                <span class="row-name">邮箱</span>
+                <% if current_user.email.present? %>
+                    <span class="row-content edit-input" data-input="text"><%= current_user.email %></span>
+                    <span class="row-tip">已验证</span>
+                <% else %>
+                    <span class="row-tip"><a href="">添加</a></span>
+                <% end %>
+              </div>
+              <div class="panel-control control-bottom">
+                编 辑
+              </div>
+            </div>
+            <div class="user-panel">
+              <div class="user-row">
+                <span class="row-name">真实姓名</span>
+                <span class="row-content edit-input" data-input="text">Jack</span>
+              </div>
+              <div class="user-row">
+                <span class="row-name">身份</span>
+                <span class="row-content edit-checkbox" data-input="text">学生</span>
+                <span class=""></span>
+              </div>
+              <div class="user-row">
+                <span class="row-name">性别</span>
+                <span class="row-content edit-radio" data-input="radio" data-input-name="">男</span>
+                <span class="row-content edit-radio uncheck" data-input="radio" data-input-name="">女</span>
+              </div>
+              <div class="user-row">
+                <span class="row-name">学校</span>
+                <span class="row-content edit-input" data-input="text">上海中学</span>
+              </div>
+              <div class="user-row">
+                <span class="row-name">年级</span>
+                <span class="row-content edit-input" data-input="text">高一</span>
+              </div>
+              <div class="user-row">
+                <span class="row-name">学籍号</span>
+                <span class="row-content edit-input" data-input="text">2015090302341625</span>
+              </div>
+              <div class="panel-control control-top">
+                编 辑
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,137 @@
+<h1 class="page-header">
+  显示<%= t('activerecord.models.event') %>
+  <small class="pull-right">
+    <a href="<%= new_admin_event_path %>" title="添加项目" class="btn btn-default">
+      <i class="icon-plus icon-only"></i></a>
+    <a href="<%= edit_admin_event_path(@event) %>" title="编辑" class="btn btn-default">
+      <i class="icon-edit icon-only"></i></a>
+    <a href="<%= admin_events_path %>" title="列表" class="btn btn-default">
+      <i class="icon-list icon-only"></i></a>
+  </small>
+</h1>
+
+<% if notice %>
+    <div class="alert alert-success"><%= notice %>
+      <button class="close" data-dismiss="alert">
+        <i class="icon-remove"></i>
+      </button>
+    </div>
+<% end %>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <%= t('activerecord.models.event') %>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.name') %>:</h4>
+
+      <%= @event.name %>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.competition_id') %>:</h4>
+
+      <%= @event.competition.name %>
+    </li>
+    <li class="list-group-item">
+      <h4>包含组别:</h4>
+      <% groups = @event.group.try(:split, ',')
+         groups.each do |name| %>
+          <div>
+            <label>
+              <%= t('group.group'+name.to_s) %>
+            </label>
+          </div>
+      <% end %>
+    </li>
+
+    <li class="list-group-item">
+      <h4>每队人数:</h4>
+
+      <%= @event.team_min_num %><%= " - #{@event.team_max_num}" if @event.team_max_num != @event.team_min_num %>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.description') %>:</h4>
+
+      <%= @event.description %>
+    </li>
+    <li class="list-group-item">
+      <h4>封面:</h4>
+      <% if @event.cover.present? %>
+          <%= image_tag(@event.cover_url(:middle)) %>
+      <% end %>
+    </li>
+    <li class="list-group-item">
+      <h4>状态:</h4>
+
+      <%= t('status.status'+@event.status.to_s) %>
+    </li>
+    <li class="list-group-item">
+      <h4>比赛开始时间:</h4>
+
+      <%= @event.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>
+    </li>
+    <li class="list-group-item">
+      <h4>比赛结束时间:</h4>
+
+      <%= @event.end_time.try(:strftime, '%Y-%m-%d %H:%M') %>
+    </li>
+  </ul>
+  <input type="hidden" value="<%= @event.id %>" name="event-identifier">
+</div>
+
+<div class="panel panel-info">
+  <div class="panel-heading">
+    成绩属性
+    <button class="open-add-score-attribute btn btn-xs btn-primary pull-right">显示属性</button>
+  </div>
+
+
+  <div class="add-score-attribute panel-body">
+    <div class="form-group">
+      <div class="selected-info">
+      </div>
+      <div class="clearfix"></div>
+      <div id="score-attribute">
+        <label style="margin:0 5px;font-size: 22px" id="select-all-score-attribute"><input type="checkbox" name="select_all" class="select-all-score-attribute" autocomplete="off">
+          <b>全选</b></label>
+        <button class="select-tl-sa btn btn-xs btn-success hidden">添加其子属性</button>
+        <button class="add-all-score-attribute btn btn-xs btn-primary hidden">添加所选属性</button>
+      </div>
+
+      <div id="two-level-sa" class="hidden">
+        <label id="select-all-tl-sa"><input type="checkbox" name="select_all" class="select-all-tl-sa" autocomplete="off">
+          <b>全选</b></label>
+        <button class="add-selected-sa btn btn-xs btn-primary hidden">添加所选属性</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div>
+  <% if @score_attributes.present? %>
+      <table class="table table-bordered table-hover table-striped">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>名称</th>
+          <th>备注</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @score_attributes.each do |sa| %>
+            <tr class="<%= "hide-tr#{sa[:id]}" %>">
+              <td><%= sa[:id] %></td>
+              <td><%= sa[:name] %></td>
+              <td id="<%= "sa-desc#{sa[:id]}" %>"><%= sa[:desc] %></td>
+              <td>
+                <span class="btn btn-xs btn-warning edit-event-sa-desc" data-id="<%= sa[:id] %>" data-text="<%= sa[:name] %>" title="添加描述"><i class="glyphicon glyphicon-edit"></i></span>
+                <span class="btn btn-xs btn-danger delete-event-sa" data-id="<%= sa[:id] %>" title="删除"><i class="glyphicon glyphicon-trash"></i></span>
+              </td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+  <% end %>
+</div>

@@ -1,0 +1,31 @@
+<h1 class="page-header">
+  显示<%= t('activerecord.models.score_attribute') %>
+  <small class="pull-right">
+    <a href="<%= new_admin_score_attribute_path %>" class="btn btn-default" title="添加<%= t('activerecord.models.score_attribute') %>">
+      <i class="icon-only icon-plus"></i></a>
+    <a href="<%= edit_admin_score_attribute_path(@score_attribute) %>" title="编辑" class="btn btn-default">
+      <i class="icon-edit icon-only"></i></a>
+    <a href="<%= admin_score_attributes_path %>" title="<%= t('activerecord.models.score_attribute') %>列表" class="btn btn-default">
+      <i class="icon-list icon-only"></i></a>
+  </small>
+</h1>
+
+<% if notice %>
+    <div class="alert alert-success"><%= notice %>
+      <button class="close" data-dismiss="alert">
+        <i class="icon-remove"></i>
+      </button>
+    </div>
+<% end %>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <%= t('activerecord.models.score_attribute') %>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.name') %>:</h4>
+
+      <%= @score_attribute.name %>
+    </li>
+  </ul>
+</div>

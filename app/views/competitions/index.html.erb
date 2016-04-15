@@ -1,0 +1,49 @@
+<!--<div class="container">-->
+<!--
+<% @competitions.each do |comp| %>-->
+    <!--<%= link_to competition_path(comp) do %>-->
+        <!--<h2><%= comp.name %></h2>-->
+        <!--
+    <% end %>-->
+    <!--
+<% end %>-->
+<!--</div>-->
+
+<div id="main" class="main" data-src="<%= image_path('homepage/bk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="match-list">
+        <div class="sec-t">
+          <div class="year-select select-robodou">
+            <div class="select-option selected">
+              2016
+            </div>
+          </div>
+        </div>
+        <div class="sec-c">
+          <div class="list">
+            <% @competitions.each do |comp| %>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                  <%= link_to competition_path(comp) do %>
+                      <div class="item" data-src="<%= image_path('homepage/match-item-bk.png') %>">
+                        <div class="item-t"><%= comp.name %></div>
+                        <img src="" alt="" data-src="<%= image_path('homepage/match-item.png') %>"/>
+                      </div>
+                  <% end %>
+                </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>

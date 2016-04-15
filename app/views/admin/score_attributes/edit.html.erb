@@ -1,0 +1,11 @@
+<h1 class="page-header">
+  编辑<%= t('activerecord.models.score_attribute') %>
+  <small class="pull-right">
+    <a href="<%= admin_score_attribute_path(@score_attribute) %>" title="显示该<%= t('activerecord.models.score_attribute') %>" class="btn btn-default">
+      <i class="icon-eye-open icon-only"></i></a>
+    <a href="<%= admin_score_attributes_path %>" title="<%= t('activerecord.models.score_attribute') %>列表" class="btn btn-default">
+      <i class="icon-list icon-only"></i></a>
+  </small>
+</h1>
+
+<%= render 'form' %>

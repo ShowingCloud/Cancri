@@ -1,0 +1,23 @@
+<div class="avatar" data-src="<%= image_path('homepage/avatar-bk.png') %>">
+  <div class="avatar-img">
+    <%= image_tag(current_user.avatar_url(:middle), class: 'img-thumbnail') %>
+  </div>
+  <div class="username"><%= current_user.nickname %></div>
+</div>
+<div class="sidebar">
+  <a href="<%= user_preview_path %>" class="center-list active" data-src="<%= image_path('homepage/center-list-active.png') %>">
+    个人信息
+  </a>
+  <a class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
+    参赛信息
+  </a>
+  <a href="<%= user_notification_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
+    消息通知
+  </a>
+  <a class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
+    我的积分
+  </a>
+  <a class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
+    调戏小豆
+  </a>
+</div>

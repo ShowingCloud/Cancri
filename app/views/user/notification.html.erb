@@ -1,0 +1,46 @@
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
+        <div class="sec-t">
+          <%= render 'user/menu' %>
+        </div>
+        <div class="sec-c">
+          <div class="content">
+            <div class="message-panel">
+              <% if @notifications.present? %>
+                  <% @notifications.each do |no| %>
+                      <div class="message" data-src="<%= image_path('homepage/message.png') %>">
+                        <div class="msg-time">2016-03-17 <%= no.read ? '已读' : '未读' %></div>
+                        <div class="msg-inner">
+                          <%= no.content[0..20] %>
+                        </div>
+                        <div class="msg-control">
+                          <a class="btn-robodou btn-msg" href="<%= "/user/notify?id=#{no.id}" %>">查看详情</a>
+                        </div>
+                      </div>
+                  <% end %>
+                  <nav>
+                    <%= paginate @notifications %>
+                  </nav>
+              <% else %>
+                  <div class="alert alert-info">
+                    <p> 暂无消息</p>
+                  </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>

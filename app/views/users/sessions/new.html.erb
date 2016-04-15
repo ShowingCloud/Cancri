@@ -1,0 +1,41 @@
+<div id="main" class="main" data-src="<%= image_path('homepage/bk.png') %>">
+  <div id="login-modal">
+    <div class="login-content" data-src="<%= image_path('homepage/login-border.png') %>">
+      <div class="sec-t">
+        登录我的robodou
+      </div>
+      <div class="sec-c">
+        <div class="login-form">
+          <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+
+              <label class="input-row">
+                用户名 <input type="text" name="user[login]" value="<%= resource.login %>"/>
+              </label>
+              <label class="input-row">
+                密码 <input type="password" name="user[password]"/>
+              </label>
+
+              <div class="btn-row">
+                <button class="btn-robodou btn-robodou-login-modal" data-src="<%= image_path('homepage/login-btn-modal-bk.png') %>">登
+                  录
+                </button>
+              </div>
+          <% end %>
+          <a href="<%= %>">忘记密码</a>
+        </div>
+      </div>
+      <div class="sec-f">
+        <a href="<%= new_user_registration_path %>">注 册</a>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>
