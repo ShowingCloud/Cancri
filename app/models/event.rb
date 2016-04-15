@@ -8,6 +8,7 @@ class Event < ApplicationRecord
   has_many :child_events, class_name: Event, foreign_key: :parent_id
   belongs_to :parent_event, class_name: Event, foreign_key: :parent_id
   TIMER = {wu: 0, app: 1, saidao: 2, has_limit: 3} # 3 有时限但不记录时间
+  GROUP = {primary: 1, middle: 2, junior: 3, high: 4}
   mount_uploader :cover, EventUploader
 
   validates :name, presence: true
@@ -15,6 +16,7 @@ class Event < ApplicationRecord
   validates :status, presence: true
   validates :team_min_num, presence: true
   validates :team_max_num, presence: true
+  validates :name, presence: true, uniqueness: {scope: :competition_id, message: '同一大赛下一个项目不能出现两次'}
   # validates :apply_start_time, presence: true
   # validates :apply_end_time, presence: true
   # validates :start_time, presence: true
