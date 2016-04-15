@@ -2,6 +2,7 @@
  * Created by yaolin on 16/4/5.
  */
 $(function () {
+    var CURRENT_USET_ID = $('.login-info').attr('data-current-user');
     var action = function () {
         lazyload.init();
         rucaptcha.init();
@@ -75,7 +76,35 @@ $(function () {
             var s = $('.selected-display');
             if (s) {
                 s.on('change', function () {
-                    $('.team-panel').addClass('active')
+                    var _self = $(this);
+                    var ed = _self.val();
+                    var choice = _self.find('option[data-val="' + ed + '"]');
+                    if (ed != 0) {
+                        var max_num = choice.attr('data-max-num');
+                        var eName = choice.attr('data-name');
+                        var is_single = max_num == 1;
+                        var option = {
+                            url: 'already_apply',
+                            type: 'post',
+                            dateType: 'json',
+                            data: {'ed': ed},
+                            success: function (data) {
+                                if (data[0]) {
+                                    //已报名
+                                    show_apply_info(data, eName, max_num);
+                                } else {
+                                    //未报名
+                                    if (is_single) {
+                                        //单人项目
+                                    } else {
+                                        //多人项目
+                                        $('.team-panel').addClass('active');
+                                    }
+                                }
+                            }
+                        };
+                        $.ajax(option);
+                    }
                 });
             }
         }
@@ -124,12 +153,36 @@ $(function () {
                     } else {
                         alert('请输入汉字、数字和字母');
                     }
-                    ;
                 })
             }
         }
     };
-
     action();
 
+    function show_apply_info(data, eName, max_num) {
+        //项目信息
+        $('.apply-event-name').text(eName);
+        //.append('<div class="add">该项目最多报名人数为' + max_num + '人</div>')
+        var tName = data[1][0].name;
+        $('.apply-team-name').text(tName);
+        var num = data[1].length;
+        $('.apply-member-num').text(num + '名');
+        if (num < max_num && data[2] != 0) {
+            $('.apply-member-num').append('<button class="btn-robodou btn-add-member">添加</button>');
+        }
+
+        //队员信息
+        var target = $('.apply-member').find('tbody');
+        target.empty();
+        $.each(data[1], function (k, v) {
+            var tr = $('<tr>');
+            var tName = '<td>' + v.username + '</td>';
+            var tGender = '<td>' + (v.gender == 1 ? '男' : '女') + '</td>';
+            var tSchool = '<td>' + v.school + '</td>';
+            var tGrade = '<td>' + v.grade + '</td>';
+            var tBtn = '<td></td>';
+            tr.append(tName).append(tGender).append(tSchool).append(tGrade).append(tBtn);
+            target.append(tr);
+        })
+    }
 });
