@@ -1,1 +1,0 @@
-json.extract! @event, :name, :competition_id, :cover, :status, :team_min_num, :created_at, :updated_at
