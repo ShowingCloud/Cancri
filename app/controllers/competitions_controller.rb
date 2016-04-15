@@ -28,8 +28,8 @@ class CompetitionsController < ApplicationController
     if params[:ed].present?
       a_p = TeamUserShip.where(event_id: params[:ed], user_id: current_user.id).take
       if a_p.present?
-        user_ids = TeamUserShip.where(team_id: a_p.team_id).pluck(:user_id)
-        result =[true, '已报名']
+        team_players = UserProfile.find_by_sql("select u_p.username,u_p.grade as grade,u_p.gender as gender, a.status,t.name as name,s.name as school from team_user_ships a INNER JOIN teams t on t.id = a.team_id inner join user_profiles u_p on u_p.user_id = a.user_id inner join schools s on s.id = u_p.school where a.team_id = #{a_p.team_id}")
+        result =[true, team_players]
       else
         result = [false, '未报名']
       end
