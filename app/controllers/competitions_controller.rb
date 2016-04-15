@@ -28,6 +28,7 @@ class CompetitionsController < ApplicationController
     if params[:ed].present?
       a_p = TeamUserShip.where(event_id: params[:ed], user_id: current_user.id).take
       if a_p.present?
+        user_ids = TeamUserShip.where(team_id: a_p.team_id).pluck(:user_id)
         result =[true, '已报名']
       else
         result = [false, '未报名']
@@ -50,14 +51,22 @@ class CompetitionsController < ApplicationController
   end
 
   def update_apply_info
-    if params[:username].present? and params[:school].present? and params[:grade].present?
+    username = params[:username]
+    gender = params[:gender].to_i
+    grade = params[:grade]
+    district = params[:district].to_i
+    school = params[:school].to_i
+    if /\A[\u4e00-\u9fa5]{2,4}\Z/.match(username)==nil
+      status = false
+      message= '姓名为2-4位中文'
+    elsif username.present? && school !=0 && grade.present? && gender !=0 && district != 0
       user = UserProfile.find_by(user_id: current_user.id)
       if user.present?
-        user.username = params[:username]
-        user.age = params[:age]
-        user.school = params[:school]
-        user.grade = params[:grade]
-        user.bj = params[:bj]
+        user.username = username
+        user.gender = gender
+        user.school = school
+        user.grade = grade
+        user.district = district
         if user.save
           status = true
           message = '个人信息确认成功'
@@ -66,7 +75,7 @@ class CompetitionsController < ApplicationController
           message = '个人信息更新失败'
         end
       else
-        up = UserProfile.create!(user_id: current_user.id, username: params[:username], age: params[:age], school: params[:school], grade: params[:grade], bj: params[:bj])
+        up = UserProfile.create!(user_id: current_user.id, username: username, gender: gender, school: school, grade: grade, district: district)
         if up.save
           status = true
           message = '个人信息添加成功'

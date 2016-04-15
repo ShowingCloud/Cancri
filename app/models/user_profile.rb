@@ -4,7 +4,7 @@ class UserProfile < ApplicationRecord
   has_many :comp_workers, through: :user
   has_many :user_roles, through: :user
   has_many :competitions, through: :comp_workers
-  belongs_to :school, foreign_key: :school
+  belongs_to :schools, class_name: School, foreign_key: :school
   mount_uploader :certificate, CertificateUploader
   GENDER = {male: 1, female: 2}
 end
