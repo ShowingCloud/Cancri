@@ -28,6 +28,18 @@
                 <%= image_tag(@event.cover_url(:middle), class: 'img-thumbnail') %>
               </div>
           <% end %>
+          <label class="control-label">包含组别</label>
+
+          <div class="well">
+            <% groups = @event.group.try(:split, ',')
+               Event::GROUP.each do |id, name| %>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="event[group][]" value="<%= name %>" <%= groups.try(:include?, name.to_s) ? 'checked' : '' %>> <%= t('group.'+id.to_s) %>
+                  </label>
+                </div>
+            <% end %>
+          </div>
           <div class="form-group">
             <label for="exampleInputFile">封面:</label>
             <%= f.file_field :cover %>

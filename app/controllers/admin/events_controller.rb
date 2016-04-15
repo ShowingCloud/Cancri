@@ -157,7 +157,13 @@ class Admin::EventsController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def event_params
-    params.require(:event).permit!
+    params.require(:event).permit(:name, :is_father, :parent_id, :competition_id, :level, :description, :body_html, :status, :against, :team_min_num, :team_max_num, :apply_start_time, :apply_end_time, :start_time, :end_time, {group: []}).tap do |e|
+      if params[:event][:group].present?
+        e[:group] = params[:event][:group].join(',')
+      else
+        e[:group] = nil
+      end
+    end
   end
 
 end
