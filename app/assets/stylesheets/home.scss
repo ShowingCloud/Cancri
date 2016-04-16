@@ -1456,6 +1456,11 @@ ul {
   font-size: 14px;
   width: 450px;
   margin: 40px auto;
+  display: none;
+}
+
+.confirm—info.active {
+  display: block;
 }
 
 .confirm—info .info-t {
@@ -1517,7 +1522,11 @@ ul {
 }
 
 .already-apply {
+  display: none;
+}
 
+.already-apply.active {
+  display: block;
 }
 
 .already-apply .apply-team {
@@ -1527,6 +1536,8 @@ ul {
   font-size: 14px;
   color: #8FD9DF;
   margin: 40px auto;
+  border: 2px solid #4688A0;
+  border-radius: 15px;
 }
 
 .already-apply .apply-team .tips {
@@ -1561,4 +1572,59 @@ ul {
   bottom: -12px;
   display: block;
   text-align: center;
+}
+
+.already-apply .apply-member {
+  border: 2px solid #4688A0;
+  width: 780px;
+  margin: 40px auto;
+  color: #88D5EC;
+  padding: 20px;
+  font-size: 14px;
+  border-radius: 15px;
+  text-align: left;
+}
+
+.already-apply .apply-member .col-n {
+  width: 180px;
+}
+
+.already-apply .apply-member .col-x {
+  width: 150px;
+}
+
+.already-apply .apply-member .col-s {
+  width: 180px;
+}
+
+.already-apply .apply-member .col-g {
+  width: 150px;
+}
+
+.already-apply .apply-member .col-o {
+  width: 80px;
+}
+
+.creat-team {
+  display: none;
+}
+
+.creat-team.active {
+  display: block;
+}
+
+.btn-add-member{
+  background: transparent;
+  color: #88D5EC;
+  border: 1px solid #88D5EC;
+  border-radius: 5px;
+  position: absolute;
+  right: 80px;
+}
+
+.btn-remove-member{
+  background: transparent;
+  color: #88D5EC;
+  border: 1px solid #88D5EC;
+  border-radius: 5px;
 }
