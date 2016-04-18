@@ -13,7 +13,7 @@ class CompetitionsController < ApplicationController
   def apply_event
     if require_email
       @competition = Competition.find(params[:cd])
-      @events = Event.where(competition_id: params[:cd], is_father: false).select(:name, :id, :team_max_num)
+      @events = Event.where(competition_id: params[:cd], is_father: false).select(:name, :id, :team_max_num, :group)
       #   @teams = Team.includes(:team_user_ships).where(event_id: params[:eid])
       #   @already_apply = TeamUserShip.includes(:team).where(event_id: params[:eid], user_id: current_user.id).take
       #   if @already_apply.present?
