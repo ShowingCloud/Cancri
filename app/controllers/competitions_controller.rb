@@ -162,7 +162,7 @@ class CompetitionsController < ApplicationController
       elsif team_name.present?
         result = [false, '很抱歉，该比赛中队伍['+team_name.name+']已存在，请更改队伍名称!']
       else
-        team = Team.create!(name: team_name, group: group, district_id: district_id, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: sd, sk_school: skd)
+        team = Team.create!(name: team_name, group: group, district_id: district_id, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: sd, sk_station: skd)
         if team.save
           team_user_ship = TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed)
           if team_user_ship.save
