@@ -19,7 +19,7 @@
           </div>
 
           <div class="already-apply">
-            <div class="apply-team" data-src="<%= image_path('homepage/apply-team.png') %>">
+            <div class="apply-team" >
               <div class="tips">
                 您已报名该项目，以下是您的报名信息
               </div>
@@ -70,10 +70,10 @@
             您选择的是多人项目 可以加入他人队伍或者自行创建队伍
             <br/>
             <br/>
-
             <div class="team-search" data-src="<%= image_path('homepage/select-bk.png') %>">
               <input type="text" class="team-search-input"/>
               <button data-ajax-get="/competitions/search_team" class="btn-robodou btn-search-team">查 询</button>
+              <button class="btn-robodou btn-create-team" >创建队伍</button>
             </div>
             <div class="team-list">
               <table>

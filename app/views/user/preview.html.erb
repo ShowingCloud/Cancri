@@ -14,7 +14,7 @@
               </div>
               <div class="user-row">
                 <span class="row-name">手机号</span>
-                <span class="row-content edit-input" data-input="text">13312345432</span>
+                <span class="row-content edit-input" data-input="text"><%= current_user.mobile %></span>
                 <span class="row-tip">已验证</span>
               </div>
               <div class="user-row">
@@ -33,7 +33,7 @@
             <div class="user-panel">
               <div class="user-row">
                 <span class="row-name">真实姓名</span>
-                <span class="row-content edit-input" data-input="text">Jack</span>
+                <span class="row-content edit-input" data-input="text"><%= current_user.usernmae %></span>
               </div>
               <div class="user-row">
                 <span class="row-name">身份</span>
@@ -47,15 +47,11 @@
               </div>
               <div class="user-row">
                 <span class="row-name">学校</span>
-                <span class="row-content edit-input" data-input="text">上海中学</span>
+                <span class="row-content edit-input" data-input="text"><%= current_user.school %></span>
               </div>
               <div class="user-row">
                 <span class="row-name">年级</span>
-                <span class="row-content edit-input" data-input="text">高一</span>
-              </div>
-              <div class="user-row">
-                <span class="row-name">学籍号</span>
-                <span class="row-content edit-input" data-input="text">2015090302341625</span>
+                <span class="row-content edit-input" data-input="text"><%= current_user.grade %></span>
               </div>
               <div class="panel-control control-top">
                 编 辑

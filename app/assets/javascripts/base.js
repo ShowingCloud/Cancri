@@ -2,7 +2,7 @@
  * Created by yaolin on 16/4/5.
  */
 $(function () {
-    var CURRENT_USET_ID = $('.login-info').attr('data-current-user');
+    var CURRENT_USER_ID = $('.login-info').attr('data-current-user');
     var action = function () {
         lazyload.init();
         rucaptcha.init();
@@ -79,6 +79,10 @@ $(function () {
                     var _self = $(this);
                     var ed = _self.val();
                     var choice = _self.find('option[data-val="' + ed + '"]');
+                    $('.team-panel').removeClass('active');
+                    $('.already-apply').removeClass('active');
+                    $('.confirm-info').removeClass('active');
+                    $('.confirm—info').removeClass('active');
                     if (ed != 0) {
                         var max_num = choice.attr('data-max-num');
                         var eName = choice.attr('data-name');
@@ -91,11 +95,14 @@ $(function () {
                             success: function (data) {
                                 if (data[0]) {
                                     //已报名
+                                    $('.already-apply').addClass('active');
+
                                     show_apply_info(data, eName, max_num);
                                 } else {
                                     //未报名
                                     if (is_single) {
                                         //单人项目
+                                        $('.confirm—info').addClass('active');
                                     } else {
                                         //多人项目
                                         $('.team-panel').addClass('active');
@@ -160,6 +167,9 @@ $(function () {
     action();
 
     function show_apply_info(data, eName, max_num) {
+
+        console.log(data);
+
         //项目信息
         $('.apply-event-name').text(eName);
         //.append('<div class="add">该项目最多报名人数为' + max_num + '人</div>')
@@ -181,6 +191,11 @@ $(function () {
             var tSchool = '<td>' + v.school + '</td>';
             var tGrade = '<td>' + v.grade + '</td>';
             var tBtn = '<td></td>';
+            if (CURRENT_USER_ID != data[1][0].user_id) {
+                if (CURRENT_USER_ID != v.id) {
+                    tBtn = '<td><button class="btn-robodou btn-remove-member">删除</button></td>';
+                }
+            }
             tr.append(tName).append(tGender).append(tSchool).append(tGrade).append(tBtn);
             target.append(tr);
         })
