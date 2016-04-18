@@ -26,9 +26,10 @@ module API
         params do
           requires :ed, type: Integer
           requires :group, type: Integer
+          optional :schedule, type: String
         end
-        get '/events' do
-          teams = CompetitionService.get_teams(params[:ed], params[:group])
+        get '/event/teams' do
+          teams = CompetitionService.get_teams(params[:ed], params[:group], params[:schedule])
           render teams: teams
         end
 

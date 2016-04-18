@@ -19,7 +19,12 @@ Rails.application.routes.draw do
   end
   resource :chats
   resources :news
-  resources :volunteers, only: [:index] do
+  resources :activities do
+    collection do
+      post :apply_activity
+    end
+  end
+  resources :volunteers do
     collection do
       post :apply_comp_volunteer
     end
@@ -110,6 +115,7 @@ Rails.application.routes.draw do
       end
     end
     resources :news
+    resources :activities
     resources :news_types
     resources :score_attributes
   end
