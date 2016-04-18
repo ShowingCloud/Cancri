@@ -156,11 +156,11 @@ class CompetitionsController < ApplicationController
     end
     if team_name.present? && district_id !=0 && ed !=0 && sd !=0 && teacher.present? && group != 0
       already_apply = TeamUserShip.where(user_id: user_id, event_id: ed).exists?
-      team_name = Team.where(event_id: ed, name: team_name).take
+      has_team_name = Team.where(event_id: ed, name: team_name).take
       if already_apply
         result = [false, '该比赛您已经报名，请不要再次报名!']
-      elsif team_name.present?
-        result = [false, '很抱歉，该比赛中队伍['+team_name.name+']已存在，请更改队伍名称!']
+      elsif has_team_name.present?
+        result = [false, '很抱歉，该比赛中队伍['+has_team_name.name+']已存在，请更改队伍名称!']
       else
         team = Team.create!(name: team_name, group: group, district_id: district_id, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: sd, sk_station: skd)
         if team.save
