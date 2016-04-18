@@ -56,6 +56,9 @@ class CompetitionsController < ApplicationController
     grade = params[:grade]
     district = params[:district].to_i
     school = params[:school].to_i
+    join = params[:join]
+    ed = params[:ed]
+    td = params[:td]
     if /\A[\u4e00-\u9fa5]{2,4}\Z/.match(username)==nil
       status = false
       message= '姓名为2-4位中文'
@@ -68,27 +71,60 @@ class CompetitionsController < ApplicationController
         user.grade = grade
         user.district = district
         if user.save
-          status = true
-          message = '个人信息确认成功'
+          s = true
+          m = '个人信息确认成功'
         else
-          status = false
-          message = '个人信息更新失败'
+          s = false
+          m = '个人信息更新失败'
         end
       else
         up = UserProfile.create!(user_id: current_user.id, username: username, gender: gender, school: school, grade: grade, district: district)
         if up.save
-          status = true
-          message = '个人信息添加成功'
+          s = true
+          m = '个人信息添加成功'
         else
-          status = false
-          message = '个人信息添加失败'
+          s = false
+          m = '个人信息添加失败'
         end
+      end
+
+      if s && join && td.present? && ed.present?
+        result=self.one_join_team(td, ed)
+        status = result[0]
+        message = result[1]
+      else
+        status = s
+        message= m
       end
     else
       status = false
       message = '个人信息输入不完整'
     end
     render json: [status, message]
+  end
+
+  def one_join_team(td, ed)
+    if td.present? && ed.present? && current_user.validate_status=='1'
+      if TeamUserShip.where(team_id: td, event_id: ed, user_id: current_user.id).exists?
+        [false, '您已经申请过或已是该队队员']
+      else
+        t_u = TeamUserShip.create!(event_id: ed, team_id: td, user_id: current_user.id, status: false)
+        if t_u.save
+          info = Team.joins(:event).where(id: td).where("teams.event_id=events.id").select("teams.name as team_name", "events.name as event_name").first
+          notify = Notification.create!(user_id: t_u.user_id, content: current_user.user_profile.username+'申请加入您在比赛项目－'+ info.event_name.to_s + '中创建的队伍－'+info.team_name, t_u_id: t_u.id, message_type: '申请加入队伍')
+          if notify.save
+            [true, '申请成功，已向队长发出消息，等待队长同意']
+          else
+            t_u.delete
+            [false, '申请失败']
+          end
+        else
+          [false, '申请失败']
+        end
+      end
+    else
+      [false, '个人信息或参数不完整']
+    end
   end
 
   def leader_create_team
@@ -154,14 +190,14 @@ class CompetitionsController < ApplicationController
   end
 
   def apply_join_team
-    if params[:leader].present? && params[:td].present? && params[:ed].present? && current_user.validate_status=='1'
+    if params[:td].present? && params[:ed].present? && current_user.validate_status=='1'
       if TeamUserShip.where(team_id: params[:td], event_id: params[:ed], user_id: current_user.id).exists?
         result = [false, '您已经申请过或已是该队队员']
       else
         t_u = TeamUserShip.create!(event_id: params[:ed], team_id: params[:td], user_id: current_user.id, status: false)
         if t_u.save
           info = Team.joins(:event).where(id: params[:td]).where("teams.event_id=events.id").select("teams.name as team_name", "events.name as event_name").first
-          notify = Notification.create!(user_id: params[:leader], content: current_user.user_profile.username+'申请加入您在比赛项目－'+ info.event_name.to_s + '中创建的队伍－'+info.team_name, t_u_id: t_u.id, message_type: '申请加入队伍')
+          notify = Notification.create!(user_id: t_u.user_id, content: current_user.user_profile.username+'申请加入您在比赛项目－'+ info.event_name.to_s + '中创建的队伍－'+info.team_name, t_u_id: t_u.id, message_type: '申请加入队伍')
           if notify.save
             result = [true, '申请成功，已向队长发出消息，等待队长同意']
           else

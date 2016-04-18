@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     end
   end
   resource :chats
+  resources :news
   resources :volunteers, only: [:index] do
     collection do
       post :apply_comp_volunteer
