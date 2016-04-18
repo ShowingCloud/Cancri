@@ -13,7 +13,7 @@ class CompetitionsController < ApplicationController
   def apply_event
     if require_email
       @competition = Competition.find(params[:cd])
-      @events = Event.where(competition_id: params[:cd], is_father: false).select(:name, :id, :team_max_num, :group)
+      @events = Event.where(competition_id: params[:cd], is_father: false).select(:name, :id, :team_max_num)
       #   @teams = Team.includes(:team_user_ships).where(event_id: params[:eid])
       #   @already_apply = TeamUserShip.includes(:team).where(event_id: params[:eid], user_id: current_user.id).take
       #   if @already_apply.present?
@@ -29,7 +29,8 @@ class CompetitionsController < ApplicationController
       a_p = TeamUserShip.where(event_id: params[:ed], user_id: current_user.id).take
       if a_p.present?
         team_players = Team.find_by_sql("select a.id,u_p.username,u_p.grade as grade,u_p.user_id as user_id,u_p.gender as gender, a.status,t.name as name,s.name as school from team_user_ships a INNER JOIN teams t on t.id = a.team_id inner join user_profiles u_p on u_p.user_id = a.user_id inner join schools s on s.id = u_p.school where a.team_id = #{a_p.team_id}")
-        result =[true, team_players, a_p.status]
+        event_group = Event.find(params[:ed]).group
+        result =[true, team_players, a_p.status, event_group]
       else
         result = [false, '未报名']
       end
