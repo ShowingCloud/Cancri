@@ -10,6 +10,10 @@ $(function () {
         match_info_toggle.init();
         event_select.init();
         search_team.init();
+        school_select.init('#confirm_info');
+        school_select.init('.create-team');
+        send_confirm.init();
+        create_team.init();
     };
 
     var lazyload = {
@@ -81,8 +85,8 @@ $(function () {
                     var choice = _self.find('option[data-val="' + ed + '"]');
                     $('.team-panel').removeClass('active');
                     $('.already-apply').removeClass('active');
-                    $('.confirm-info').removeClass('active');
-                    $('.confirm—info').removeClass('active');
+                    $('.create-team').removeClass('active');
+                    $('.confirm_info').removeClass('active');
                     if (ed != 0) {
                         var max_num = choice.attr('data-max-num');
                         var eName = choice.attr('data-name');
@@ -93,6 +97,7 @@ $(function () {
                             dateType: 'json',
                             data: {'ed': ed},
                             success: function (data) {
+                                console.log(data);
                                 if (data[0]) {
                                     //已报名
                                     $('.already-apply').addClass('active');
@@ -102,12 +107,13 @@ $(function () {
                                     //未报名
                                     if (is_single) {
                                         //单人项目
-                                        $('.confirm—info').addClass('active');
+                                        $('.confirm_info').addClass('active');
                                     } else {
                                         //多人项目
                                         $('.team-panel').addClass('active');
                                     }
                                 }
+                                console.log(data[3]);
                             }
                         };
                         $.ajax(option);
@@ -122,6 +128,9 @@ $(function () {
             var b = $('.btn-search-team');
             if (b) {
                 b.on('click', function () {
+                    var old = b.text();
+                    b.text('查询中');
+                    b.prop({'disabled': true});
                     var target = $('.team-list').find('tbody');
                     target.empty();
                     var team_name = $('.team-search-input').val();
@@ -140,7 +149,7 @@ $(function () {
                                     } else {
                                         var result = data[1];
                                         $.each(result, function (k, v) {
-                                            var tr = $('<tr>');
+                                            var tr = $('<tr data-td="' + v.id + '">');
                                             var tName = '<td>' + v.name + '</td>';
                                             var tLeader = '<td>' + v.leader + '</td>';
                                             var tTeacher = '<td>' + v.teacher + '</td>';
@@ -148,28 +157,138 @@ $(function () {
                                             var tBtn = '<td>' + (v.players == v.max_num ? '队伍已满' : '<button class="btn-robodou btn-join-team">加入</button>') + '</td>';
                                             tr.append(tName).append(tLeader).append(tTeacher).append(tSchool).append(tBtn);
                                             target.append(tr);
+                                            join_team.init();
                                         })
                                     }
                                 } else {
                                     //参数错误 false
                                     alert(data);
                                 }
+                            },
+                            complete: function () {
+                                b.text(old);
+                                b.prop({'disabled': false});
                             }
                         };
                         $.ajax(option);
                     } else {
                         alert('请输入汉字、数字和字母');
+                        b.text(old);
+                        b.prop({'disabled': false});
                     }
                 })
             }
         }
     };
+
+    var school_select = {
+        init: function (selector) {
+            var select1 = $(selector).find('.level');
+            var select2 = $(selector).find('.districts');
+            select1.on('change', function () {
+                get_school(select1, select2, selector);
+            });
+
+            select2.on('change', function () {
+                get_school(select1, select2, selector);
+            });
+        }
+    };
+
+    var send_confirm = {
+        init: function () {
+            $('.btn-send-confirm').on('click', function () {
+                var _self = $(this);
+                var old = _self.text();
+                _self.text('提交中');
+                _self.prop({'disabled': true});
+                var data = $('#confirm_form').serialize();
+                console.log(data);
+                var option = {
+                    url: 'update_apply_info',
+                    dataType: 'json',
+                    type: 'post',
+                    data: data,
+                    success: function (data) {
+                        if (data[0]) {
+                            alert(data[1]);
+                            $('#confirm_info').removeClass('active');
+                            $('.create-team').addClass('active');
+                        } else {
+                            alert(data[1]);
+                        }
+                    },
+                    complete: function () {
+                        _self.text(old);
+                        _self.prop({'disabled': false});
+                    }
+                };
+                $.ajax(option);
+            })
+        }
+    };
+
+    var join_team = {
+        init: function () {
+            $('.btn-join-team').on('click', function () {
+                var td = $(this).parents('tr').attr('data-td');
+                $(this).parents('.team-panel').removeClass('active');
+                var con = $('#confirm_info');
+                con.addClass('active').find('.btn-send-confirm').css({display: 'none'});
+                con.append('<button class="btn-join-confirm" >加入队伍</button>');
+                con.find('.btn-join-confirm').on('click', function () {
+                    var form = con.find('#confirm_form');
+                    var ed = $('.selected-display').val();
+                    var data = form.serialize();
+                    data += '&join=1';
+                    data += '&ed=' + ed;
+                    data += '&td=' + td;
+                    var option = {
+                        url: 'update_apply_info',
+                        dataType: 'json',
+                        type: 'post',
+                        data: data,
+                        success: function (data) {
+                            console.log(data[1]);
+                            alert(data[1]);
+                        }
+                    };
+                    $.ajax(option);
+                })
+            });
+        }
+    };
+
+    var create_team = {
+        init: function () {
+            $('.btn-create-team').on('click', function () {
+                $('.team-panel').removeClass('active');
+                $('.create-team').addClass('active');
+            });
+
+            $('.btn-create-team-all').on('click', function () {
+                var form = $('#create-team-form');
+                var ed = $('.selected-display').val();
+                var data = form.serialize();
+                data += '&team_event=' + ed;
+                data += '&group=' + 1;
+                var option = {
+                    url: 'leader_create_team',
+                    dataType: 'json',
+                    type: 'post',
+                    data: data,
+                    success: function (data) {
+                        console.log(data);
+                    }
+                };
+                $.ajax(option);
+            })
+        }
+    };
+
     action();
 
     function show_apply_info(data, eName, max_num) {
-
-        console.log(data);
-
         //项目信息
         $('.apply-event-name').text(eName);
         //.append('<div class="add">该项目最多报名人数为' + max_num + '人</div>')
@@ -180,7 +299,6 @@ $(function () {
         if (num < max_num && data[2] != 0) {
             $('.apply-member-num').append('<button class="btn-robodou btn-add-member">添加</button>');
         }
-
         //队员信息
         var target = $('.apply-member').find('tbody');
         target.empty();
@@ -200,4 +318,30 @@ $(function () {
             target.append(tr);
         })
     }
+
+    function get_school(s1, s2, selector) {
+        var val1 = s1.val();
+        var val2 = s2.val();
+        var school = $(selector).find('.target-school');
+        if (val1 != 0 && val2 != 0) {
+            var option = {
+                url: '/api/v1/users/school',
+                dataType: 'json',
+                data: {school_type: val1, district: val2},
+                success: function (data) {
+                    if (data.schools) {
+                        school.empty();
+                        $.each(data.schools, function (k, v) {
+                            var id = v.id;
+                            var name = v.name;
+                            var option = $('<option value="' + id + '">' + name + '</option>');
+                            school.append(option);
+                        })
+                    }
+                }
+            };
+            $.ajax(option);
+        }
+    }
+
 });

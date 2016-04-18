@@ -1157,6 +1157,17 @@ ul {
 
 #match-list .sec-t {
   text-align: center;
+  margin: 40px;
+}
+
+#match-list .sec-t .year-select {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  width: 120px;
+  height: 28px;
+  line-height: 28px;
+  background: #4688A0;
 }
 
 #match-list .sec-c {
@@ -1402,7 +1413,6 @@ ul {
   right: -140px;
   top: 40px;
   display: block;
-  width: 100px;
   border: 1px solid #84C9D7;
   background: transparent;
   color: #8FD0E9;
@@ -1414,7 +1424,7 @@ ul {
 #event .sec-c .team-panel .team-list {
   border: 2px solid #4688A0;
   width: 780px;
-  margin: 40px auto;
+  margin: 60px auto;
   color: #88D5EC;
   padding: 20px;
   font-size: 14px;
@@ -1449,7 +1459,7 @@ ul {
   border-radius: 5px;
 }
 
-.confirm—info {
+.confirm_info {
   border: 2px solid #86C3D2;
   padding: 20px;
   color: #8FD9DF;
@@ -1459,58 +1469,58 @@ ul {
   display: none;
 }
 
-.confirm—info.active {
+.confirm_info.active {
   display: block;
 }
 
-.confirm—info .info-t {
+.confirm_info .info-t {
   background: transparent bottom center no-repeat;
   font-size: 18px;
   text-align: center;
   margin-bottom: 20px;
 }
 
-.confirm—info .info-c {
+.confirm_info .info-c {
   background: transparent;
 }
 
-.confirm—info .info-c .item-row {
+.confirm_info .info-c .item-row {
   margin-bottom: 20px;
   overflow: hidden;
 }
 
-.confirm—info .info-c .item-row .item-first {
+.confirm_info .info-c .item-row .item-first {
   display: inline-block;
   width: 100px;
   text-align: right;
-  margin-right: 20px;
+  float: left;
   vertical-align: middle;
   height: inherit;
 }
 
-.confirm—info .info-c .item-row .item-second {
-  display: inline-block;
+.confirm_info .info-c .item-row .item-second {
+  margin-left: 150px;
 }
 
-.confirm—info .info-c .item-row .item-second input[type="radio"] {
+.confirm_info .info-c .item-row .item-second input[type="radio"] {
   margin: 0 5px 0 15px;
 }
 
-.confirm—info .info-c .item-row .item-second input[type="text"] {
+.confirm_info .info-c .item-row .item-second input[type="text"] {
   background: #4ABAC5;
   line-height: 20px;
-  padding-left: 12px;
+  padding-left: 8px;
   width: 180px;
   border: none;
   outline: none;
-  color: #879B92;
+  color: #FFF;
 }
 
-.confirm—info .info-c .item-row .item-second input[type="text"]:focus {
+.confirm_info .info-c .item-row .item-second input[type="text"]:focus {
   outline: 1px solid #88D5EC;
 }
 
-.confirm—info .info-c .item-row .item-second select {
+.confirm_info .info-c .item-row .item-second select {
   display: block;
   width: 180px;
   background: #4ABAC5;
@@ -1518,7 +1528,7 @@ ul {
   border: none;
   outline: none;
   margin-bottom: 10px;
-  color: #879B92;
+  color: #FFF;
 }
 
 .already-apply {
@@ -1585,6 +1595,15 @@ ul {
   text-align: left;
 }
 
+.already-apply .apply-member tr td {
+  padding: 4px 0;
+}
+
+.already-apply .apply-member th{
+  padding: 6px 0;
+  border-bottom: 1px solid #4688A0;
+}
+
 .already-apply .apply-member .col-n {
   width: 180px;
 }
@@ -1605,15 +1624,15 @@ ul {
   width: 80px;
 }
 
-.creat-team {
+.create-team {
   display: none;
 }
 
-.creat-team.active {
+.create-team.active {
   display: block;
 }
 
-.btn-add-member{
+.btn-add-member {
   background: transparent;
   color: #88D5EC;
   border: 1px solid #88D5EC;
@@ -1622,9 +1641,121 @@ ul {
   right: 80px;
 }
 
-.btn-remove-member{
+.btn-remove-member {
   background: transparent;
   color: #88D5EC;
   border: 1px solid #88D5EC;
+  border-radius: 5px;
+}
+
+.btn-send-confirm {
+  display: block;
+  text-align: center;
+  margin: 10px auto;
+  background: transparent;
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  border-radius: 5px;
+}
+
+.create-team {
+  border: 2px solid #86C3D2;
+  padding: 20px;
+  color: #8FD9DF;
+  font-size: 14px;
+  width: 450px;
+  margin: 40px auto;
+  display: none;
+}
+
+.create-team.active {
+  display: block;
+}
+
+.create-team .create-t {
+  background: transparent bottom center no-repeat;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.create-team .create-c {
+  background: transparent;
+}
+
+.create-team .create-c .item-row {
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.create-team .create-c .item-row .item-first {
+  display: inline-block;
+  width: 130px;
+  text-align: right;
+  height: inherit;
+  float: left;
+}
+
+.create-team .create-c .item-row .item-first img {
+  float: left;
+}
+
+.create-team .create-c .item-row .item-second {
+  margin-left: 150px;
+}
+
+.create-team .create-c .item-row .item-second input[type="radio"] {
+  margin: 0 5px 0 15px;
+}
+
+.create-team .create-c .item-row .item-second input[type="text"] {
+  background: #4ABAC5;
+  line-height: 20px;
+  padding-left: 8px;
+  width: 180px;
+  border: none;
+  outline: none;
+  color: #fff;
+}
+
+.create-team .create-c .item-row .item-second input[type="text"]:focus {
+  outline: 1px solid #88D5EC;
+}
+
+.create-team .create-c .item-row .item-second select {
+  display: block;
+  width: 180px;
+  background: #4ABAC5;
+  height: 20px;
+  border: none;
+  outline: none;
+  margin-bottom: 10px;
+  color: #FFF;
+}
+
+.btn-create-team {
+  position: absolute;
+  top: 120px;
+  left: 160px;
+  display: block;
+  width: 140px;
+  border: 1px solid #84C9D7;
+  background: transparent;
+  color: #8FD0E9;
+  font-size: 20px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.create-team .create-f {
+  text-align: center;
+}
+
+.btn-create-team-all {
+  border: 1px solid #84C9D7;
+  background: transparent;
+  color: #8FD0E9;
+  font-size: 20px;
+  padding: 5px;
   border-radius: 5px;
 }
