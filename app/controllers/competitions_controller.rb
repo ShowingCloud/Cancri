@@ -11,7 +11,7 @@ class CompetitionsController < ApplicationController
   end
 
   def apply_event
-    if require_mobile_or_email
+    if require_email
       @competition = Competition.find(params[:cd])
       @events = Event.where(competition_id: params[:cd], is_father: false).select(:name, :id, :team_max_num)
       #   @teams = Team.includes(:team_user_ships).where(event_id: params[:eid])
@@ -20,7 +20,7 @@ class CompetitionsController < ApplicationController
       #     @team_players = TeamUserShip.where(team_id: @already_apply.team_id).count
       #   end
     else
-      redirect_to "/competitions/#{params[:cd]}", notice: '继续操作前请验证手机或邮箱'
+      redirect_to "/competitions/#{params[:cd]}", notice: '继续操作前请验证邮箱'
     end
   end
 

@@ -22,6 +22,16 @@ module API
           render events: @events
         end
 
+        desc '获取特定项目下某分组队伍'
+        params do
+          requires :ed, type: Integer
+          requires :group, type: Integer
+        end
+        get '/events' do
+          teams = CompetitionService.get_teams(params[:ed], params[:group])
+          render teams: teams
+        end
+
 
         # params do
         #   requires :private_token, type: String, desc: 'Private Token'

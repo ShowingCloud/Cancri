@@ -84,6 +84,29 @@ class CompetitionService
   end
 
   def self.get_events(comp_id)
-    Team.find_by_sql("select concat(a.name,'(',b.group,')') as eg, b.group from events a join teams b on a.id = b.event_id GROUP BY eg")
+    events = Event.includes(:child_events).where(competition_id: comp_id, level: 1).map { |e| {
+        id: e.id,
+        group: e.group,
+        events: e.group.present? ? e.group.split(',').map { |n| {
+            name: e.name+'('+n+')',
+            id: e.id,
+            group: n.to_i,
+            z_e: e.is_father ? e.child_events.map { |z_e| {
+                id: z_e.id,
+                group: n.to_i,
+                name: z_e.name+'('+n+')'
+            } } : nil
+        } } : e.name,
+    }
+    }
+  end
+
+  def self.get_teams(ed, group)
+    if ed.present? && group.present?
+      teams=Team.where(event_id: ed, group: group)
+      [true, teams]
+    else
+      [false, '参数不完整']
+    end
   end
 end

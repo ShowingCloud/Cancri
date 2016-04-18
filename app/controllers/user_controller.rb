@@ -214,6 +214,32 @@ class UserController < ApplicationController
     redirect_to user_profile_path
   end
 
+  def add_school
+    name = params[:school]
+    district = params[:district]
+    type = params[:type]
+    if name.present? && district.present? && type.present?
+      school = School.where(name: name, district: district, school_type: type).take
+      if school.present?
+        result=[false, '该学校已存在或已被添加(待审核)']
+      else
+        has_add = School.find_by_user_id(current_user.id)
+        if has_add.present?
+          result= [false, '您已经添加过一所学校，在未审核通过前不能再次添加']
+        else
+          add_s = School.create!(name: name, district: district, school_type: type)
+          if add_s.save
+            result=[true, '添加成功', add_s.id] #该学校仅为您显示，审核通过后其他人才能选择该学校
+          else
+            result=[false, '添加学校失败']
+          end
+        end
+      end
+    else
+      result = [false, '请将学校名称、类型、所属区县填写完整']
+    end
+    render json: result
+  end
 
   #修改密码方法
   def change_password(old_password, new_password, confirm_password)

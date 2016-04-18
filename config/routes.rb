@@ -142,6 +142,7 @@ Rails.application.routes.draw do
   match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get]
   get '/user/notify' => 'user#notify_show'
   post '/user/agree_invite_info' => 'user#agree_invite_info'
+  post '/user/add_school' => 'user#add_school', as: 'user_add_school', via: [:post]
 
   mount API::Dispatch => '/'
 
