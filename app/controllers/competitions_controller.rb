@@ -26,7 +26,7 @@ class CompetitionsController < ApplicationController
 
   def already_apply
     if params[:ed].present?
-      event = Event.find(params[:ed]).select(:group)
+      event = Event.find(params[:ed])
       if event.present?
         a_p = TeamUserShip.where(event_id: params[:ed], user_id: current_user.id).take
         if a_p.present?
