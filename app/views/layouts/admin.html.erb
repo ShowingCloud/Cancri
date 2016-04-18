@@ -34,39 +34,39 @@
             <span class="badge badge-important">0</span>
           </a>
           <!--<ul class="pull-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">-->
-            <!--<li class="dropdown-header">-->
-              <!--<i class="icon-warning-sign"></i>-->
-              <!--共有 0 个身份待审核-->
-            <!--</li>-->
+          <!--<li class="dropdown-header">-->
+          <!--<i class="icon-warning-sign"></i>-->
+          <!--共有 0 个身份待审核-->
+          <!--</li>-->
 
-            <!--<li>-->
-              <!--<a href="/admin/checks/teachers">-->
-                <!--<div class="clearfix">-->
-											<!--<span class="pull-left">-->
-                                              <!--老师-->
-											<!--</span>-->
-                  <!--<span class="pull-right badge badge-info">+0</span>-->
-                <!--</div>-->
-              <!--</a>-->
-            <!--</li>-->
+          <!--<li>-->
+          <!--<a href="/admin/checks/teachers">-->
+          <!--<div class="clearfix">-->
+          <!--<span class="pull-left">-->
+          <!--老师-->
+          <!--</span>-->
+          <!--<span class="pull-right badge badge-info">+0</span>-->
+          <!--</div>-->
+          <!--</a>-->
+          <!--</li>-->
 
-            <!--<li>-->
-              <!--<a href="/admin/checks/referees">-->
-                <!--<div class="clearfix">-->
-											<!--<span class="pull-left">-->
-                                              <!--裁判-->
-											<!--</span>-->
-                  <!--<span class="pull-right badge badge-success">+0</span>-->
-                <!--</div>-->
-              <!--</a>-->
-            <!--</li>-->
+          <!--<li>-->
+          <!--<a href="/admin/checks/referees">-->
+          <!--<div class="clearfix">-->
+          <!--<span class="pull-left">-->
+          <!--裁判-->
+          <!--</span>-->
+          <!--<span class="pull-right badge badge-success">+0</span>-->
+          <!--</div>-->
+          <!--</a>-->
+          <!--</li>-->
 
-            <!--<li>-->
-              <!--<a href="#">-->
-                <!--暂不审核-->
-                <!--<i class="icon-arrow-right"></i>-->
-              <!--</a>-->
-            <!--</li>-->
+          <!--<li>-->
+          <!--<a href="#">-->
+          <!--暂不审核-->
+          <!--<i class="icon-arrow-right"></i>-->
+          <!--</a>-->
+          <!--</li>-->
           <!--</ul>-->
 
         </li>
@@ -220,6 +220,12 @@
           <a href="<%= admin_score_attributes_path %>">
             <i class="icon-hdd"></i>
             <span class="menu-text"> 成绩属性 </span>
+          </a>
+        </li>
+        <li class="<%= params[:controller] == 'admin/activities' ? 'active' : '' %>">
+          <a href="<%= admin_activities_path %>">
+            <i class="icon-gift"></i>
+            <span class="menu-text"> 活动 </span>
           </a>
         </li>
 

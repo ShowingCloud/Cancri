@@ -1,0 +1,22 @@
+<div class="container">
+  <h2>
+    活动列表
+  </h2>
+
+  <div class="content">
+    <% @activities.each do |act| %>
+        <%= link_to activity_path(act), title: '查看新闻' do %>
+
+            <p><%= act.name %>
+              <span><%= act.created_at.try(:strftime, '%Y-%m-%d') %></span>
+            </p>
+
+        <% end %>
+    <% end %>
+    <nav class="text-center">
+      　<%= paginate @activities %>
+    </nav>
+  </div>
+</div>
+
+

@@ -1,0 +1,4 @@
+<div class="container">
+  <p><%= @activity.name %>
+    <span><%= @activity.created_at.try(:strftime, '%Y-%m-%d') %></span></p>
+</div>

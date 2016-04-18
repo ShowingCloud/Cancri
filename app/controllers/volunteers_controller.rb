@@ -1,10 +1,14 @@
 class VolunteersController < ApplicationController
-  before_action :require_user, except: [:index]
+  before_action :require_user, except: [:index, :show]
   before_action :require_mobile, :only => [:apply_comp_volunteer]
 
 
   def index
-    @competitions = Competition.where(status: 0)
+    @competitions = Competition.where(status: 0).page(params[:page]).per(params[:per])
+  end
+
+  def show
+    @competition = Competition.find(params[:id])
   end
 
   def apply_comp_volunteer

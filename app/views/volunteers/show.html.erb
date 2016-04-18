@@ -1,0 +1,4 @@
+<div class="container">
+  <p><%= @competition.name %>
+    <span><%= @competition.created_at.try(:strftime, '%Y-%m-%d') %></span></p>
+</div>

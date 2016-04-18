@@ -1,0 +1,22 @@
+<div class="container">
+  <h2>
+    新闻列表
+  </h2>
+
+  <div class="content">
+    <% @news.each do |news| %>
+        <%= link_to news_path(news), title: '查看新闻' do %>
+
+            <p><%= news.name %>
+              <span><%= news.created_at.try(:strftime, '%Y-%m-%d') %></span>
+            </p>
+
+        <% end %>
+    <% end %>
+    <nav class="text-center">
+      　<%= paginate @news %>
+    </nav>
+  </div>
+</div>
+
+
