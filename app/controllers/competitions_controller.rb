@@ -286,7 +286,7 @@ class CompetitionsController < ApplicationController
     @add_info = InvitePlayer.new
     if request.method == 'GET'
       if invited_email.present? && invited_code.present?
-        @is_invite = Invite.where(email: invited_email, code: invited_code).joins(:team, :user_profile).where("teams.id = invites.team_id", "invites.user_id=user_profiles.user_id").select("teams.name as team_name", "user_profiles.username as leader", :email, :code).take
+        @is_invite = Invite.joins(:team).joins('inner join user_profiles u_p on u_p.user_id=invites.user_id').where(email: invited_email, code: invited_code).select("teams.name as team_name", "u_p.username as leader", :email, :code).take
         if @is_invite.present?
           @add_info.leader = @is_invite.leader
           @add_info.team_name = @is_invite.team_name
