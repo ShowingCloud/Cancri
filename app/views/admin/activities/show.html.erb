@@ -25,5 +25,41 @@
 
       <%= @activity.name %>
     </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.host_year') %>:</h4>
+
+      <%= @activity.host_year %>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.host_address') %>:</h4>
+
+      <%= @activity.host_address %>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.content') %>:</h4>
+
+      <%= @activity.content.html_safe %>
+    </li>
+    <li class="list-group-item">
+      <h4>报名起始时间:</h4>
+
+      <p><%= @activity.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>
+        － <%= @activity.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %></p>
+    </li>
+
+    <li class="list-group-item">
+      <h4>活动起始时间:</h4>
+
+      <p><%= @activity.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>
+        － <%= @activity.end_time.try(:strftime, '%Y-%m-%d %H:%M') %></p>
+    </li>
+
+    <li class="list-group-item">
+      <h4>创建时间－更新时间:</h4>
+
+      <p><%= @activity.created_at.try(:strftime, '%Y-%m-%d %H:%M') %>
+        － <%= @activity.updated_at.try(:strftime, '%Y-%m-%d %H:%M') %></p>
+    </li>
+
   </ul>
 </div>

@@ -40,7 +40,7 @@
                   <input data-date-merge-time value="<%= @activity.apply_start_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
                 </div>
               </div>
-              <input data-date-merge-result type="hidden" name="competition[apply_start_time]" value="<%= @activity.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+              <input data-date-merge-result type="hidden" name="activity[apply_start_time]" value="<%= @activity.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
             </div>
             <div class="form-group datetime optional col-md-6" data-date-merge>
               <label class="datetime optional control-label">报名结束时间</label>
@@ -55,7 +55,7 @@
                   <input data-date-merge-time value="<%= @activity.apply_end_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
                 </div>
               </div>
-              <input data-date-merge-result type="hidden" name="competition[apply_end_time]" value="<%= @activity.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+              <input data-date-merge-result type="hidden" name="activity[apply_end_time]" value="<%= @activity.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
             </div>
             <div class="form-group datetime optional col-md-6" data-date-merge>
               <label class="datetime optional control-label">活动开始时间</label>
@@ -70,7 +70,7 @@
                   <input data-date-merge-time value="<%= @activity.start_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
                 </div>
               </div>
-              <input data-date-merge-result type="hidden" name="competition[start_time]" value="<%= @activity.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+              <input data-date-merge-result type="hidden" name="activity[start_time]" value="<%= @activity.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
             </div>
             <div class="form-group datetime optional col-md-6" data-date-merge>
               <label class="datetime optional control-label">活动结束时间</label>
@@ -85,7 +85,7 @@
                   <input data-date-merge-time value="<%= @activity.end_time.try(:strftime, '%H:%M:%S') %>" data-control="timeForm" class="datetime optional form-control"/>
                 </div>
               </div>
-              <input data-date-merge-result type="hidden" name="competition[end_time]" value="<%= @activity.end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+              <input data-date-merge-result type="hidden" name="activity[end_time]" value="<%= @activity.end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
             </div>
           </div>
         </div>
