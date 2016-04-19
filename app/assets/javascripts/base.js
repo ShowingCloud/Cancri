@@ -102,7 +102,7 @@ $(function () {
                                     //已报名
                                     $('.already-apply').addClass('active');
 
-                                    show_apply_info(data, eName, max_num);
+                                    show_apply_info(data, eName, max_num, ed);
                                 } else {
                                     //未报名
                                     if (is_single) {
@@ -286,18 +286,38 @@ $(function () {
         }
     };
 
+    var join_activity = {
+        init: function () {
+            var a = $('.btn-join-activity');
+            if (a.length > 0) {
+                a.on('click', function () {
+
+                });
+            }
+        }
+    };
+
     action();
 
-    function show_apply_info(data, eName, max_num) {
+    function show_apply_info(data, eName, max_num, ed) {
         //项目信息
         $('.apply-event-name').text(eName);
-        //.append('<div class="add">该项目最多报名人数为' + max_num + '人</div>')
         var tName = data[1][0].name;
+        var td = data[1][0].id;
         $('.apply-team-name').text(tName);
         var num = data[1].length;
         $('.apply-member-num').text(num + '名');
         if (num < max_num && data[2] != 0) {
-            $('.apply-member-num').append('<button class="btn-robodou btn-add-member">添加</button>');
+            $('.add-member').show();
+            $('.btn-invitation').on('click', function () {
+                var _self = $(this);
+                var old = _self.text();
+                _self.text('邀请中');
+                _self.prop({'disabled': true});
+                invitation_member(td, tName, ed, eName, _self, old);
+            });
+        } else {
+            $('.add-member').hide();
         }
         //队员信息
         var target = $('.apply-member').find('tbody');
@@ -317,6 +337,32 @@ $(function () {
             tr.append(tName).append(tGender).append(tSchool).append(tGrade).append(tBtn);
             target.append(tr);
         })
+    }
+
+    function invitation_member(td, tName, ed, eName, obj, old) {
+        var e = $('.invitation-email').val();
+        var reg = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})+$/;
+        if (reg.test(e)) {
+            var option = {
+                url: 'leader_invite_player',
+                type: 'post',
+                dataType: 'json',
+                data: {team_name: tName, event_name: eName, td: td, ed: ed, invited_email: e},
+                success: function (data) {
+                    if (data[0]) {
+                        alert(data[1]);
+                    } else {
+                        alert('邀请发送出错，请重新发送！');
+                    }
+                },
+                complete: function () {
+                    obj.text(old).prop({'disabled': false});
+                }
+            };
+            $.ajax(option);
+        } else {
+            alert('请输入正确的邮箱格式！');
+        }
     }
 
     function get_school(s1, s2, selector) {
@@ -343,5 +389,4 @@ $(function () {
             $.ajax(option);
         }
     }
-
 });

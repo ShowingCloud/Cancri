@@ -1599,7 +1599,7 @@ ul {
   padding: 4px 0;
 }
 
-.already-apply .apply-member th{
+.already-apply .apply-member th {
   padding: 6px 0;
   border-bottom: 1px solid #4688A0;
 }
@@ -1639,6 +1639,7 @@ ul {
   border-radius: 5px;
   position: absolute;
   right: 80px;
+  top: -3px;
 }
 
 .btn-remove-member {
@@ -1758,4 +1759,93 @@ ul {
   font-size: 20px;
   padding: 5px;
   border-radius: 5px;
+}
+
+.btn-invitation {
+  background: transparent;
+  border: 1px solid #84C9D7;
+  border-radius: 5px;
+}
+
+.invitation-email {
+  border: none;
+  outline: none;
+  background: #4ABAC5;
+  padding: 2px 8px;
+  color: #FFFFFF;
+
+}
+
+.reset-pwd-email, .reset-pwd-mobile, .reset-pwd {
+  width: 400px;
+  color: #88D5EC;
+  border: 1px solid #88D5EC;
+  padding: 40px;
+  border-radius: 15px;
+  background: transparent;
+  margin: 60px auto;
+}
+
+.reset-pwd-email .sec-t, .reset-pwd-mobile .sec-t, .reset-pwd .sec-t {
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.reset-pwd-email .sec-c input {
+  background: transparent;
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+}
+
+.reset-pwd-mobile .sec-c input {
+  background: transparent;
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+}
+
+.reset-pwd .sec-c input {
+  background: transparent;
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+}
+
+.invite-page {
+  width: 400px;
+  color: #88D5EC;
+  border: 1px solid #88D5EC;
+  padding: 40px;
+  border-radius: 15px;
+  background: transparent;
+  margin: 60px auto;
+}
+
+.invite-page .form-style > h3 {
+  color: #88D5EC;
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0;
+  text-align: center;
+}
+
+.invite-page input{
+  background: transparent;
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+}
+
+.invite-page input[disabled]{
+  background: transparent;
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+}
+
+.invite-page select{
+  background: transparent;
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+}
+
+.invite-page .btn:hover{
+  background: transparent;
 }
