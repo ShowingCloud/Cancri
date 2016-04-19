@@ -4,9 +4,9 @@
       <div id="volunteer" class="volunteer">
         <div class="volunteer-inner">
           <div class="sec-t" data-src="<%= image_path('homepage/v-title-bk.png') %>">
-            <span class="tags">志愿者丨招募</span>
-            <%= @competition.name %>
-            <span class="time"><%= @competition.created_at.try(:strftime, '%Y-%m-%d') %></span>
+            <span class="tags"><%= @volunteer.news_type.name %></span>
+            <%= @volunteer.competition.name %>
+            <span class="time"><%= @volunteer.created_at.try(:strftime, '%Y-%m-%d') %></span>
           </div>
           <div class="sec-c">
             <div class="sec-top" data-src="<%= image_path('homepage/sec-top.png') %>"></div>
@@ -17,15 +17,7 @@
               <div class="text">
                 <h3>活动介绍</h3>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum
-                  laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin
-                  sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient
-                  montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate,
-                  felis tellus mollis orci, sed rhoncus sapien nunc eget odio.Lorem ipsum dolor sit
-                  amet, cons dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales
-                  pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes,
-                  nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus
-                  mollis orci, sed rhoncus sapien nunc eget odio.
+                <p><%= @volunteer.content.html_safe %>
                 </p>
 
                 <h3>主办方</h3>
@@ -35,7 +27,7 @@
                    Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>
 
                 <div class="volunteer-bottom">
-                    <button class="btn-robodou btn-join-volunteer">报名参加</button>
+                  <button class="btn-robodou btn-join-volunteer">报名参加</button>
                 </div>
               </div>
             </div>

@@ -29,6 +29,7 @@ Rails.application.routes.draw do
       post :apply_comp_volunteer
     end
   end
+  get '/downloads' => 'downloads#index'
   resource :notifications
 
   devise_for :users, path: 'account', controllers: {
@@ -117,6 +118,7 @@ Rails.application.routes.draw do
     resources :news
     resources :activities
     resources :news_types
+    resources :volunteers
     resources :score_attributes
   end
   namespace :kindeditor do

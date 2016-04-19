@@ -246,6 +246,7 @@ zh-CN:
       district: '区县'
       score_attribute: '成绩属性'
       activity: '活动'
+      volunteer: '志愿者'
   views:
     pagination:
         first: "首页"

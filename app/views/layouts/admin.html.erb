@@ -228,6 +228,12 @@
             <span class="menu-text"> 活动 </span>
           </a>
         </li>
+        <li class="<%= params[:controller] == 'admin/volunteers' ? 'active' : '' %>">
+          <a href="<%= admin_volunteers_path %>">
+            <i class="icon-glass"></i>
+            <span class="menu-text"> 志愿者 </span>
+          </a>
+        </li>
 
       </ul>
       <!-- /.nav-list -->

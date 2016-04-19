@@ -3,10 +3,10 @@
     <div class="row">
       <div id="volunteer" class="volunteer">
         <div class="v-list">
-          <% @competitions.each do |comp| %>
-              <%= link_to "#{volunteers_path}/#{comp.id}", title: '查看' do %>
+          <% @volunteers.each do |vol| %>
+              <%= link_to "#{volunteers_path}/#{vol.id}", title: '查看' do %>
                   <div class="v-item" data-src="<%= image_path('homepage/v-item-bk.png') %>">
-                    <div class="v-title"><%= comp.name %></div>
+                    <div class="v-title"><%= vol.competition.name %></div>
                     <div class="v-circle">志愿者开始招募</div>
                   </div>
               <% end %>
@@ -14,7 +14,7 @@
         </div>
       </div>
       <nav>
-        <%= paginate @competitions %>
+        <%= paginate @volunteers %>
       </nav>
     </div>
   </div>

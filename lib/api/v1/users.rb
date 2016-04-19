@@ -1,15 +1,17 @@
 module API
   module V1
     class Users < Grape::API
+      include Grape::Kaminari
       resource :users do
-        # Get 20 users
         params do
-          optional :limit, type: Integer, default: 20, values: 1..150
+          optional :page, type: Integer, default: 1
+          optional :per_page, type: Integer, default: 20
+          optional :max_per_page, type: Integer, default: 100
+          optional :offset, type: Integer, default: 0
         end
         get do
-          params[:limit] = 100 if params[:limit] > 100
           @users = User.all
-          render @users
+          render paginate(@users)
         end
 
         params do
@@ -24,8 +26,11 @@ module API
 
         params do
           requires :private_token, type: String, desc: 'Private Token'
+          optional :page, type: Integer, default: 1
+          optional :per_page, type: Integer, default: 20
+          optional :max_per_page, type: Integer, default: 100
+          optional :offset, type: Integer, default: 0
         end
-
         namespace ':private_token' do
           before do
             authenticate!
@@ -37,9 +42,9 @@ module API
           end
 
           desc '获取用户未读消息数量'
-          get '/notifications/unread' do
-            @unread_notify =current_user.notifications.unread.count
-            render @unread_notify
+          get '/notifications' do
+            @unread_notify =current_user.notifications
+            render notifications: paginate(@unread_notify), total_num: @unread_notify.count, unread: @unread_notify.unread.count
           end
 
           desc '根据队伍'
