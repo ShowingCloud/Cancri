@@ -25,8 +25,8 @@ class CompetitionService
     } }
   end
 
-  def self.post_team_scores(ed, schedule_name, kind, th, t1d, t2d, score1, score2, note, confirm_sign)
-    if confirm_sign.present?
+  def self.post_team_scores(ed, schedule_name, kind, th, t1d, t2d, score1, score2, note, device_no, confirm_sign)
+    if confirm_sign.present? && device_no.present?
       if kind == 2 # 对抗
         if t2d.blank? || score2.blank?
           result = [false, '对抗模式下，队伍和成绩均为两个信息']
@@ -37,7 +37,7 @@ class CompetitionService
           if a_s.present?
             result = [false, '该成绩已登记，请检查场次或其他信息']
           else
-            score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, team2_id: t2d, score1: score1.first[1], score2: score2, note: note, confirm_sign: confirm_sign)
+            score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, team2_id: t2d, score1: score1.first[1], score2: score2, note: note, device_no: device_no, confirm_sign: confirm_sign)
             if score.save
               result = [true, '成绩保存成功!']
             else
@@ -56,9 +56,9 @@ class CompetitionService
             r=[]
             score1.each_with_index do |index, s|
               if index == 1
-                score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, score_attribute: s[0], score1: s[1], note: note, confirm_sign: confirm_sign)
+                score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, score_attribute: s[0], score1: s[1], note: note, device_no: device_no, confirm_sign: confirm_sign)
               else
-                score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, score_attribute: s[0], score1: s[1], note: note)
+                score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, score_attribute: s[0], score1: s[1], device_no: device_no, note: note)
               end
               if score.save
                 r = [true]+r
@@ -78,7 +78,7 @@ class CompetitionService
         result = [false, '赛制数据不合法']
       end
     else
-      result = [false, '无队员签名确认，该成绩不能上传']
+      result = [false, '队员签名确认或设备号缺失，该成绩不能上传']
     end
     result
   end

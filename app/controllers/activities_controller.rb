@@ -1,5 +1,6 @@
 class ActivitiesController < ApplicationController
   before_action :authenticate_user!, :only => [:apply_activity]
+  before_action :require_email, :only => [:apply_activity]
 
   def index
     @activities = Activity.all.page(params[:page]).per(params[:per])

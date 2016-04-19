@@ -1,6 +1,7 @@
 class VolunteersController < ApplicationController
   before_action :require_user, except: [:index, :show]
   before_action :require_mobile, :only => [:apply_comp_volunteer]
+  before_action :require_email, :only => [:apply_comp_volunteer]
 
 
   def index

@@ -47,6 +47,12 @@ module API
             render notifications: paginate(@unread_notify), total_num: @unread_notify.count, unread: @unread_notify.unread.count
           end
 
+          desc :'获取裁判负责项目'
+          get '/user_for_event' do
+            events = EventWorker.joins(:event).joins('left join competitions c on c.id=events.competition_id').where(user_id: current_user.id).select(:event_id, 'events.name', 'c.name as comp_name')
+            render events: events
+          end
+
           desc '根据队伍'
           params do
             requires :identifier, type: String, desc: '队伍编号'

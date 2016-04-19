@@ -203,8 +203,10 @@ class CompetitionsController < ApplicationController
         if has_invited
           render json: [false, '已被邀请，请不要重复邀请']
         else
+          puts '123qwe'
           invite_action = Invite.create!(email: params[:invited_email], code: code, invite_type: 'LEADER_INVITE', user_id: current_user.id, team_id: params[:td])
           if invite_action.save
+            puts '1qas'
             status = UserMailer.leader_invite_player(current_user.user_profile.username, params[:invited_email], code, params[:event_name], params[:team_name], params[:td]).deliver
             if status
               render json: [true, '邀请已经发送到'+params[:invited_email].to_s]
