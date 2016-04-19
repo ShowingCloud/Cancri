@@ -1,4 +1,57 @@
-<div class="container">
-  <p><%= @competition.name %>
-    <span><%= @competition.created_at.try(:strftime, '%Y-%m-%d') %></span></p>
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="volunteer" class="volunteer">
+        <div class="volunteer-inner">
+          <div class="sec-t" data-src="<%= image_path('homepage/v-title-bk.png') %>">
+            <span class="tags">志愿者丨招募</span>
+            <%= @competition.name %>
+            <span class="time"><%= @competition.created_at.try(:strftime, '%Y-%m-%d') %></span>
+          </div>
+          <div class="sec-c">
+            <div class="sec-top" data-src="<%= image_path('homepage/sec-top.png') %>"></div>
+            <div class="sec-middle">
+              <div class="img">
+                <img src="" alt="" data-src="<%= image_path('homepage/news-image01.png') %>"/>
+              </div>
+              <div class="text">
+                <h3>活动介绍</h3>
+
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum
+                  laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin
+                  sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient
+                  montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate,
+                  felis tellus mollis orci, sed rhoncus sapien nunc eget odio.Lorem ipsum dolor sit
+                  amet, cons dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales
+                  pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes,
+                  nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus
+                  mollis orci, sed rhoncus sapien nunc eget odio.
+                </p>
+
+                <h3>主办方</h3>
+
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Aenean euismod bibendum laoreet.
+                   Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>
+
+                <div class="volunteer-bottom">
+                    <button class="btn-robodou btn-join-volunteer">报名参加</button>
+                </div>
+              </div>
+            </div>
+            <div class="sec-bottom" data-src="<%= image_path('homepage/sec-bottom.png') %>"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
 </div>
