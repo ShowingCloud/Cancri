@@ -14,6 +14,8 @@ $(function () {
         school_select.init('.create-team');
         send_confirm.init();
         create_team.init();
+        join_activity.init();
+        join_volunteer.init();
     };
 
     var lazyload = {
@@ -291,7 +293,46 @@ $(function () {
             var a = $('.btn-join-activity');
             if (a.length > 0) {
                 a.on('click', function () {
+                    var form = $('#activity-form');
+                    var option = {
+                        url: '/activities/apply_activity',
+                        dataType: 'json',
+                        type: 'post',
+                        data: form.serialize(),
+                        success: function (data) {
+                            if (data[0]) {
+                                alert(data[1]);
+                            } else {
+                                alert(data[1]);
+                            }
+                        }
+                    };
+                    $.ajax(option);
+                });
+            }
+        }
+    };
 
+    var join_volunteer = {
+        init: function () {
+            var a = $('.btn-join-volunteer');
+            if (a.length > 0) {
+                a.on('click', function () {
+                    var form = $('#volunteer-form');
+                    var option = {
+                        url: '/volunteers/apply_comp_volunteer',
+                        dataType: 'json',
+                        type: 'post',
+                        data: form.serialize(),
+                        success: function (data) {
+                            if (data[0]) {
+                                alert(data[1]);
+                            } else {
+                                alert(data[1]);
+                            }
+                        }
+                    };
+                    $.ajax(option);
                 });
             }
         }

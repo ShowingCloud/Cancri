@@ -35,7 +35,7 @@
                    Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>
 
                 <div class="volunteer-bottom">
-                  <button data-toggle="modal" data-target="#join-activity" class="btn-robodou btn-join-activity">报名参加</button>
+                  <button data-toggle="modal" data-target="#join-activity" class="btn-robodou btn-show-form">报名参加</button>
                 </div>
               </div>
             </div>
@@ -56,34 +56,35 @@
   </div>
 </div>
 
-<div id="join-activity" class="">
+<div id="join-activity" class="modal fade">
   <div class="join-activity">
     <div class="activity-t" data-src="<%= image_path('homepage/info-t-bk.png') %>">
       报名活动
     </div>
-    <div class="create-c">
+    <div class="activity-c">
       <form id="activity-form" action="">
+        <input type="hidden" name="act_id" value="<%= @activity.id %>"/>
         <div class="item-row">
           <div class="item-first">
             <i class="glyphicon glyphicon-pencil"></i>
             姓名
           </div>
           <div class="item-second">
-            <input type="text" name="name" class="" value=""/>
+            <input type="text" name="username" class="" value=""/>
+          </div>
+        </div>
+        <div class="item-row">
+          <div class="item-first">
+            <i class="glyphicon glyphicon-certificate"></i>
+            年龄
+          </div>
+          <div class="item-second">
+            <input type="text" name="age" class="" value=""/>
           </div>
         </div>
         <div class="item-row">
           <div class="item-first">
             <i class="glyphicon glyphicon-education"></i>
-            年龄
-          </div>
-          <div class="item-second">
-            <input type="text" name="age" class="" value="学校"/>
-          </div>
-        </div>
-        <div class="item-row">
-          <div class="item-first">
-            <i class="glyphicon glyphicon-flag"></i>
             学校
           </div>
           <div class="item-second">
@@ -92,7 +93,7 @@
         </div>
         <div class="item-row">
           <div class="item-first">
-            <i class="glyphicon glyphicon-plus"></i>
+            <i class="glyphicon glyphicon-bookmark"></i>
             年级
           </div>
           <div class="item-second">
@@ -114,8 +115,8 @@
         </div>
       </form>
     </div>
-    <div class="create-f">
-      <button class="btn-robodou btn-create-team-all">创建队伍</button>
+    <div class="activity-f">
+      <button class="btn-robodou btn-join-activity">报名活动</button>
     </div>
   </div>
 </div>

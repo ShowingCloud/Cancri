@@ -1133,6 +1133,7 @@ ul {
   height: 52px;
   position: absolute;
   top: 30px;
+  z-index: 1;
 }
 
 #volunteer .volunteer-inner .sec-c .sec-bottom {
@@ -1141,10 +1142,13 @@ ul {
   height: 52px;
   position: absolute;
   bottom: 5px;
+  z-index: 1;
 }
 
 #volunteer .volunteer-inner .sec-c .sec-middle {
   padding: 40px;
+  position: relative;
+  z-index: 10;
 }
 
 #volunteer .volunteer-inner .sec-c .sec-middle .img {
@@ -1828,24 +1832,120 @@ ul {
   text-align: center;
 }
 
-.invite-page input{
+.invite-page input {
   background: transparent;
   border: 1px solid #88D5EC;
   color: #88D5EC;
 }
 
-.invite-page input[disabled]{
+.invite-page input[disabled] {
   background: transparent;
   border: 1px solid #88D5EC;
   color: #88D5EC;
 }
 
-.invite-page select{
+.invite-page select {
   background: transparent;
   border: 1px solid #88D5EC;
   color: #88D5EC;
 }
 
-.invite-page .btn:hover{
+.invite-page .btn:hover {
   background: transparent;
+}
+
+.join-activity {
+  width: 400px;
+  color: #88D5EC;
+  border: 1px solid #88D5EC;
+  padding: 40px;
+  border-radius: 15px;
+  background: rgba(57, 105, 120, .39);
+  margin: 60px auto;
+}
+
+.join-activity .activity-t {
+  background: transparent bottom center no-repeat;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.join-activity .activity-c {
+
+}
+
+.join-activity .activity-c .item-row {
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.join-activity .activity-c .item-row .item-first {
+  display: inline-block;
+  width: 80px;
+  text-align: right;
+  height: inherit;
+  float: left;
+}
+
+.join-activity .activity-c .item-row .item-first img {
+  float: left;
+}
+
+.join-activity .activity-c .item-row .item-second {
+  margin-left: 100px;
+}
+
+.create-team .activity-c .item-row .item-second input[type="radio"] {
+  margin: 0 5px 0 15px;
+}
+
+.join-activity .activity-c .item-row .item-second input[type="text"] {
+  background: #4ABAC5;
+  line-height: 20px;
+  padding-left: 8px;
+  width: 180px;
+  border: none;
+  outline: none;
+  color: #fff;
+}
+
+.join-activity .activity-c .item-row .item-second input[type="text"]:focus {
+  outline: 1px solid #88D5EC;
+}
+
+.join-activity .activity-c .item-row .item-second select {
+  display: block;
+  width: 180px;
+  background: #4ABAC5;
+  height: 20px;
+  border: none;
+  outline: none;
+  margin-bottom: 10px;
+  color: #FFF;
+}
+
+.join-activity .activity-f {
+  text-align: center;
+}
+
+.btn-join-activity,.btn-join-volunteer {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  border-radius: 5px;
+  background: transparent;
+  font-size: 18px;
+}
+
+.volunteer-bottom {
+  text-align: center;
+}
+
+.btn-show-form {
+  font-size: 18px;
+  padding: 8px 20px;
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  background: transparent;
+  border-radius: 5px;
 }
