@@ -14,7 +14,7 @@ class ResetPassword
   validates :mobile, presence: true, length: {is: 11}, numericality: true
   validates :password, presence: true, length: {in: 6..30}, format: {with: /\A[\x21-\x7e]+\Z/i, message: '密码只能包含数字、字母、特殊字符'}
   validates :password_confirmation, presence: true
-  validates :mobile_code, presence: true, length: {is: 4}
+  validates :mobile_code, presence: true, length: {is: 6}
 
   validate :mobile_validation
   validate :mobile_code_validation
