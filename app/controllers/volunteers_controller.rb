@@ -21,11 +21,11 @@ class VolunteersController < ApplicationController
     else
       if username.present? && school !=0 && age != 0 && grade.present? && current_user.user_profile.update_attributes!(username: username, school: school, age: age, grade: grade)
         if params[:comp_id].present?
-          cw = CompWorker.where(competititon_id: params[:comp_id], user_id: current_user.id).exists?
+          cw = CompWorker.where(competition_id: params[:comp_id], user_id: current_user.id).exists?
           if cw
             result=[false, '您已经申请']
           else
-            comp_worker = CompWorker.create!(competititon_id: params[:comp_id], user_id: current_user.id)
+            comp_worker = CompWorker.create!(competition_id: params[:comp_id], user_id: current_user.id)
             if comp_worker.save
               result=[true, '申请成功,等待审核']
             else
