@@ -19,7 +19,7 @@ class VolunteersController < ApplicationController
     if /\A[\u4e00-\u9fa5]{2,4}\Z/.match(username)==nil
       result = [false, '姓名为2-4位中文']
     else
-      if username.present? && school !=0 && age != 0 && grade.present? && UserProfile.update_attributes!(username: username, school: school, age: age, grade: grade)
+      if username.present? && school !=0 && age != 0 && grade.present? && current_user.user_profile.update_attributes!(username: username, school: school, age: age, grade: grade)
         if params[:comp_id].present?
           cw = CompWorker.where(competititon_id: params[:comp_id], user_id: current_user.id).exists?
           if cw
