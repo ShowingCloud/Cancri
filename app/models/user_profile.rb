@@ -13,9 +13,9 @@ class UserProfile < ApplicationRecord
   def user_info_validate
     user = self.user
     if self.school.present? & self.grade.present? & self.gender.present? & self.username.present?
-      user.update_attributes(validate: 1)
+      user.update_attributes(validate_status: 1)
     else
-      user.update_attributes(validate: 0)
+      user.update_attributes(validate_status: 0)
     end
   end
 end
