@@ -1,22 +1,48 @@
-<div class="container">
-  <h2>
-    新闻列表
-  </h2>
+<div id="main" class="main" data-src="<%= image_path('homepage/bk.png') %>">
+  <div id="news">
+    <div class="container">
+      <div class="row">
+        <% @news.each do |news| %>
+            <%= link_to news_path(news), title: '查看新闻' do %>
+                <div class="col-sm-6 col-xs-12">
+                  <div class="news-item" data-src="<%= image_path('homepage/news-item-bk.png') %>">
+                    <div class="news-img">
+                      <img src="" alt="" data-src="<%= image_path('homepage/news-image01.png') %>"/>
+                    </div>
+                    <div class="news-simple">
+                      <div class="news-tags">
+                        <ul class="items">
+                          <li class="item"><a href="">赛事</a></li>
+                          <li class="item"><a href="">报名</a></li>
+                        </ul>
+                        <div class="news-time">
+                          <%= news.created_at.try(:strftime, '%Y-%m-%d') %>
+                        </div>
+                      </div>
 
-  <div class="content">
-    <% @news.each do |news| %>
-        <%= link_to news_path(news), title: '查看新闻' do %>
-
-            <p><%= news.name %>
-              <span><%= news.created_at.try(:strftime, '%Y-%m-%d') %></span>
-            </p>
-
+                      <div class="sec-t">
+                        <%= news.name %>
+                      </div>
+                      <div class="sec-c">
+                        活动以任务驱动型的项目，引导学生学习技术、创造性地应用技术，并以竞技、展示、演讲等方式进行比赛。活动内容涉及：机械、电子、计算机控制、物联网、工业设计、建筑、环保、计算机辅助设计等。活动分三个系列：普及、机电自动化和创意设计三大系列，具体项目有，活动内容涉及：机械、电子。
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            <% end %>
         <% end %>
-    <% end %>
-    <nav class="text-center">
-      　<%= paginate @news %>
-    </nav>
+        <%= paginate @news %>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
   </div>
 </div>
-
 
