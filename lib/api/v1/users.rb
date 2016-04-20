@@ -41,9 +41,9 @@ module API
             render user: current_user
           end
 
-          desc '获取用户未读消息数量'
+          desc '获取用户消息'
           get '/notifications' do
-            @unread_notify =current_user.notifications
+            @unread_notify =current_user.notifications.where(message_type: '0').where(['created_at > ?', Time.now.beginning_of_day])
             render notifications: paginate(@unread_notify), total_num: @unread_notify.count, unread: @unread_notify.unread.count
           end
 

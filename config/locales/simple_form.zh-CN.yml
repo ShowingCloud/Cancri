@@ -72,6 +72,7 @@ zh-CN:
         teacher_no: '教室编号'
         host_year: '举办年份'
         host_address: '举办地点'
+        student_code: '学籍号'
 
     "yes": '是'
     "no": '否'

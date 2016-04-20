@@ -393,7 +393,7 @@ $(function () {
                     if (data[0]) {
                         alert(data[1]);
                     } else {
-                        alert('邀请发送出错，请重新发送！');
+                        alert(data[1]);
                     }
                 },
                 complete: function () {

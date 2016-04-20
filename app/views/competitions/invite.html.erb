@@ -22,6 +22,8 @@
             <%= f.hidden_field :team_name, value: @add_info.team_name %>
             <%= f.input :username %>
             <%= f.input :school %>
+            <%= f.input :gender %>
+            <%= f.input :student_code %>
             <%= f.input :grade, collection: {一年级: 1, 二年级: 2, 三年级: 3, 四年级: 4, 五年级: 5, 六年级: 6, 七年级: 7, 八年级: 8, 九年级: 9, 高一: 10, 高二: 11, 高三: 12}.map { |key, val| [key, val] } %>
             <%= f.input :nickname %>
             <%= f.input :password %>

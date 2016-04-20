@@ -166,10 +166,14 @@ $('.user-add-email').on('click', function () {
                 "email": email
             },
             success: function (data) {
-                alert(data[1]);
+                if (data[0]) {
+                    alert(data[1]);
+                } else {
+                    alert(data[1]);
+                }
             },
             error: function (data) {
-                alert(data[1]);
+                alert('发送失败');
             },
             complete: function () {
                 is_sending = false;
