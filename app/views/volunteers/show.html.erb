@@ -27,15 +27,19 @@
                    Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>
 
                 <div class="volunteer-bottom">
-                  <% if current_user.present? %>
-                      <% if require_email_and_mobile %>
-                          <button data-toggle="modal" data-target="#join-volunteer" class="btn-robodou btn-show-form">报名参加</button>
-                      <% else %>
-                          <!-- 邮箱和手机都要验证 -->
-                          <button class="alert-info">报名参加</button>
-                      <% end %>
+                  <% if @already_apply %>
+                      <p>您已经报名</p>
                   <% else %>
-                      <a href="<%= "#{apply_require_volunteers_path}?id=#{@volunteer.id}" %>">报名参加</a>
+                      <% if current_user.present? %>
+                          <% if require_email_and_mobile %>
+                              <button data-toggle="modal" data-target="#join-volunteer" class="btn-robodou btn-show-form">报名参加</button>
+                          <% else %>
+                              <!-- 邮箱和手机都要验证 -->
+                              <button class="alert-info-2 btn-robodou btn-show-form">报名参加</button>
+                          <% end %>
+                      <% else %>
+                          <a class="btn-robodou btn-show-form" href="<%= "#{apply_require_volunteers_path}?id=#{@volunteer.id}" %>">报名参加</a>
+                      <% end %>
                   <% end %>
                 </div>
               </div>
