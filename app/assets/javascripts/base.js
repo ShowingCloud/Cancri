@@ -281,6 +281,9 @@ $(function () {
                     data: data,
                     success: function (data) {
                         console.log(data);
+                        if (data[0]) {
+                            alert(data[1]);
+                        }
                     }
                 };
                 $.ajax(option);
@@ -290,6 +293,12 @@ $(function () {
 
     var join_activity = {
         init: function () {
+            var b = $('.alert-info');
+            if (b.length > 0) {
+                b.on('click', function () {
+                    alert('请去个人中心验证您的邮箱');
+                });
+            }
             var a = $('.btn-join-activity');
             if (a.length > 0) {
                 a.on('click', function () {
@@ -302,6 +311,7 @@ $(function () {
                         success: function (data) {
                             if (data[0]) {
                                 alert(data[1]);
+                                window.location.reload();
                             } else {
                                 alert(data[1]);
                             }
@@ -315,6 +325,13 @@ $(function () {
 
     var join_volunteer = {
         init: function () {
+            var b = $('.alert-info-2');
+            if (b.length > 0) {
+                b.on('click', function () {
+                    alert('请去个人中心验证您的手机和邮箱');
+                });
+            }
+
             var a = $('.btn-join-volunteer');
             if (a.length > 0) {
                 a.on('click', function () {
@@ -327,6 +344,7 @@ $(function () {
                         success: function (data) {
                             if (data[0]) {
                                 alert(data[1]);
+                                window.location.reload();
                             } else {
                                 alert(data[1]);
                             }
@@ -430,4 +448,8 @@ $(function () {
             $.ajax(option);
         }
     }
+
+    //window.alert = function(text){
+    //    console.log(text);
+    //};
 });

@@ -14,8 +14,12 @@
               </div>
               <div class="user-row">
                 <span class="row-name">手机号</span>
-                <span class="row-content edit-input" data-input="text"><%= current_user.mobile %></span>
-                <span class="row-tip">已验证</span>
+                <% if current_user.mobile.present? %>
+                    <span class="row-content edit-input" data-input="text"><%= current_user.mobile %></span>
+                    <span class="row-tip">已验证</span>
+                <% else %>
+                    <span class="row-tip"><a href="<%= user_mobile_path %>">添加</a></span>
+                <% end %>
               </div>
               <div class="user-row">
                 <span class="row-name">邮箱</span>
@@ -23,7 +27,7 @@
                     <span class="row-content edit-input" data-input="text"><%= current_user.email %></span>
                     <span class="row-tip">已验证</span>
                 <% else %>
-                    <span class="row-tip"><a href="">添加</a></span>
+                    <span class="row-tip"><a href="<%= user_email_path %>">添加</a></span>
                 <% end %>
               </div>
               <div class="panel-control control-bottom">
