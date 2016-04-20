@@ -59,6 +59,7 @@ class CompetitionsController < ApplicationController
     username = params[:username]
     gender = params[:gender].to_i
     grade = params[:grade]
+    student_code = params[:student_code]
     district = params[:district].to_i
     school = params[:school].to_i
     join = params[:join]
@@ -67,13 +68,14 @@ class CompetitionsController < ApplicationController
     if /\A[\u4e00-\u9fa5]{2,4}\Z/.match(username)==nil
       status = false
       message= '姓名为2-4位中文'
-    elsif username.present? && school !=0 && grade.present? && gender !=0 && district != 0
+    elsif username.present? && school !=0 && grade.present? && gender !=0 && district != 0 && student_code.present?
       user = UserProfile.find_by(user_id: current_user.id)
       if user.present?
         user.username = username
         user.gender = gender
         user.school = school
         user.grade = grade
+        user.student_code = student_code
         user.district = district
         if user.save
           s = true
@@ -83,7 +85,7 @@ class CompetitionsController < ApplicationController
           m = '个人信息更新失败'
         end
       else
-        up = UserProfile.create!(user_id: current_user.id, username: username, gender: gender, school: school, grade: grade, district: district)
+        up = UserProfile.create!(user_id: current_user.id, username: username, gender: gender, school: school, grade: grade, student_code: student_code, district: district)
         if up.save
           s = true
           m = '个人信息添加成功'

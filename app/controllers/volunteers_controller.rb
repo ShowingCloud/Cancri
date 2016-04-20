@@ -10,6 +10,7 @@ class VolunteersController < ApplicationController
 
   def show
     @volunteer = Volunteer.find(params[:id])
+    @already_apply = CompWorker.where(user_id: current_user.id, competition_id: params[:id]).exists?
   end
 
   def apply_comp_volunteer

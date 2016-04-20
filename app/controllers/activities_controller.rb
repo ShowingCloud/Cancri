@@ -8,6 +8,7 @@ class ActivitiesController < ApplicationController
 
   def show
     @activity = Activity.find(params[:id])
+    @already_apply = UserActivityShip.where(user_id: current_user.id, activity_id: params[:id]).exists?
   end
 
   def apply_activity
