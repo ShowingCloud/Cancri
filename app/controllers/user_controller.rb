@@ -58,6 +58,18 @@ class UserController < ApplicationController
     end
   end
 
+  def check_email_exists
+    render json: require_email
+  end
+
+  def check_mobile_exists
+    render json: require_mobile
+  end
+
+  def check_email_and_mobile
+    render json: require_email_and_mobile
+  end
+
   def email
     if params[:return_uri].present?
       return_uri = params[:return_uri]

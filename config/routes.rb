@@ -152,6 +152,9 @@ Rails.application.routes.draw do
   get '/user/notify' => 'user#notify_show'
   post '/user/agree_invite_info' => 'user#agree_invite_info'
   post '/user/add_school' => 'user#add_school', as: 'user_add_school', via: [:post]
+  post '/user/check_email_exists' => 'user#check_email_exists', as: 'user_check_email_exists', via: [:post]
+  post '/user/check_mobile_exists' => 'user#check_mobile_exists', as: 'user_check_mobile_exists', via: [:post]
+  post '/user/check_email_mobile' => 'user#check_email_mobile', as: 'user_check_email_mobile', via: [:post]
 
   mount API::Dispatch => '/'
 
