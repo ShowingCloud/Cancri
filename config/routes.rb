@@ -19,14 +19,17 @@ Rails.application.routes.draw do
   end
   resource :chats
   resources :news
+  get '/activities/apply_activity' => 'activities#apply_activity'
   resources :activities do
     collection do
       post :apply_activity
+      get :apply_require
     end
   end
   resources :volunteers do
     collection do
       post :apply_comp_volunteer
+      get :apply_require
     end
   end
   get '/downloads' => 'downloads#index'

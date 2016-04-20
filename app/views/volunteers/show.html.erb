@@ -27,7 +27,16 @@
                    Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>
 
                 <div class="volunteer-bottom">
-                  <button data-toggle="modal" data-target="#join-volunteer" class="btn-robodou btn-show-form">报名参加</button>
+                  <% if current_user.present? %>
+                      <% if require_email_and_mobile %>
+                          <button data-toggle="modal" data-target="#join-volunteer" class="btn-robodou btn-show-form">报名参加</button>
+                      <% else %>
+                          <!-- 邮箱和手机都要验证 -->
+                          <button class="alert-info">报名参加</button>
+                      <% end %>
+                  <% else %>
+                      <a href="<%= "#{apply_require_volunteers_path}?id=#{@volunteer.id}" %>">报名参加</a>
+                  <% end %>
                 </div>
               </div>
             </div>
@@ -56,6 +65,7 @@
     <div class="activity-c">
       <form id="volunteer-form" action="">
         <input type="hidden" name="comp_id" value="<%= @volunteer.competition.id %>"/>
+
         <div class="item-row">
           <div class="item-first">
             <i class="glyphicon glyphicon-pencil"></i>
