@@ -308,10 +308,12 @@ class CompetitionsController < ApplicationController
       nickname = params[:invite_player][:nickname]
       username = params[:invite_player][:username]
       grade = params[:invite_player][:grade]
-      school = params[:invite_player][:school]
+      school = params[:invite_player][:school].to_i
+      gender = params[:invite_player][:gender].to_i
+      student_code = params[:invite_player][:student_code]
       email = params[:invite_player][:email]
       code = params[:invite_player][:code]
-      @add_info = InvitePlayer.new(email: email, code: code, nickname: nickname, username: username, grade: grade, school: school, password: params[:invite_player][:password])
+      @add_info = InvitePlayer.new(email: email, code: code, nickname: nickname, username: username, gender: gender, student_code: student_code, grade: grade, school: school, password: params[:invite_player][:password])
       if @add_info.save
         flash[:notice] = '您已成功加入此队'
         redirect_to root_path

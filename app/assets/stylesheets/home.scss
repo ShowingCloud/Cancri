@@ -1929,7 +1929,7 @@ ul {
   text-align: center;
 }
 
-.btn-join-activity,.btn-join-volunteer {
+.btn-join-activity, .btn-join-volunteer {
   border: 1px solid #88D5EC;
   color: #88D5EC;
   border-radius: 5px;
@@ -1948,4 +1948,11 @@ ul {
   color: #88D5EC;
   background: transparent;
   border-radius: 5px;
+}
+
+#rucaptcha-image-style {
+  position: absolute;
+  width: 130px;
+  height: 35px;
+  right: 18px
 }

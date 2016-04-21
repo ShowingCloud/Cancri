@@ -119,6 +119,38 @@ class UserController < ApplicationController
     end
   end
 
+  def reset_mobile
+    if params[:mobile_info].present?
+      current_user.mobile_info = params[:mobile_info]
+    end
+    if params[:email_code].present?
+      current_user.email_code = params[:email_code]
+    end
+    if request.method == 'POST' && verify_rucaptcha?(current_user)
+      unless params[:mobile_info].present? && params[:email_code].present? && params[:password].present?
+        flash[:error] = '请将手机号、手机验证码、密码填写完整'
+        return
+      end
+      unless current_user.valid_password?(params[:password])
+        flash[:error]='密码不正确'
+        return
+      end
+      sms = SMSService.new(params[:mobile_info])
+      status, message = sms.validate?(params[:email_code], SMSService::TYPE_CODE_ADD_MOBILE)
+      if status
+        current_user.mobile = params[:mobile_info]
+        if current_user.save
+          flash[:success] = '手机更新成功'
+          redirect_to user_preview_path
+        else
+          flash[:error] = '手机更新失败'
+        end
+      else
+        flash[:error] = message
+      end
+    end
+  end
+
   def notification
     @notifications = current_user.notifications.page(params[:page]).per(params[:per]).order('created_at desc')
     if params[:id].present?
@@ -239,7 +271,7 @@ class UserController < ApplicationController
         if has_add.present?
           result= [false, '您已经添加过一所学校，在未审核通过前不能再次添加']
         else
-          add_s = School.create!(name: name, district: district, school_type: type)
+          add_s = School.create!(name: name, district: district, school_type: type, school_city: '上海市')
           if add_s.save
             result=[true, '添加成功', add_s.id] #该学校仅为您显示，审核通过后其他人才能选择该学校
           else
@@ -263,8 +295,8 @@ class UserController < ApplicationController
       return [FALSE, '新密码不能为空']
     end
 
-    unless new_password.length <= 30 && new_password.length >= 2
-      return [FALSE, '新密码只能为2-30位']
+    unless new_password.length <= 30 && new_password.length >= 6
+      return [FALSE, '新密码只能为6-30位']
     end
 
     unless confirm_password == new_password
