@@ -45,6 +45,7 @@ class User < ApplicationRecord
   end
 
   attr_accessor :login
+  attr_accessor :email_info
   attr_accessor :email_code
   attr_accessor :mobile_info
   attr_accessor :return_url

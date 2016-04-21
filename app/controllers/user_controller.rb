@@ -34,6 +34,9 @@ class UserController < ApplicationController
             message
           end
         end
+        if message=='-'
+          message=''
+        end
         @user_profile.username = profile_params[:username]
         @user_profile.autograph = profile_params[:autograph]
         @user_profile.school = profile_params[:school]
@@ -47,9 +50,9 @@ class UserController < ApplicationController
         @user_profile.teacher_no = profile_params[:teacher_no]
         @user_profile.certificate = profile_params[:certificate]
         if @user_profile.save
-          flash[:success] = '更新成功'+ '-' +message
+          flash[:success] = '更新成功'+message
         else
-          flash[:error] = '更新失败'+ '-'+message
+          flash[:error] = '更新失败'+message
         end
       else
         flash[:error] = '不能提交空信息'
@@ -108,7 +111,7 @@ class UserController < ApplicationController
         current_user.mobile = params[:user][:mobile_info]
         if current_user.save
           flash[:success] = '手机添加成功'
-          redirect_to user_mobile_path
+          redirect_to user_preview_path
         else
           flash[:error] = '手机添加失败'
         end
@@ -150,6 +153,39 @@ class UserController < ApplicationController
       end
     end
   end
+
+  def reset_email
+    if params[:email_info].present?
+      current_user.email_info = params[:email_info]
+    end
+    if params[:email_code].present?
+      current_user.email_code = params[:email_code]
+    end
+    if request.method == 'POST' && verify_rucaptcha?(current_user)
+      unless params[:email_info].present? && params[:email_code].present? && params[:password].present?
+        flash[:error] = '请将邮箱、邮箱验证码、密码填写完整'
+        return
+      end
+      unless current_user.valid_password?(params[:password])
+        flash[:error]='密码不正确'
+        return
+      end
+      es = EmailService.new(params[:email_info])
+      status, message = es.validate?(params[:email_code], EmailService::TYPE_CODE_ADD_EMAIL_CODE)
+      if status
+        current_user.email = params[:email_info]
+        if current_user.save
+          flash[:success] = '邮箱更新成功'
+          redirect_to user_preview_path
+        else
+          flash[:error] = '邮箱更新失败'
+        end
+      else
+        flash[:error] = message
+      end
+    end
+  end
+
 
   def notification
     @notifications = current_user.notifications.page(params[:page]).per(params[:per]).order('created_at desc')

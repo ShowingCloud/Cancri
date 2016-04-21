@@ -9,29 +9,29 @@
           <div class="content">
             <div class="user-panel">
               <div class="user-row">
-                <span class="row-name">昵称</span>
-                <span class="row-content edit-input" data-input="text"><%= current_user.nickname %></span>
-              </div>
-              <div class="user-row">
-                <span class="row-name">手机号</span>
-                <% if current_user.mobile.present? %>
-                    <span class="row-content edit-input" data-input="text"><%= current_user.mobile %></span>
-                    <span class="row-tip">已验证</span>
-                <% else %>
-                    <span class="row-tip"><a href="<%= user_mobile_path %>">添加</a></span>
-                <% end %>
-              </div>
-              <div class="user-row">
                 <span class="row-name">邮箱</span>
                 <% if current_user.email.present? %>
                     <span class="row-content edit-input" data-input="text"><%= current_user.email %></span>
-                    <span class="row-tip">已验证</span>
+                    <span class="row-tip pull-right"><a href="<%= user_reset_email_path %>">修改</a></span>
                 <% else %>
-                    <span class="row-tip"><a href="<%= user_email_path %>">添加</a></span>
+                    <span class="row-tip pull-right"><a href="<%= user_email_path %>">添加</a></span>
                 <% end %>
               </div>
-              <div class="panel-control control-bottom">
-                编 辑
+              <hr>
+              <div class="user-row">
+                <span class="row-name">手机</span>
+                <% if current_user.mobile.present? %>
+                    <span class="row-content edit-input" data-input="text"><%= current_user.mobile %></span>
+                    <span class="row-tip pull-right"><a href="<%= user_reset_mobile_path %>">修改</a></span>
+                <% else %>
+                    <span class="row-tip pull-right"><a href="<%= user_mobile_path %>">添加</a></span>
+                <% end %>
+              </div>
+              <hr>
+              <div class="user-row">
+                <span class="row-name">登录密码</span>
+                <span class="row-content edit-input" data-input="text">建议您定期更改密码</span>
+                <span class="row-tip pull-right"><a href="<%= user_passwd_path %>">修改</a></span>
               </div>
             </div>
             <div class="user-panel">
@@ -58,7 +58,7 @@
                 <span class="row-content edit-input" data-input="text"></span>
               </div>
               <div class="panel-control control-top">
-                编 辑
+                <a href="<%= user_profile_path %>">编 辑</a>
               </div>
             </div>
           </div>

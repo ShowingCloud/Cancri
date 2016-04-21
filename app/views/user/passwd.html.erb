@@ -1,28 +1,35 @@
-<div class="container">
-  <div class="row">
-    <div class="col-xs-12 col-sm-3 hidden-xs">
-      <%= render 'user/menu' %>
-    </div>
-    <div class="col-xs-12 col-sm-9">
-      <h1 class="page-header">
-        我的账户
-      </h1>
-
-      <%= render 'user/tab' %>
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <%= simple_form_for(current_user, html: {id: 'form_change_password'}, url: user_passwd_path, method: :post) do |f| %>
-              <div class="form-inputs">
-                <%= f.input :old_password, placeholder: '请输入您当前的密码' %>
-                <%= f.input :new_password, placeholder: '请输入您的新密码' %>
-                <%= f.input :password_confirmation, placeholder: '请再次输入新密码' %>
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
+        <div class="sec-t">
+          <%= render 'user/menu' %>
+        </div>
+        <div class="sec-c">
+          <div class="content">
+            <div class="user-panel">
+              <%= simple_form_for(current_user, html: {id: 'form_change_password'}, url: user_passwd_path, method: :post) do |f| %>
+                  <div class="form-group password optional user_old_password">
+                    <label class="password optional control-label" for="user_old_password">原密码</label>
+                    <input id="user_old_password" class="password optional form-control" type="text" name="user[old_password]" placeholder="请输入您当前的密码">
+                  </div>
+                  <%= f.input :new_password, placeholder: '请输入您的新密码' %>
+                  <%= f.input :password_confirmation, placeholder: '请再次输入新密码' %>
+                  <%= f.submit class: 'btn btn-primary btn-block', value: '修改密码', 'data-disable-with' => '修改密码' %>
+                  </div>
+              <% end %>
               </div>
-              <div class="form-actions">
-                <%= f.submit class: 'btn btn-primary', value: '修改密码', 'data-disable-with' => '修改密码' %>
-              </div>
-          <% end %>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+<div id="footer">
+  <div class="container">
+    <div class="footer">
+      <a>关于我们</a>
+      <span class="separator"></span>
+      <a>联系我们</a>
     </div>
   </div>
 </div>

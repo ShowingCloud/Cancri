@@ -67,7 +67,7 @@ class EmailService
       else
         row.failed_attempts = row.failed_attempts.to_i + 1
         row.save
-        [FALSE, '验证码不正确']
+        [FALSE, '邮箱验证码不正确']
       end
     end
   end

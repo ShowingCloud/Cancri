@@ -149,6 +149,7 @@ Rails.application.routes.draw do
   match 'user/remove_avatar' => 'user#remove_avatar', as: 'user_remove_avatar', via: [:post]
   match 'user/passwd' => 'user#passwd', as: 'user_passwd', via: [:get, :post]
   match 'user/reset_mobile' => 'user#reset_mobile', as: 'user_reset_mobile', via: [:get, :post]
+  match 'user/reset_email' => 'user#reset_email', as: 'user_reset_email', via: [:get, :post]
   match 'user/mobile' => 'user#mobile', as: 'user_mobile', via: [:get, :post]
   match 'user/send_email_code' => 'user#send_email_code', as: 'user_send_email_code', via: [:post]
   match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]

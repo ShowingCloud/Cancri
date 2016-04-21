@@ -8,19 +8,19 @@
         <div class="sec-c">
           <div class="content">
             <div class="user-panel">
-              <% if current_user.present? && current_user.mobile.present? %>
-                  当前手机: <%= current_user.mobile %>
+              <% if current_user.present? && current_user.email.present? %>
+                  当前邮箱: <%= current_user.email %>
                   <hr>
-                  <%= simple_form_for(current_user, url: user_reset_mobile_path, method: :post) do |f| %>
+                  <%= simple_form_for(current_user, url: user_reset_email_path, method: :post) do |f| %>
                       <div class="row">
                         <div class="col-xs-9">
 
-                          <div class="input-group form-group mobile_info optional user_mobile">
-                            <input id="user_mobile" class="mobile-value string optional form-control" type="text" placeholder="请输入要添加的手机" name="mobile_info" value="<%= current_user.mobile_info %>">
-                            <span class="input-group-addon btn btn-default user-add-mobile" id="basic-addon2">发送验证码</span>
+                          <div class="input-group form-group email_info optional">
+                            <input id="user-email" class="email-value string optional form-control" type="text" placeholder="请输入要更换的邮箱" name="email_info" value="<%= current_user.email_info %>">
+                            <span class="input-group-addon btn btn-default user-add-email" id="basic-addon2">发送验证码</span>
                           </div>
                           <div class="form-inputs">
-                            <input id="email_code" class="string required form-control" placeholder="请输入手机收到的验证码" type="text" name="email_code" value="<%= current_user.email_code %>">
+                            <input id="email_code" class="string required form-control" placeholder="请输入邮箱收到的验证码" type="text" name="email_code" value="<%= current_user.email_code %>">
                           </div>
                           <br>
 
@@ -58,7 +58,7 @@
                       </div>
                   <% end %>
               <% else %>
-                  您还没有认证手机，无法重置手机！<a href="<%= user_mobile_path %>">去认证</a>
+                  您还没有认证邮箱，无法重置手机！<a href="<%= user_email_path %>">去认证</a>
               <% end %>
             </div>
           </div>
