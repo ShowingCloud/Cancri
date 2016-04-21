@@ -17,7 +17,6 @@
               </select>
             </div>
           </div>
-
           <div class="already-apply">
             <div class="apply-team">
               <div class="tips">
@@ -31,7 +30,7 @@
 
                 </div>
               </div>
-              <div class="apply-row">
+              <div class="apply-row apply-team-row">
                 <div class="apply-row-left">
                   队伍
                 </div>
@@ -49,7 +48,14 @@
               </div>
               <div class="apply-row add-member">
                 <div class="apply-row-left">
-                  邀请队员
+                  添加队员
+                </div>
+                <div class="apply-row-right">
+                  <input class="invitation-email" type="text"/>
+                  <button class="btn-robodou btn-add-team-member">查询队员</button>
+                </div>
+                <div class="apply-row-left">
+                  邀请未注册队员
                 </div>
                 <div class="apply-row-right">
                   <input class="invitation-email" type="text"/>
@@ -74,7 +80,6 @@
               </table>
             </div>
           </div>
-
           <div class="team-panel">
             您选择的是多人项目 可以加入他人队伍或者自行创建队伍
             <br/>
@@ -101,8 +106,6 @@
               </table>
             </div>
           </div>
-
-
           <div id="confirm_info" class="confirm_info">
             <div class="info-t" data-src="<%= image_path('homepage/info-t-bk.png') %>">
               完善并确认您的个人信息
@@ -150,19 +153,42 @@
                       <option value="3">高中</option>
                       <option value="4">大学</option>
                     </select>
-
-
-                    <select class="districts school-condition" name="district" id="">
+                    <select data-select-target="district" class="districts school-condition" id="">
                       <option value="0">选择区县</option>
                       <% District.all.each do |d| %>
                           <option value="<%= d.id %>"><%= d.name %></option>
                       <% end %>
                     </select>
-                    <select name="school" class="target-school" id="">
+                    <input type="hidden" name="district"/>
+                    <select class="target-school" id="">
                       <option value="0">
                         选择学校
                       </option>
                     </select>
+                    <input type="hidden" name="school" />
+                  </div>
+                </div>
+                <div class="item-row">
+                  <div class="item-first">
+                    <i class="glyphicon glyphicon-education"></i>
+                    添加学校
+                  </div>
+                  <div class="item-second">
+                    <select class="school-condition add-school-type">
+                      <option value="0">选择组别</option>
+                      <option value="1">小学</option>
+                      <option value="2">初中</option>
+                      <option value="3">高中</option>
+                      <option value="4">大学</option>
+                    </select>
+                    <select name="" id="" class="school-condition add-school-district">
+                      <option value="0">选择区县</option>
+                      <% District.all.each do |d| %>
+                          <option value="<%= d.id %>"><%= d.name %></option>
+                      <% end %>
+                    </select>
+                    <input type="text" class="add-school-text"/>
+                    <button class="btn-robodou btn-add-school">添加学校</button>
                   </div>
                 </div>
                 <div class="item-row">
@@ -258,6 +284,7 @@
                     </select>
                   </div>
                 </div>
+
                 <div class="item-row">
                   <div class="item-first">
                     <i class="glyphicon glyphicon-flag"></i>
@@ -287,7 +314,7 @@
               </form>
             </div>
             <div class="create-f">
-              <button class="btn-robodou btn-create-team-all">创建队伍</button>
+              <button class="btn-robodou btn-create-team-all">完成报名</button>
             </div>
           </div>
         </div>
