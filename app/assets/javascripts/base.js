@@ -16,6 +16,8 @@ $(function () {
         create_team.init();
         join_activity.init();
         join_volunteer.init();
+        add_school.init();
+        no_select.init();
     };
 
     var lazyload = {
@@ -68,6 +70,18 @@ $(function () {
     //    }
     //};
 
+    var no_select = {
+        init: function () {
+            var s = $('select[data-select-target]');
+            if (s.length > 0) {
+                s.on('change', function () {
+                    var _self = $(this);
+                    _self.siblings('input[name="' + _self.attr('data-select-target') + '"]').val(_self.val());
+                });
+            }
+        }
+    };
+
     var match_info_toggle = {
         init: function () {
             var b = $('.match-toggle');
@@ -99,11 +113,17 @@ $(function () {
                             dateType: 'json',
                             data: {'ed': ed},
                             success: function (data) {
-                                console.log(data);
                                 if (data[0]) {
                                     //已报名
                                     $('.already-apply').addClass('active');
-
+                                    if (is_single) {
+                                        //隐藏队伍名
+                                        $('.already-apply').find('.apply-team-row').hide();
+                                        $('.already-apply').find('.apply-member').hide();
+                                    } else {
+                                        $('.already-apply').find('.apply-team-row').show();
+                                        $('.already-apply').find('.apply-member').show();
+                                    }
                                     show_apply_info(data, eName, max_num, ed);
                                 } else {
                                     //未报名
@@ -115,7 +135,6 @@ $(function () {
                                         $('.team-panel').addClass('active');
                                     }
                                 }
-                                console.log(data[3]);
                             }
                         };
                         $.ajax(option);
@@ -283,6 +302,9 @@ $(function () {
                         console.log(data);
                         if (data[0]) {
                             alert(data[1]);
+                            window.location.reload();
+                        } else {
+                            alert(data[1]);
                         }
                     }
                 };
@@ -355,6 +377,57 @@ $(function () {
             }
         }
     };
+
+    var add_school = {
+        init: function () {
+            var b = $('.btn-add-school');
+            if (b.length > 0) {
+                b.on('click', function (event) {
+                    event.preventDefault();
+                    var _self = $(this);
+                    var type = _self.parent().find('.add-school-type').val();
+                    var dis = _self.parent().find('.add-school-district').val();
+                    var text = _self.parent().find('.add-school-text').val();
+                    if (type != 0 && dis != 0) {
+                        if (text.trim().length > 0) {
+                            var old = _self.text();
+                            _self.prop({'disabled': true});
+                            _self.text('提交中');
+                            var option = {
+                                url: '/user/add_school',
+                                dataType: 'json',
+                                type: 'post',
+                                data: {type: type, district: dis, school: text},
+                                success: function (data) {
+                                    if (data[0]) {
+                                        alert('学校添加成功！');
+                                        var sid = data[2];
+                                        _self.parents('form').find('.school-condition').prop({'disabled': true});
+                                        _self.parent().find('.add-school-text').prop({'disabled': true});
+                                        _self.parents('form').find('input[name="school"]').val(sid);
+                                        _self.parents('form').find('input[name="district"]').val(dis);
+                                    } else {
+                                        alert(data[1]);
+                                    }
+                                },
+                                complete: function () {
+                                    _self.text(old);
+                                    _self.prop({'disabled': false});
+                                }
+                            };
+
+                            $.ajax(option);
+                        } else {
+                            alert('请填写学校名称');
+                        }
+                    } else {
+                        alert('请选择组别和区县');
+                    }
+                });
+            }
+        }
+    };
+
 
     action();
 
@@ -441,15 +514,17 @@ $(function () {
                             var name = v.name;
                             var option = $('<option value="' + id + '">' + name + '</option>');
                             school.append(option);
-                        })
+                            if (k == 0) {
+                                school.parent().find('input[name="school"]').val(id);
+                            }
+                        });
+                        school.on('change', function () {
+                            school.parent().find('input[name="school"]').val($(this).val());
+                        });
                     }
                 }
             };
             $.ajax(option);
         }
     }
-
-    //window.alert = function(text){
-    //    console.log(text);
-    //};
 });
