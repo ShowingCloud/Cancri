@@ -11,7 +11,7 @@
               <%= simple_form_for(current_user, html: {id: 'form_change_password'}, url: user_passwd_path, method: :post) do |f| %>
                   <div class="form-group password optional user_old_password">
                     <label class="password optional control-label" for="user_old_password">原密码</label>
-                    <input id="user_old_password" class="password optional form-control" type="text" name="user[old_password]" placeholder="请输入您当前的密码">
+                    <input id="user_old_password" class="password optional form-control" type="password" name="user[old_password]" placeholder="请输入您当前的密码">
                   </div>
                   <%= f.input :new_password, placeholder: '请输入您的新密码' %>
                   <%= f.input :password_confirmation, placeholder: '请再次输入新密码' %>

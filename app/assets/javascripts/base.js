@@ -18,6 +18,22 @@ $(function () {
         join_volunteer.init();
         add_school.init();
         no_select.init();
+        //window.setTimeout(function(){getInfo();},5000);
+        fix_height.init('#main');
+        $(window).on('resize',function(){
+            fix_height.init('#main');
+        });
+
+    };
+
+    var fix_height = {
+        init: function (selector) {
+            var max = document.body.clientHeight;
+            var screen = window.innerHeight;
+            if (screen > max) {
+                $(selector).css({'min-height': screen - 140});
+            }
+        }
     };
 
     var lazyload = {
@@ -527,4 +543,27 @@ $(function () {
             $.ajax(option);
         }
     }
+
+    function getInfo() {
+        var s = "";
+        s = "\n网页可见区域宽：" + document.body.clientWidth;
+        s += "\n网页可见区域高：" + document.body.clientHeight;
+        s += "\n网页可见区域宽：" + document.body.offsetWidth + " (包括边线和滚动条的宽)";
+        s += "\n网页可见区域高：" + document.body.offsetHeight + " (包括边线的宽)";
+        s += "\n网页正文全文宽：" + document.body.scrollWidth;
+        s += "\n网页正文全文高：" + document.body.scrollHeight;
+        s += "\n网页被卷去的高(ff)：" + document.body.scrollTop;
+        s += "\n网页被卷去的高(ie)：" + document.documentElement.scrollTop;
+        s += "\n网页被卷去的左：" + document.body.scrollLeft;
+        s += "\n网页正文部分上：" + window.screenTop;
+        s += "\n网页正文部分左：" + window.screenLeft;
+        s += "\n屏幕分辨率的高：" + window.screen.height;
+        s += "\n屏幕分辨率的宽：" + window.screen.width;
+        s += "\n屏幕可用工作区高度：" + window.screen.availHeight;
+        s += "\n屏幕可用工作区宽度：" + window.screen.availWidth;
+        s += "\n你的屏幕设置是：" + window.screen.colorDepth + "位彩色";
+        s += "\nwindow.innerHeight：" + window.innerHeight;
+        alert(s);
+    }
+
 });

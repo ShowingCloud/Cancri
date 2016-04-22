@@ -1083,7 +1083,7 @@ ul {
 }
 
 #volunteer .v-list .v-item .v-title {
-  font-size: 52px;
+  font-size: 42px;
 }
 
 #volunteer .v-list .v-item .v-circle {
@@ -1941,6 +1941,14 @@ ul {
   text-align: center;
 }
 
+.volunteer-bottom p {
+  font-size: 28px;
+  color: #90D9E2;
+  display: inline-block;
+  padding: 8px 20px;
+  margin-top: 40px;
+}
+
 .btn-show-form {
   font-size: 18px;
   padding: 8px 20px;
@@ -1955,4 +1963,62 @@ ul {
   width: 130px;
   height: 35px;
   right: 18px
+}
+
+.news-menu-content {
+  width: 264px;
+  height: 220px;
+  background: transparent center center no-repeat;
+  position: absolute;
+  top: 40px;
+  z-index: 10;
+  left: -80px;
+  padding: 20px 40px;
+  color: #FFFFFF;
+}
+
+.news-menu-content .all-news {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.btn-see-all-news {
+  padding: 6px 16px;
+  border: 1px solid #FFF;
+  border-radius: 5px;
+  color: #FFFFFF;
+  font-size: 14px;
+}
+
+.btn-see-all-news:hover {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+.news-menu {
+
+}
+
+.news-menu .news-menu-content {
+  display: none;
+}
+
+.news-menu:hover .news-menu-content {
+  display: block;
+}
+
+.news-menu-content .news-tag-list {
+
+}
+
+.news-menu-content .news-tag-list .item-row {
+  padding: 10px 0;
+}
+
+.news-menu-content .news-tag-list .item-row .item-l {
+  float: left;
+}
+
+.news-menu-content .news-tag-list .item-row .item-r {
+  margin-left: 100px;
 }
