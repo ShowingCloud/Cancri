@@ -54,7 +54,35 @@
       <div class="collapse navbar-collapse" id="nav-menu">
         <ul class="nav navbar-nav">
           <li><a href="/">首页</a></li>
-          <li><a href="<%= news_index_path %>">新闻</a></li>
+          <li class="news-menu">
+            <a href="<%= news_index_path %>">新闻</a>
+
+            <div class="news-menu-content" data-src="<%= image_path('homepage/news-menu-bk.png') %>">
+              <div class="all-news">
+                <a href="<%= news_index_path %>" class="btn-robodou btn-see-all-news">查看所有新闻</a>
+              </div>
+              <div class="news-tag-list">
+                <div class="item-row">
+                  <div class="item-l">比赛</div>
+                  <div class="item-r">
+                    报名丨成绩
+                  </div>
+                </div>
+                <div class="item-row">
+                  <div class="item-l">志愿者</div>
+                  <div class="item-r">
+                    招募
+                  </div>
+                </div>
+                <div class="item-row">
+                  <div class="item-l">活动</div>
+                  <div class="item-r">
+                    报名
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
           <li><a href="<%= competitions_path %>">比赛</a></li>
           <li><a href="#">荣誉榜</a></li>
           <li><a href="<%= activities_path %>">活动</a></li>
@@ -78,6 +106,11 @@
         <% flash.each do |f| %>
         if ("<%= f[1] %>" != 'true') {
             $.notify("<%= f[1] %>", "<%= f[0] %>");
+//            $.magnificPopup.open({
+//                item:{
+//                    src:'<%= image_path('homepage/top-bk.png') %>'
+//                }
+//            });
         }
         <% end %>
     </script>
