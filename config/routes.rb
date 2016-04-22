@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       get :apply_event
       get :invite
       get :search_team
+      get :search_user
       post :invite
       post :update_apply_info
       post :leader_create_team
@@ -19,6 +20,8 @@ Rails.application.routes.draw do
   end
   resource :chats
   resources :news
+  get '/honors' => 'honors#index'
+  get '/demeanor' => 'demeanor#index'
   get '/activities/apply_activity' => 'activities#apply_activity'
   resources :activities do
     collection do
@@ -123,6 +126,7 @@ Rails.application.routes.draw do
     resources :news_types
     resources :volunteers
     resources :score_attributes
+    resources :demeanor
   end
   namespace :kindeditor do
     post '/upload' => 'assets#create'
@@ -153,13 +157,14 @@ Rails.application.routes.draw do
   match 'user/mobile' => 'user#mobile', as: 'user_mobile', via: [:get, :post]
   match 'user/send_email_code' => 'user#send_email_code', as: 'user_send_email_code', via: [:post]
   match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]
+  match 'user/comp' => 'user#comp', as: 'user_comp', via: [:get]
   match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get]
   get '/user/notify' => 'user#notify_show'
-  post '/user/agree_invite_info' => 'user#agree_invite_info'
-  post '/user/add_school' => 'user#add_school', as: 'user_add_school', via: [:post]
-  post '/user/check_email_exists' => 'user#check_email_exists', as: 'user_check_email_exists', via: [:post]
-  post '/user/check_mobile_exists' => 'user#check_mobile_exists', as: 'user_check_mobile_exists', via: [:post]
-  post '/user/check_email_mobile' => 'user#check_email_mobile', as: 'user_check_email_mobile', via: [:post]
+  match '/user/agree_invite_info' => 'user#agree_invite_info', via: [:post]
+  match '/user/add_school' => 'user#add_school', as: 'user_add_school', via: [:post]
+  match '/user/check_email_exists' => 'user#check_email_exists', as: 'user_check_email_exists', via: [:post]
+  match '/user/check_mobile_exists' => 'user#check_mobile_exists', as: 'user_check_mobile_exists', via: [:post]
+  match '/user/check_email_mobile' => 'user#check_email_mobile', as: 'user_check_email_mobile', via: [:post]
 
   mount API::Dispatch => '/'
 

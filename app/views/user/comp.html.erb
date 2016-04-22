@@ -1,0 +1,39 @@
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
+        <div class="sec-t">
+          <%= render 'user/menu' %>
+        </div>
+        <div class="sec-c">
+          <div class="content">
+            <div class="user-panel">
+              <% if @user_events.present? %>
+                  <% @user_events.each do |e| %>
+                      <p>大赛名称：<%= e.comp_name %></p>
+
+                      <p>项目：<%= e.event_name %></p>
+
+                      <p>学校：<%= e.school %></p>
+
+                      <p> 是否结束： <%= e.status==2 ? '已经结束' : '即将开始' %></p>
+                  <% end %>
+              <% else %>
+                  您还没有参加过比赛
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>

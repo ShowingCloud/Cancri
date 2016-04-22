@@ -40,30 +40,16 @@
           </div>
           <div class="sec-c">
             <ul class="items">
-              <li class="item">
-                <a class="item-img" href="" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
-                  <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
-                </a>
-                <a class="item-link" href="">
-                  2016 西南位育杯
-                </a>
-              </li>
-              <li class="item">
-                <a class="item-img" href="" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
-                  <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
-                </a>
-                <a class="item-link" href="">
-                  2016 西南位育杯
-                </a>
-              </li>
-              <li class="item">
-                <a class="item-img" href="" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
-                  <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
-                </a>
-                <a class="item-link" href="">
-                  2016 西南位育杯
-                </a>
-              </li>
+              <% @recent_activities.each do |a| %>
+                  <li class="item">
+                    <a class="item-img" href="<%= "/activities/#{a.id}" %>" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
+                      <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
+                    </a>
+                    <a class="item-link" href="<%= "/activities/#{a.id}" %>">
+                      <%= a.name %>
+                    </a>
+                  </li>
+              <% end %>
             </ul>
           </div>
         </div>
@@ -133,6 +119,7 @@
             <label class="input-row">
               密码 <input type="password" name="user[password]"/>
             </label>
+
             <div class="btn-row">
               <button class="btn-robodou btn-robodou-login-modal" data-src="<%= image_path('homepage/login-btn-modal-bk.png') %>">登
                 录

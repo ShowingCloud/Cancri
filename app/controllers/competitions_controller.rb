@@ -59,22 +59,24 @@ class CompetitionsController < ApplicationController
     username = params[:username]
     gender = params[:gender].to_i
     grade = params[:grade]
+    bj = params[:bj]
     student_code = params[:student_code]
     district = params[:district].to_i
     school = params[:school].to_i
     join = params[:join]
-    ed = params[:ed]
-    td = params[:td]
+    ed = params[:ed].to_i
+    td = params[:td].to_i
     if /\A[\u4e00-\u9fa5]{2,4}\Z/.match(username)==nil
       status = false
       message= '姓名为2-4位中文'
-    elsif username.present? && school !=0 && grade.present? && gender !=0 && district != 0 && student_code.present?
+    elsif username.present? && school !=0 && grade.present? && gender !=0 && district != 0 && student_code.present? && bj.present?
       user = UserProfile.find_by(user_id: current_user.id)
       if user.present?
         user.username = username
         user.gender = gender
         user.school = school
         user.grade = grade
+        user.bj = bj
         user.student_code = student_code
         user.district = district
         if user.save
@@ -85,7 +87,7 @@ class CompetitionsController < ApplicationController
           m = '个人信息更新失败'
         end
       else
-        up = UserProfile.create!(user_id: current_user.id, username: username, gender: gender, school: school, grade: grade, student_code: student_code, district: district)
+        up = UserProfile.create!(user_id: current_user.id, username: username, gender: gender, school: school, grade: grade, bj: bj, student_code: student_code, district: district)
         if up.save
           s = true
           m = '个人信息添加成功'
@@ -95,10 +97,15 @@ class CompetitionsController < ApplicationController
         end
       end
 
-      if s && join && td.present? && ed.present?
-        result=self.apply_join_team(td, ed)
-        status = result[0]
-        message = result[1]
+      if s && join
+        if td !=0 && ed !=0
+          result=self.apply_join_team(td, ed)
+          status = result[0]
+          message = result[1]
+        else
+          status = false
+          message = '队伍和项目相关信息不完整'
+        end
       else
         status = s
         message= m
@@ -179,6 +186,16 @@ class CompetitionsController < ApplicationController
       end
     else
       result=[false, '参数不完整']
+    end
+    render json: result
+  end
+
+  def search_user
+    if request.method == 'GET' && params[:invited_name].present? && params[:invited_name].length>1
+      users = User.joins(:user_profile).joins('inner join schools s on s.id = user_profiles.school').where(['user_profiles.username like ?', "#{params[:invited_name]}%"]).where('email is not NULL').where(validate_status: '1').select(:id, 'user_profiles.username', 's.name', 'user_profiles.gender', 'user_profiles.grade', 'user_profiles.bj')
+      result = [true, users]
+    else
+      result = [false, '请至少输入名字的前两个字']
     end
     render json: result
   end

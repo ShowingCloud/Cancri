@@ -36,6 +36,10 @@
       <%= @activity.host_address %>
     </li>
     <li class="list-group-item">
+      <h4>海报:</h4>
+      <%= image_tag(@activity.cover_url(:middle), class: 'img-thumbnail') %>
+    </li>
+    <li class="list-group-item">
       <h4><%= t('simple_form.labels.defaults.content') %>:</h4>
 
       <%= @activity.content.html_safe %>

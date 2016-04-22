@@ -23,6 +23,17 @@
         <div class="form-inputs">
           <%= f.input :name %>
           <%= f.input :host_year, collection: 2016..2017 %>
+          <% if @activity.cover? %>
+              <div class="form-group">
+                <%= image_tag(@activity.cover_url(:middle), class: 'img-thumbnail') %>
+              </div>
+          <% end %>
+          <div class="form-group">
+            <label for="exampleInputFile">封面</label>
+            <%= f.file_field :cover %>
+            <%= f.hidden_field :cover_cache %>
+            <p class="help-block">格式：jpg jpeg gif png，尺寸：800x800</p>
+          </div>
           <label class="select required control-label" for="news_content"><abbr title="必填字段">*</abbr>内容:</label>
           <%= f.kindeditor :content, :window_onload => true, :owner_id => @activity.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'media', 'insertfile', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
           <%= f.input :host_address %>

@@ -14,8 +14,8 @@ class UserController < ApplicationController
     if request.method == 'POST'
       if params[:user_profile].present?
         # 过滤Profile参数
-        profile_params = params.require(:user_profile).permit(:username, :school, :bj, :address, :teacher_no, :certificate, :grade, {:roles => []}).tap do |list|
-          if params[:user_profile][:roles].present?
+        profile_params = params.require(:user_profile).permit(:username, :school, :bj, :gender, :address, :teacher_no, :certificate, :grade, :autograph, {:roles => []}).tap do |list|
+          if params[:user_profile][:roles].present? && params[:user_profile][:roles] != '教师'
             list[:roles] = params[:user_profile][:roles].join(',')
           else
             list[:roles] = nil
@@ -37,14 +37,18 @@ class UserController < ApplicationController
         if message=='-'
           message=''
         end
+        if profile_params[:school].to_i != 0 && profile_params[:grade].present? && profile_params[:gender].to_i !=0 && profile_params[:username].present? && profile_params[:bj].present?
+          current_user.update_attributes(validate_status: 1)
+        else
+          current_user.update_attributes(validate_status: 0)
+        end
         @user_profile.username = profile_params[:username]
         @user_profile.autograph = profile_params[:autograph]
-        @user_profile.school = profile_params[:school]
+        @user_profile.school = profile_params[:school].to_i
         @user_profile.grade = profile_params[:grade]
         @user_profile.bj = profile_params[:bj]
         @user_profile.age = profile_params[:age]
-        @user_profile.gender = profile_params[:gender]
-        @user_profile.birthday = profile_params[:birthday]
+        @user_profile.gender = profile_params[:gender].to_i
         @user_profile.address = profile_params[:address]
         @user_profile.roles = profile_params[:roles]
         @user_profile.teacher_no = profile_params[:teacher_no]
@@ -184,6 +188,10 @@ class UserController < ApplicationController
         flash[:error] = message
       end
     end
+  end
+
+  def comp
+    @user_events = TeamUserShip.joins(:event).joins('inner join user_profiles u_p on u_p.user_id = team_user_ships.user_id').joins('right join schools s on s.id = u_p.school').joins('inner join competitions comp on comp.id = events.competition_id').where(user_id: current_user.id).select(:user_id, 'events.name as event_name', 'comp.name as comp_name', 's.name as school', 'comp.status')
   end
 
 
