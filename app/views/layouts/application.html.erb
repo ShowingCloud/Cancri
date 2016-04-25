@@ -106,11 +106,6 @@
         <% flash.each do |f| %>
         if ("<%= f[1] %>" != 'true') {
             $.notify("<%= f[1] %>", "<%= f[0] %>");
-//            $.magnificPopup.open({
-//                item:{
-//                    src:'<%= image_path('homepage/top-bk.png') %>'
-//                }
-//            });
         }
         <% end %>
     </script>

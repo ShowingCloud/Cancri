@@ -19,5 +19,4 @@
 //= require code
 //= require notify
 //= require base
-//= require jquery.magnific-popup.min
 //= //require turbolinks

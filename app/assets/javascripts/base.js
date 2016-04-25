@@ -509,6 +509,7 @@ $(function () {
             };
             $.ajax(option);
         } else {
+            obj.text(old).prop({'disabled': false});
             alert('请输入正确的邮箱格式！');
         }
     }
