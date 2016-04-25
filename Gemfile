@@ -61,7 +61,7 @@ gem 'simple_form'
 gem 'settingslogic'
 gem 'rucaptcha', '~> 0.3.2'
 
-gem 'carrierwave'#, github: 'carrierwaveuploader/carrierwave'
+gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 gem 'mini_magick'
 gem 'rails-admin-scaffold'
 gem 'kaminari', github: 'amatsuda/kaminari'

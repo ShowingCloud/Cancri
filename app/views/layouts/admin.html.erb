@@ -234,6 +234,12 @@
             <span class="menu-text"> 志愿者 </span>
           </a>
         </li>
+        <li class="<%= params[:controller] == 'admin/demeanor' ? 'active' : '' %>">
+          <a href="<%= admin_demeanor_index_path %>">
+            <i class="icon-camera"></i>
+            <span class="menu-text"> 选手风采 </span>
+          </a>
+        </li>
 
       </ul>
       <!-- /.nav-list -->

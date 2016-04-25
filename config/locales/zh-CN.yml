@@ -247,6 +247,7 @@ zh-CN:
       score_attribute: '成绩属性'
       activity: '活动'
       volunteer: '志愿者'
+      demeanor: '选手风采'
   views:
     pagination:
         first: "首页"
