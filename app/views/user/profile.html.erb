@@ -39,7 +39,12 @@
                           <%= f.file_field :certificate %>
                           <p class="help-block">格式：jpg jpeg gif png</p>
                         </div>
+                        <input name="user_profile[gender]" type="radio" <%= 'checked' if @user_profile.gender==1 %> value="1"/>
+                        <label>男</label>
+                        <input name="user_profile[gender]" type="radio" <%= 'checked' if @user_profile.gender==2 %> value="2"/>
+                        <label>女</label>
                         <%= f.input :grade %>
+                        <%= f.input :bj %>
                         <%= f.input :address %>
                       </div>
                       <div class="form-actions">
