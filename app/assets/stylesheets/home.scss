@@ -2022,3 +2022,36 @@ ul {
 .news-menu-content .news-tag-list .item-row .item-r {
   margin-left: 100px;
 }
+
+.apply-part {
+  display: none;
+  color: #88D5EC;
+}
+
+.apply-part.active {
+  display: block;
+}
+
+.single-already-info {
+  border: 2px solid #88D5EC;
+  width: 400px;
+  margin: 40px auto;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.single-already-info .event-name {
+  font-size: 18px;
+  background: transparent center bottom no-repeat;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.single-already-info .single-info {
+
+}
+
+.single-already-info .single-info table {
+
+}
+

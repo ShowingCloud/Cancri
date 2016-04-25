@@ -2,7 +2,7 @@
  * Created by yaolin on 16/4/5.
  */
 $(function () {
-    var CURRENT_USER_ID = $('.login-info').attr('data-current-user');
+    var EVENT_DATA = {};
     var action = function () {
         lazyload.init();
         rucaptcha.init();
@@ -20,10 +20,9 @@ $(function () {
         no_select.init();
         //window.setTimeout(function(){getInfo();},5000);
         fix_height.init('#main');
-        $(window).on('resize',function(){
+        $(window).on('resize', function () {
             fix_height.init('#main');
         });
-
     };
 
     var fix_height = {
@@ -109,51 +108,48 @@ $(function () {
 
     var event_select = {
         init: function () {
-            var s = $('.selected-display');
+            var s = $('#event-select');
             if (s) {
                 s.on('change', function () {
                     var _self = $(this);
                     var ed = _self.val();
-                    var choice = _self.find('option[data-val="' + ed + '"]');
-                    $('.team-panel').removeClass('active');
-                    $('.already-apply').removeClass('active');
-                    $('.create-team').removeClass('active');
-                    $('.confirm_info').removeClass('active');
+                    init_tag();
                     if (ed != 0) {
-                        var max_num = choice.attr('data-max-num');
-                        var eName = choice.attr('data-name');
-                        var is_single = max_num == 1;
-                        var option = {
-                            url: 'already_apply',
-                            type: 'post',
-                            dateType: 'json',
-                            data: {'ed': ed},
-                            success: function (data) {
-                                if (data[0]) {
-                                    //已报名
-                                    $('.already-apply').addClass('active');
-                                    if (is_single) {
-                                        //隐藏队伍名
-                                        $('.already-apply').find('.apply-team-row').hide();
-                                        $('.already-apply').find('.apply-member').hide();
+                        if (EVENT_DATA[ed] == undefined) {
+                            EVENT_DATA[ed] = {};
+                            EVENT_DATA[ed].id = ed;
+                            var choice = _self.find('option[data-val="' + EVENT_DATA[ed].id + '"]');
+                            EVENT_DATA[ed].max_num = choice.attr('data-max-num');
+                            EVENT_DATA[ed].eName = choice.attr('data-name');
+                            var option = {
+                                url: 'already_apply',
+                                type: 'post',
+                                dateType: 'json',
+                                data: {'ed': EVENT_DATA[ed].id},
+                                success: function (data) {
+                                    if (data[0]) {
+                                        //已报名
+                                        EVENT_DATA[ed].is_apply = true;
+                                        EVENT_DATA[ed].team_info = data[1];
+                                        EVENT_DATA[ed].group_limit = data[2];
+                                        show_apply_info(ed);
                                     } else {
-                                        $('.already-apply').find('.apply-team-row').show();
-                                        $('.already-apply').find('.apply-member').show();
-                                    }
-                                    show_apply_info(data, eName, max_num, ed);
-                                } else {
-                                    //未报名
-                                    if (is_single) {
-                                        //单人项目
-                                        $('.confirm_info').addClass('active');
-                                    } else {
-                                        //多人项目
-                                        $('.team-panel').addClass('active');
+                                        //未报名
+                                        no_apply(ed);
                                     }
                                 }
+                            };
+                            $.ajax(option);
+                        } else {
+                            //in cache
+                            if (EVENT_DATA[ed].is_apply) {
+                                //已报名
+                                show_apply_info(ed)
+                            } else {
+                                //未报名
+                                no_apply(ed);
                             }
-                        };
-                        $.ajax(option);
+                        }
                     }
                 });
             }
@@ -444,48 +440,30 @@ $(function () {
         }
     };
 
-
     action();
 
-    function show_apply_info(data, eName, max_num, ed) {
-        //项目信息
-        $('.apply-event-name').text(eName);
-        var tName = data[1][0].name;
-        var td = data[1][0].id;
-        $('.apply-team-name').text(tName);
-        var num = data[1].length;
-        $('.apply-member-num').text(num + '名');
-        if (num < max_num && data[2] != 0) {
-            $('.add-member').show();
-            $('.btn-invitation').on('click', function () {
-                var _self = $(this);
-                var old = _self.text();
-                _self.text('邀请中');
-                _self.prop({'disabled': true});
-                invitation_member(td, tName, ed, eName, _self, old);
-            });
+    function show_apply_info(ed) {
+        if (EVENT_DATA[ed].max_num == 1) {
+            //单人
+            show_single_info(ed);
         } else {
-            $('.add-member').hide();
+            //多人
+            show_team_info(ed);
         }
-        //队员信息
-        var target = $('.apply-member').find('tbody');
-        target.empty();
-        $.each(data[1], function (k, v) {
-            var tr = $('<tr>');
-            var tName = '<td>' + v.username + '</td>';
-            var tGender = '<td>' + (v.gender == 1 ? '男' : '女') + '</td>';
-            var tSchool = '<td>' + v.school + '</td>';
-            var tGrade = '<td>' + v.grade + '</td>';
-            var tBtn = '<td></td>';
-            if (CURRENT_USER_ID != data[1][0].user_id) {
-                if (CURRENT_USER_ID != v.id) {
-                    tBtn = '<td><button class="btn-robodou btn-remove-member">删除</button></td>';
-                }
-            }
-            tr.append(tName).append(tGender).append(tSchool).append(tGrade).append(tBtn);
-            target.append(tr);
-        })
     }
+
+    function show_single_info(ed) {
+        var space = $('.single-already-info');
+        space.addClass('active');
+        space.find('.event-name').text(EVENT_DATA[ed].eName);
+    }
+
+    function show_team_info(ed) {
+        var space = $('.team-already-info');
+        space.addClass('active');
+        space.find('.event-name').text(EVENT_DATA[ed].eName);
+    }
+
 
     function invitation_member(td, tName, ed, eName, obj, old) {
         var e = $('.invitation-email').val();
@@ -565,6 +543,15 @@ $(function () {
         s += "\n你的屏幕设置是：" + window.screen.colorDepth + "位彩色";
         s += "\nwindow.innerHeight：" + window.innerHeight;
         alert(s);
+    }
+
+    function no_apply() {
+
+    }
+
+    function init_tag() {
+        //取消所有版块显示
+        $('.apply-part').removeClass('active');
     }
 
 });
