@@ -1378,14 +1378,10 @@ ul {
 
 #event .sec-c .team-panel {
   margin-top: 80px;
-  display: none;
   text-align: center;
   color: #8B9F95;
 }
 
-#event .sec-c .team-panel.active {
-  display: block;
-}
 
 #event .sec-c .team-panel .team-search {
   background: transparent no-repeat center center;
@@ -1535,14 +1531,6 @@ ul {
   color: #FFF;
 }
 
-.already-apply {
-  display: none;
-}
-
-.already-apply.active {
-  display: block;
-}
-
 .already-apply .apply-team {
   width: 630px;
   background: transparent center center no-repeat;
@@ -1565,7 +1553,7 @@ ul {
 }
 
 .already-apply .apply-team .apply-row .apply-row-left {
-  width: 100px;
+  width: 150px;
   margin: 0 50px;
   font-size: 16px;
   color: #4788A8;
@@ -2256,6 +2244,72 @@ ul {
 }
 
 #add-school .dec select{
+  width: 140px;
+  height: 20px;
+  background: #376A92;
+  border: none;
+  outline: none;
+}
+
+.single-join {
+  border: 2px solid #88D5EC;
+  width: 400px;
+  margin: 40px auto;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.single-join .confirm-t {
+  font-size: 18px;
+  background: transparent center bottom no-repeat;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.single-join .confirm-c {
+
+}
+
+.single-join .confirm-c .input-row {
+  margin-bottom: 15px;
+  overflow: hidden;
+  padding: 2px 0;
+  line-height: 20px;
+}
+
+.single-join .confirm-c .input-row .input-t {
+  width: 100px;
+  float: left;
+  text-align: right;
+}
+
+.single-join .confirm-c .input-row .input-c {
+  margin-left: 120px;
+}
+
+.single-join .confirm-c .input-row .input-c .input-b {
+  background: #376A92;
+  height: 20px;
+  padding-left: 4px;
+  border: none;
+  outline: none;
+  width: 140px;
+}
+
+.single-join .confirm-c .input-row .input-c .input-b:focus {
+  outline: 1px solid #88D5EC;
+}
+
+.single-join .confirm-c .input-row .input-c .radio-b {
+  height: 20px;
+  line-height: 20px;
+  vertical-align: middle;
+  margin-top: -1px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.single-join .confirm-c .input-row .input-c select {
   width: 140px;
   height: 20px;
   background: #376A92;
