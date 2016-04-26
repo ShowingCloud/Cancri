@@ -1,13 +1,13 @@
 <div class="panel panel-info">
   <div class="panel-heading"><%= t('activerecord.models.demeanor') %></div>
   <div class="panel-body">
-    <%= simple_form_for(@demeanor, url: admin_demeanor_index_path, method: 'post') do |f| %>
+    <%= simple_form_for([:admin, @photo]) do |f| %>
         <%= f.error_notification %>
 
         <div class="form-inputs">
           <%= f.input :competition_id, collection: Competition.all %>
         </div>
-        <%= f.file_field :desc, multiple: true %>
+        <%= f.file_field :image, multiple: true %>
 
 
         <div class="form-actions">

@@ -62,7 +62,13 @@ class CompetitionsController < ApplicationController
     bj = params[:bj]
     student_code = params[:student_code]
     district = params[:district].to_i
-    school = params[:school].to_i
+    school = params[:school1].to_i
+    if params[:school2].present? && params[:school2].to_i !=0
+      sk_station = params[:school2].to_i
+    else
+      sk_station = nil
+    end
+
     join = params[:join]
     ed = params[:ed].to_i
     td = params[:td].to_i
@@ -75,6 +81,7 @@ class CompetitionsController < ApplicationController
         user.username = username
         user.gender = gender
         user.school = school
+        user.sk_station = sk_station
         user.grade = grade
         user.bj = bj
         user.student_code = student_code
