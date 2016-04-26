@@ -1,7 +1,7 @@
 <h1 class="page-header">
-  <%= t('activerecord.models.demeanor') %>列表
+  <%= @competition.name %>--<%= t('activerecord.models.demeanor') %>列表 (图片)
   <small class="pull-right">
-    <a href="<%= new_admin_demeanor_path %>" class="btn btn-default" title="添加<%= t('activerecord.models.demeanor') %>">
+    <a href="<%= new_admin_photo_path %>" class="btn btn-default" title="添加<%= t('activerecord.models.demeanor') %>">
       <i class="icon-only icon-plus"></i></a>
     <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
       <i class="icon-search icon-only"></i>
@@ -37,15 +37,16 @@
   <thead>
   <tr>
     <th>ID</th>
-    <th><%= t('simple_form.labels.defaults.competition_id') %></th>
+    <th>比赛</th>
     <th>操作</th>
   </tr>
   </thead>
 
   <tbody>
-  <% @demeanor.each do |district| %>
+  <% @photos.each do |photo| %>
       <tr>
-        <td><%= district.id %></td>
+        <td><%= photo.id %></td>
+        <td> <%= image_tag(photo.image_url(:middle)) %></td>
 
       </tr>
   <% end %>
@@ -53,5 +54,5 @@
 </table>
 
 <nav>
-  <%= paginate @demeanor %>
+  <%= paginate @photos %>
 </nav>

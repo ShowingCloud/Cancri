@@ -70,11 +70,14 @@
           <%= link_to '/admin/competitions/events/'+comp.id.to_s, title: '分配工作', class: 'btn btn-xs btn-info' do %>
               <i class="icon-group icon-only"></i>
           <% end %>
+          <td><%= link_to "/photos/?cod=#{comp.id}", title: '查看', class: 'btn btn-xs btn-warn' do %>
+                <i class="icon-eye-close bigger-120"></i>
+            <% end %></td>
           <%= link_to [:admin, comp], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash icon-only"></i>
           <% end %>
-        </td>
-      </tr>
+          </td>
+          </tr>
   <% end %>
   </tbody>
 </table>
