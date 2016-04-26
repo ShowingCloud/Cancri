@@ -2026,6 +2026,7 @@ ul {
 .apply-part {
   display: none;
   color: #88D5EC;
+  position: relative;
 }
 
 .apply-part.active {
@@ -2044,14 +2045,220 @@ ul {
   font-size: 18px;
   background: transparent center bottom no-repeat;
   text-align: center;
-  margin-bottom: 20px;
 }
 
 .single-already-info .single-info {
 
 }
 
-.single-already-info .single-info table {
+.single-already-info .tips {
+  color: #8B9F95;
+  font-size: 12px;
+  display: block;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.single-already-info .single-info .info-row {
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.single-already-info .single-info .info-row .row-l {
+  width: 100px;
+  float: left;
+  text-align: right;
+}
+
+.single-already-info .single-info .info-row .row-r {
+  margin-left: 120px;
+}
+
+.single-already-info .single-exit {
+  text-align: center;
+}
+
+.btn-exit-event {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  padding: 4px 12px;
+  border-radius: 5px;
+  background: transparent;
+  outline: none;
+}
+
+.single-confirm {
+  border: 2px solid #88D5EC;
+  width: 400px;
+  margin: 40px auto;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.single-confirm .confirm-t {
+  font-size: 18px;
+  background: transparent center bottom no-repeat;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.single-confirm .confirm-c {
 
 }
 
+.single-confirm .confirm-c .input-row {
+  margin-bottom: 15px;
+  overflow: hidden;
+  padding: 2px 0;
+  line-height: 20px;
+}
+
+.single-confirm .confirm-c .input-row .input-t {
+  width: 100px;
+  float: left;
+  text-align: right;
+}
+
+.single-confirm .confirm-c .input-row .input-c {
+  margin-left: 120px;
+}
+
+.single-confirm .confirm-c .input-row .input-c .input-b {
+  background: #376A92;
+  height: 20px;
+  padding-left: 4px;
+  border: none;
+  outline: none;
+  width: 140px;
+}
+
+.single-confirm .confirm-c .input-row .input-c .input-b:focus {
+  outline: 1px solid #88D5EC;
+}
+
+.single-confirm .confirm-c .input-row .input-c .radio-b {
+  height: 20px;
+  line-height: 20px;
+  vertical-align: middle;
+  margin-top: -1px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.single-confirm .confirm-c .input-row .input-c select {
+  width: 140px;
+  height: 20px;
+  background: #376A92;
+  border: none;
+  outline: none;
+}
+
+#event-select {
+  height: 54px;
+  width: 387px;
+  margin: 0 auto;
+  background: #376A92;
+  border: none;
+  border-top: 1px solid #8FE1E5;
+  border-radius: 15px;
+  font-size: 24px;
+  color: #8FD0E9;
+  line-height: 54px;
+  display: block;
+}
+
+#add-school {
+  width: 600px;
+  height: 400px;
+  margin: 100px auto;
+  border: 2px solid #88D5EC;
+  padding: 20px;
+  color: #88D5EC;
+  background: #053E58;
+}
+
+#add-school .title {
+  text-align: center;
+  margin-bottom: 20px;
+  background: transparent center bottom no-repeat;
+}
+
+#add-school .dec{
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+#add-school .dec .group-display{
+  float: left;
+  margin-right: 40px;
+}
+
+#add-school .dec .district-display{
+  float: left;
+}
+
+#add-school .dec select{
+  width: 140px;
+  height: 20px;
+  background: #376A92;
+  border: none;
+  outline: none;
+}
+
+#add-school .school-list{
+  height: 230px;
+}
+
+#add-school .school-list .items{
+  overflow: hidden;
+}
+
+#add-school .school-list .items .item{
+  float: left;
+  width: 33%;
+  height: 30px;
+  margin-top: 10px;
+}
+
+#add-school .choice-school{
+  cursor: pointer;
+  display: inline-block;
+}
+
+#add-school .bottom{
+  text-align: right;
+}
+
+#add-school .tips{
+  color: #8B9F95;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+#add-school .title {
+  text-align: center;
+  margin-bottom: 20px;
+  background: transparent center bottom no-repeat;
+}
+
+#add-school .dec{
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+#add-school .dec .group-display{
+  float: left;
+  margin-right: 40px;
+}
+
+#add-school .dec .district-display{
+  float: left;
+}
+
+#add-school .dec select{
+  width: 140px;
+  height: 20px;
+  background: #376A92;
+  border: none;
+  outline: none;
+}

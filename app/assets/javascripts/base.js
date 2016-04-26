@@ -3,17 +3,17 @@
  */
 $(function () {
     var EVENT_DATA = {};
+    var SCHOOL_DATA = [];
     var action = function () {
         lazyload.init();
         rucaptcha.init();
         //authenticity_token.init();
         match_info_toggle.init();
         event_select.init();
-        search_team.init();
-        school_select.init('#confirm_info');
-        school_select.init('.create-team');
-        send_confirm.init();
-        create_team.init();
+        //search_team.init();
+        //school_select.init('.create-team');
+        //send_confirm.init();
+        //create_team.init();
         join_activity.init();
         join_volunteer.init();
         add_school.init();
@@ -117,6 +117,7 @@ $(function () {
                     if (ed != 0) {
                         if (EVENT_DATA[ed] == undefined) {
                             EVENT_DATA[ed] = {};
+                            SCHOOL_DATA = [];
                             EVENT_DATA[ed].id = ed;
                             var choice = _self.find('option[data-val="' + EVENT_DATA[ed].id + '"]');
                             EVENT_DATA[ed].max_num = choice.attr('data-max-num');
@@ -215,15 +216,15 @@ $(function () {
     };
 
     var school_select = {
-        init: function (selector) {
-            var select1 = $(selector).find('.level');
-            var select2 = $(selector).find('.districts');
+        init: function (selector, space) {
+            var select1 = $(selector).find('.group');
+            var select2 = $(selector).find('.district');
             select1.on('change', function () {
-                get_school(select1, select2, selector);
+                get_school(select1, select2, space);
             });
 
             select2.on('change', function () {
-                get_school(select1, select2, selector);
+                get_school(select1, select2, space);
             });
         }
     };
@@ -442,6 +443,7 @@ $(function () {
 
     action();
 
+    //显示已报名信息
     function show_apply_info(ed) {
         if (EVENT_DATA[ed].max_num == 1) {
             //单人
@@ -452,19 +454,60 @@ $(function () {
         }
     }
 
+    //显示已报名的单人信息
     function show_single_info(ed) {
         var space = $('.single-already-info');
         space.addClass('active');
         space.find('.event-name').text(EVENT_DATA[ed].eName);
+        space.find('[data-name="username"]').text(EVENT_DATA[ed].team_info[0].username);
+        space.find('[data-name="gender"]').text(EVENT_DATA[ed].team_info[0].gender == 1 ? '男' : '女');
+        space.find('[data-name="school"]').text(EVENT_DATA[ed].team_info[0].school);
+        space.find('[data-name="grade"]').text(EVENT_DATA[ed].team_info[0].grade);
+        space.find('.btn-exit-event').on('click', function (event) {
+            event.preventDefault();
+            var _self = $(this);
+            var old = _self.text();
+            _self.text('提交中').prop({'disabled': true});
+            if (confirm('确定退出比赛么？')) {
+                exit_event(EVENT_DATA[ed].team_info[0].team_id, function (data) {
+                    console.log(EVENT_DATA);
+                    if (data[0]) {
+                        alert('退出比赛成功！');
+                    } else {
+                        alert('退出失败！');
+                    }
+                }, function () {
+                    _self.text(old).prop({'disabled': false});
+                });
+            }
+        })
     }
 
+    //显示已报名的队伍信息
     function show_team_info(ed) {
         var space = $('.team-already-info');
         space.addClass('active');
         space.find('.event-name').text(EVENT_DATA[ed].eName);
     }
 
+    //解散队伍接口
+    function exit_event(td, cb1, cb2) {
+        var option = {
+            url: 'delete_team',
+            dataType: 'json',
+            type: 'post',
+            data: {id: td},
+            success: function (data) {
+                cb1(data);
+            },
+            complete: function () {
+                cb2();
+            }
+        };
+        $.ajax(option);
+    }
 
+    //邀请队员
     function invitation_member(td, tName, ed, eName, obj, old) {
         var e = $('.invitation-email').val();
         var reg = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})+$/;
@@ -492,29 +535,42 @@ $(function () {
         }
     }
 
-    function get_school(s1, s2, selector) {
+    //获取学校
+    function get_school(s1, s2, space) {
         var val1 = s1.val();
         var val2 = s2.val();
-        var school = $(selector).find('.target-school');
+        var group = s1.find('option[value=' + val1 + ']').text();
+        var district = s2.find('option[value=' + val2 + ']').text();
         if (val1 != 0 && val2 != 0) {
             var option = {
                 url: '/api/v1/users/school',
                 dataType: 'json',
                 data: {school_type: val1, district: val2},
                 success: function (data) {
+                    $('#add-school').find('.items').empty();
                     if (data.schools) {
-                        school.empty();
                         $.each(data.schools, function (k, v) {
                             var id = v.id;
                             var name = v.name;
-                            var option = $('<option value="' + id + '">' + name + '</option>');
-                            school.append(option);
-                            if (k == 0) {
-                                school.parent().find('input[name="school"]').val(id);
-                            }
+                            var html = $('<li class="item"><div data-school-id="' + id + '" class="choice-school">' + name + '</div></li>');
+                            $('#add-school').find('.items').append(html);
                         });
-                        school.on('change', function () {
-                            school.parent().find('input[name="school"]').val($(this).val());
+                        $('.choice-school').on('click', function () {
+                            var _self = $(this);
+                            var id = _self.attr('data-school-id');
+                            console.log(SCHOOL_DATA);
+                            console.log(id);
+                            console.log($.inArray(id, SCHOOL_DATA));
+                            if ($.inArray(id, SCHOOL_DATA) >= 0) {
+                                alert('请不要重复选择！');
+                            } else {
+                                var text = group + '-' + district + '-' + _self.text();
+                                space.find('.school-target').prepend('<div class="edit-school">' + text + '</div>');
+                                SCHOOL_DATA.push(id);
+
+                                $('#add-school').find('.items').empty();
+                                $('#school-list').modal('hide');
+                            }
                         });
                     }
                 }
@@ -545,8 +601,39 @@ $(function () {
         alert(s);
     }
 
-    function no_apply() {
+    //未报名
+    function no_apply(ed) {
+        if (EVENT_DATA[ed].max_num == 1) {
+            //单人
+            start_single_confirm(ed);
+        } else {
+            //多人
+            show_team_info(ed);
+        }
+    }
 
+    function start_single_confirm(ed) {
+        var space = $('.single-confirm');
+        space.addClass('active');
+        $('.open-school').on('click', function () {
+            var length = $('.edit-school').length;
+            if (length == 2) {
+                alert('学校已满，无法继续添加！');
+            } else {
+                $('#school-list').modal('show');
+            }
+        });
+
+        $('.add-other-school').on('click',function(){
+            var length = $('.edit-school').length;
+            if (length == 2) {
+                alert('学校已满，无法继续添加！');
+            } else {
+                $('#add-other-school').modal('show');
+            }
+        });
+        //开启学校选择
+        school_select.init('#add-school', space);
     }
 
     function init_tag() {
