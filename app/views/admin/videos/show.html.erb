@@ -1,11 +1,11 @@
 <h1 class="page-header">
   显示<%= t('activerecord.models.demeanor') %>
   <small class="pull-right">
-    <a href="<%= "#{new_admin_photo_path}?cod=#{@photo.competition_id}" %>" title="新建<%= t('activerecord.models.demeanor') %>" class="btn btn-default">
+    <a href="<%= "#{new_admin_video_path}?cod=#{@video.competition_id}" %>" title="新建<%= t('activerecord.models.demeanor') %>" class="btn btn-default">
       <i class="icon-plus icon-only"></i></a>
-    <a href="<%= edit_admin_photo_path(@photo) %>" title="编辑" class="btn btn-default">
+    <a href="<%= edit_admin_video_path(@video) %>" title="编辑" class="btn btn-default">
       <i class="icon-edit icon-only"></i></a>
-    <a href="<%= "#{admin_photos_path}?cod=#{@photo.competition_id}" %>" title="列表" class="btn btn-default">
+    <a href="<%= "#{admin_videos_path}?cod=#{@video.competition_id}" %>" title="列表" class="btn btn-default">
       <i class="icon-list icon-only"></i></a>
   </small>
 </h1>
@@ -25,12 +25,8 @@
     <li class="list-group-item">
       <h4><%= t('simple_form.labels.defaults.competition_id') %>:</h4>
 
-      <%= @photo.competition.name %>
+      <%= @video.competition.name %>
     </li>
-    <li class="list-group-item">
-      <h4>图片:</h4>
 
-      <%= image_tag(@photo.image_url(:large)) %>
-    </li>
   </ul>
 </div>

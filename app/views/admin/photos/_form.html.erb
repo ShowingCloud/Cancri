@@ -5,11 +5,14 @@
         <%= f.error_notification %>
 
         <div class="form-inputs">
-          <%= f.input :competition_id, collection: Competition.all %>
+          <%= f.hidden_field :competition_id, value: params[:cod].present? ? params[:cod] : @photo.competition_id %>
         </div>
-        <%= f.file_field :image, multiple: true %>
-
-
+        <% if params[:action]=='edit' %>
+            <%= f.file_field :image %>
+        <% else %>
+            <%= f.file_field :image, multiple: true %>
+        <% end %>
+        <%= f.hidden_field :image_cover %>
         <div class="form-actions">
           <%= f.button :submit, class: 'btn btn-primary' %>
         </div>

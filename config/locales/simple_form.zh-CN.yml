@@ -73,6 +73,7 @@ zh-CN:
         host_year: '举办年份'
         host_address: '举办地点'
         student_code: '学籍号'
+        sort: '排序'
 
     "yes": '是'
     "no": '否'

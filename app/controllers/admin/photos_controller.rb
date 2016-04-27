@@ -6,7 +6,11 @@ class Admin::PhotosController < AdminController
   # GET /admin/demeanor.json
   def index
     @competition = Competition.where(id: params[:cod]).select(:id, :name).take
-    @photos = Photo.where(competition_id: params[:cod]).all.page(params[:page]).per(params[:per])
+    if params[:field].present? && params[:keyword].present?
+      @photos = Photo.where(competition_id: params[:cod]).where(["#{params[:field]} like ?", "%#{params[:keyword]}%"]).page(params[:page]).per(params[:per])
+    else
+      @photos = Photo.where(competition_id: params[:cod]).all.page(params[:page]).per(params[:per])
+    end
   end
 
   # GET /admin/demeanor/1
@@ -17,7 +21,7 @@ class Admin::PhotosController < AdminController
   # GET /admin/demeanor/new
   def new
     # @demeanor = Video.new
-    @photo = Photo.new(competition_id: params[:cod])
+    @photo = Photo.new
   end
 
   # GET /admin/demeanor/1/edit
@@ -29,14 +33,14 @@ class Admin::PhotosController < AdminController
   def create
     params[:photo][:image].each_with_index { |a, index|
       if index !=0
-        @photo= Photo.create!(:image => a, :competition_id => 1)
+        @photo= Photo.create!(:image => a, :competition_id => params[:photo][:competition_id])
       end
     }
 
     respond_to do |format|
       if @photo.save
 
-        format.html { redirect_to '/admin/demeanor', notice: '上传成功' }
+        format.html { redirect_to "/admin/photos?cod=#{@photo.competition_id}", notice: '上传成功' }
         format.json { render action: 'show', status: :created, location: @photo }
       else
         format.html { render action: 'new' }
@@ -78,8 +82,8 @@ class Admin::PhotosController < AdminController
   # PATCH/PUT /admin/demeanor/1.json
   def update
     respond_to do |format|
-      if @photo.update(photo_params)
-        format.html { redirect_to [:admin, @photo], notice: '更新成功' }
+      if @photo.update(photo_param)
+        format.html { redirect_to "#{admin_photo_url(@photo)}", notice: '更新成功' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -93,7 +97,7 @@ class Admin::PhotosController < AdminController
   def destroy
     @photo.destroy
     respond_to do |format|
-      format.html { redirect_to admin_photos_url, notice: '删除成功' }
+      format.html { redirect_to "#{admin_photos_url}?cod=#{params[:cod]}", notice: '删除成功' }
       format.json { head :no_content }
     end
   end
@@ -107,6 +111,10 @@ class Admin::PhotosController < AdminController
   # Never trust parameters from the scary internet, only allow the white list through.
   def photo_params
     params.require(:photo).permit(:competition_id, {image: []}, :sort, :desc, :status)
+  end
+
+  def photo_param
+    params.require(:photo).permit(:competition_id, :image, :sort, :desc, :status)
   end
 
 end
