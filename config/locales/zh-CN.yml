@@ -248,6 +248,7 @@ zh-CN:
       activity: '活动'
       volunteer: '志愿者'
       demeanor: '选手风采'
+      photo: '图片'
   views:
     pagination:
         first: "首页"

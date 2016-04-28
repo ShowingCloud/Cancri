@@ -127,6 +127,7 @@ Rails.application.routes.draw do
     resources :volunteers
     resources :score_attributes
     resources :photos
+    resources :videos
   end
   namespace :kindeditor do
     post '/upload' => 'assets#create'
