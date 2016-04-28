@@ -194,6 +194,28 @@ class UserController < ApplicationController
     @user_events = TeamUserShip.joins(:event).joins('inner join user_profiles u_p on u_p.user_id = team_user_ships.user_id').joins('right join schools s on s.id = u_p.school').joins('inner join competitions comp on comp.id = events.competition_id').where(user_id: current_user.id).select(:user_id, 'events.name as event_name', 'comp.name as comp_name', 's.name as school', 'comp.status')
   end
 
+  def consult
+    if request.method == 'POST'
+      content = params[:consult][:content]
+      if content.present? && content.length < 151
+        consult = Consult.create(user_id: current_user.id, content: content)
+        if consult.save
+          flash[:success]='调戏成功'
+          redirect_to user_consult_path
+        else
+          flash[:error]='提交失败'
+        end
+      else
+        @consult = Consult.new(content: params[:consult][:content])
+        flash[:error]='请填写不多余150位字符的反馈内容'
+      end
+    end
+    if request.method == 'GET'
+      @consult = current_user.consults.build
+    end
+    @consults = Consult.where(user_id: current_user.id).all.order('id asc')
+  end
+
 
   def notification
     @notifications = current_user.notifications.page(params[:page]).per(params[:per]).order('created_at desc')
@@ -374,4 +396,5 @@ class UserController < ApplicationController
     data = sms.send_code('ADD_MOBILE', request.ip)
     render json: data
   end
+
 end

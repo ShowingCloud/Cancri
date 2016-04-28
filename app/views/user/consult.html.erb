@@ -1,0 +1,42 @@
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
+        <div class="sec-t">
+          <%= render 'user/menu' %>
+        </div>
+        <div class="sec-c">
+          <div class="content">
+            <div class="user-panel">
+              <% if @consults.present? %>
+                  <% @consults.each do |c| %>
+                      <p class="text-right"> <%= c.content %> <%= c.created_at.try(:strftime, '%Y-%m-%d') %></p>
+
+                      <p class="text-left"> <%= c.content %></p>
+
+                  <% end %>
+              <% else %>
+                  您还没有调戏过哦
+              <% end %>
+              <%= simple_form_for(@consult, html: {}, url: user_consult_path, method: :post) do |f| %>
+                  <%= f.input :content %>
+                  <div class="form-actions">
+                    <%= f.submit class: 'btn btn-primary btn-block', value: '提交', 'data-disable-with' => '提交' %>
+                  </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>

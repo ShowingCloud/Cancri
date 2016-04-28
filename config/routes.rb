@@ -128,6 +128,7 @@ Rails.application.routes.draw do
     resources :score_attributes
     resources :photos
     resources :videos
+    resources :consults
   end
   namespace :kindeditor do
     post '/upload' => 'assets#create'
@@ -159,6 +160,7 @@ Rails.application.routes.draw do
   match 'user/send_email_code' => 'user#send_email_code', as: 'user_send_email_code', via: [:post]
   match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]
   match 'user/comp' => 'user#comp', as: 'user_comp', via: [:get]
+  match 'user/consult' => 'user#consult', as: 'user_consult', via: [:get, :post]
   match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get]
   get '/user/notify' => 'user#notify_show'
   match '/user/agree_invite_info' => 'user#agree_invite_info', via: [:post]
