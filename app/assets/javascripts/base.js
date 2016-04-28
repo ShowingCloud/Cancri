@@ -6,11 +6,8 @@ $(function () {
     var SCHOOL_DATA = [];
     var action = function () {
         lazyload.init();
-        rucaptcha.init();
-        //authenticity_token.init();
         match_info_toggle.init();
         event_select.init();
-
         //school_select.init('.create-team');
         //send_confirm.init();
         //create_team.init();
@@ -61,29 +58,6 @@ $(function () {
             });
         }
     };
-
-    var rucaptcha = {
-        init: function () {
-            var r = $('[name="_rucaptcha"]');
-            if (r) {
-                //r.on('focus', function () {
-                //    $('.rucaptcha-image').css({'display': 'inline'});
-                //});
-                //r.on('blur', function () {
-                //    $('.rucaptcha-image').css({'display': 'none'});
-                //});
-            }
-        }
-    };
-
-    //var authenticity_token = {
-    //    init: function () {
-    //        var a = $('[name="authenticity_token"]');
-    //        if (a) {
-    //            a.attr({'value': $('meta[name="csrf-token"]').attr('content')});
-    //        }
-    //    }
-    //};
 
     var no_select = {
         init: function () {
@@ -180,8 +154,8 @@ $(function () {
                                             var tBtn = '<td>' + (v.players == v.max_num ? '队伍已满' : '<button class="btn-robodou btn-join-team">加入</button>') + '</td>';
                                             tr.append(tName).append(tLeader).append(tTeacher).append(tSchool).append(tBtn);
                                             target.append(tr);
-                                            join_team.init();
-                                        })
+                                        });
+                                        join_team.init();
                                     }
                                 } else {
                                     //参数错误 false
@@ -221,6 +195,7 @@ $(function () {
     var join_team = {
         init: function () {
             $('.btn-join-team').on('click', function () {
+                console.log(0);
                 var td = $(this).parents('tr').attr('data-td');
                 $(this).parents('.team-panel').removeClass('active');
                 var con = $('#confirm_info');
@@ -389,9 +364,9 @@ $(function () {
         space.find('.btn-exit-event').on('click', function (event) {
             event.preventDefault();
             var _self = $(this);
-            var old = _self.text();
-            _self.text('提交中').prop({'disabled': true});
             if (confirm('确定退出比赛么？')) {
+                var old = _self.text();
+                _self.text('提交中').prop({'disabled': true});
                 exit_event(EVENT_DATA[ed].team_info[0].team_id, function (data) {
                     console.log(EVENT_DATA);
                     if (data[0]) {
@@ -433,16 +408,20 @@ $(function () {
                 }
             }
             tr.append(tName).append(tGender).append(tSchool).append(tGrade).append(tBtn);
-            target.append(tr);
+            if (user_id == v.id) {
+                target.prepend(tr);
+            }else{
+                target.append(tr);
+            }
         });
 
         //解散队伍
         target.find('.delete-team').on('click', function (event) {
             event.preventDefault();
             var _self = $(this);
-            var old = _self.text();
-            _self.text('提交中').prop({'disabled': true});
             if (confirm('确定退出比赛么？')) {
+                var old = _self.text();
+                _self.text('提交中').prop({'disabled': true});
                 exit_event(EVENT_DATA[ed].team_info[0].team_id, function (data) {
                     if (data[0]) {
                         alert('解散队伍成功！');
@@ -460,9 +439,9 @@ $(function () {
         target.find('.delete-member').on('click', function (event) {
             event.preventDefault();
             var _self = $(this);
-            var old = _self.text();
-            _self.text('提交中').prop({'disabled': true});
             if (confirm('确定将该队员删除么？')) {
+                var old = _self.text();
+                _self.text('提交中').prop({'disabled': true});
                 delete_member(_self.attr('data-id'), EVENT_DATA[ed].team_info[0].team_id, function (data) {
                     if (data[0]) {
                         var index = _self.parents('tr').index();
@@ -617,7 +596,8 @@ $(function () {
         }
     }
 
-    function start_team_step(ed){
+    //团队报名开始
+    function start_team_step(ed) {
         var space = $('.search-team');
         space.addClass('active');
         search_team.init(ed);
@@ -740,5 +720,5 @@ $(function () {
             }
         };
         $.ajax(option);
-    };
+    }
 });
