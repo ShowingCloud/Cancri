@@ -16,7 +16,3 @@
 //= require kindeditor
 //= require bootstrap-dialog
 //= require admin/jquery.colorbox-min
-////= require js/vendor/jquery.ui.widget
-////= require js/jquery.iframe-transport
-////= require js/jquery.fileupload
-////= require js/jquery.fileupload-ui
