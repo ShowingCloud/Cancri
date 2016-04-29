@@ -641,6 +641,13 @@ ul {
 
 }
 
+#download .download .title {
+  font-size: 36px;
+  color: #FFFFFF;
+  text-align: center;
+  padding-top: 10px;
+}
+
 #download .download {
   height: 700px;
   background: transparent center center no-repeat;
@@ -649,14 +656,59 @@ ul {
 
 #download .download .download-inner {
   margin: 0 auto;
-  padding: 160px 0;
+  padding: 80px 0 0;
   width: 830px;
+  text-align: center;
+}
+
+#download .download .download-inner .select-front {
+  border-bottom: 2px solid #88D5EC;
+}
+
+#download .download .bottom{
+  text-align: center;
+  padding-top: 20px;
+}
+
+.btn-download {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  padding: 4px 16px;
+  font-size: 18px;
+  background: transparent;
+  border-radius: 5px;
 }
 
 #download .download .download-inner .download-item {
   width: 228px;
   height: 167px;
+  margin: 30px 15px 30px;
+  color: #88D5EC;
+  display: inline-block;
+}
+
+#download .download .download-inner .download-item .sec-t {
   float: left;
+  width: 88px;
+  margin-top: 50px;
+}
+
+#download .download .download-inner .download-item .sec-t i {
+  font-size: 44px;
+  margin-top: 20px;
+}
+
+#download .download .download-inner .download-item .sec-c {
+  margin-left: 90px;
+  margin-top: 70px;
+}
+
+#download .download .download-inner .download-item .sec-c select {
+  width: 100px;
+  background: #376A92;
+  border: none;
+  outline: none;
+  color: #88D5EC;
 }
 
 #login-modal {
@@ -1381,7 +1433,6 @@ ul {
   text-align: center;
   color: #8B9F95;
 }
-
 
 #event .sec-c .team-panel .team-search {
   background: transparent no-repeat center center;
@@ -2171,21 +2222,21 @@ ul {
   background: transparent center bottom no-repeat;
 }
 
-#add-school .dec{
+#add-school .dec {
   margin-bottom: 20px;
   overflow: hidden;
 }
 
-#add-school .dec .group-display{
+#add-school .dec .group-display {
   float: left;
   margin-right: 40px;
 }
 
-#add-school .dec .district-display{
+#add-school .dec .district-display {
   float: left;
 }
 
-#add-school .dec select{
+#add-school .dec select {
   width: 140px;
   height: 20px;
   background: #376A92;
@@ -2193,31 +2244,31 @@ ul {
   outline: none;
 }
 
-#add-school .school-list{
+#add-school .school-list {
   height: 230px;
 }
 
-#add-school .school-list .items{
+#add-school .school-list .items {
   overflow: hidden;
 }
 
-#add-school .school-list .items .item{
+#add-school .school-list .items .item {
   float: left;
   width: 33%;
   height: 30px;
   margin-top: 10px;
 }
 
-#add-school .choice-school{
+#add-school .choice-school {
   cursor: pointer;
   display: inline-block;
 }
 
-#add-school .bottom{
+#add-school .bottom {
   text-align: right;
 }
 
-#add-school .tips{
+#add-school .tips {
   color: #8B9F95;
   font-size: 18px;
   margin-bottom: 20px;
@@ -2229,21 +2280,21 @@ ul {
   background: transparent center bottom no-repeat;
 }
 
-#add-school .dec{
+#add-school .dec {
   margin-bottom: 20px;
   overflow: hidden;
 }
 
-#add-school .dec .group-display{
+#add-school .dec .group-display {
   float: left;
   margin-right: 40px;
 }
 
-#add-school .dec .district-display{
+#add-school .dec .district-display {
   float: left;
 }
 
-#add-school .dec select{
+#add-school .dec select {
   width: 140px;
   height: 20px;
   background: #376A92;

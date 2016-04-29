@@ -410,7 +410,7 @@ $(function () {
             tr.append(tName).append(tGender).append(tSchool).append(tGrade).append(tBtn);
             if (user_id == v.id) {
                 target.prepend(tr);
-            }else{
+            } else {
                 target.append(tr);
             }
         });
@@ -651,6 +651,56 @@ $(function () {
             });
         });
     }
+
+    //确定单人信息 -队伍版
+    function start_team_confirm(ed) {
+        var space = $('.single-confirm');
+        space.addClass('active');
+        space.find('.open-school').on('click', function () {
+            var length = $('.edit-school').length;
+            if (length == 2) {
+                alert('学校已满，无法继续添加！');
+            } else {
+                $('#school-list').modal('show');
+            }
+        });
+
+        space.find('.add-other-school').on('click', function () {
+            var length = $('.edit-school').length;
+            if (length == 2) {
+                alert('学校已满，无法继续添加！');
+            } else {
+                $('#add-other-school').modal('show');
+            }
+        });
+        //开启学校选择
+        school_select.init('#add-school', space);
+        //提交
+        space.find('.apply-submit').on('click', function (event) {
+            event.preventDefault();
+            var _self = $(this);
+            var old = _self.text();
+            _self.text('提交中').prop({'disabled': true});
+            var data = space.find('form').serialize();
+            if (SCHOOL_DATA[0]) {
+                data += '&school1=' + SCHOOL_DATA[0];
+                if (SCHOOL_DATA[1]) {
+                    data += '&school2=' + SCHOOL_DATA[1];
+                }
+            }
+            send_confirm(data, function (result) {
+                if (result[0]) {
+                    space.removeClass('active');
+                    single_join(ed);
+                } else {
+                    alert(result[1]);
+                }
+            }, function () {
+                _self.text(old).prop({'disabled': false});
+            });
+        });
+    }
+
 
     function init_tag() {
         //取消所有版块显示

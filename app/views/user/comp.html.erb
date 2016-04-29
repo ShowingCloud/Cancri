@@ -7,21 +7,78 @@
         </div>
         <div class="sec-c">
           <div class="content">
-            <div class="user-panel">
-              <% if @user_events.present? %>
+            <% if @user_events.present? %>
+                <div class="match-panel">
+                  <div class="panel-title">
+                    即将开始
+                  </div>
                   <% @user_events.each do |e| %>
-                      <p>大赛名称：<%= e.comp_name %></p>
+                      <% if e.status!=2 %>
+                          <div class="match-card" data-src="<%= image_path('homepage/card-bk.png') %>">
+                            <div class="card-left">
+                              <div class="card-avatar">
+                                <img src="" alt=""/>
+                              </div>
+                              <div class="card-download">
+                                <button class="btn-robodou btn-match-download">下载</button>
+                              </div>
+                            </div>
+                            <div class="card-right">
+                              <div class="card-info">
+                                <p>姓名：<%= current_user.username %></p>
 
-                      <p>项目：<%= e.event_name %></p>
+                                <p>学校：<%= e.school %></p>
 
-                      <p>学校：<%= e.school %></p>
+                                <p>年级：</p>
 
-                      <p> 是否结束： <%= e.status==2 ? '已经结束' : '即将开始' %></p>
+                                <p>学籍号：</p>
+
+                                <p>参赛项目：<%= e.comp_name %>-<%= e.event_name %></p>
+
+                                <p>指导老师：XXX</p>
+                              </div>
+                            </div>
+                          </div>
+                      <% end %>
                   <% end %>
-              <% else %>
-                  您还没有参加过比赛
-              <% end %>
-            </div>
+                </div>
+                <div class="match-panel">
+                  <div class="panel-title">
+                    比赛结束
+                  </div>
+                  <% @user_events.each do |e| %>
+                      <% if e.status==2 %>
+                          <div class="match-card" data-src="<%= image_path('homepage/card-bk.png') %>">
+                            <div class="card-left">
+                              <div class="card-avatar">
+                                <img src="" alt=""/>
+                              </div>
+                              <div class="card-download">
+                                <button class="btn-robodou btn-match-download">下载</button>
+                              </div>
+                            </div>
+                            <div class="card-right">
+                              <div class="card-info">
+                                <p>姓名：<%= current_user.username %></p>
+
+                                <p>学校：<%= e.school %></p>
+
+                                <p>年级：</p>
+
+                                <p>学籍号：</p>
+
+                                <p>参赛项目：<%= e.comp_name %>-<%= e.event_name %></p>
+
+                                <p>指导老师：XXX</p>
+                              </div>
+                            </div>
+                          </div>
+                      <% end %>
+                  <% end %>
+                </div>
+            <% else %>
+                您还没有参加过比赛
+            <% end %>
           </div>
         </div>
       </div>
