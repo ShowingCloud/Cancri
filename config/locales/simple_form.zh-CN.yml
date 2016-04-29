@@ -69,7 +69,7 @@ zh-CN:
         expert_score: '专家评分'
         last_score: '最终分数'
         news_type: '新闻类型'
-        teacher_no: '教室编号'
+        teacher_no: '教师编号'
         host_year: '举办年份'
         host_address: '举办地点'
         student_code: '学籍号'
