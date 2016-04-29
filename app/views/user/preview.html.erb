@@ -37,25 +37,30 @@
             <div class="user-panel">
               <div class="user-row">
                 <span class="row-name">真实姓名</span>
-                <span class="row-content edit-input" data-input="text"></span>
+                <span class="row-content edit-input" data-input="text"><%= current_user.username %></span>
               </div>
               <div class="user-row">
                 <span class="row-name">身份</span>
                 <span class="row-content edit-checkbox" data-input="text">学生</span>
-                <span class=""></span>
               </div>
               <div class="user-row">
                 <span class="row-name">性别</span>
-                <span class="row-content edit-radio" data-input="radio" data-input-name="">男</span>
-                <span class="row-content edit-radio uncheck" data-input="radio" data-input-name="">女</span>
+                <% if current_user.gender == 1 %>
+                    <span class="row-content edit-radio" data-input="radio" data-input-name="">男</span>
+                <% else %>
+                    <span class="row-content edit-radio" data-input="radio" data-input-name="">女</span>
+                <% end %>
               </div>
               <div class="user-row">
                 <span class="row-name">学校</span>
-                <span class="row-content edit-input" data-input="text"></span>
+                <span class="row-content edit-input" data-input="text">
+
+                </span>
               </div>
               <div class="user-row">
                 <span class="row-name">年级</span>
-                <span class="row-content edit-input" data-input="text"></span>
+                <span class="row-content edit-input" data-input="text">
+                </span>
               </div>
               <div class="panel-control control-top">
                 <a href="<%= user_profile_path %>">编 辑</a>
