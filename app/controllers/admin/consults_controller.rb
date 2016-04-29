@@ -1,19 +1,20 @@
 class Admin::ConsultsController < AdminController
-  before_action :set_consult, only: [:show, :edit, :update, :destroy]
+  before_action :set_consult, only: [:edit, :update, :destroy]
 
   # GET /admin/consults
   # GET /admin/consults.json
   def index
     if params[:field].present? && params[:keyword].present?
-      @consults = Consult.all.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"]).page(params[:page]).per(params[:per])
+      @consults = Consult.joins(:user).where(["consults.#{params[:field]} like ?", "%#{params[:keyword]}%"]).select(:id, :user_id, :content, :status, :unread, :admin_reply, :admin_id, 'users.nickname').page(params[:page]).per(params[:per])
     else
-      @consults = Consult.joins(:user).select(:id, :user_id, :content, :status, :unread, :admin_reply, :admin_id, 'users.nickname').page(params[:page]).per(params[:per])
+      @consults = Consult.joins(:user).where(status: 0, admin_reply: 0).select(:id, :user_id, :content, :status, :unread, :admin_reply, :admin_id, 'users.nickname').page(params[:page]).per(params[:per])
     end
   end
 
   # GET /admin/consults/1
   # GET /admin/consults/1.json
   def show
+    @user_consults = Consult.joins(:user).where(user_id: params[:ud]).select(:id, :user_id, :content, :status, :unread, :admin_reply, :admin_id, 'users.nickname').page(params[:page]).per(params[:per])
   end
 
   # GET /admin/consults/new
@@ -39,7 +40,7 @@ class Admin::ConsultsController < AdminController
         format.html { redirect_to [:admin, @consult], notice: t('activerecord.models.consult')+'创建成功!' }
         format.json { render action: 'show', status: :created, location: @consult }
       else
-        format.html { render action: 'new' }
+        format.html { redirect_to "/admin/consults/new?pd=#{consult_params[:parent_id]}&ud=#{consult_params[:user_id]}", notice: '内容至少6个字符' }
         format.json { render json: @consult.errors, status: :unprocessable_entity }
       end
     end

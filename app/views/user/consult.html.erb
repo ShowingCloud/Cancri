@@ -10,10 +10,7 @@
             <div class="user-panel">
               <% if @consults.present? %>
                   <% @consults.each do |c| %>
-                      <p class="text-right"> <%= c.content %> <%= c.created_at.try(:strftime, '%Y-%m-%d') %></p>
-
-                      <p class="text-left"> <%= c.content %></p>
-
+                      <p class="<%= c.admin_reply ? 'text-left':'text-right' %>"> <%= c.content %> <%= c.created_at.try(:strftime, '%Y-%m-%d') %></p>
                   <% end %>
               <% else %>
                   您还没有调戏过哦
