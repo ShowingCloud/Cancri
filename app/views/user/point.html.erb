@@ -8,7 +8,32 @@
         <div class="sec-c">
           <div class="content">
             <div class="user-panel">
-              当前您还没有积分
+              <% if @user_points.present? %>
+                  <tabel>
+                    <thead>
+                    <tr>
+                      <th>年份</th>
+                      <th>项目</th>
+                      <th>积分</th>
+                      <th>状态</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @user_points.each do |p| %>
+                        <tr>
+                          <td><%= p.host_year %></td>
+                          <td><%= p.name %></td>
+                          <td><%= p.point %></td>
+                          <td><%= p.is_audit ? '已确认' : '待审核' %></td>
+
+                        </tr>
+                    <% end %>
+                    </tbody>
+                  </tabel>
+              <% else %>
+                  当前您还没有积分
+                  <a href="<%= user_add_point_path %>">添加</a>
+              <% end %>
             </div>
           </div>
         </div>

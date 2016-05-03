@@ -217,7 +217,20 @@ class UserController < ApplicationController
   end
 
   def point
+    @user_points = UserPoint.joins(:prize).where(user_id: current_user.id).select(:id, :is_audit, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize')
+  end
 
+  def add_point
+    @point = current_user.user_points.build
+    if request.method == 'POST'
+      u_p = UserPoint.create(user_id: current_user.id, prize_id: params[:user_point][:prize_id], cover: params[:user_point][:cover])
+      if u_p.save
+        flash[:success] = 'ok'
+        redirect_to user_point_path
+      else
+        flash[:error] = 'fail'
+      end
+    end
   end
 
 

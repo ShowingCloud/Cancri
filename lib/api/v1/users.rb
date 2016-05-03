@@ -24,6 +24,24 @@ module API
           render schools: schools
         end
 
+
+        params do
+          requires :host_year, type: String, desc: '举办年份'
+        end
+        get '/comp_names' do
+          comp_names = Prize.where(host_year: params[:host_year]).select(:name)
+          render comp_names: comp_names
+        end
+
+        params do
+          requires :host_year, type: String, desc: '举办年份'
+          requires :comp_name, type: String, desc: '赛事名称'
+        end
+        get '/comp_prizes' do
+          comp_prizes = Prize.where(host_year: params[:host_year], name: params[:comp_name]).select(:id, :prize)
+          render comp_prizes: comp_prizes
+        end
+
         params do
           requires :private_token, type: String, desc: 'Private Token'
           optional :page, type: Integer, default: 1
