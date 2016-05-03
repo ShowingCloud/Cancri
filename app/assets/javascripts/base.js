@@ -15,6 +15,7 @@ $(function () {
         join_volunteer.init();
         add_school.init();
         no_select.init();
+        join_v_school.init();
         //window.setTimeout(function(){getInfo();},5000);
         fix_height.init('#main');
         $(window).on('resize', function () {
@@ -155,7 +156,7 @@ $(function () {
                                             tr.append(tName).append(tLeader).append(tTeacher).append(tSchool).append(tBtn);
                                             target.append(tr);
                                         });
-                                        join_team.init();
+                                        join_team.init(ed);
                                     }
                                 } else {
                                     //参数错误 false
@@ -193,29 +194,47 @@ $(function () {
     };
 
     var join_team = {
-        init: function () {
+        init: function (ed) {
             $('.btn-join-team').on('click', function () {
                 console.log(0);
+                $('.search-team').removeClass('active');
                 var td = $(this).parents('tr').attr('data-td');
                 $(this).parents('.team-panel').removeClass('active');
-                var con = $('#confirm_info');
-                con.addClass('active').find('.btn-send-confirm').css({display: 'none'});
-                con.append('<button class="btn-join-confirm" >加入队伍</button>');
-                con.find('.btn-join-confirm').on('click', function () {
-                    var form = con.find('#confirm_form');
-                    var ed = $('.selected-display').val();
+                var space = $('.team-confirm-join');
+                space.addClass('active');
+                space.find('.open-school').on('click', function () {
+                    var length = $('.edit-school').length;
+                    if (length == 2) {
+                        alert('学校已满，无法继续添加！');
+                    } else {
+
+                        $('#school-list').modal('show');
+                    }
+                });
+                school_select.init('#add-school', space);
+                space.find('.apply-submit').on('click', function (event) {
+                    event.preventDefault();
+                    var form = space.find('#team-confirm-form');
                     var data = form.serialize();
                     data += '&join=1';
                     data += '&ed=' + ed;
                     data += '&td=' + td;
+                    if (SCHOOL_DATA[0]) {
+                        data += '&school1=' + SCHOOL_DATA[0];
+                        if (SCHOOL_DATA[1]) {
+                            data += '&school2=' + SCHOOL_DATA[1];
+                        }
+                    }
                     var option = {
                         url: 'update_apply_info',
                         dataType: 'json',
                         type: 'post',
                         data: data,
                         success: function (data) {
-                            console.log(data[1]);
                             alert(data[1]);
+                            if (data[0]) {
+                                window.location.reload();
+                            }
                         }
                     };
                     $.ajax(option);
@@ -338,6 +357,31 @@ $(function () {
             }
         }
     };
+
+    var join_v_school = {
+        init: function () {
+            var space = $('#join-volunteer');
+            space.find('.open-school').on('click', function () {
+                var length = $('.edit-school').length;
+                if (length == 2) {
+                    alert('学校已满，无法继续添加！');
+                } else {
+                    $('#school-list').modal('show');
+                }
+            });
+
+            space.find('.add-other-school').on('click', function () {
+                var length = $('.edit-school').length;
+                if (length == 2) {
+                    alert('学校已满，无法继续添加！');
+                } else {
+                    $('#add-other-school').modal('show');
+                }
+            });
+            //开启学校选择
+            school_select.init('#add-school', space);
+        }
+    }
 
     action();
 
@@ -601,6 +645,65 @@ $(function () {
         var space = $('.search-team');
         space.addClass('active');
         search_team.init(ed);
+
+        //团队创建队伍
+        $('.btn-create-team').on('click', function (event) {
+            event.preventDefault();
+            space.removeClass('active');
+            space = $('.create-team');
+            space.addClass('active');
+            space.find('.open-school').on('click', function () {
+                var length = $('.edit-school').length;
+                if (length == 2) {
+                    alert('学校已满，无法继续添加！');
+                } else {
+
+                    $('#school-list').modal('show');
+                }
+            });
+            school_select.init('#add-school', space);
+
+            space.find('.apply-submit').on('click', function (event) {
+                event.preventDefault();
+                var _self = $(this);
+                var old = _self.text();
+                _self.text('提交中').prop({'disabled': true});
+                var data = space.find('form').serialize();
+                if (SCHOOL_DATA[0]) {
+                    data += '&school1=' + SCHOOL_DATA[0];
+                    if (SCHOOL_DATA[1]) {
+                        data += '&school2=' + SCHOOL_DATA[1];
+                    }
+                }
+                send_confirm(data, function (result) {
+                    if (result[0]) {
+                        var data = space.find('form').serialize();
+                        data += '&team_event=' + ed;
+                        data += '&team_district=' + space.find('input[name="district"]').val();
+                        if (SCHOOL_DATA[0]) {
+                            data += '&sd=' + SCHOOL_DATA[0];
+                            if (SCHOOL_DATA[1]) {
+                                data += '&skd=' + SCHOOL_DATA[1];
+                            }
+                        }
+                        create_team(data, function (result) {
+                            if (result[0]) {
+                                alert('报名成功！');
+                                window.location.reload();
+                            } else {
+                                alert(result[1]);
+                            }
+                        }, function () {
+                            _self.text(old).prop({'disabled': false});
+                        });
+                    } else {
+                        alert(result[1]);
+                    }
+                }, function () {
+                    _self.text(old).prop({'disabled': false});
+                });
+            });
+        });
     }
 
     //确定单人信息
@@ -651,56 +754,6 @@ $(function () {
             });
         });
     }
-
-    //确定单人信息 -队伍版
-    function start_team_confirm(ed) {
-        var space = $('.single-confirm');
-        space.addClass('active');
-        space.find('.open-school').on('click', function () {
-            var length = $('.edit-school').length;
-            if (length == 2) {
-                alert('学校已满，无法继续添加！');
-            } else {
-                $('#school-list').modal('show');
-            }
-        });
-
-        space.find('.add-other-school').on('click', function () {
-            var length = $('.edit-school').length;
-            if (length == 2) {
-                alert('学校已满，无法继续添加！');
-            } else {
-                $('#add-other-school').modal('show');
-            }
-        });
-        //开启学校选择
-        school_select.init('#add-school', space);
-        //提交
-        space.find('.apply-submit').on('click', function (event) {
-            event.preventDefault();
-            var _self = $(this);
-            var old = _self.text();
-            _self.text('提交中').prop({'disabled': true});
-            var data = space.find('form').serialize();
-            if (SCHOOL_DATA[0]) {
-                data += '&school1=' + SCHOOL_DATA[0];
-                if (SCHOOL_DATA[1]) {
-                    data += '&school2=' + SCHOOL_DATA[1];
-                }
-            }
-            send_confirm(data, function (result) {
-                if (result[0]) {
-                    space.removeClass('active');
-                    single_join(ed);
-                } else {
-                    alert(result[1]);
-                }
-            }, function () {
-                _self.text(old).prop({'disabled': false});
-            });
-        });
-    }
-
 
     function init_tag() {
         //取消所有版块显示
@@ -771,4 +824,6 @@ $(function () {
         };
         $.ajax(option);
     }
+
+
 });
