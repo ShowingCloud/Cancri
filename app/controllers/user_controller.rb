@@ -216,6 +216,10 @@ class UserController < ApplicationController
     @consults = Consult.where(user_id: current_user.id).all.order('id asc')
   end
 
+  def point
+
+  end
+
 
   def notification
     @notifications = current_user.notifications.page(params[:page]).per(params[:per]).order('created_at desc')

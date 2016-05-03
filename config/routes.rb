@@ -36,7 +36,9 @@ Rails.application.routes.draw do
     end
   end
   get '/downloads' => 'downloads#index'
+  get '/scenes' => 'scenes#index'
   resource :notifications
+
 
   devise_for :users, path: 'account', controllers: {
                        sessions: 'users/sessions',
@@ -161,6 +163,7 @@ Rails.application.routes.draw do
   match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]
   match 'user/comp' => 'user#comp', as: 'user_comp', via: [:get]
   match 'user/consult' => 'user#consult', as: 'user_consult', via: [:get, :post]
+  match 'user/point' => 'user#point', as: 'user_point', via: [:get, :post]
   match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get]
   get '/user/notify' => 'user#notify_show'
   match '/user/agree_invite_info' => 'user#agree_invite_info', via: [:post]
