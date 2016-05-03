@@ -665,7 +665,7 @@ ul {
   border-bottom: 2px solid #88D5EC;
 }
 
-#download .download .bottom{
+#download .download .bottom {
   text-align: center;
   padding-top: 20px;
 }
@@ -1141,7 +1141,7 @@ ul {
 #volunteer .v-list .v-item .v-circle {
   position: absolute;
   right: 33px;
-  top: 40px;
+  top: 54px;
   font-size: 16px;
   width: 90px;
 }
@@ -2126,7 +2126,7 @@ ul {
   outline: none;
 }
 
-.single-confirm {
+.single-confirm, .team-confirm-join {
   border: 2px solid #88D5EC;
   width: 400px;
   margin: 40px auto;
@@ -2134,35 +2134,35 @@ ul {
   padding: 20px;
 }
 
-.single-confirm .confirm-t {
+.apply-part .confirm-t {
   font-size: 18px;
   background: transparent center bottom no-repeat;
   text-align: center;
   margin-bottom: 20px;
 }
 
-.single-confirm .confirm-c {
+.apply-part .confirm-c {
 
 }
 
-.single-confirm .confirm-c .input-row {
+.apply-part .confirm-c .input-row {
   margin-bottom: 15px;
   overflow: hidden;
   padding: 2px 0;
   line-height: 20px;
 }
 
-.single-confirm .confirm-c .input-row .input-t {
+.apply-part .confirm-c .input-row .input-t {
   width: 100px;
   float: left;
   text-align: right;
 }
 
-.single-confirm .confirm-c .input-row .input-c {
+.apply-part .confirm-c .input-row .input-c {
   margin-left: 120px;
 }
 
-.single-confirm .confirm-c .input-row .input-c .input-b {
+.apply-part .confirm-c .input-row .input-c .input-b {
   background: #376A92;
   height: 20px;
   padding-left: 4px;
@@ -2171,11 +2171,11 @@ ul {
   width: 140px;
 }
 
-.single-confirm .confirm-c .input-row .input-c .input-b:focus {
+.apply-part .confirm-c .input-row .input-c .input-b:focus {
   outline: 1px solid #88D5EC;
 }
 
-.single-confirm .confirm-c .input-row .input-c .radio-b {
+.apply-part .confirm-c .input-row .input-c .radio-b {
   height: 20px;
   line-height: 20px;
   vertical-align: middle;
@@ -2184,12 +2184,25 @@ ul {
   cursor: pointer;
 }
 
-.single-confirm .confirm-c .input-row .input-c select {
+.apply-part .confirm-c .input-row .input-c select {
   width: 140px;
   height: 20px;
   background: #376A92;
   border: none;
   outline: none;
+}
+
+.apply-part .confirm-b {
+  text-align: center;
+}
+
+.apply-part .confirm-b .apply-submit {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  padding: 4px 12px;
+  outline: none;
+  background: transparent;
+  border-radius: 5px;
 }
 
 #event-select {
@@ -2366,4 +2379,93 @@ ul {
   background: #376A92;
   border: none;
   outline: none;
+}
+
+//---
+
+.apply-part .create-t {
+  font-size: 18px;
+  background: transparent center bottom no-repeat;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.apply-part .create-c {
+
+}
+
+.apply-part .create-c .input-row {
+  margin-bottom: 15px;
+  overflow: hidden;
+  padding: 2px 0;
+  line-height: 20px;
+}
+
+.apply-part .create-c .input-row .input-t {
+  width: 100px;
+  float: left;
+  text-align: right;
+}
+
+.apply-part .create-c .input-row .input-c {
+  margin-left: 120px;
+}
+
+.apply-part .create-c .input-row .input-c .input-b {
+  background: #376A92;
+  height: 20px;
+  padding-left: 4px;
+  border: none;
+  outline: none;
+  width: 140px;
+}
+
+.apply-part .create-c .input-row .input-c .input-b:focus {
+  outline: 1px solid #88D5EC;
+}
+
+.apply-part .create-c .input-row .input-c .radio-b {
+  height: 20px;
+  line-height: 20px;
+  vertical-align: middle;
+  margin-top: -1px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.apply-part .create-c .input-row .input-c select {
+  width: 140px;
+  height: 20px;
+  background: #376A92;
+  border: none;
+  outline: none;
+}
+
+.apply-part .create-b {
+  text-align: center;
+}
+
+.apply-part .create-b .apply-submit {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  padding: 4px 12px;
+  outline: none;
+  background: transparent;
+  border-radius: 5px;
+}
+
+.delete-team {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  outline: none;
+  background: transparent;
+  border-radius: 5px;
+}
+
+.delete-member {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  outline: none;
+  background: transparent;
+  border-radius: 5px;
 }

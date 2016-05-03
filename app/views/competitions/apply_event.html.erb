@@ -395,7 +395,164 @@
             </div>
             <!--创建队伍-->
             <div class="create-team apply-part">
+              <form id="team-create-form">
+                <div class="create-t" data-src="<%= image_path('homepage/info-t-bk.png') %>">
+                  创建队伍
+                </div>
+                <div class="create-c">
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-user"></i>
+                      队伍名称
+                    </div>
+                    <div class="input-c">
+                      <input class="input-b" type="text" name="team_name" value=""/>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-user"></i>
+                      姓&nbsp;&nbsp;&nbsp;&nbsp;名
+                    </div>
+                    <div class="input-c">
+                      <input class="input-b" type="text" name="username" value="<%= current_user.username %>"/>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-tag"></i>
+                      学籍号
+                    </div>
+                    <div class="input-c">
+                      <input class="input-b" type="text" name="student_code" value=""/>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-tag"></i>
+                      性&nbsp;&nbsp;&nbsp;&nbsp;别
+                    </div>
+                    <div class="input-c">
+                      <label class="radio-b"><input type="radio" name="gender" value="1"/>男</label>
+                      <label class="radio-b"><input type="radio" name="gender" value="2"/>女</label>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-globe"></i>
+                      区&nbsp;&nbsp;&nbsp;&nbsp;县
+                    </div>
+                    <div class="input-c">
+                      <select data-select-target="district">
+                        <option value="0">选择区县</option>
+                        <% District.all.each do |d| %>
+                            <option value="<%= d.id %>"><%= d.name %></option>
+                        <% end %>
+                      </select>
+                      <input type="hidden" name="district"/>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-globe"></i>
+                      组&nbsp;&nbsp;&nbsp;&nbsp;别
+                    </div>
+                    <div class="input-c">
+                      <select data-select-target="group">
+                        <option value="0">选择组别</option>
+                        <option value="1">小学</option>
+                        <option value="2">初中</option>
+                        <option value="3">高中</option>
+                        <option value="4">大学</option>
+                      </select>
+                      <input type="hidden" name="group"/>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-tag"></i>
+                      学&nbsp;&nbsp;&nbsp;&nbsp;校
+                    </div>
+                    <div class="input-c school-target">
+                      <a class="open-school">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        选择学校
+                      </a>
+                      <br/>
+                      <a class="add-other-school">没有你的学校？点击添加</a>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-tag"></i>
+                      年&nbsp;&nbsp;&nbsp;&nbsp;级
+                    </div>
+                    <div class="input-c">
+                      <select data-select-target="grade">
+                        <option value="0">请选择年级</option>
+                        <option value="一">一</option>
+                        <option value="二">二</option>
+                        <option value="三">三</option>
+                        <option value="四">四</option>
+                        <option value="五">五</option>
+                        <option value="六">六</option>
+                        <option value="七">七</option>
+                        <option value="八">八</option>
+                        <option value="九">九</option>
+                        <option value="高一">高一</option>
+                        <option value="高二">高二</option>
+                        <option value="高三">高三</option>
+                      </select>
+                      <input type="hidden" name="grade" value=""/>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-tag"></i>
+                      班&nbsp;&nbsp;&nbsp;&nbsp;级
+                    </div>
+                    <div class="input-c">
+                      <select data-select-target="bj">
+                        <option value="0">请选择班级</option>
+                        <% for n in 1..100 %>
+                            <option value="<%= n %>"><%= n %></option>
+                        <% end %>
+                      </select>
+                      <input type="hidden" name="bj" value=""/>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-flag"></i>
+                      指导老师
+                    </div>
+                    <div class="input-c">
 
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-plus"></i>
+                      姓名
+                    </div>
+                    <div class="input-c">
+                      <input class="input-b" type="text" name="team_teacher" value=""/>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-plus"></i>
+                      电话
+                    </div>
+                    <div class="input-c">
+                      <input class="input-b" type="text" name="teacher_mobile" value=""/>
+                    </div>
+                  </div>
+                </div>
+                <div class="create-b">
+                  <button type="submit" class="apply-submit">创建队伍</button>
+                </div>
+              </form>
             </div>
             <!--队伍信息-->
             <div class="team-already-info apply-part">
