@@ -37,6 +37,39 @@ $(function () {
         });
 
     });
+    // 积分审核
+    $('.audit-user-point').on('click', function () {
+        var upd = $(this).attr('data-id');
+        $('.audit-point-submit').on('click', function () {
+            var status = $(".audit-point-status [name='audit-point']:checked").val();
+            if (upd) {
+                console.log(status);
+                if (!status) {
+                    alert('请选择审核结果');
+                    return false;
+                }
+                $.ajax({
+                    url: '/admin/checks/audit_point',
+                    type: 'post',
+                    data: {
+                        "status": status, "upd": upd
+                    },
+                    success: function (data) {
+                        if (data[0]) {
+                            alert(data[1]);
+                            window.location.reload();
+                        } else {
+                            alert(data[1]);
+                        }
+                    }
+                });
+                $(".audit-point-status [name='audit-point']").prop('checked', false);
+            } else {
+                alert('审核对象不存在');
+            }
+        });
+
+    });
     // 教师审核
     $(".teacher-apply-status [name='teacher-apply']").on('click', function () {
         var status = $(".teacher-apply-status [name='teacher-apply']:checked").val();

@@ -94,5 +94,27 @@ class Admin::ChecksController < AdminController
   def referee_list
     @referees = UserProfile.joins(:comp_workers, :competitions, :user).where('comp_workers.status is not NULL').where('comp_workers.user_id=user_profiles.user_id').where('competitions.id=comp_workers.competition_id').where('users.id=user_profiles.user_id').select(:username, :school, :gender, :age, :grade, 'users.mobile', 'competitions.name').page(params[:page]).per(params[:per])
   end
+
+  def points
+    @points = UserPoint.joins(:prize).joins('inner join user_profiles u_p on u_p.user_id = user_points.user_id').where(is_audit: 0).select(:id, :is_audit, :cover, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize as prize_name', 'u_p.username').page(params[:page]).per(params[:per])
+  end
+
+  def audit_point
+    if params[:status].present? && params[:upd].present?
+      u_p = UserPoint.find(params[:upd])
+      if u_p.present?
+        if u_p.update_attributes(is_audit: true)
+          result = [true, '审核成功']
+        else
+          result = [false, '审核失败']
+        end
+      else
+        result=[false, '审核对象不存在']
+      end
+    else
+      result =[false, '参数不完整1']
+    end
+    render json: result
+  end
 end
 
