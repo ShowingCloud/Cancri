@@ -2226,7 +2226,6 @@ ul {
   border: 2px solid #88D5EC;
   padding: 20px;
   color: #88D5EC;
-  background: #053E58;
 }
 
 #add-school .title {
@@ -2465,6 +2464,61 @@ ul {
 .delete-member {
   border: 1px solid #88D5EC;
   color: #88D5EC;
+  outline: none;
+  background: transparent;
+  border-radius: 5px;
+}
+
+#add-other-school {
+
+}
+
+#add-other-school .modal-panel {
+  width: 400px;
+  border: 2px solid #88D5EC;
+  border-radius: 15px;
+  color: #88D5EC;
+  font-size: 14px;
+  padding: 20px;
+  margin: 120px auto;
+}
+
+#add-other-school .modal-panel .title {
+  text-align: center;
+  margin-bottom: 20px;
+  background: transparent center bottom no-repeat;
+}
+
+#add-other-school .modal-panel .inner {
+
+}
+
+#add-other-school .modal-panel .bottom {
+  text-align: right;
+}
+
+#add-other-school .modal-panel .inner .left {
+  width: 100px;
+  float: left;
+}
+
+#add-other-school .modal-panel .inner .right {
+  margin-left: 120px;
+}
+
+#add-other-school .modal-panel .inner .right input {
+  background: #376A92;
+  height: 20px;
+  padding-left: 4px;
+  border: none;
+  outline: none;
+  width: 140px;
+}
+
+#add-other-school .apply-submit {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  padding: 4px 12px;
   outline: none;
   background: transparent;
   border-radius: 5px;

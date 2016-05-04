@@ -8,9 +8,6 @@ $(function () {
         lazyload.init();
         match_info_toggle.init();
         event_select.init();
-        //school_select.init('.create-team');
-        //send_confirm.init();
-        //create_team.init();
         join_activity.init();
         join_volunteer.init();
         add_school.init();
@@ -18,6 +15,7 @@ $(function () {
         join_v_school.init();
         //window.setTimeout(function(){getInfo();},5000);
         fix_height.init('#main');
+        add_other_school.init();
         $(window).on('resize', function () {
             fix_height.init('#main');
         });
@@ -381,7 +379,34 @@ $(function () {
             //开启学校选择
             school_select.init('#add-school', space);
         }
-    }
+    };
+
+    var add_other_school = {
+        init: function () {
+            $('#add-other-school').find('.apply-submit').on('click',function(){
+                var _self = $(this);
+                var text = $('#add-other-school').find('input').val();
+                var option = {
+                    url: '/user/add_school',
+                    dataType: 'json',
+                    type: 'post',
+                    data: {type: SCHOOL_DATA.type, district: SCHOOL_DATA.district, school: text},
+                    success: function (data) {
+                        if (data[0]) {
+                            alert('学校添加成功！');
+                        } else {
+                            alert(data[1]);
+                        }
+                    },
+                    complete: function () {
+                        _self.text(old);
+                        _self.prop({'disabled': false});
+                    }
+                };
+                $.ajax(option);
+            });
+        }
+    };
 
     action();
 
@@ -415,6 +440,7 @@ $(function () {
                     console.log(EVENT_DATA);
                     if (data[0]) {
                         alert('退出比赛成功！');
+                        window.location.reload();
                     } else {
                         alert('退出失败！');
                     }
@@ -435,6 +461,7 @@ $(function () {
         var user_id = $('#currentUser').attr('data-userId');
         var target = $('.apply-member').find('tbody');
         target.empty();
+
         $.each(EVENT_DATA[ed].team_info, function (k, v) {
             var tr = $('<tr>');
             var tName = '<td>' + v.username + '</td>';
@@ -727,6 +754,7 @@ $(function () {
                 $('#add-other-school').modal('show');
             }
         });
+
         //开启学校选择
         school_select.init('#add-school', space);
         //提交
@@ -744,8 +772,26 @@ $(function () {
             }
             send_confirm(data, function (result) {
                 if (result[0]) {
-                    space.removeClass('active');
-                    single_join(ed);
+                    var data = space.find('form').serialize();
+                    data += '&team_name=' + $('#currentUser').attr('data-userName');
+                    data += '&team_event=' + ed;
+                    data += '&team_district=' + space.find('input[name="district"]').val();
+                    if (SCHOOL_DATA[0]) {
+                        data += '&sd=' + SCHOOL_DATA[0];
+                        if (SCHOOL_DATA[1]) {
+                            data += '&skd=' + SCHOOL_DATA[1];
+                        }
+                    }
+                    create_team(data, function (result) {
+                        if (result[0]) {
+                            alert('报名成功！');
+                            window.location.reload();
+                        } else {
+                            alert(result[1]);
+                        }
+                    }, function () {
+                        _self.text(old).prop({'disabled': false});
+                    });
                 } else {
                     alert(result[1]);
                 }
@@ -755,6 +801,7 @@ $(function () {
         });
     }
 
+    //标签初始化
     function init_tag() {
         //取消所有版块显示
         $('.apply-part').removeClass('active');
@@ -777,37 +824,6 @@ $(function () {
         $.ajax(option);
     }
 
-    //单人报名
-    function single_join(ed) {
-        var space = $('.single-join');
-        space.addClass('active');
-        space.find('.apply-submit').on('click', function (event) {
-            event.preventDefault();
-            var _self = $(this);
-            var old = _self.text();
-            _self.text('提交中').prop({'disabled': true});
-            var data = space.find('form').serialize();
-            data += '&team_name=' + $('#currentUser').attr('data-userName');
-            data += '&team_event=' + ed;
-            if (SCHOOL_DATA[0]) {
-                data += '&sd=' + SCHOOL_DATA[0];
-                if (SCHOOL_DATA[1]) {
-                    data += '&skd=' + SCHOOL_DATA[1];
-                }
-            }
-            create_team(data, function (result) {
-                if (result[0]) {
-                    alert('报名成功！');
-                    window.location.reload();
-                } else {
-                    alert(result[1]);
-                }
-            }, function () {
-                _self.text(old).prop({'disabled': false});
-            });
-        })
-    }
-
     //创建队伍
     function create_team(data, success, complete) {
         var option = {
@@ -824,6 +840,4 @@ $(function () {
         };
         $.ajax(option);
     }
-
-
 });
