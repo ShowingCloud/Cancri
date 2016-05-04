@@ -15,6 +15,8 @@ Rails.application.routes.draw do
       post :leader_agree_apply
       post :delete_team
       post :leader_delete_player
+      post :player_cancel_join
+      post :leader_deal_cancel_team
       post :already_apply
     end
   end
@@ -98,6 +100,9 @@ Rails.application.routes.draw do
     get '/checks/teacher_list' => 'checks#teacher_list'
     get '/checks/referee_list' => 'checks#referee_list'
     get '/checks/referees' => 'checks#referees'
+    get '/checks/points' => 'checks#points'
+    get '/checks/point_list' => 'checks#point_list'
+    post '/checks/audit_point' => 'checks#audit_point'
     post '/checks/review_teacher' => 'checks#review_teacher'
     post '/checks/review_referee' => 'checks#review_referee'
 
@@ -164,6 +169,7 @@ Rails.application.routes.draw do
   match 'user/comp' => 'user#comp', as: 'user_comp', via: [:get]
   match 'user/consult' => 'user#consult', as: 'user_consult', via: [:get, :post]
   match 'user/point' => 'user#point', as: 'user_point', via: [:get, :post]
+  match 'user/add_point' => 'user#add_point', as: 'user_add_point', via: [:get, :post]
   match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get]
   get '/user/notify' => 'user#notify_show'
   match '/user/agree_invite_info' => 'user#agree_invite_info', via: [:post]

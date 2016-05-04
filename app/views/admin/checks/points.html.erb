@@ -1,7 +1,7 @@
 <h1 class="page-header">
   待审核积分列表
   <small class="pull-right">
-    <a href="/admin/checks/teacher_list" class="btn btn-default" title="待审核裁判">
+    <a href="/admin/checks/point_list" class="btn btn-default" title="积分列表">
       积分列表</a>
   </small>
 </h1>
@@ -21,13 +21,19 @@
 
       <tbody>
       <% @points.each do |th| %>
-          <tr>
+          <tr id="audit-point-<%= th.id %>">
             <td><%= th.username %></td>
             <td><%= th.host_year %></td>
             <td><%= th.name %></td>
             <td><%= th.prize_name %></td>
             <td><%= th.point %></td>
-            <td><%= image_tag(th.cover_url(:middle)) if th.cover.present? %></td>
+            <td class="ace-thumbnails">
+              <% if th.cover.present? %>
+                  <a href="<%= th.cover_url %>" title="<%= th.username %>" data-rel="colorbox">
+                    证书
+                  </a>
+              <% end %>
+            </td>
             <td>
               <a href="#modal-form" role="button" data-toggle="modal" data-id="<%= th.id %>" class="btn btn-xs btn-warning audit-user-point">
                 审核

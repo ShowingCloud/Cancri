@@ -99,11 +99,20 @@ class Admin::ChecksController < AdminController
     @points = UserPoint.joins(:prize).joins('inner join user_profiles u_p on u_p.user_id = user_points.user_id').where(is_audit: 0).select(:id, :is_audit, :cover, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize as prize_name', 'u_p.username').page(params[:page]).per(params[:per])
   end
 
+  def point_list
+    u_p = UserPoint.joins(:prize).joins('inner join user_profiles u_p on u_p.user_id = user_points.user_id').where(is_audit: 1)
+    if params[:audit_status].present?
+      @point_list = u_p.where(status: params[:audit_status]).select(:id, :is_audit, :status, :cover, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize as prize_name', 'u_p.username').page(params[:page]).per(params[:per])
+    else
+      @point_list = u_p.select(:id, :is_audit, :status, :cover, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize as prize_name', 'u_p.username').page(params[:page]).per(params[:per])
+    end
+  end
+
   def audit_point
     if params[:status].present? && params[:upd].present?
       u_p = UserPoint.find(params[:upd])
       if u_p.present?
-        if u_p.update_attributes(is_audit: true)
+        if u_p.update_attributes(is_audit: true, status: params[:status])
           result = [true, '审核成功']
         else
           result = [false, '审核失败']
