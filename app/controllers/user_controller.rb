@@ -244,14 +244,27 @@ class UserController < ApplicationController
   def notify_show
     @notification = current_user.notifications.where(id: params[:id]).take
 
-    if @notification.present? && @notification.t_u_id.present? && !TeamUserShip.exists?(@notification.t_u_id.to_i)
-      @has_agree = 2
-    elsif @notification.present? && @notification.t_u_id.present? && TeamUserShip.find(@notification.t_u_id.to_i).status
-      @has_agree = true
-    else
-      @has_agree = false
+    if @notification.present? && @notification.message_type=='申请加入队伍'
+      if @notification.t_u_id.present? && !TeamUserShip.exists?(@notification.t_u_id.to_i)
+        @has_agree = 2
+      elsif @notification.t_u_id.present? && TeamUserShip.find(@notification.t_u_id.to_i).status
+        @has_agree = true
+      else
+        @has_agree = false
+      end
     end
-    @event= Event.joins(:teams, :team_user_ships).where("teams.id=?", 1).where("events.id=teams.event_id").where("teams.id=team_user_ships.team_id").where("team_user_ships.user_id=?", current_user.id).select(:id, :status, "team_user_ships.status as invited").first
+
+    if @notification.present? && @notification.message_type=='申请退出队伍'
+      if @notification.t_u_id.present? && !TeamUserShip.exists?(@notification.t_u_id.to_i)
+        @has_agree = 2 ## 已同意退出
+      else
+        @has_agree = false
+      end
+    end
+
+    if @notification.team_id.present?
+      @event= Event.joins(:teams, :team_user_ships).where("teams.id=?", @notification.team_id).where("events.id=teams.event_id").where("teams.id=team_user_ships.team_id").where("team_user_ships.user_id=?", current_user.id).select(:id, :status, "team_user_ships.status as invited").first
+    end
   end
 
   def agree_invite_info

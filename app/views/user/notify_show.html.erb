@@ -73,8 +73,20 @@
                           <%= link_to "#{leader_agree_apply_competitions_path}?tud=#{@notification.t_u_id.to_s}&nd=#{params[:id]}", data: {confirm: '确认同意加入吗?', method: :post}, title: '同意加入', class: 'btn btn-xs btn-primary' do %>
                               同意加入
                           <% end %>
-                          <%= link_to "#{leader_agree_apply_competitions_path}?tud=#{@notification.t_u_id.to_s}&nd=#{params[:id]}&reject=1", data: {confirm: '确认拒绝加入吗?', method: :post}, title: '同意加入', class: 'btn btn-xs btn-danger' do %>
+                          <%= link_to "#{leader_agree_apply_competitions_path}?tud=#{@notification.t_u_id.to_s}&nd=#{params[:id]}&reject=1", data: {confirm: '确认拒绝加入吗?', method: :post}, title: '拒绝加入', class: 'btn btn-xs btn-danger' do %>
                               拒绝加入
+                          <% end %>
+                      <% end %>
+                  <% elsif @notification.message_type=='申请退出队伍' && @notification.t_u_id.present? && @event.status==0 %>
+                      <%= @notification.content %>
+                      <% if @has_agree==2 %>
+                          <label class="label label-danger">已同意退出</label>
+                      <% else %>
+                          <%= link_to "#{leader_deal_cancel_team_competitions_path}?tud=#{@notification.t_u_id.to_s}&nd=#{params[:id]}", data: {confirm: '确认同意退出吗?', method: :post}, title: '同意退出', class: 'btn btn-xs btn-primary' do %>
+                              同意退出
+                          <% end %>
+                          <%= link_to "#{leader_deal_cancel_team_competitions_path}?tud=#{@notification.t_u_id.to_s}&nd=#{params[:id]}&reject=1", data: {confirm: '确认拒绝退出吗?', method: :post}, title: '拒绝退出', class: 'btn btn-xs btn-danger' do %>
+                              拒绝退出
                           <% end %>
                       <% end %>
                   <% else %>

@@ -70,6 +70,11 @@ $(function () {
         });
 
     });
+    //切换积分审核状态
+    $('#change-point-list').on('change', function () {
+        var audit_status = $('#change-point-list option:selected').val();
+        window.location = '/admin/checks/point_list?audit_status=' + audit_status;
+    });
     // 教师审核
     $(".teacher-apply-status [name='teacher-apply']").on('click', function () {
         var status = $(".teacher-apply-status [name='teacher-apply']:checked").val();

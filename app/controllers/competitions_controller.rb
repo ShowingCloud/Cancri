@@ -275,6 +275,33 @@ class CompetitionsController < ApplicationController
     end
   end
 
+  def leader_deal_cancel_team
+    if params[:tud].present?
+      t_u = TeamUserShip.includes(:team).find(params[:tud])
+      if t_u.present? && t_u.team.user_id != current_user.id
+        flash[:error] = '非法请求'
+      else
+        info = Team.joins(:event).where(id: t_u.team_id).where("teams.event_id=events.id").select("teams.name as team_name", "events.name as event_name").first
+        if params[:reject].present? && params[:reject]=='1'
+          notify = Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长拒绝了你的退出申请，您未能退出该队', message_type: '拒绝申请')
+          if notify.save
+            flash[:success] = '拒绝成功,结果已告知该队员'
+            redirect_to "/user/notify?id=#{params[:nd]}"
+          else
+            flash[:error] = '拒绝成功,结果未能告知该用户'
+          end
+        else
+          if t_u.delete
+            Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长同意了你的申请，您已成功退出该队', message_type: '同意申请')
+            flash[:success] = '同意退出成功'
+            redirect_to "/user/notify?id=#{params[:nd]}"
+          else
+            flash[:error] = '同意申请失败'
+          end
+        end
+      end
+    end
+  end
 
   def delete_team
     team = Team.find(params[:id])
@@ -299,6 +326,27 @@ class CompetitionsController < ApplicationController
       result = [true, '清退成功!']
     else
       result = [false, '清退失败!']
+    end
+    render json: result
+  end
+
+  def player_cancel_join
+    td = params[:td].to_i
+    username = params[:username]
+    if request.method == 'POST' && td!=0 && params[:username].present?
+      team = TeamUserShip.joins(:team).where(team_id: params[:td], user_id: current_user.id).select(:id, :team_id, :user_id, 'teams.name', 'teams.user_id as leader')
+      if team.present?
+        notify = Notification.create(user_id: team.leader, content: username+'申请退出队伍：'+team.name, t_u_id: team.id, team_id: team.team_id, message_type: '申请退出队伍', reply_to: team.user_id)
+        if notify.save
+          result = [true, '已向队长发出申请，队长审核后将通过消息通知您']
+        else
+          result = [false, '申请失败']
+        end
+      else
+        result = [false, '队伍不存在']
+      end
+    else
+      result = [false, '参数不完整']
     end
     render json: result
   end
