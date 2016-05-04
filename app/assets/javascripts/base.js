@@ -16,6 +16,7 @@ $(function () {
         //window.setTimeout(function(){getInfo();},5000);
         fix_height.init('#main');
         add_other_school.init();
+        invitation.init();
         $(window).on('resize', function () {
             fix_height.init('#main');
         });
@@ -174,20 +175,6 @@ $(function () {
                     }
                 })
             }
-        }
-    };
-
-    var school_select = {
-        init: function (selector, space) {
-            var select1 = $(selector).find('.group');
-            var select2 = $(selector).find('.district');
-            select1.on('change', function () {
-                get_school(select1, select2, space);
-            });
-
-            select2.on('change', function () {
-                get_school(select1, select2, space);
-            });
         }
     };
 
@@ -376,16 +363,15 @@ $(function () {
                     $('#add-other-school').modal('show');
                 }
             });
-            //开启学校选择
-            school_select.init('#add-school', space);
         }
     };
 
     var add_other_school = {
-        init: function () {
-            $('#add-other-school').find('.apply-submit').on('click',function(){
+        init: function (space) {
+            $('#add-other-school').find('.apply-submit').on('click', function () {
                 var _self = $(this);
                 var text = $('#add-other-school').find('input').val();
+                console.log(SCHOOL_DATA);
                 var option = {
                     url: '/user/add_school',
                     dataType: 'json',
@@ -394,6 +380,12 @@ $(function () {
                     success: function (data) {
                         if (data[0]) {
                             alert('学校添加成功！');
+                            $('#add-other-school').modal('hide');
+                            var inner_text = SCHOOL_DATA.typeName + '-' + SCHOOL_DATA.districtName + '-' + text;
+                            space.find('.school-target').prepend('<div class="edit-school">' + inner_text + '</div>');
+                            SCHOOL_DATA.push(data[2]);
+                            $('#add-school').find('.items').empty();
+                            $('#school-list').modal('hide');
                         } else {
                             alert(data[1]);
                         }
@@ -405,6 +397,79 @@ $(function () {
                 };
                 $.ajax(option);
             });
+        }
+    };
+
+    var invitation = {
+        init: function () {
+            var a = $('.btn-invitation');
+            if (a.length > 0) {
+                a.on('click', function () {
+                    var e = $('.invitation-email').val();
+                    var tName = $('.apply-team-name').text();
+                    var eName = $('.event-name').text();
+                    var reg = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})+$/;
+                    if (reg.test(e)) {
+                        var option = {
+                            url: 'leader_invite_player',
+                            type: 'post',
+                            dataType: 'json',
+                            data: {
+                                team_name: tName,
+                                event_name: eName,
+                                td: EVENT_DATA.td,
+                                ed: EVENT_DATA.ed,
+                                invited_email: e
+                            },
+                            success: function (data) {
+                                if (data[0]) {
+                                    alert(data[1]);
+                                } else {
+                                    alert(data[1]);
+                                }
+                            },
+                            complete: function () {
+                            }
+                        };
+                        $.ajax(option);
+                    } else {
+                        alert('请输入正确的邮箱格式！');
+                    }
+                })
+            }
+            var b = $('.invitation-text');
+            if (b.length > 0) {
+                b.on('keyup', function () {
+                    var _self = $(this);
+                    var name = _self.val();
+                    var reg = /[\u4e00-\u9fa5]{2,}/;
+                    if (reg.test(name)) {
+                        var option = {
+                            url: 'search_user',
+                            dataType: 'json',
+                            data: {invited_name: name},
+                            type: 'get',
+                            success: function (result) {
+                                if (result[0]) {
+                                    var div = $('<div class="user-list"></div>');
+                                    $.each(result[1], function (k, v) {
+                                        div.append('<div class="user-info" data-id="' + v.id + '">' + v.username + '</div>')
+                                    });
+                                    var p = _self.parent();
+                                    p.append(div);
+                                    $('.user-info').on('click',function(){
+                                        p.find('.user-list').remove();
+                                        $('.hidden-invitation-id').val($(this).attr('data-id'));
+                                    });
+                                } else {
+                                    alert(result[1]);
+                                }
+                            }
+                        };
+                        $.ajax(option);
+                    }
+                })
+            }
         }
     };
 
@@ -565,40 +630,12 @@ $(function () {
         $.ajax(option);
     }
 
-    //邀请队员
-    function invitation_member(td, tName, ed, eName, obj, old) {
-        var e = $('.invitation-email').val();
-        var reg = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})+$/;
-        if (reg.test(e)) {
-            var option = {
-                url: 'leader_invite_player',
-                type: 'post',
-                dataType: 'json',
-                data: {team_name: tName, event_name: eName, td: td, ed: ed, invited_email: e},
-                success: function (data) {
-                    if (data[0]) {
-                        alert(data[1]);
-                    } else {
-                        alert(data[1]);
-                    }
-                },
-                complete: function () {
-                    obj.text(old).prop({'disabled': false});
-                }
-            };
-            $.ajax(option);
-        } else {
-            obj.text(old).prop({'disabled': false});
-            alert('请输入正确的邮箱格式！');
-        }
-    }
-
     //获取学校
-    function get_school(s1, s2, space) {
-        var val1 = s1.val();
-        var val2 = s2.val();
-        var group = s1.find('option[value=' + val1 + ']').text();
-        var district = s2.find('option[value=' + val2 + ']').text();
+    function get_school(space) {
+        var val1 = SCHOOL_DATA.type;
+        var val2 = SCHOOL_DATA.district;
+        var group = SCHOOL_DATA.typeName;
+        var district = SCHOOL_DATA.districtName;
         if (val1 != 0 && val2 != 0) {
             var option = {
                 url: '/api/v1/users/school',
@@ -680,15 +717,46 @@ $(function () {
             space = $('.create-team');
             space.addClass('active');
             space.find('.open-school').on('click', function () {
+                SCHOOL_DATA.type = space.find('input[name="group"]').val();
+                if (!SCHOOL_DATA.type) {
+                    return alert('请选择组别');
+                }
+                SCHOOL_DATA.typeName = space.find('select[data-select-target="group"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+                SCHOOL_DATA.district = space.find('input[name="district"]').val();
+                if (!SCHOOL_DATA.district) {
+                    return alert('请选择区县');
+                }
+                SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
                 var length = $('.edit-school').length;
                 if (length == 2) {
                     alert('学校已满，无法继续添加！');
                 } else {
-
+                    get_school(space);
                     $('#school-list').modal('show');
                 }
             });
-            school_select.init('#add-school', space);
+
+            space.find('.add-other-school').on('click', function () {
+                SCHOOL_DATA.type = space.find('input[name="group"]').val();
+                if (!SCHOOL_DATA.type) {
+                    return alert('请选择组别');
+                }
+                SCHOOL_DATA.typeName = space.find('select[data-select-target="group"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+                SCHOOL_DATA.district = space.find('input[name="district"]').val();
+                if (!SCHOOL_DATA.district) {
+                    return alert('请选择区县');
+                }
+                SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+                var length = $('.edit-school').length;
+                if (length == 2) {
+                    alert('学校已满，无法继续添加！');
+                } else {
+                    $('#add-other-school').modal('show');
+                }
+            });
+
+            //开启添加学校
+            add_other_school.init(space);
 
             space.find('.apply-submit').on('click', function (event) {
                 event.preventDefault();
@@ -738,15 +806,36 @@ $(function () {
         var space = $('.single-confirm');
         space.addClass('active');
         space.find('.open-school').on('click', function () {
+            SCHOOL_DATA.type = space.find('input[name="group"]').val();
+            if (!SCHOOL_DATA.type) {
+                return alert('请选择组别');
+            }
+            SCHOOL_DATA.typeName = space.find('select[data-select-target="group"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+            SCHOOL_DATA.district = space.find('input[name="district"]').val();
+            if (!SCHOOL_DATA.district) {
+                return alert('请选择区县');
+            }
+            SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
             var length = $('.edit-school').length;
             if (length == 2) {
                 alert('学校已满，无法继续添加！');
             } else {
+                get_school(space);
                 $('#school-list').modal('show');
             }
         });
 
         space.find('.add-other-school').on('click', function () {
+            SCHOOL_DATA.type = space.find('input[name="group"]').val();
+            if (!SCHOOL_DATA.type) {
+                return alert('请选择组别');
+            }
+            SCHOOL_DATA.typeName = space.find('select[data-select-target="group"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+            SCHOOL_DATA.district = space.find('input[name="district"]').val();
+            if (!SCHOOL_DATA.district) {
+                return alert('请选择区县');
+            }
+            SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
             var length = $('.edit-school').length;
             if (length == 2) {
                 alert('学校已满，无法继续添加！');
@@ -755,8 +844,8 @@ $(function () {
             }
         });
 
-        //开启学校选择
-        school_select.init('#add-school', space);
+        //开启添加学校
+        add_other_school.init(space);
         //提交
         space.find('.apply-submit').on('click', function (event) {
             event.preventDefault();
