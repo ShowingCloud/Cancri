@@ -45,7 +45,7 @@
             <li>
               <a href="<%= p.image_url %>" title="Photo Title" data-rel="colorbox">
                 <%= image_tag(p.image_url(:middle), size: '200x200') %>
-                <% if p.status==1 %>
+                <% if p.status %>
                     <div class="tags" style="top:-2px">
                     <span class="label-holder">
                         <span class="label label-warning arrowed-in">显示</span>
