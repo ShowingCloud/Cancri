@@ -78,10 +78,12 @@ class CompetitionsController < ApplicationController
     if /\A[\u4e00-\u9fa5]{2,4}\Z/.match(username)==nil
       status = false
       message= '姓名为2-4位中文'
-    elsif group==3 && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(identity_card) == nil
-      status = false
-      message = '高中生请正确填写18位身份证号'
     elsif username.present? && school !=0 && grade.present? && gender !=0 && district != 0 && student_code.present? && bj.present? && birthday.present? && group !=0
+      unless group==3 && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(identity_card) != nil
+        status = false
+        message = '高中生请正确填写18位身份证号'
+        return false
+      end
       user = UserProfile.find_by(user_id: current_user.id)
       if user.present?
         user.username = username
