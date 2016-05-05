@@ -199,7 +199,7 @@ class CompetitionsController < ApplicationController
 
   def search_user
     if request.method == 'GET' && params[:invited_name].present? && params[:invited_name].length>1
-      users = User.joins(:user_profile).joins('inner join schools s on s.id = user_profiles.school').where(['user_profiles.username like ?', "#{params[:invited_name]}%"]).where('email is not NULL').where(validate_status: '1').select(:email, :id, 'user_profiles.username', 's.name', 'user_profiles.gender', 'user_profiles.grade', 'user_profiles.bj')
+      users = User.joins(:user_profile).joins('inner join schools s on s.id = user_profiles.school').where(['user_profiles.username like ?', "#{params[:invited_name]}%"]).where('email is not NULL').where(validate_status: '1').select(:email, :id, :nickname, 'user_profiles.username', 's.name', 'user_profiles.gender', 'user_profiles.grade', 'user_profiles.bj', 'user_profiles.age')
       result = [true, users]
     else
       result = [false, '请至少输入名字的前两个字']
@@ -229,10 +229,8 @@ class CompetitionsController < ApplicationController
         if has_invited
           render json: [false, '已被邀请，请不要重复邀请']
         else
-          puts '123qwe'
           invite_action = Invite.create!(email: params[:invited_email], code: code, invite_type: 'LEADER_INVITE', user_id: current_user.id, team_id: params[:td])
           if invite_action.save
-            puts '1qas'
             status = UserMailer.leader_invite_player(current_user.user_profile.username, params[:invited_email], code, params[:event_name], params[:team_name], params[:td]).deliver
             if status
               render json: [true, '邀请已经发送到'+params[:invited_email].to_s]
