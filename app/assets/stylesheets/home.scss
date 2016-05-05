@@ -1616,6 +1616,7 @@ ul {
   position: relative;
   margin-left: 200px;
   text-align: center;
+  position: relative;
 }
 
 .already-apply .apply-team .apply-row .apply-row-right .add {
@@ -1625,6 +1626,26 @@ ul {
   bottom: -12px;
   display: block;
   text-align: center;
+}
+
+.already-apply .apply-team .apply-row .apply-row-right .user-list{
+  position: absolute;
+  border: 1px solid #8B9F95;
+  background: #4ABAC5;
+  padding: 2px;
+  left: 70px;
+  top: 25px;
+  z-index: 100;
+  color: #000;
+  text-align: left;
+}
+.already-apply .apply-team .apply-row .apply-row-right .user-list .user-info{
+  cursor: pointer;
+  padding: 4px 20px;
+}
+
+.already-apply .apply-team .apply-row .apply-row-right .user-list .user-info:hover {
+  background: #88D5EC;
 }
 
 .already-apply .apply-member {
@@ -1810,13 +1831,12 @@ ul {
   border-radius: 5px;
 }
 
-.invitation-email {
+.invitation-email, .invitation-text {
   border: none;
   outline: none;
   background: #4ABAC5;
   padding: 2px 8px;
   color: #FFFFFF;
-
 }
 
 .reset-pwd-email, .reset-pwd-mobile, .reset-pwd {
@@ -2522,4 +2542,20 @@ ul {
   outline: none;
   background: transparent;
   border-radius: 5px;
+}
+
+.btn-add-team-member {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  outline: none;
+  background: transparent;
+  border-radius: 5px;
+}
+
+.open-school {
+  cursor: pointer;
+}
+
+.add-other-school {
+  cursor: pointer;
 }
