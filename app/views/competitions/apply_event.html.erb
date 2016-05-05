@@ -61,18 +61,35 @@
                   </div>
                   <div class="input-row">
                     <div class="input-t">
+                      <i class="glyphicon glyphicon-calendar"></i>
+                      生&nbsp;&nbsp;&nbsp;&nbsp;日
+                    </div>
+                    <div class="input-c">
+                      <input class="input-b" type="date" name="birthday"/>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
                       <i class="glyphicon glyphicon-globe"></i>
                       所属组别
                     </div>
                     <div class="input-c">
-                      <select data-select-target="group">
+                      <select data-select-target="group" class="group-choice">
                         <option value="0">选择组别</option>
                         <option value="1">小学</option>
                         <option value="2">初中</option>
                         <option value="3">高中</option>
-                        <option value="4">大学</option>
                       </select>
                       <input type="hidden" name="group"/>
+                    </div>
+                  </div>
+                  <div class="input-row hide idc-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-credit-card"></i>
+                      身份证
+                    </div>
+                    <div class="input-c">
+                      <input class="input-b" type="text" name="identity_card"/>
                     </div>
                   </div>
                   <div class="input-row">
@@ -186,30 +203,65 @@
                 <div class="info-row">
                   <div class="row-l">
                     <i class="glyphicon glyphicon-user"></i>
-                    姓名
+                    真实姓名
                   </div>
                   <div class="row-r" data-name="username"></div>
                 </div>
                 <div class="info-row">
                   <div class="row-l">
                     <i class="glyphicon glyphicon-adjust"></i>
-                    性别
+                    性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别
                   </div>
                   <div class="row-r" data-name="gender"></div>
                 </div>
                 <div class="info-row">
                   <div class="row-l">
                     <i class="glyphicon glyphicon-education"></i>
-                    学校
+                    所属学校
                   </div>
                   <div class="row-r" data-name="school"></div>
                 </div>
                 <div class="info-row">
                   <div class="row-l">
                     <i class="glyphicon glyphicon-bookmark"></i>
-                    年级
+                    年级班级
                   </div>
                   <div class="row-r" data-name="grade"></div>
+                </div>
+                <div class="info-row">
+                  <div class="row-l">
+                    <i class="glyphicon glyphicon-bookmark"></i>
+                    参赛编号
+                  </div>
+                  <div class="row-r" data-name="code"></div>
+                </div>
+                <div class="info-row">
+                  <div class="row-l">
+                    <i class="glyphicon glyphicon-bookmark"></i>
+                    指导老师
+                  </div>
+
+                </div>
+                <div class="info-row">
+                  <div class="row-l">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    姓名
+                  </div>
+                  <div class="row-r" data-name="teacher"></div>
+                </div>
+                <div class="info-row">
+                  <div class="row-l">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    电话
+                  </div>
+                  <div class="row-r" data-name="teacher_mobile"></div>
+                </div>
+                <div class="info-row">
+                  <div class="row-l">
+                    <i class="glyphicon glyphicon-qrcode"></i>
+                    二维码
+                  </div>
+                  <div class="row-r" data-name="qrcode"></div>
                 </div>
               </div>
               <div class="single-exit">
@@ -284,6 +336,39 @@
                     <div class="input-c">
                       <label class="radio-b"><input type="radio" name="gender" value="1"/>男</label>
                       <label class="radio-b"><input type="radio" name="gender" value="2"/>女</label>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-calendar"></i>
+                      生&nbsp;&nbsp;&nbsp;&nbsp;日
+                    </div>
+                    <div class="input-c">
+                      <input class="input-b" type="date" name="birthday"/>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-globe"></i>
+                      所属组别
+                    </div>
+                    <div class="input-c">
+                      <select data-select-target="group" class="group-choice">
+                        <option value="0">选择组别</option>
+                        <option value="1">小学</option>
+                        <option value="2">初中</option>
+                        <option value="3">高中</option>
+                      </select>
+                      <input type="hidden" name="group"/>
+                    </div>
+                  </div>
+                  <div class="input-row hide idc-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-credit-card"></i>
+                      身份证
+                    </div>
+                    <div class="input-c">
+                      <input class="input-b" type="text" name="identity_card"/>
                     </div>
                   </div>
                   <div class="input-row">
@@ -407,17 +492,11 @@
                   </div>
                   <div class="input-row">
                     <div class="input-t">
-                      <i class="glyphicon glyphicon-globe"></i>
-                      区&nbsp;&nbsp;&nbsp;&nbsp;县
+                      <i class="glyphicon glyphicon-calendar"></i>
+                      生&nbsp;&nbsp;&nbsp;&nbsp;日
                     </div>
                     <div class="input-c">
-                      <select data-select-target="district">
-                        <option value="0">选择区县</option>
-                        <% District.all.each do |d| %>
-                            <option value="<%= d.id %>"><%= d.name %></option>
-                        <% end %>
-                      </select>
-                      <input type="hidden" name="district"/>
+                      <input class="input-b" type="date" name="birthday"/>
                     </div>
                   </div>
                   <div class="input-row">
@@ -435,6 +514,31 @@
                       <input type="hidden" name="group"/>
                     </div>
                   </div>
+                  <div class="input-row hide idc-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-credit-card"></i>
+                      身份证
+                    </div>
+                    <div class="input-c">
+                      <input class="input-b" type="text" name="identity_card"/>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <div class="input-t">
+                      <i class="glyphicon glyphicon-globe"></i>
+                      区&nbsp;&nbsp;&nbsp;&nbsp;县
+                    </div>
+                    <div class="input-c">
+                      <select data-select-target="district">
+                        <option value="0">选择区县</option>
+                        <% District.all.each do |d| %>
+                            <option value="<%= d.id %>"><%= d.name %></option>
+                        <% end %>
+                      </select>
+                      <input type="hidden" name="district"/>
+                    </div>
+                  </div>
+
                   <div class="input-row">
                     <div class="input-t">
                       <i class="glyphicon glyphicon-tag"></i>

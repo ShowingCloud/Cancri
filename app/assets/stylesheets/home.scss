@@ -534,6 +534,7 @@ ul {
 
 #honor .sec-c .tabs-c .items .item .place-body p {
   margin-bottom: 4px;
+  font-size: 18px;
 }
 
 #honor .sec-c .tabs-c .items .item .place-separator {
@@ -585,6 +586,11 @@ ul {
   background: transparent center center;
   padding: 20px;
   margin: 0 auto;
+}
+
+#user-display .sec-c .video-item img{
+  width: 220px;
+  height: 156px;
 }
 
 #user-display .sec-c .video-title {
@@ -1628,20 +1634,22 @@ ul {
   text-align: center;
 }
 
-.already-apply .apply-team .apply-row .apply-row-right .user-list{
+.already-apply .apply-team .apply-row .apply-row-right .user-list {
   position: absolute;
   border: 1px solid #8B9F95;
   background: #4ABAC5;
   padding: 2px;
-  left: 70px;
+  left: 20px;
   top: 25px;
   z-index: 100;
-  color: #000;
+  color: #fff;
   text-align: left;
 }
-.already-apply .apply-team .apply-row .apply-row-right .user-list .user-info{
+
+.already-apply .apply-team .apply-row .apply-row-right .user-list .user-info {
   cursor: pointer;
   padding: 4px 20px;
+  color: #FFFFFF;
 }
 
 .already-apply .apply-team .apply-row .apply-row-right .user-list .user-info:hover {
@@ -2124,13 +2132,13 @@ ul {
 }
 
 .single-already-info .single-info .info-row .row-l {
-  width: 100px;
+  width: 130px;
   float: left;
   text-align: right;
 }
 
 .single-already-info .single-info .info-row .row-r {
-  margin-left: 120px;
+  margin-left: 150px;
 }
 
 .single-already-info .single-exit {
@@ -2420,6 +2428,16 @@ ul {
   line-height: 20px;
 }
 
+.apply-part .input-row .edit-school i {
+  cursor: pointer;
+  margin-left: 12px;
+  color: #337ab7;
+}
+
+.apply-part .input-row .edit-school i:hover {
+
+}
+
 .apply-part .create-c .input-row .input-t {
   width: 100px;
   float: left;
@@ -2558,4 +2576,17 @@ ul {
 
 .add-other-school {
   cursor: pointer;
+}
+
+.demeanor-year {
+  font-size: 14px;
+  background: #4688A0;
+  color: #88D5EC;
+  width: 160px;
+  height: 24px;
+  line-height: 14px;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  margin: 20px 60px;
 }
