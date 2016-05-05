@@ -114,7 +114,7 @@ class Admin::PhotosController < AdminController
   end
 
   def photo_param
-    params.require(:photo).permit(:competition_id, :image, :sort, :desc, :status)
+    params.require(:photo).permit!
   end
 
 end

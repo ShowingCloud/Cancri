@@ -14,12 +14,16 @@ class UserController < ApplicationController
     if request.method == 'POST'
       if params[:user_profile].present?
         # 过滤Profile参数
-        profile_params = params.require(:user_profile).permit(:username, :school, :bj, :gender, :address, :teacher_no, :certificate, :grade, :autograph, {:roles => []}).tap do |list|
+        profile_params = params.require(:user_profile).permit(:username, :school, :bj, :gender, :birthday, :address, :teacher_no, :certificate, :grade, :autograph, {:roles => []}).tap do |list|
           if params[:user_profile][:roles].present? && params[:user_profile][:roles] != '教师'
             list[:roles] = params[:user_profile][:roles].join(',')
           else
             list[:roles] = nil
           end
+        end
+        unless ['高一', '高二', '高三'].include?(profile_params[:grade]) && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(profile_params[:identity_card]) != nil
+          flash[:error] = '高中生请正确填写18位身份证号'
+          return false
         end
         message = ''
         if profile_params[:roles].present? && profile_params[:roles].include?('教师')
@@ -27,11 +31,13 @@ class UserController < ApplicationController
             flash[:error] = '选择教师身份时，请填写姓名、学校、教师编号、和上传教师证件'
             return false
           end
-          th_role = UserRole.create!(user_id: current_user.id, role_id: 1) # 教师
-          if th_role.save
-            message = '您的老师身份已提交审核，审核通过后会在［消息］中告知您！'
-          else
-            message
+          unless UserRole.where(user_id: current_user.id, role_id: 1).exists?
+            th_role = UserRole.create!(user_id: current_user.id, role_id: 1, status: false) # 教师
+            if th_role.save
+              message = '您的老师身份已提交审核，审核通过后会在［消息］中告知您！'
+            else
+              message
+            end
           end
         end
         if message=='-'
@@ -48,6 +54,7 @@ class UserController < ApplicationController
         @user_profile.grade = profile_params[:grade]
         @user_profile.bj = profile_params[:bj]
         @user_profile.age = profile_params[:age]
+        @user_profile.birthday = profile_params[:birthday]
         @user_profile.gender = profile_params[:gender].to_i
         @user_profile.address = profile_params[:address]
         @user_profile.roles = profile_params[:roles]

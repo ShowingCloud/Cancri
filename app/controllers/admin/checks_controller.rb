@@ -5,11 +5,11 @@ class Admin::ChecksController < AdminController
   end
 
   def teachers
-    @teachers = UserProfile.joins(:user_roles).where('user_roles.role_id=?', 1).where('user_roles.status is false').select(:id, :user_id, :username, :gender, :certificate, :school, :mobile, :teacher_no).page(params[:page]).per(params[:per])
+    @teachers = UserProfile.joins(:user_roles).joins('inner join schools s on user_profiles.school=s.id').where('user_roles.role_id=?', 1).where('user_roles.status is false').select(:id, :user_id, :username, :gender, :certificate, 's.name as school_name', :mobile, :teacher_no).page(params[:page]).per(params[:per])
     @teacher_array = @teachers.map { |c| {
         id: c.id,
         user_id: c.user_id,
-        school: c.school,
+        school: c.school_name,
         mobile: c.mobile,
         num: c.teacher_no,
         username: c.username,
@@ -21,6 +21,7 @@ class Admin::ChecksController < AdminController
   def review_teacher
     level = params[:level]
     status = params[:status].to_i
+    ud = params[:ud]
     if status.present?
       ur = UserRole.where(user_id: ud, role_id: 1).take
       if ur.present?
@@ -121,7 +122,7 @@ class Admin::ChecksController < AdminController
         result=[false, '审核对象不存在']
       end
     else
-      result =[false, '参数不完整1']
+      result =[false, '参数不完整']
     end
     render json: result
   end
