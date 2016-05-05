@@ -59,6 +59,7 @@ class CompetitionsController < ApplicationController
     username = params[:username]
     gender = params[:gender].to_i
     grade = params[:grade]
+    group = params[:group].to_i
     bj = params[:bj]
     birthday = params[:birthday]
     student_code = params[:student_code]
@@ -77,55 +78,52 @@ class CompetitionsController < ApplicationController
     if /\A[\u4e00-\u9fa5]{2,4}\Z/.match(username)==nil
       status = false
       message= '姓名为2-4位中文'
-    elsif username.present? && school !=0 && grade.present? && gender !=0 && district != 0 && student_code.present? && bj.present? && birthday.present?
-
-      if ['高一', '高二', '高三'].include?(grade) && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(identity_card) != nil
-        user = UserProfile.find_by(user_id: current_user.id)
-        if user.present?
-          user.username = username
-          user.gender = gender
-          user.school = school
-          user.sk_station = sk_station
-          user.grade = grade
-          user.birthday = birthday
-          user.bj = bj
-          user.student_code = student_code
-          user.district = district
-          user.identity_card = identity_card
-          if user.save
-            s = true
-            m = '个人信息确认成功'
-          else
-            s = false
-            m = '个人信息更新失败'
-          end
+    elsif group==3 && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(identity_card) == nil
+      status = false
+      message = '高中生请正确填写18位身份证号'
+    elsif username.present? && school !=0 && grade.present? && gender !=0 && district != 0 && student_code.present? && bj.present? && birthday.present? && group !=0
+      user = UserProfile.find_by(user_id: current_user.id)
+      if user.present?
+        user.username = username
+        user.gender = gender
+        user.school = school
+        user.sk_station = sk_station
+        user.grade = grade
+        user.birthday = birthday
+        user.bj = bj
+        user.student_code = student_code
+        user.district = district
+        user.identity_card = identity_card
+        if user.save
+          s = true
+          m = '个人信息确认成功'
         else
-          up = UserProfile.create!(user_id: current_user.id, username: username, gender: gender, school: school, grade: grade, bj: bj, student_code: student_code, district: district, identity_card: identity_card, birthday: birthday)
-          if up.save
-            s = true
-            m = '个人信息添加成功'
-          else
-            s = false
-            m = '个人信息添加失败'
-          end
-        end
-
-        if s && join
-          if td !=0 && ed !=0
-            result=self.apply_join_team(td, ed)
-            status = result[0]
-            message = result[1]
-          else
-            status = false
-            message = '队伍和项目相关信息不完整'
-          end
-        else
-          status = s
-          message= m
+          s = false
+          m = '个人信息更新失败'
         end
       else
-        status = false
-        message = '高中生请正确填写18位身份证号'
+        up = UserProfile.create!(user_id: current_user.id, username: username, gender: gender, school: school, grade: grade, bj: bj, student_code: student_code, district: district, identity_card: identity_card, birthday: birthday)
+        if up.save
+          s = true
+          m = '个人信息添加成功'
+        else
+          s = false
+          m = '个人信息添加失败'
+        end
+      end
+
+      if s && join
+        if td !=0 && ed !=0
+          result=self.apply_join_team(td, ed)
+          status = result[0]
+          message = result[1]
+        else
+          status = false
+          message = '队伍和项目相关信息不完整'
+        end
+      else
+        status = s
+        message= m
       end
     else
       status = false
