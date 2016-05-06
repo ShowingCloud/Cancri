@@ -37,7 +37,7 @@ class Admin::ChecksController < AdminController
           else
             th_level = '校级'
           end
-          Notification.create!(user_id: ur.user_id, content: '您的教师身份审核'+(status==1 ? '通过! 角色为'+th_level : '未通过!'), message_type: '审核结果')
+          Notification.create!(user_id: ur.user_id, content: '您的教师身份审核'+(status==1 ? '通过! 角色为'+th_level : '未通过!'), message_type: 5)
           result = [true, '操作成功，即将推送消息告知被审核用户']
         else
           result = [false, '操作失败']
@@ -63,7 +63,7 @@ class Admin::ChecksController < AdminController
       if ck.present?
         ck.status = status==1 ? true : false
         if ck.save
-          Notification.create!(user_id: ck.user_id, content: '您在'+ ck.name.to_s+'中的裁判身份审核'+(status==1 ? '通过!' : '未通过!'), message_type: '审核结果')
+          Notification.create!(user_id: ck.user_id, content: '您在'+ ck.name.to_s+'中的裁判身份审核'+(status==1 ? '通过!' : '未通过!'), message_type: 5)
           result = [true, '操作成功，即将推送消息告知被审核用户']
         else
           result = [false, '操作失败']

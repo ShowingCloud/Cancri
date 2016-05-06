@@ -143,7 +143,7 @@ class CompetitionsController < ApplicationController
         t_u = TeamUserShip.create!(event_id: ed, team_id: td, user_id: current_user.id, status: false)
         if t_u.save
           info = Team.joins(:event).where(id: td).where("teams.event_id=events.id").select("teams.name as team_name", "events.name as event_name").first
-          notify = Notification.create!(user_id: t_u.user_id, content: current_user.user_profile.username+'申请加入您在比赛项目－'+ info.event_name.to_s + '中创建的队伍－'+info.team_name, t_u_id: t_u.id, message_type: '申请加入队伍')
+          notify = Notification.create!(user_id: t_u.user_id, content: current_user.user_profile.username+'申请加入您在比赛项目－'+ info.event_name.to_s + '中创建的队伍－'+info.team_name, t_u_id: t_u.id, team_id: t_u.team_id, message_type: 2, reply_to: t_u.user_id)
           if notify.save
             [true, '申请成功，已向队长发出消息，等待队长同意']
           else
@@ -227,7 +227,7 @@ class CompetitionsController < ApplicationController
           render json: [false, '该用户已是该队队员或已被邀请']
         else
           TeamUserShip.create!(team_id: params[:td], user_id: user.id, event_id: params[:ed], status: false)
-          notify = Notification.create!(user_id: user.id, message_type: '队长邀请队员', content: current_user.user_profile.username.to_s+'邀请你参加'+params[:event_name]+'比赛项目,队伍为:'+params[:team_name], team_id: params[:td])
+          notify = Notification.create!(user_id: user.id, message_type: 1, content: current_user.user_profile.username.to_s+'邀请你参加'+params[:event_name]+'比赛项目,队伍为:'+params[:team_name], team_id: params[:td])
 
           if notify.save
             render json: [true, '已向该验证用户发送邀请消息']
@@ -263,7 +263,7 @@ class CompetitionsController < ApplicationController
       else
         info = Team.joins(:event).where(id: t_u.team_id).where("teams.event_id=events.id").select("teams.name as team_name", "events.name as event_name").first
         if params[:reject].present? && params[:reject]=='1'
-          Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长拒绝了你的申请，您未能加入该队', message_type: '拒绝申请')
+          Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长拒绝了你的申请，您未能加入该队', message_type: 4)
           if t_u.delete
             flash[:success] = '拒绝成功'
             redirect_to "/user/notify?id=#{params[:nd]}"
@@ -274,7 +274,7 @@ class CompetitionsController < ApplicationController
           t_u.status = true
           if t_u.save
             flash[:success] = '接受成功'
-            Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长同意了你的申请，您已成功加入了该队', message_type: '同意申请')
+            Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长同意了你的申请，您已成功加入了该队', message_type: 4)
             redirect_to "/user/notify?id=#{params[:nd]}"
           else
             flash[:error] = '接受失败'
@@ -292,7 +292,7 @@ class CompetitionsController < ApplicationController
       else
         info = Team.joins(:event).where(id: t_u.team_id).where("teams.event_id=events.id").select("teams.name as team_name", "events.name as event_name").first
         if params[:reject].present? && params[:reject]=='1'
-          notify = Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长拒绝了你的退出申请，您未能退出该队', message_type: '拒绝申请')
+          notify = Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长拒绝了你的退出申请，您未能退出该队', message_type: 4)
           if notify.save
             flash[:success] = '拒绝成功,结果已告知该队员'
             redirect_to "/user/notify?id=#{params[:nd]}"
@@ -301,7 +301,7 @@ class CompetitionsController < ApplicationController
           end
         else
           if t_u.delete
-            Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长同意了你的申请，您已成功退出该队', message_type: '同意申请')
+            Notification.create!(user_id: t_u.user_id, content: info.event_name+'比赛项目中'+info.team_name+'的队长同意了你的申请，您已成功退出该队', message_type: 4)
             flash[:success] = '同意退出成功'
             redirect_to "/user/notify?id=#{params[:nd]}"
           else
@@ -345,7 +345,7 @@ class CompetitionsController < ApplicationController
     if request.method == 'POST' && td!=0 && params[:username].present?
       team = TeamUserShip.joins(:team).where(team_id: params[:td], user_id: current_user.id).select(:id, :team_id, :user_id, 'teams.name', 'teams.user_id as leader')
       if team.present?
-        notify = Notification.create(user_id: team.leader, content: username+'申请退出队伍：'+team.name, t_u_id: team.id, team_id: team.team_id, message_type: '申请退出队伍', reply_to: team.user_id)
+        notify = Notification.create(user_id: team.leader, content: username+'申请退出队伍：'+team.name, t_u_id: team.id, team_id: team.team_id, message_type: 3, reply_to: team.user_id)
         if notify.save
           result = [true, '已向队长发出申请，队长审核后将通过消息通知您']
         else

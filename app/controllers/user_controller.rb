@@ -251,72 +251,102 @@ class UserController < ApplicationController
   def notify_show
     @notification = current_user.notifications.where(id: params[:id]).take
 
-    if @notification.present? && @notification.message_type=='申请加入队伍'
-      if @notification.t_u_id.present? && !TeamUserShip.exists?(@notification.t_u_id.to_i)
-        @has_agree = 2
-      elsif @notification.t_u_id.present? && TeamUserShip.find(@notification.t_u_id.to_i).status
-        @has_agree = true
-      else
-        @has_agree = false
+    if @notification.present?
+      ## 队长邀请队员
+      if @notification.message_type==1 && @notification.team_id.present?
+        @t_u = TeamUserShip.joins(:event).where(team_id: @notification.team_id, user_id: @notification.user_id).select(:id, :status, 'events.apply_end_time', :event_id).take
       end
-    end
 
-    if @notification.present? && @notification.message_type=='申请退出队伍'
-      if @notification.t_u_id.present? && !TeamUserShip.exists?(@notification.t_u_id.to_i)
-        @has_agree = 2 ## 已同意退出
-      else
-        @has_agree = false
+      ## 申请加入队伍
+      if @notification.message_type==2 && @notification.team_id.present? && @notification.reply_to.present? && @notification.t_u_id.present?
+        @t_u = TeamUserShip.joins(:event).where(team_id: @notification.team_id, user_id: @notification.reply_to).select(:id, :status, 'events.apply_end_time', :event_id).take
+        if @t_u.present?
+          if @t_u.status
+            @has_agree = true # 已同意
+          else
+            if !TeamUserShip.exists?(@t_u.id.to_i)
+              @has_agree = 2 # 已拒绝
+            else
+              @has_agree = false # 未处理
+            end
+          end
+        end
       end
-    end
 
-    if @notification.team_id.present?
-      @event= Event.joins(:teams, :team_user_ships).where("teams.id=?", @notification.team_id).where("events.id=teams.event_id").where("teams.id=team_user_ships.team_id").where("team_user_ships.user_id=?", current_user.id).select(:id, :status, "team_user_ships.status as invited").first
+      ## 申请退出比赛
+      if @notification.message_type==3 && @notification.team_id.present? && @notification.reply_to.present?
+        @t_u = TeamUserShip.joins(:event).where(team_id: @notification.team_id, user_id: @notification.reply_to).select(:id, :status, 'events.apply_end_time', :event_id).take
+        if @t_u.present?
+          @has_agree = false # 未处理或已拒绝退出
+        else
+          @has_agree = true # 已同意
+        end
+      end
     end
   end
 
   def agree_invite_info
-    t_u = TeamUserShip.where(event_id: params[:ed], team_id: params[:td], user_id: current_user.id).take
-    if t_u.status
-      status = true
-      message = '您已经是该队队员'
-    else
-      if params[:username].present? and params[:school].present? and params[:grade].present?
-        user = UserProfile.find_by(user_id: current_user.id)
-        if user.present?
-          user.username = params[:username]
-          user.age = params[:age]
-          user.school = params[:school]
-          user.grade = params[:grade]
-          user.bj = params[:bj]
-          if user.save
-            status = true
-            message = '个人信息确认成功'
-          else
-            status = false
-            message = '个人信息更新失败'
-          end
-        else
-          up = UserProfile.create!(user_id: current_user.id, username: params[:username], age: params[:age], school: params[:school], grade: params[:grade], bj: params[:bj])
-          if up.save
-            status = true
-            message = '个人信息添加成功'
-          else
-            status = false
-            message = '个人信息添加失败'
-          end
-        end
+    age = params[:age]
+    birthday = params[:birthday]
+    username = params[:username]
+    school = params[:school].to_i
+    grade = params[:grade]
+    gender = params[:gender].to_i
+    student_code = params[:student_code]
+    identity_card = params[:identity_card]
+    td = params[:td].to_i
+    ed = params[:ed].to_i
+    if td!=0 && ed !=0
+      t_u = TeamUserShip.includes(:team).where(event_id: ed, team_id: td, user_id: current_user.id).select('teams.group', :user_id, :status).take
+      if t_u.status
+        status = true
+        message = '您已经是该队队员'
       else
-        status = false
-        message = '个人信息输入不完整'
-      end
-      if status
-        t_u.status= true
-        if t_u.save
-          message='接受成功'
+        if username.present? && school!=0 && grade.present? && gender!=0 && age.present? && birthday.present?
+          user = UserProfile.find_by(user_id: current_user.id)
+          if user.present?
+            user.username = username
+            user.age = age
+            user.birthday = birthday
+            user.school = school
+            user.grade = grade
+            user.gender = gender
+            user.student_code = student_code
+            user.identity_card = identity_card
+
+            if user.save
+              status = true
+              message = '个人信息确认成功'
+            else
+              status = false
+              message = '个人信息更新失败'
+            end
+          else
+            up = UserProfile.create!(user_id: t_u.user_id, username: username, age: age, school: school, grade: grade, gender: gender, birthday: birthday, student_code: student_code, identitty_card: identity_card)
+            if up.save
+              status = true
+              message = '个人信息添加成功'
+            else
+              status = false
+              message = '个人信息添加失败'
+            end
+          end
         else
-          message=message+'//但接受失败'
+          status = false
+          message = '个人信息输入不完整'
+        end
+        if status
+          t_u.status= true
+          if t_u.save
+            message='接受成功'
+          else
+            message=message+'//但接受失败'
+          end
         end
       end
+    else
+      status=false
+      message = '队伍及附属参数不完整'
     end
     render json: [status, message]
   end
@@ -347,7 +377,7 @@ class UserController < ApplicationController
     else
       flash[:error] = '昵称不能为空'
     end
-    redirect_to user_profile_path
+    redirect_to user_preview_path
   end
 
   # 头像删除

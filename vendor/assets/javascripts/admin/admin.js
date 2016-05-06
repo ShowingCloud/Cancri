@@ -87,6 +87,7 @@ $(function () {
     $('.review-teacher-info-submit').on('click', function () {
         var level;
         var status = $(".teacher-apply-status [name='teacher-apply']:checked").val();
+        var ud = $(this).attr('data-id');
 
         if (status) {
             level = $(".teacher-apply-level [name='teacher-apply-level']:checked").val();
@@ -98,7 +99,7 @@ $(function () {
                 url: '/admin/checks/review_teacher',
                 type: 'post',
                 data: {
-                    "status": status, "level": level
+                    "status": status, "level": level, "ud": ud
                 },
                 success: function (data) {
                     if (data[0]) {
