@@ -7,20 +7,31 @@
         </div>
         <div class="sec-c">
           <div class="content">
-            <div class="user-panel">
-              <% if @consults.present? %>
-                  <% @consults.each do |c| %>
-                      <p class="<%= c.admin_reply ? 'text-left':'text-right' %>"> <%= c.content %> <%= c.created_at.try(:strftime, '%Y-%m-%d') %></p>
-                  <% end %>
-              <% else %>
-                  您还没有调戏过哦
-              <% end %>
-              <%= simple_form_for(@consult, html: {}, url: user_consult_path, method: :post) do |f| %>
-                  <%= f.input :content %>
-                  <div class="form-actions">
-                    <%= f.submit class: 'btn btn-primary btn-block', value: '提交', 'data-disable-with' => '提交' %>
-                  </div>
-              <% end %>
+            <div class="consults-panel">
+              <div class="consult-in">
+                有什么疑问和麻烦都可以和小豆吐槽哦
+                <%= simple_form_for(@consult, html: {}, url: user_consult_path, method: :post) do |f| %>
+                    <%= f.input :content %>
+                    <div class="form-actions">
+                      <%= f.submit class: 'btn-robodou btn-submit-consult', value: '提交', 'data-disable-with' => '提交' %>
+                    </div>
+                <% end %>
+              </div>
+
+              <div class="consult-out">
+                <% if @consults.present? %>
+                    <% @consults.each do |c| %>
+                        <div class="consult-i <%= c.admin_reply ? 'left' : 'right' %>">
+                          <span class="time"><%= c.created_at.try(:strftime, '%Y-%m-%d') %></span>
+                          <br/>
+                          <div class="talk"><%= c.content %></div>
+                        </div>
+                    <% end %>
+                <% else %>
+                    您还没有调戏过哦
+                <% end %>
+              </div>
+
             </div>
           </div>
         </div>

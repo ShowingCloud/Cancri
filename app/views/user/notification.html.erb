@@ -11,7 +11,7 @@
               <% if @notifications.present? %>
                   <% @notifications.each do |no| %>
                       <div class="message" data-src="<%= image_path('homepage/message.png') %>">
-                        <div class="msg-time">2016-03-17 <%= no.read ? '已读' : '未读' %></div>
+                        <div class="msg-time"><%= no.created_at.try(:strftime,'%Y-%m-%d') %> <%= no.read ? '已读' : '未读' %></div>
                         <div class="msg-inner">
                           <%= no.content[0..20] %>
                         </div>

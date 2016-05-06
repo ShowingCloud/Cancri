@@ -21,6 +21,66 @@ $(function () {
         $(window).on('resize', function () {
             fix_height.init('#main>.container');
         });
+        avatar_control.init('#change-avatar');
+        qr.init();
+    };
+
+    var qr = {
+        init: function () {
+            if ($('.card-avatar').length > 0) {
+                $.each($('.card-avatar'), function (k, v) {
+                    $(v).qrcode({
+                        width: 70,
+                        height: 70,
+                        text: $(v).attr('data-q')
+                    })
+                });
+            }
+        }
+    };
+
+    var authenticity_token = {
+        init: function (space) {
+            var a = space.find('[name="authenticity_token"]');
+            if (a) {
+                a.attr({'value': $('meta[name="csrf-token"]').attr('content')});
+            }
+        }
+    };
+
+    var avatar_control = {
+        init: function (select) {
+            var space = $(select);
+            $('.avatar-img').on('click', function () {
+                $('#change-avatar').modal('show');
+            });
+            space.find('#changeAvatar').on('change', function () {
+                $('.avatar-btn').text('已选择图片！');
+            });
+            space.find('.btn-submit-avatar').on('click', function (event) {
+                event.preventDefault();
+                authenticity_token.init(space);
+                space.find('form').submit();
+                //var _self = $(this);
+                //var old = _self.text();
+                //var data = _self.parents('#change-avatar').find('form').serialize();
+                //console.log(data);
+                //var option = {
+                //    url: 'update_avatar',
+                //    data: data,
+                //    dataType: 'json',
+                //    type: 'post',
+                //    success: function (result) {
+                //        console.log(result);
+                //    },
+                //    complete: function () {
+                //        _self.text(old).prop({'disabled': false});
+                //    }
+                //};
+                //_self.text('提交中').prop({'disabled':true});
+                //$.ajax(option);
+            })
+        }
     };
 
     var fix_height = {

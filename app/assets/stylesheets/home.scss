@@ -588,7 +588,7 @@ ul {
   margin: 0 auto;
 }
 
-#user-display .sec-c .video-item img{
+#user-display .sec-c .video-item img {
   width: 220px;
   height: 156px;
 }
@@ -707,10 +707,11 @@ ul {
 #download .download .download-inner .download-item .sec-c {
   margin-left: 90px;
   margin-top: 70px;
+  font-size: 14px;
 }
 
 #download .download .download-inner .download-item .sec-c select {
-  width: 100px;
+  width: 120px;
   background: #376A92;
   border: none;
   outline: none;
@@ -791,7 +792,7 @@ ul {
 
 #user-center .sec-t {
   float: left;
-  width: 240px;
+  width: 200px;
   margin-left: 120px;
 }
 
@@ -802,6 +803,75 @@ ul {
   margin-top: 82px;
   text-align: center;
   padding-top: 13px;
+  position: relative;
+  cursor: pointer;
+}
+
+#change-avatar .change-avatar {
+  width: 400px;
+  border: 1px solid #88D5EC;
+  border-radius: 5px;
+  background: rgba(70, 134, 158, .3);
+  padding: 20px;
+  margin: 160px auto;
+  color: #88D5EC;
+}
+
+#change-avatar .change-avatar .title {
+  background: no-repeat transparent center bottom;
+  font-size: 16px;
+  text-align: center;
+  color: #88D5EC;
+  margin-bottom: 20px;
+}
+
+#change-avatar .input-row {
+  margin-bottom: 20px;
+}
+
+#change-avatar .form-b {
+  text-align: center;
+}
+
+#change-avatar .input-l {
+  float: left;
+  width: 100px;
+  text-align: right;
+}
+
+#change-avatar .input-r {
+  margin-left: 120px;
+}
+
+#change-avatar input {
+  background: #376A92;
+  height: 20px;
+  padding-left: 4px;
+  border: none;
+  outline: none;
+  width: 140px;
+}
+
+#change-avatar input:focus {
+  outline: #88D5EC;
+}
+
+.avatar-btn {
+  font-size: 14px;
+  color: #88D5EC;
+  border: 1px solid #88D5EC;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.btn-submit-avatar {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  padding: 4px 20px;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 14px;
 }
 
 #user-center .sec-t .avatar .avatar-img {
@@ -874,6 +944,26 @@ ul {
   color: #6098A6;
   cursor: pointer;
   right: 20px;
+}
+
+#user-center .sec-c .user-panel input[type='text'] {
+  background: transparent;
+  border: 1px solid #88D5EC;
+  color: #FFFFFF;
+}
+
+#user-center .sec-c .user-panel input[type='number'] {
+  background: transparent;
+  border: 1px solid #88D5EC;
+}
+
+.btn-submit-profile {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  font-size: 14px;
+  padding: 6px 12px;
+  background: transparent;
+  border-radius: 4px;
 }
 
 .panel-control.control-bottom {
@@ -2589,4 +2679,69 @@ ul {
   border-radius: 8px;
   outline: none;
   margin: 20px 60px;
+}
+
+.consults-panel {
+  color: #88D5EC;
+}
+
+.consults-panel .consult-in {
+  float: left;
+  width: 200px;
+  border: 1px solid #88D5EC;
+  background: rgba(70, 134, 158, .4);
+  padding: 20px;
+}
+
+.consults-panel .consult-out {
+  margin-left: 220px;
+  border: 1px solid #88D5EC;
+  background: rgba(70, 134, 158, .4);
+  padding: 40px;
+  width: 400px;
+  height: 400px;
+  overflow-y: auto;
+}
+
+.consults-panel .consult-out .consult-i {
+
+  margin-bottom: 10px;
+}
+
+.consults-panel .consult-out .right {
+  text-align: right;
+}
+
+.consults-panel .consult-out .left {
+  text-align: left;
+}
+
+.consults-panel .consult-out .talk {
+  background: rgba(70, 134, 158, .4);
+  color: #FFFFFF;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 15px;
+  display: inline-block;
+}
+
+.consults-panel .consult-out .time {
+  margin-bottom: 8px;
+}
+
+.consults-panel .consult-in label {
+  display: none;
+}
+
+.consults-panel .consult-in input[type='text'] {
+  background: transparent;
+  color: #88D5EC;
+}
+
+.btn-submit-consult {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: transparent;
 }
