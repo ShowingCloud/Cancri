@@ -65,6 +65,28 @@ module API
             render notifications: paginate(@unread_notify), total_num: @unread_notify.count, unread: @unread_notify.unread.count
           end
 
+          desc '更新消息状态为已读'
+          params do
+            requires :id, type: Integer
+          end
+          post '/update_notify_read' do
+            notify = Notification.find(params[:id])
+            if notify.present? && notify.user_id == current_user.id
+              if notify.read
+                result = [false, '无需更新']
+              else
+                if notify.update_attributes(read: true)
+                  result = [true, '更新成功']
+                else
+                  result = [false, '更新已读状态失败']
+                end
+              end
+            else
+              result = [false, '消息不存在或不是您的消息']
+            end
+            render result: result
+          end
+
           desc :'获取裁判负责项目'
           get '/user_for_event' do
             events = EventWorker.joins(:event).joins('left join competitions c on c.id=events.competition_id').where(user_id: current_user.id).select(:event_id, 'events.name', 'c.name as comp_name')
