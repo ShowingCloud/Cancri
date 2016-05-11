@@ -23,6 +23,7 @@ $(function () {
         });
         avatar_control.init('#change-avatar');
         qr.init();
+        download_select.init();
     };
 
     var qr = {
@@ -34,6 +35,24 @@ $(function () {
                         height: 70,
                         text: $(v).attr('data-q')
                     })
+                });
+            }
+        }
+    };
+
+    var download_select = {
+        init: function () {
+            if ($('#download').length > 0) {
+                var space = $('#download');
+                space.find('select[name="year"]').on('change', function () {
+                    space.find('select[name="event"]').parents('.download-item').addClass('active');
+                });
+                space.find('select[name="event"]').on('change', function () {
+                    space.find('select[name="table"]').parents('.download-item').addClass('active');
+                });
+                space.find('select[name="table"]').on('change', function () {
+                    space.find('select[name="download-district"]').parents('.download-item').addClass('active');
+                    space.find('select[name="download-school"]').parents('.download-item').addClass('active');
                 });
             }
         }

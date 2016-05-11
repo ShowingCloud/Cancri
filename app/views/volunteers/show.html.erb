@@ -15,16 +15,8 @@
                 <img src="" alt="" data-src="<%= image_path('homepage/news-image01.png') %>"/>
               </div>
               <div class="text">
-                <h3>活动介绍</h3>
-
                 <p><%= @volunteer.content.html_safe %>
                 </p>
-
-                <h3>主办方</h3>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aenean euismod bibendum laoreet.
-                   Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>
 
                 <div class="volunteer-bottom">
                   <% if @already_apply %>

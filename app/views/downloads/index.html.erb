@@ -8,13 +8,16 @@
           </div>
           <div class="download-inner">
             <div class="select-front">
-              <div class="download-item" data-src="<%= image_path('homepage/download-item-bk.png') %>">
+              <div class="download-item active" data-src="<%= image_path('homepage/download-item-bk.png') %>">
                 <div class="sec-t">
                   <i class="glyphicon glyphicon-calendar"></i>
                 </div>
                 <div class="sec-c">
                   比赛年份
                   <select name="year" id="">
+                    <option value="">请选择年份</option>
+                    <option value="">2014</option>
+                    <option value="">2015</option>
                     <option value="">2016</option>
                   </select>
                 </div>
@@ -25,8 +28,10 @@
                 </div>
                 <div class="sec-c">
                   比赛项目
-                  <select name="" id="">
-                    <option value="">比赛项目</option>
+                  <select name="event" id="">
+                    <option value="">请选择比赛项目</option>
+                    <option value="">项目1</option>
+                    <option value="">项目2</option>
                   </select>
                 </div>
               </div>
@@ -36,7 +41,8 @@
                 </div>
                 <div class="sec-c">
                   下载项目
-                  <select name="" id="">
+                  <select name="table" id="">
+                    <option value="">请选择下载类型</option>
                     <option value="">报名表</option>
                     <option value="">成绩表</option>
                   </select>
@@ -50,7 +56,8 @@
                 </div>
                 <div class="sec-c">
                   区县
-                  <select name="" id="">
+                  <select name="download-district" id="">
+                    <option value="">请选择区县</option>
                     <option value="">黄浦区</option>
                     <option value="">普陀区</option>
                     <option value="">长宁区</option>
@@ -64,7 +71,8 @@
                 </div>
                 <div class="sec-c">
                   学校
-                  <select name="" id="">
+                  <select name="download-school" id="">
+                    <option value="">请选择学校</option>
                     <option value="">学校1</option>
                     <option value="">学校2</option>
                     <option value="">学校3</option>

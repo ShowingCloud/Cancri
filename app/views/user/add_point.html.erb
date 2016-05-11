@@ -7,41 +7,33 @@
         </div>
         <div class="sec-c">
           <div class="content">
-            <div class="user-panel">
-              <%= simple_form_for(@point, url: user_add_point_path, method: :post) do |f| %>
-                  <div class="row">
-                    <div class="col-xs-9">
-                      <!--<select class="host-year">-->
-                      <!--<option>请选择年份</option>-->
-                      <!--<option value="2016">2016</option>-->
-                      <!--<option value="2017">2017</option>-->
-                      <!--</select>-->
-                      <!--<select class="comp-name">-->
-                      <!--<option>请选择比赛</option>-->
-                      <!--</select>-->
-                      <!--<select class="prize-type">-->
-                      <!--<option>请选择奖项</option>-->
-                      <!--</select>-->
-
-                      <div class="form-inputs">
+            <%= simple_form_for(@point, url: user_add_point_path, method: :post) do |f| %>
+                <div class="point-add">
+                  <div class="s-t" data-src="<%= image_path('homepage/point-add.png') %>">
+                    增 加<br/>
+                    积 分
+                  </div>
+                  <div class="s-c">
+                    <div class="add-form" data-src="<%= image_path('homepage/add-bk.png') %>">
+                      <div class="input-row">
+                        <span>比赛名称</span>
                         <input id="prize-id" class="string required form-control" type="text" name="user_point[prize_id]">
                       </div>
-                      <div class="form-group">
-                        <label for="exampleInputFile">封面</label>
+                      <div class="input-row">
+                        <label for="exampleInputFile">奖状</label>
                         <%= f.file_field :cover %>
+                      </div>
+                      <div class="input-row">
                         <%= f.hidden_field :cover_cache %>
                         <p class="help-block">格式：jpg jpeg gif png</p>
                       </div>
-                      <br>
-
-
-                      <div class="form-actions">
-                        <%= f.submit class: 'btn btn-primary btn-block', value: '提交', 'data-disable-with' => '提交' %>
+                      <div class="input-row">
+                        <%= f.submit class: 'btn btn-primary', value: '提交', 'data-disable-with' => '提交' %>
                       </div>
                     </div>
                   </div>
-              <% end %>
-            </div>
+                </div>
+            <% end %>
           </div>
         </div>
       </div>
