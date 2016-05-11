@@ -691,6 +691,11 @@ ul {
   margin: 30px 15px 30px;
   color: #88D5EC;
   display: inline-block;
+  visibility: hidden;
+}
+
+#download .download .download-inner .download-item.active {
+  visibility: visible;
 }
 
 #download .download .download-inner .download-item .sec-t {
@@ -1059,7 +1064,7 @@ ul {
 }
 
 #user-center .sec-c .match-panel .match-card .card-right {
-  float: left;
+  margin-left: 100px;
 }
 
 #user-center .sec-c .match-panel .match-card .card-right .card-info {
@@ -1167,6 +1172,7 @@ ul {
 
 #user-center .sec-c .point .point-table table tr td {
   text-align: center;
+  padding: 10px;
 }
 
 .btn-point-select {
@@ -1192,18 +1198,23 @@ ul {
 }
 
 #user-center .point-add .s-c {
-  float: left;
-
+  margin-left: 170px;
 }
 
 #user-center .point-add .s-c .add-form {
   width: 331px;
   height: 407px;
   background: no-repeat center center;
+  padding: 20px;
+  color: #88D5EC;
 }
 
 #user-center .point-add .s-c .add-form .input-row {
+  margin-bottom: 20px;
+}
 
+#user-center .point-add .s-c .add-form .input-row input[type="text"] {
+  background: transparent;
 }
 
 #volunteer {
@@ -2744,4 +2755,29 @@ ul {
   padding: 4px 8px;
   border-radius: 4px;
   background: transparent;
+}
+
+.notify-b {
+  background: rgba(5, 62, 88, .9);
+  width: 240px;
+  color: #93e0f7;
+  font-size: 14px;
+  margin: 200px auto;
+  border: 2px solid #88D5EC;
+}
+
+.notify-b .title {
+  text-align: left;
+  border-bottom: 2px solid #88D5EC;
+  padding: 4px 10px;
+}
+
+.notify-b .content {
+  text-align: center;
+  padding: 40px;
+}
+
+.notify-b .close-flash {
+  float: right;
+  cursor: pointer;
 }

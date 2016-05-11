@@ -95,6 +95,22 @@
     </div>
   </div>
 </div>
+<% if flash.present? %>
+    <div id="flash" class="modal fade">
+      <div class="notify-b">
+        <div class="title">
+          通知
+          <i data-dismiss="modal" class="close-flash glyphicon glyphicon-remove-circle"></i>
+        </div>
+        <div class="content">
+        <% flash.each do |f| %>
+            <%= f[1] %>
+            <%= f[2] %>
+        <% end %>
+        </div>
+      </div>
+    </div>
+<% end %>
 
 
 
@@ -103,11 +119,7 @@
 <%= javascript_include_tag 'application', 'data-turbolinks-track' => false %>
 <% if flash.present? %>
     <script type="text/javascript">
-        <% flash.each do |f| %>
-        if ("<%= f[1] %>" != 'true') {
-            $.notify("<%= f[1] %>", "<%= f[0] %>");
-        }
-        <% end %>
+        $('#flash').modal('show');
     </script>
 <% end %>
 <% if current_user %>
