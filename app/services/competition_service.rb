@@ -103,12 +103,13 @@ class CompetitionService
 
   def self.get_teams(ed, group, schedule)
     if schedule.present? && ed.present? && group.present?
-      teams=Team.joins('inner join user_profiles u_p on u_p.user_id = teams.user_id').joins('inner join schools s on s.id = teams.school_id').joins('inner join users u on u.id = teams.user_id').joins("left join scores sc on (teams.id=sc.team1_id and sc.schedule_name=#{schedule}) or (sc.team2_id = teams.id and sc.schedule_name=#{schedule})").where(event_id: ed, group: group).select(:id, :name, :teacher, :teacher_mobile, 'u_p.username', 'u.mobile', 's.name as school', 'count(sc.id) as score_num').map { |t| {
+      teams=Team.joins('inner join user_profiles u_p on u_p.user_id = teams.user_id').joins('inner join schools s on s.id = teams.school_id').joins('inner join users u on u.id = teams.user_id').joins("left join scores sc on (teams.id=sc.team1_id and sc.schedule_name=#{schedule}) or (sc.team2_id = teams.id and sc.schedule_name=#{schedule})").where(event_id: ed, group: group).select(:id, :name, :teacher, :teacher_mobile, :identifier, 'u_p.username', 'u.mobile', 's.name as school', 'count(sc.id) as score_num').map { |t| {
           id: t.id,
           name: t.name,
           username: t.username,
           mobile: t.mobile,
           school: t.school,
+          identifier: t.identifier,
           teacher: t.teacher,
           teacher_mobile: t.teacher_mobile,
           status: t.score_num
@@ -116,12 +117,13 @@ class CompetitionService
       [true, teams]
     else
       if ed.present? && group.present?
-        teams=Team.joins('inner join user_profiles u_p on u_p.user_id = teams.user_id').joins('inner join schools s on s.id = teams.school_id').joins('inner join users u on u.id = teams.user_id').where(event_id: ed, group: group).select(:id, :name, :teacher, :teacher_mobile, 'u_p.username', 'u.mobile', 's.name as school').map { |t| {
+        teams=Team.joins('inner join user_profiles u_p on u_p.user_id = teams.user_id').joins('inner join schools s on s.id = teams.school_id').joins('inner join users u on u.id = teams.user_id').where(event_id: ed, group: group).select(:id, :name, :teacher, :teacher_mobile, :identifier, 'u_p.username', 'u.mobile', 's.name as school').map { |t| {
             id: t.id,
             name: t.name,
             username: t.username,
             mobile: t.mobile,
             school: t.school,
+            identifier: t.identifier,
             teacher: t.teacher,
             teacher_mobile: t.teacher_mobile,
             status: 0

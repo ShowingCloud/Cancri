@@ -2,33 +2,19 @@ module API
   module V1
     class Scores < Grape::API
       resources :scores do
+        desc '获取成绩属性'
+        params do
+          optional :except, type: String
+        end
+        get '/' do
+          except = params[:except].present? ? params[:except] : 0
+          score_attributes = ScoreAttribute.where.not(id: except).select(:id, :name, :write_type)
+          render score_attributes: score_attributes
+        end
         namespace ':private_token' do
           before do
             authenticate!
           end
-          desc '获取成绩属性'
-          params do
-            optional :except, type: String
-          end
-          get '/' do
-            except = params[:except].present? ? params[:except] : 0
-            score_attributes = ScoreAttribute.where.not(id: except).select(:id, :name)
-            render score_attributes: score_attributes
-          end
-
-          # params do
-          #   requires :confirm_sign, type: File
-          # end
-          # post do
-          #   @sign = Score.new
-          #   @sign.confirm_sign = params[:confirm_sign]
-          #
-          #   if @sign.save
-          #     '上传成功'
-          #   else
-          #     error!({error: @sign.errors.full_messages}, 400)
-          #   end
-          # end
 
           desc '成绩登记'
           params do

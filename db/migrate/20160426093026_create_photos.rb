@@ -3,7 +3,7 @@ class CreatePhotos < ActiveRecord::Migration[5.0]
     create_table :photos do |t|
       t.integer :competition_id
       t.string :image
-      t.integer :status
+      t.boolean :status, default: false
       t.integer :sort
       t.string :desc
 

@@ -74,6 +74,8 @@ zh-CN:
         host_address: '举办地点'
         student_code: '学籍号'
         sort: '排序'
+        desc: '描述'
+        write_type: '计分方式'
 
     "yes": '是'
     "no": '否'

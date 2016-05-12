@@ -12,6 +12,7 @@ class CreateEvents < ActiveRecord::Migration[5.0]
       t.integer :status
       t.text :against
       t.integer :timer
+      t.string :group
       t.integer :team_min_num
       t.integer :team_max_num
       t.datetime :apply_start_time

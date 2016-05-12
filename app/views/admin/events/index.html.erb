@@ -39,8 +39,9 @@
     <th>ID</th>
     <th><%= t('simple_form.labels.defaults.name') %></th>
     <th><%= t('simple_form.labels.defaults.competition_id') %></th>
-    <th>组别</th>
+    <th>分组</th>
     <th>组名</th>
+    <th>组别</th>
     <th>项目状态</th>
     <th>每队人数</th>
     <th>操作</th>
@@ -55,6 +56,7 @@
         <td><%= event.competition.try(:name) %></td>
         <td><%= event.parent_event.name if event.level==2 %></td>
         <td><%= show_status(event.is_father) if event.is_father %></td>
+        <td><%= event.group.gsub(/[1-4]/, '1' => '小', '2' => '中', 3 => '初', 4 => '高') %></td>
         <td><%= t('status.status'+event.status.to_s) %></td>
         <td><%= "#{event.team_min_num}-" if event.team_min_num != event.team_max_num %><%= event.team_max_num %></td>
         <td>
@@ -75,7 +77,13 @@
           <% end %>
           <%= link_to [:admin, event], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash bigger-120"></i>
-          <% end %></td>
+          <% end %>
+          <% unless event.is_father %>
+              <%= link_to edit_admin_event_schedule_path(event), title: '赛程', class: 'btn btn-xs btn-info' do %>
+                  <i class="icon-edit icon-filter"></i>
+              <% end %>
+          <% end %>
+        </td>
       </tr>
   <% end %>
   </tbody>
