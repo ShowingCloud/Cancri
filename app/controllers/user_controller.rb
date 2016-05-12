@@ -404,7 +404,7 @@ class UserController < ApplicationController
         if has_add.present?
           result= [false, '您已经添加过一所学校，在未审核通过前不能再次添加']
         else
-          add_s = School.create!(name: name, district: district, school_type: type, school_city: '上海市')
+          add_s = School.create!(name: name, district: district, school_type: type, school_city: '上海市', user_id: current_user.id)
           if add_s.save
             result=[true, '添加成功', add_s.id] #该学校仅为您显示，审核通过后其他人才能选择该学校
           else
