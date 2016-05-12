@@ -393,9 +393,9 @@ class UserController < ApplicationController
 
   def add_school
     name = params[:school]
-    district = params[:district].to_i
+    district = params[:district]
     type = params[:type].to_i
-    if name.present? && district !=0 && type !=0
+    if name.present? && district.present? && type !=0
       school = School.where(name: name, district: district, school_type: type).take
       if school.present?
         result=[false, '该学校已存在或已被添加(待审核)']
