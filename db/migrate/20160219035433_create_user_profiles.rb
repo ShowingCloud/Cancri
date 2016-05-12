@@ -13,7 +13,7 @@ class CreateUserProfiles < ActiveRecord::Migration[5.0]
       t.string :bj # 班级
       t.string :autograph # 个性签名
       t.string :address
-      t.string :district
+      t.integer :district
       t.date :birthday
       t.string :address
       t.string :teacher_no

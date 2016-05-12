@@ -2,7 +2,8 @@ class CreateScores < ActiveRecord::Migration[5.0]
   def change
     create_table :scores do |t|
       t.integer :event_id, null: false
-      t.string :schedule_name, null: false
+      t.integer :event_schedule_id
+      t.integer :schedule_id, null: false
       t.integer :kind, null: false
       t.integer :th, null: false
       t.integer :team1_id, null: false
@@ -17,7 +18,8 @@ class CreateScores < ActiveRecord::Migration[5.0]
       t.timestamps
     end
     add_index :scores, :event_id
-    add_index :scores, :schedule_name
+    add_index :scores, :schedule_id
+    add_index :scores, :event_schedule_id
     add_index :scores, :kind
     add_index :scores, :th
     add_index :scores, :team1_id

@@ -120,6 +120,7 @@ $(function () {
     $('.btn-search-toggle').on('click', function () {
         $('.form-search-toggle').toggleClass('hide show');
     });
+    //编辑大赛进程
     $(".edit-schedule-submit").on('click', function (e) {
         e.preventDefault();
         var sd = $(this).attr('data-id');
@@ -150,6 +151,32 @@ $(function () {
                 }
 
 
+            },
+            error: function (data) {
+                alert(data[1]);
+            }
+        });
+    });
+    // 编辑赛程评分／对抗
+    $(".edit-event-schedule-submit").on('click', function (e) {
+        e.preventDefault();
+        var esd = $(this).attr('data-id');
+        var kind = $("input[name='schedule-kind']:checked").val();
+        if (!kind) {
+            alert('请选择该赛程模式');
+            return false;
+        }
+        $.ajax({
+            url: '/admin/event_schedules/update',
+            type: 'PUT',
+            data: {
+                "kind": kind, "esd": esd
+            },
+            success: function (data) {
+                alert(data[1]);
+                if (data[0]) {
+                    window.location.reload();
+                }
             },
             error: function (data) {
                 alert(data[1]);

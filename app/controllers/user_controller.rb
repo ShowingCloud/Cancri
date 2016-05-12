@@ -21,9 +21,11 @@ class UserController < ApplicationController
             list[:roles] = nil
           end
         end
-        unless ['高一', '高二', '高三'].include?(profile_params[:grade]) && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(profile_params[:identity_card]) != nil
-          flash[:error] = '高中生请正确填写18位身份证号'
-          return false
+        if ['高一', '高二', '高三'].include?(profile_params[:grade])
+          unless /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(profile_params[:identity_card]) != nil
+            flash[:error] = '高中生请正确填写18位身份证号'
+            return false
+          end
         end
         message = ''
         if profile_params[:roles].present? && profile_params[:roles].include?('教师')
@@ -400,13 +402,13 @@ class UserController < ApplicationController
       if school.present?
         result=[false, '该学校已存在或已被添加(待审核)']
       else
-        has_add = School.find_by_user_id(current_user.id)
+        has_add = School.where(user_id: current_user.id, user_add: 1).exists?
         if has_add.present?
           result= [false, '您已经添加过一所学校，在未审核通过前不能再次添加']
         else
-          add_s = School.create!(name: name, district: district, school_type: type, school_city: '上海市', user_id: current_user.id)
+          add_s = School.create!(name: name, district: district, school_type: type, school_city: '上海市', user_id: current_user.id, user_add: true)
           if add_s.save
-            result=[true, '添加成功', add_s.id] #该学校仅为您显示，审核通过后其他人才能选择该学校
+            result=[true, '添加成功,该学校仅为您显示，审核通过后才能选择该学校', add_s.id] #该学校仅为您显示，审核通过后其他人才能选择该学校
           else
             result=[false, '添加学校失败']
           end

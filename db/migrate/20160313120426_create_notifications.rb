@@ -3,7 +3,7 @@ class CreateNotifications < ActiveRecord::Migration[5.0]
     create_table :notifications do |t|
       t.integer :user_id
       t.text :content
-      t.string :message_type
+      t.integer :message_type, null: false, default: 0
       t.integer :team_id
       t.integer :t_u_id
       t.integer :reply_to

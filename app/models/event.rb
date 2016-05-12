@@ -15,6 +15,7 @@ class Event < ApplicationRecord
   validates :name, presence: true
   validates :competition_id, presence: true
   validates :status, presence: true
+  validates :group, presence: true
   validates :team_min_num, presence: true
   validates :team_max_num, presence: true
   validates :name, presence: true, uniqueness: {scope: :competition_id, message: '同一大赛下一个项目不能出现两次'}

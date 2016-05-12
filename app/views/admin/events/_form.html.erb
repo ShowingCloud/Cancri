@@ -5,6 +5,9 @@
         <%= f.error_notification %>
         <% if @event.errors.any? %>
             <div id="error_explanation">
+              <% @event.errors[:group].each do |msg| %>
+                  <div class="alert alert-danger">包含组别<%= msg %></div>
+              <% end %>
               <% @event.errors[:end_time].each do |msg| %>
                   <div class="alert alert-danger"><%= msg %></div>
               <% end %>

@@ -27,5 +27,15 @@
 
       <%= @score_attribute.name %>
     </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.write_type') %>:</h4>
+
+      <%= t('write_type.write_type'+@score_attribute.write_type.to_s) %>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.desc') %>:</h4>
+
+      <%= @score_attribute.desc %>
+    </li>
   </ul>
 </div>
