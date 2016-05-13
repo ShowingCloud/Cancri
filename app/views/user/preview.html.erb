@@ -41,25 +41,28 @@
               </div>
               <div class="user-row">
                 <span class="row-name">身份</span>
-                <span class="row-content edit-checkbox" data-input="text">学生</span>
+                <span class="row-content edit-checkbox" data-input="text">
+                  <%= current_user.user_profile.try(:roles) %>
+                </span>
               </div>
               <div class="user-row">
                 <span class="row-name">性别</span>
                 <% if current_user.gender == 1 %>
                     <span class="row-content edit-radio" data-input="radio" data-input-name="">男</span>
-                <% else %>
+                <% else current_user.gender == 2%>
                     <span class="row-content edit-radio" data-input="radio" data-input-name="">女</span>
                 <% end %>
               </div>
               <div class="user-row">
                 <span class="row-name">学校</span>
                 <span class="row-content edit-input" data-input="text">
-
+<%= current_user.user_profile.school.try(:name) %>
                 </span>
               </div>
               <div class="user-row">
-                <span class="row-name">年级</span>
+                <span class="row-name">班级</span>
                 <span class="row-content edit-input" data-input="text">
+                  <%= current_user.user_profile.try(:grade) %>年级<%= current_user.user_profile.try(:bj) %>班
                 </span>
               </div>
               <div class="panel-control control-top">
