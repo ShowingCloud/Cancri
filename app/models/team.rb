@@ -14,7 +14,7 @@ class Team < ApplicationRecord
   validates :event_id, presence: true, uniqueness: {scope: :user_id, message: '一个用户不能报名一个项目两次'}
   validates :teacher, presence: true, format: {with: /\A[\u4e00-\u9fa5]+\Z/i, message: '教师名称只能包含中文'}
   validates :team_code, length: {in: 4..6}, allow_blank: true
-  before_save :create_identifier
+  after_create :create_identifier
 
   protected
   def create_identifier
