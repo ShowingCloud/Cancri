@@ -14,25 +14,27 @@ class Team < ApplicationRecord
   validates :event_id, presence: true, uniqueness: {scope: :user_id, message: '一个用户不能报名一个项目两次'}
   validates :teacher, presence: true, format: {with: /\A[\u4e00-\u9fa5]+\Z/i, message: '教师名称只能包含中文'}
   validates :team_code, length: {in: 4..6}, allow_blank: true
-  after_create :create_identifier
+  before_save :create_identifier
 
   protected
   def create_identifier
-    case group
-      when 1 then
-        identity = 'X'
-      when 2 then
-        identity = 'Z'
-      when 3 then
-        identity = 'C'
-      else
-        identity = 'G'
-    end
-    self.identifier = ('0000000'+(id+128).to_s).each_byte do |c|
-      if c != 48
-        identity.concat((c.to_i + 16).chr)
-      else
-        identity.concat('O')
+    unless identifier.present?
+      case group
+        when 1 then
+          identity = 'X'
+        when 2 then
+          identity = 'Z'
+        when 3 then
+          identity = 'C'
+        else
+          identity = 'G'
+      end
+      self.identifier = ('0000000'+(id+128).to_s).each_byte do |c|
+        if c != 48
+          identity.concat((c.to_i + 16).chr)
+        else
+          identity.concat('O')
+        end
       end
     end
   end
