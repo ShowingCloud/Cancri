@@ -179,18 +179,18 @@
             }
 
             window.roomid = $('.current-user-room').val();
-//            MessageBus.start(); // call once at startup
+            MessageBus.start(); // call once at startup
 
             MessageBus.callbackInterval = 500;
             channel = '/channel';
             if (window.roomid) {
                 channel = channel + '/' + window.roomid;
             }
-//            MessageBus.subscribe(channel, function (data) {
-//                $('.badge-notify-count').text(data.count);
-//                notify(data.content);
-//                $('#content').val('');
-//            });
+            MessageBus.subscribe(channel, function (data) {
+                $('.badge-notify-count').text(data.count);
+                notify(data.content);
+                $('#content').val('');
+            });
 
 
         })

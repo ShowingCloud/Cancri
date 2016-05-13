@@ -2,7 +2,7 @@
   <div class="container">
   <div id="news">
       <div class="row">
-        <% if @new.present?%>
+        <% if @news.present?%>
         <% @news.each do |news| %>
             <%= link_to news_path(news), title: '查看新闻' do %>
                 <div class="col-sm-6 col-xs-12">
@@ -25,7 +25,7 @@
                         <%= news.name %>
                       </div>
                       <div class="sec-c">
-                        活动以任务驱动型的项目，引导学生学习技术、创造性地应用技术，并以竞技、展示、演讲等方式进行比赛。活动内容涉及：机械、电子、计算机控制、物联网、工业设计、建筑、环保、计算机辅助设计等。活动分三个系列：普及、机电自动化和创意设计三大系列，具体项目有，活动内容涉及：机械、电子。
+                        <%= news.content %>
                       </div>
                     </div>
                   </div>
