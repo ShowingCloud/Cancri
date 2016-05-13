@@ -4,7 +4,7 @@ class CreateTeams < ActiveRecord::Migration[5.0]
       t.string :name
       t.integer :user_id
       t.integer :group
-      t.string :identifier, null: false
+      t.string :identifier
       t.integer :event_id, null: false
       t.integer :school_id
       t.integer :sk_station
