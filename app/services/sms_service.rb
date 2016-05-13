@@ -72,10 +72,9 @@ class SMSService
       return [FALSE, "验证码发送间隔为#{WAIT_MINUTE}分钟"]
     end
     # 根据类型发送不同消息
-    status = true
-    # status = FALSE
-    # status = send_code_for_add_mobile(code) if type == TYPE_CODE_ADD_MOBILE
-    # status = send_code_for_reset_password(code) if type == TYPE_CODE_RESET_PASSWORD
+    status = FALSE
+    status = send_code_for_add_mobile(code) if type == TYPE_CODE_ADD_MOBILE
+    status = send_code_for_reset_password(code) if type == TYPE_CODE_RESET_PASSWORD
     if status
       [TRUE, '验证码发送成功']
     else
