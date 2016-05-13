@@ -402,13 +402,13 @@ class UserController < ApplicationController
       if school.present?
         result=[false, '该学校已存在或已被添加(待审核)']
       else
-        has_add = School.where(user_id: current_user.id, user_add: 1).exists?
+        has_add = School.where(user_id: current_user.id, status: 0).exists?
         if has_add.present?
-          result= [false, '您已经添加过一所学校，在未审核通过前不能再次添加']
+          result= [false, '您已经添加过一所待审核学校，在审核前不能再次添加']
         else
-          add_s = School.create!(name: name, district: district, school_type: type, school_city: '上海市', user_id: current_user.id, user_add: true)
+          add_s = School.create!(name: name, district: district, school_type: type, school_city: '上海市', user_id: current_user.id, user_add: true, status: false)
           if add_s.save
-            result=[true, '添加成功,该学校仅为您显示，审核通过后才能选择该学校', add_s.id] #该学校仅为您显示，审核通过后其他人才能选择该学校
+            result=[true, '添加成功,该学校仅为您显示，审核通过后才能选择该学校', add_s.id]
           else
             result=[false, '添加学校失败']
           end

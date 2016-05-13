@@ -10,7 +10,6 @@ $(function () {
             var status = $(".referee-apply-status [name='referee-apply']:checked").val();
             var comp_wd = $(".comp-worker-" + ckd).val();
             if (ckd) {
-                console.log(status);
                 if (!status) {
                     alert('请选择审核结果');
                     return false;
@@ -36,6 +35,33 @@ $(function () {
             }
         });
 
+    });
+    // 学校审核
+    $('.review-user-add-school').on('click', function () {
+        var school_id = $(this).attr('data-id');
+        $('.school-review-status-submit').on('click', function () {
+            var status = $(".select-review-status [name='review-status']:checked").val();
+            if (!status) {
+                alert('请选择审核结果');
+                return false;
+            }
+            $.ajax({
+                url: '/admin/checks/review_school',
+                type: 'post',
+                data: {
+                    "status": status, "school_id": school_id
+                },
+                success: function (data) {
+                    if (data[0]) {
+                        alert(data[1]);
+                        window.location.reload();
+                    } else {
+                        alert(data[1]);
+                    }
+                }
+            });
+            $(".select-review-status [name='review-status']").prop('checked', false);
+        });
     });
     // 积分审核
     $('.audit-user-point').on('click', function () {
