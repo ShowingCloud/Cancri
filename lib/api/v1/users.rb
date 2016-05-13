@@ -20,7 +20,7 @@ module API
         end
 
         get '/school' do
-          schools = School.where(school_type: params[:school_type], district: params[:district]).select(:id, :name)
+          schools = School.where(status: 1, school_type: params[:school_type], district: params[:district]).select(:id, :name)
           render schools: schools
         end
 
