@@ -24,7 +24,26 @@ $(function () {
         avatar_control.init('#change-avatar');
         qr.init();
         download_select.init();
+        change_role.init();
     };
+
+    var change_role = {
+        init:function(){
+            if($('.user_profile_roles').length>0){
+                var space = $('.user_profile_roles');
+                space.find('input[type="checkbox"]').off('change').on('change',function(){
+                    var _self = $(this);
+                    var a = _self.val();
+                    if(a=='教师'&&_self.prop('checked')){
+                        space.parents('.user-panel').find('.teacher-part').removeClass('hide');
+                    }else if(a=='教师'&& !(_self.prop('checked')) ){
+                        space.parents('.user-panel').find('.teacher-part').addClass('hide');
+                    }
+                });
+            }
+        }
+    };
+
 
     var qr = {
         init: function () {
@@ -1209,6 +1228,10 @@ $(function () {
                 teacher_mobile = val;
             } else if (name == 'team_name') {
                 teamname = val;
+                if(teamname.length>5 || teamname.length<2){
+                    alert('队伍名长度在2-5个字符之间！');
+                    return false;
+                }
             } else if (name == 'birthday') {
                 birthday = val;
             } else if (name == 'identity_card') {
