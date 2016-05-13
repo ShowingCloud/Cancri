@@ -5,11 +5,11 @@ class Admin::ChecksController < AdminController
   end
 
   def teachers
-    @teachers = UserProfile.joins(:user_roles).where('user_roles.role_id=?', 1).where('user_roles.status is false').select(:id, :user_id, :username, :gender, :certificate, :school, :mobile, :teacher_no).page(params[:page]).per(params[:per])
+    @teachers = UserProfile.joins(:user_roles).joins('inner join schools s on user_profiles.school=s.id').where('user_roles.role_id=?', 1).where('user_roles.status is false').select(:id, :user_id, :username, :gender, :certificate, 's.name as school_name', :mobile, :teacher_no).page(params[:page]).per(params[:per])
     @teacher_array = @teachers.map { |c| {
         id: c.id,
         user_id: c.user_id,
-        school: c.school,
+        school: c.school_name,
         mobile: c.mobile,
         num: c.teacher_no,
         username: c.username,
@@ -21,6 +21,7 @@ class Admin::ChecksController < AdminController
   def review_teacher
     level = params[:level]
     status = params[:status].to_i
+    ud = params[:ud]
     if status.present?
       ur = UserRole.where(user_id: ud, role_id: 1).take
       if ur.present?
@@ -36,7 +37,7 @@ class Admin::ChecksController < AdminController
           else
             th_level = '校级'
           end
-          Notification.create!(user_id: ur.user_id, content: '您的教师身份审核'+(status==1 ? '通过! 角色为'+th_level : '未通过!'), message_type: '审核结果')
+          Notification.create!(user_id: ur.user_id, content: '您的教师身份审核'+(status==1 ? '通过! 角色为'+th_level : '未通过!'), message_type: 5)
           result = [true, '操作成功，即将推送消息告知被审核用户']
         else
           result = [false, '操作失败']
@@ -62,7 +63,7 @@ class Admin::ChecksController < AdminController
       if ck.present?
         ck.status = status==1 ? true : false
         if ck.save
-          Notification.create!(user_id: ck.user_id, content: '您在'+ ck.name.to_s+'中的裁判身份审核'+(status==1 ? '通过!' : '未通过!'), message_type: '审核结果')
+          Notification.create!(user_id: ck.user_id, content: '您在'+ ck.name.to_s+'中的裁判身份审核'+(status==1 ? '通过!' : '未通过!'), message_type: 5)
           result = [true, '操作成功，即将推送消息告知被审核用户']
         else
           result = [false, '操作失败']
@@ -93,6 +94,73 @@ class Admin::ChecksController < AdminController
 
   def referee_list
     @referees = UserProfile.joins(:comp_workers, :competitions, :user).where('comp_workers.status is not NULL').where('comp_workers.user_id=user_profiles.user_id').where('competitions.id=comp_workers.competition_id').where('users.id=user_profiles.user_id').select(:username, :school, :gender, :age, :grade, 'users.mobile', 'competitions.name').page(params[:page]).per(params[:per])
+  end
+
+  def points
+    @points = UserPoint.joins(:prize).joins('inner join user_profiles u_p on u_p.user_id = user_points.user_id').where(is_audit: 0).select(:id, :is_audit, :cover, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize as prize_name', 'u_p.username').page(params[:page]).per(params[:per])
+  end
+
+  def point_list
+    u_p = UserPoint.joins(:prize).joins('inner join user_profiles u_p on u_p.user_id = user_points.user_id').where(is_audit: 1)
+    if params[:audit_status].present?
+      @point_list = u_p.where(status: params[:audit_status]).select(:id, :is_audit, :status, :cover, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize as prize_name', 'u_p.username').page(params[:page]).per(params[:per])
+    else
+      @point_list = u_p.select(:id, :is_audit, :status, :cover, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize as prize_name', 'u_p.username').page(params[:page]).per(params[:per])
+    end
+  end
+
+  def audit_point
+    if params[:status].present? && params[:upd].present?
+      u_p = UserPoint.find(params[:upd])
+      if u_p.present?
+        if u_p.update_attributes(is_audit: true, status: params[:status])
+          result = [true, '审核成功']
+        else
+          result = [false, '审核失败']
+        end
+      else
+        result=[false, '审核对象不存在']
+      end
+    else
+      result =[false, '参数不完整']
+    end
+    render json: result
+  end
+
+  def schools
+    @schools = School.joins('left join user_profiles u_p on u_p.user_id=schools.user_id').where(status: 0, audit: nil).select(:id, :name, :school_type, :district, 'u_p.username').page(params[:page]).per(params[:per])
+  end
+
+  def school_list
+    @schools = School.joins('left join user_profiles u_p on u_p.user_id=schools.user_id').where(user_add: true).where('audit is not NULL').select(:id, :name, :school_type, :audit, :district, 'u_p.username').page(params[:page]).per(params[:per])
+  end
+
+  def review_school
+    if request.method == 'POST'
+      status = params[:status]
+      school_id = params[:school_id].to_i
+      if status.present? && school_id !=0
+        school = School.find(school_id)
+        if school.present? && school.user_id.present? && school.status == false && school.audit==nil
+          if status
+            school.status = status
+          end
+          school.audit = status
+          if school.save
+            result=[true, '审核成功']
+          else
+            result=[false, '审核失败']
+          end
+        else
+          result=[false, '对象不存在']
+        end
+      else
+        result=[false, '参数不完整']
+      end
+    else
+      result=[false, '非法请求']
+    end
+    render json: result
   end
 end
 

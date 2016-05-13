@@ -14,11 +14,9 @@
     <div class="row">
       <div id="match-list">
         <div class="sec-t">
-          <div class="year-select select-robodou">
-            <div class="select-option selected">
-              2016
-            </div>
-          </div>
+          <select class="year-select" name="" id="">
+            <option value="">2016</option>
+          </select>
         </div>
         <div class="sec-c">
           <div class="list">
@@ -27,7 +25,7 @@
                   <%= link_to competition_path(comp) do %>
                       <div class="item" data-src="<%= image_path('homepage/match-item-bk.png') %>">
                         <div class="item-t"><%= comp.name %></div>
-                        <img src="" alt="" data-src="<%= image_path('homepage/match-item.png') %>"/>
+                        <img src="" alt="" data-src="<%= image_path('homepage/jxay-item.jpg') %>"/>
                       </div>
                   <% end %>
                 </div>

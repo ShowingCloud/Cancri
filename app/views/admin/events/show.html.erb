@@ -9,7 +9,6 @@
       <i class="icon-list icon-only"></i></a>
   </small>
 </h1>
-
 <% if notice %>
     <div class="alert alert-success"><%= notice %>
       <button class="close" data-dismiss="alert">
@@ -123,7 +122,7 @@
         <% @score_attributes.each do |sa| %>
             <tr class="<%= "hide-tr#{sa[:id]}" %>">
               <td><%= sa[:id] %></td>
-              <td><%= sa[:name] %></td>
+              <td><%= sa[:name]+' -- '+t('write_type.write_type'+sa[:write_type].to_s) %></td>
               <td id="<%= "sa-desc#{sa[:id]}" %>"><%= sa[:desc] %></td>
               <td>
                 <span class="btn btn-xs btn-warning edit-event-sa-desc" data-id="<%= sa[:id] %>" data-text="<%= sa[:name] %>" title="添加描述"><i class="glyphicon glyphicon-edit"></i></span>

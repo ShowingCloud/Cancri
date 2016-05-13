@@ -1,4 +1,7 @@
 class Admin::CompetitionSchedulesController < AdminController
+  before_action do
+    authenticate_permissions(['admin'])
+  end
 
   def edit
     @comp_schedules=CompetitionSchedule.includes(:competition).where(competition_id: params[:id]).order('start_time asc').order('end_time asc')
@@ -23,7 +26,7 @@ class Admin::CompetitionSchedulesController < AdminController
       if @comp_schedule.save
         format.html { redirect_to '/admin/competition_schedules/'+@comp_schedule.competition_id.to_s+'/edit', notice: '比赛进程创建成功.' }
       else
-        format.html { render action: 'new' }
+        format.html { redirect_to '/admin/competition_schedules/'+comp_schedule_params[:competition_id].to_s+'/edit', notice: @comp_schedule.errors }
         format.json { render json: @comp_schedule.errors, status: :unprocessable_entity }
       end
     end

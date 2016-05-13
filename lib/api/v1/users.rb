@@ -1,15 +1,17 @@
 module API
   module V1
     class Users < Grape::API
+      include Grape::Kaminari
       resource :users do
-        # Get 20 users
         params do
-          optional :limit, type: Integer, default: 20, values: 1..150
+          optional :page, type: Integer, default: 1
+          optional :per_page, type: Integer, default: 20
+          optional :max_per_page, type: Integer, default: 100
+          optional :offset, type: Integer, default: 0
         end
         get do
-          params[:limit] = 100 if params[:limit] > 100
           @users = User.all
-          render @users
+          render paginate(@users)
         end
 
         params do
@@ -18,14 +20,35 @@ module API
         end
 
         get '/school' do
-          schools = School.where(school_type: params[:school_type], district: params[:district]).select(:id, :name)
+          schools = School.where(status: 1, school_type: params[:school_type], district: params[:district]).select(:id, :name)
           render schools: schools
+        end
+
+
+        params do
+          requires :host_year, type: String, desc: '举办年份'
+        end
+        get '/comp_names' do
+          comp_names = Prize.where(host_year: params[:host_year]).select(:name)
+          render comp_names: comp_names
+        end
+
+        params do
+          requires :host_year, type: String, desc: '举办年份'
+          requires :comp_name, type: String, desc: '赛事名称'
+        end
+        get '/comp_prizes' do
+          comp_prizes = Prize.where(host_year: params[:host_year], name: params[:comp_name]).select(:id, :prize)
+          render comp_prizes: comp_prizes
         end
 
         params do
           requires :private_token, type: String, desc: 'Private Token'
+          optional :page, type: Integer, default: 1
+          optional :per_page, type: Integer, default: 20
+          optional :max_per_page, type: Integer, default: 100
+          optional :offset, type: Integer, default: 0
         end
-
         namespace ':private_token' do
           before do
             authenticate!
@@ -36,10 +59,38 @@ module API
             render user: current_user
           end
 
-          desc '获取用户未读消息数量'
-          get '/notifications/unread' do
-            @unread_notify =current_user.notifications.unread.count
-            render @unread_notify
+          desc '获取用户消息'
+          get '/notifications' do
+            @unread_notify =current_user.notifications.where(message_type: 6).where(['created_at > ?', Time.now.beginning_of_day])
+            render notifications: paginate(@unread_notify), total_num: @unread_notify.count, unread: @unread_notify.unread.count
+          end
+
+          desc '更新消息状态为已读'
+          params do
+            requires :id, type: Integer
+          end
+          post '/update_notify_read' do
+            notify = Notification.find(params[:id])
+            if notify.present? && notify.user_id == current_user.id
+              if notify.read
+                result = [false, '无需更新']
+              else
+                if notify.update_attributes(read: true)
+                  result = [true, '更新成功']
+                else
+                  result = [false, '更新已读状态失败']
+                end
+              end
+            else
+              result = [false, '消息不存在或不是您的消息']
+            end
+            render result: result
+          end
+
+          desc :'获取裁判负责项目'
+          get '/user_for_event' do
+            events = EventWorker.joins(:event).joins('left join competitions c on c.id=events.competition_id').where(user_id: current_user.id).select(:event_id, 'events.name', 'c.name as comp_name')
+            render events: events
           end
 
           desc '根据队伍'

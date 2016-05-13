@@ -9,6 +9,10 @@ class User < ApplicationRecord
   has_many :notifications
   has_many :comp_workers
   has_many :event_workers
+  has_many :user_activity_ships
+  has_many :activities, through: :user_activity_ships
+  has_many :consults
+  has_many :user_points
   accepts_nested_attributes_for :user_profile, allow_destroy: true
   delegate :username, :gender, to: :user_profile, allow_nil: true
   mount_uploader :avatar, AvatarUploader
@@ -43,6 +47,7 @@ class User < ApplicationRecord
   end
 
   attr_accessor :login
+  attr_accessor :email_info
   attr_accessor :email_code
   attr_accessor :mobile_info
   attr_accessor :return_url

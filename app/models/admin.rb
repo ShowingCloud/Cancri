@@ -1,5 +1,6 @@
 class Admin < ApplicationRecord
   has_many :news
+  has_many :consults
   has_secure_password
   include AccountConcern
 

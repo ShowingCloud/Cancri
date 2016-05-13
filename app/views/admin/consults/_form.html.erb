@@ -1,0 +1,27 @@
+<div class="panel panel-info">
+  <div class="panel-heading"><%= t('activerecord.models.consult') %></div>
+  <div class="panel-body">
+    <%= simple_form_for([:admin, @consult]) do |f| %>
+        <%= f.error_notification %>
+
+        <h4><%= params[:content] %></h4>
+
+        <div class="form-inputs">
+          <label class="string required control-label" for="consult_content">
+            <abbr title="必填内容">*</abbr>
+            回复内容:
+          </label>
+          <textarea id="consult_content" class="string required form-control" autofocus="autofocus" name="consult[content]"><%= @consult.content %></textarea>
+          <%= f.hidden_field :parent_id, value: params[:pd] %>
+          <%= f.hidden_field :user_id, value: params[:ud] %>
+          <%= f.hidden_field :admin_reply, value: true %>
+          <%= f.hidden_field :admin_id, value: @current_admin.id %>
+        </div>
+
+        <div class="form-actions">
+          <%= f.button :submit, class: 'btn btn-primary' %>
+        </div>
+    <% end %>
+  </div>
+</div>
+

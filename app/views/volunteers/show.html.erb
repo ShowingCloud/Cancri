@@ -1,0 +1,133 @@
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="volunteer" class="volunteer">
+        <div class="volunteer-inner">
+          <div class="sec-t" data-src="<%= image_path('homepage/v-title-bk.png') %>">
+            <span class="tags"><%= @volunteer.news_type.name %></span>
+            <%= @volunteer.competition.name %>
+            <span class="time"><%= @volunteer.created_at.try(:strftime, '%Y-%m-%d') %></span>
+          </div>
+          <div class="sec-c">
+            <div class="sec-top" data-src="<%= image_path('homepage/sec-top.png') %>"></div>
+            <div class="sec-middle">
+              <div class="img">
+                <img src="" alt="" data-src="<%= image_path('homepage/voluteer.jpg') %>"/>
+              </div>
+              <div class="text">
+                <p><%= @volunteer.content.html_safe %>
+                </p>
+
+                <div class="volunteer-bottom">
+                  <% if @already_apply %>
+                      <p>您已经报名</p>
+                  <% else %>
+                      <% if current_user.present? %>
+                          <% if require_email_and_mobile %>
+                              <button data-toggle="modal" data-target="#join-volunteer" class="btn-robodou btn-show-form">报名参加</button>
+                          <% else %>
+                              <!-- 邮箱和手机都要验证 -->
+                              <button class="alert-info-2 btn-robodou btn-show-form">报名参加</button>
+                          <% end %>
+                      <% else %>
+                          <a class="btn-robodou btn-show-form" href="<%= "#{apply_require_volunteers_path}?id=#{@volunteer.id}" %>">报名参加</a>
+                      <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <div class="sec-bottom" data-src="<%= image_path('homepage/sec-bottom.png') %>"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="join-volunteer" class="modal fade">
+  <div class="join-activity">
+    <div class="activity-t" data-src="<%= image_path('homepage/info-t-bk.png') %>">
+      报名志愿者
+    </div>
+    <div class="activity-c">
+      <form id="volunteer-form" action="">
+        <input type="hidden" name="comp_id" value="<%= @volunteer.competition.id %>"/>
+
+        <div class="item-row">
+          <div class="item-first">
+            <i class="glyphicon glyphicon-pencil"></i>
+            姓名
+          </div>
+          <div class="item-second">
+            <input type="text" name="username" class="" value=""/>
+          </div>
+        </div>
+        <div class="item-row">
+          <div class="item-first">
+            <i class="glyphicon glyphicon-certificate"></i>
+            年龄
+          </div>
+          <div class="item-second">
+            <input type="text" name="age" class="" value=""/>
+          </div>
+        </div>
+        <div class="item-row">
+          <div class="item-first">
+            <i class="glyphicon glyphicon-education"></i>
+            学校
+          </div>
+          <div class="item-second">
+            <a class="open-school">
+              <i class="glyphicon glyphicon-plus"></i>
+              选择学校
+            </a>
+            <br/>
+            <a class="add-other-school">没有你的学校？点击添加</a>
+          </div>
+        </div>
+        <div class="item-row">
+          <div class="item-first">
+            <i class="glyphicon glyphicon-bookmark"></i>
+            年级
+          </div>
+          <div class="item-second">
+            <select class="" name="grade" id="">
+              <option value="一">一</option>
+              <option value="二">二</option>
+              <option value="三">三</option>
+              <option value="四">四</option>
+              <option value="五">五</option>
+              <option value="六">六</option>
+              <option value="七">七</option>
+              <option value="八">八</option>
+              <option value="九">九</option>
+              <option value="高一">高一</option>
+              <option value="高二">高二</option>
+              <option value="高三">高三</option>
+              <option value="大一">大一</option>
+              <option value="大二">大二</option>
+              <option value="大三">大三</option>
+              <option value="大四">大四</option>
+              <option value="大五">大五</option>
+              <option value="研一">研一</option>
+              <option value="研二">研二</option>
+              <option value="研三">研三</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="activity-f">
+      <button class="btn-robodou btn-join-volunteer">报名志愿者</button>
+    </div>
+  </div>
+</div>

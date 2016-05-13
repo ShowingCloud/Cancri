@@ -19,4 +19,6 @@
 //= require code
 //= require notify
 //= require base
+//= require jquery.qrcode
+//= require qrcode
 //= //require turbolinks

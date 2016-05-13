@@ -12,78 +12,117 @@
                   <% unless @notification.read %>
                       <% @notification.update_attributes(read: 1) %>
                   <% end %>
+                  <!-- 友情提示 -->
 
-                  <% if @notification.team_id.present? && @notification.message_type=='队长邀请队员' && @event.status==0 %>
-                      <%= @event.invited %>
+                  <% if @notification.message_type==0 %>
+                      <%= @notification.content.html_safe %>
+                  <% end %>
+
+                  <!-- 队长邀请队员 -->
+                  <% if @notification.message_type==1 %>
                       <%= @notification.content %>
-                      <span class="agree-leader-invite btn btn-xs btn-primary">接受邀请</span>
+                      <% if @t_u.status %>
+                          <label class="label label-default">您已经是该队成员</label>
+                      <% else %>
+                          <% if @t_u.apply_end_time > Time.now %>
+                              <span class="agree-leader-invite btn btn-xs btn-primary">接受邀请</span>
 
+                              <div class="hide add-agree-invited-info">
+                                <hr>
+                                <div class="col-md-7">
+                                  <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                      请确认或添加报名信息
+                                    </div>
+                                    <div class="panel-body">
 
-                      <div class="hide add-agree-invited-info">
-                        <hr>
-                        <div class="col-md-7">
-                          <div class="panel panel-info">
-                            <div class="panel-heading">
-                              请确认或添加报名信息
-                            </div>
-                            <div class="panel-body">
+                                      <div class="form-horizontal">
+                                        <div class="form-group">
+                                          <label for="username" class="col-sm-2 control-label">姓名 :</label>
 
-                              <div class="form-horizontal">
-                                <div class="form-group">
-                                  <label for="username" class="col-sm-2 control-label">姓名 :</label>
+                                          <div class="col-sm-10">
+                                            <input type="text" class="form-control" value="<%= current_user.user_profile.try(:username) %>" id="username" placeholder="请输入姓名">
+                                          </div>
+                                        </div>
 
-                                  <div class="col-sm-10">
-                                    <input type="text" class="form-control" value="<%= current_user.user_profile.try(:username) %>" id="username" placeholder="请输入姓名">
-                                  </div>
-                                </div>
+                                        <div class="form-group">
+                                          <label for="school" class="col-sm-2 control-label">学校 :</label>
 
-                                <div class="form-group">
-                                  <label for="school" class="col-sm-2 control-label">学校 :</label>
+                                          <div class="col-sm-10">
+                                            <input type="text" class="form-control" value="<%= current_user.user_profile.try(:school) %>" id="school" placeholder="请输入学校">
+                                          </div>
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="grade" class="col-sm-2 control-label">年级 :</label>
 
-                                  <div class="col-sm-10">
-                                    <input type="text" class="form-control" value="<%= current_user.user_profile.try(:school) %>" id="school" placeholder="请输入学校">
-                                  </div>
-                                </div>
-                                <div class="form-group">
-                                  <label for="grade" class="col-sm-2 control-label">年级 :</label>
+                                          <div class="col-sm-10">
+                                            <input type="text" class="form-control" value="<%= current_user.user_profile.try(:grade) %>" id="grade" placeholder="请输入年级">
+                                          </div>
+                                        </div>
 
-                                  <div class="col-sm-10">
-                                    <input type="text" class="form-control" value="<%= current_user.user_profile.try(:grade) %>" id="grade" placeholder="请输入年级">
-                                  </div>
-                                </div>
-
-                                <div class="form-group">
-                                  <div class="col-sm-offset-2 col-sm-10">
-                                    <button class="btn btn-info btn-block agree-invited-info-submit" data-id="<%= @notification.team_id %>" data-name="<%= @event.id %>">提交</button>
+                                        <div class="form-group">
+                                          <div class="col-sm-offset-2 col-sm-10">
+                                            <button class="btn btn-info btn-block agree-invited-info-submit" data-id="<%= @notification.team_id %>" data-name="<%= @t_u.event_id %>">提交</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                  <% elsif @notification.message_type=='申请加入队伍' && @notification.t_u_id.present? && @event.status==0 %>
-                      <%= @notification.content %>
-                      <% if @has_agree==2 %>
-                          <label class="label label-danger">已拒绝申请</label>
-                      <% elsif @has_agree %>
-                          <label class="label label-info">已同意申请</label>
-                      <% else %>
-                          <%= link_to "#{leader_agree_apply_competitions_path}?tud=#{@notification.t_u_id.to_s}&nd=#{params[:id]}", data: {confirm: '确认同意加入吗?', method: :post}, title: '同意加入', class: 'btn btn-xs btn-primary' do %>
-                              同意加入
-                          <% end %>
-                          <%= link_to "#{leader_agree_apply_competitions_path}?tud=#{@notification.t_u_id.to_s}&nd=#{params[:id]}&reject=1", data: {confirm: '确认拒绝加入吗?', method: :post}, title: '同意加入', class: 'btn btn-xs btn-danger' do %>
-                              拒绝加入
+                          <% else %>
+                              <label class="label label-danger">该比赛已停止报名</label>
                           <% end %>
                       <% end %>
-                  <% else %>
-                      <% if @notification.message_type=='队长邀请队员' %>
-                          <h3>该比赛项目已停止报名,无法接受邀请</h3>
-                          <br>
-                      <% end %>
-                      <%= @notification.content.html_safe %>
                   <% end %>
+                  <!-- 申请加入队伍 -->
+                  <% if @notification.message_type==2 %>
+                      <%= @notification.content %>
+                      <% if @t_u.present? %>
+                          <% if @t_u.status %>
+                              <label class="label label-danger">申请者已是该队队员</label>
+                          <% else %>
+                              <% if @t_u.apply_end_time > Time.now %>
+                                  <% if @has_agree==2 %>
+                                      <label class="label label-danger">已拒绝申请</label>
+                                  <% elsif @has_agree %>
+                                      <label class="label label-info">已同意申请</label>
+                                  <% else %>
+                                      <%= link_to "#{leader_agree_apply_competitions_path}?tud=#{@t_u.id.to_s}&nd=#{params[:id]}", data: {confirm: '确认同意加入吗?', method: :post}, title: '同意加入', class: 'btn btn-xs btn-primary' do %>
+                                          同意加入
+                                      <% end %>
+                                      <%= link_to "#{leader_agree_apply_competitions_path}?tud=#{@t_u.id.to_s}&nd=#{params[:id]}&reject=1", data: {confirm: '确认拒绝加入吗?', method: :post}, title: '拒绝加入', class: 'btn btn-xs btn-danger' do %>
+                                          拒绝加入
+                                      <% end %>
+                                  <% end %>
+                              <% else %>
+                                  <label class="label label-danger">该比赛已停止报名</label>
+                              <% end %>
+                          <% end %>
+                      <% else %>
+                          <label class="label label-danger">该队伍不存在或已解散</label>
+                      <% end %>
+                  <% end %>
+
+                  <!-- 申请退出队伍 -->
+
+                  <% if @notification.message_type == 3 %>
+                      <%= @notification.content %>
+                      <% if @has_agree %>
+                          <label class="label label-danger">已同意退出</label>
+                      <% else %>
+                          <% if @t_u.apply_end_time > Time.now %>
+                              <%= link_to "#{leader_deal_cancel_team_competitions_path}?tud=#{@notification.t_u_id.to_s}&nd=#{params[:id]}", data: {confirm: '确认同意退出吗?', method: :post}, title: '同意退出', class: 'btn btn-xs btn-primary' do %>
+                                  同意退出
+                              <% end %>
+                          <% else %>
+                              <label class="label label-danger">该比赛已截至报名</label>
+                          <% end %>
+                      <% end %>
+                  <% end %>
+                  <!-- 拒绝/同意申请 -->
+                  <!-- 审核结果 -->
+                  <!-- 比赛通知裁判信息 -->
               <% else %>
                   <div class="alert alert-info">
                     <p> 不是您的消息,无法查看</p>

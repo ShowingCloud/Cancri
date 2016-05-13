@@ -25,7 +25,6 @@
 <div class="alert alert-success">
   <i class="icon-hand-right"></i>
   欢迎登录!
-  </small>
   <button class="close" data-dismiss="alert">
     <i class="icon-remove"></i>
   </button>
@@ -48,11 +47,11 @@
   <div class="col-md-4">
     <div class="panel panel-info">
       <div class="panel-heading">
-        用户信息
+        待审核积分
       </div>
       <div class="panel-body">
         <ul>
-          <li>用户总数： <span><%= @all_user_num %></span></li>
+          <li><a href="/admin/checks/points">总数：<span><%= @review_th_num %></span></a></li>
         </ul>
       </div>
     </div>
@@ -77,8 +76,8 @@
       <div class="panel-body">
         <ul>
           <li><a href="/admin/checks/teachers">教师：<span><%= @review_th_num %></span></a></li>
-
           <li><a href="/admin/checks/referees">裁判：<span><%= @review_re_num %></span></a></li>
+          <li><a href="/admin/checks/schools">学校：<span><%= @review_sc_num %></span></a></li>
         </ul>
       </div>
     </div>

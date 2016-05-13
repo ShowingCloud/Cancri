@@ -229,6 +229,13 @@ zh-CN:
     group2: '中学组'
     group3: '初中组'
     group4: '高中组'
+  write_type:
+    sd: '手动输入'
+    app: 'app计时'
+    saidao: '赛道计时'
+    write_type1: '手动'
+    write_type2: 'app'
+    write_type3: '赛道'
   activerecord:
     models:
       user: '用户'
@@ -245,6 +252,11 @@ zh-CN:
       news_type: '新闻类型'
       district: '区县'
       score_attribute: '成绩属性'
+      activity: '活动'
+      volunteer: '志愿者'
+      demeanor: '选手风采'
+      photo: '图片'
+      consult: '用户反馈'
   views:
     pagination:
         first: "首页"

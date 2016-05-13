@@ -5,19 +5,52 @@
   <div class="username"><%= current_user.nickname %></div>
 </div>
 <div class="sidebar">
-  <a href="<%= user_preview_path %>" class="center-list active" data-src="<%= image_path('homepage/center-list-active.png') %>">
+  <a href="<%= user_preview_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
     个人信息
   </a>
-  <a class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
+  <a href="<%= user_comp_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
     参赛信息
   </a>
   <a href="<%= user_notification_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
     消息通知
   </a>
-  <a class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
+  <a href="<%= user_point_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
     我的积分
   </a>
-  <a class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
+  <a href="<%= user_consult_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
     调戏小豆
   </a>
+</div>
+
+<div id="change-avatar" class="modal fade">
+  <div class="change-avatar">
+    <div class="title" data-src="<%= image_path('homepage/info-t-bk.png') %>">
+      修改昵称和头像
+    </div>
+    <form action="update_avatar" method="post" enctype="multipart/form-data">
+      <div class="input-row">
+        <div class="input-l">
+          <i class="glyphicon glyphicon-user"></i>
+          新昵称
+        </div>
+        <div class="input-r">
+          <input type="text" name="user[nickname]" placeholder="输入新昵称" value="<%= current_user.nickname %>"/>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-l">
+          <i class="glyphicon glyphicon-user"></i>
+          新头像
+        </div>
+        <div class="input-r">
+          <input id="changeAvatar" name="user[avatar]" type="file" class="hide"/>
+          <label class="avatar-btn" for="changeAvatar"><i class="glyphicon glyphicon-upload"></i>请选择图片</label>
+        </div>
+      </div>
+      <input type="hidden" name="authenticity_token"/>
+      <div class="form-b">
+        <button type="submit" class="btn-robodou btn-submit-avatar">提交</button>
+      </div>
+    </form>
+  </div>
 </div>

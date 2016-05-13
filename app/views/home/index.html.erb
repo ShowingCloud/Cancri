@@ -6,12 +6,12 @@
           <div class="slider" data-src="<%= image_path('homepage/slider-border.png') %>">
             <div class="slider-win">
               <ul class="items">
-                <li class="item"><a href="#"><img
-                data-src="<%= image_path('homepage/slider-01.png') %>"/></a></li>
-                <li class="item"><a href="#"><img
-                data-src="<%= image_path('homepage/slider-01.png') %>"/></a></li>
-                <li class="item"><a href="#"><img
-                data-src="<%= image_path('homepage/slider-01.png') %>"/></a></li>
+                <li class="item"><a href="<%= competitions_path %>"><img
+                data-src="<%= image_path('homepage/slider-02.png') %>"/></a></li>
+                <li class="item"><a href="<%= competitions_path %>"><img
+                data-src="<%= image_path('homepage/slider-02.png') %>"/></a></li>
+                <li class="item"><a href="<%= competitions_path %>"><img
+                data-src="<%= image_path('homepage/slider-02.png') %>"/></a></li>
               </ul>
               <div class="slider-controller">
                 <span class="slider-prev"></span>
@@ -21,12 +21,12 @@
           </div>
           <div class="intro" data-src="<%= image_path('homepage/intro-bk.png') %>">
             <div class="sec-t">
-              2016 机器人嘉年华
+              2016 机械奥运
             </div>
             <div class="sec-c">
-              这是一场机器人爱好者的盛会，“展示、分享、互动”是贯穿始终的主题。这里有是时代前沿的高科技产品、这里有爱好者们创作的优秀作品、也有精彩的主题邀请赛……我们将机器人元素融入娱乐、游艺与交流，让孩子们感受竞技之外的创意体验。
+              机械奥运活动将科技创新实践的成果交流以体育竞技的形式予以呈现，以“更快、更高、更强”的奥运精神激励青少年不断超越自我。
               <br/>
-              <a class="more-link">
+              <a class="more-link" href="<%= competitions_path %>">
                 <i class="glyphicon glyphicon-triangle-right"></i>&nbsp;更多
               </a>
             </div>
@@ -40,28 +40,22 @@
           </div>
           <div class="sec-c">
             <ul class="items">
+              <% @recent_activities.each do |a| %>
+                  <li class="item">
+                    <a class="item-img" href="<%= "/activities/#{a.id}" %>" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
+                      <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
+                    </a>
+                    <a class="item-link" href="<%= "/activities/#{a.id}" %>">
+                      <%= a.name %>
+                    </a>
+                  </li>
+              <% end %>
               <li class="item">
-                <a class="item-img" href="" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
-                  <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
+                <a class="item-img" href="<%= competitions_path %>" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
+                  <img data-src="<%= image_path('homepage/sidebar-item02.jpg') %>" src="" alt=""/>
                 </a>
-                <a class="item-link" href="">
-                  2016 西南位育杯
-                </a>
-              </li>
-              <li class="item">
-                <a class="item-img" href="" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
-                  <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
-                </a>
-                <a class="item-link" href="">
-                  2016 西南位育杯
-                </a>
-              </li>
-              <li class="item">
-                <a class="item-img" href="" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
-                  <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
-                </a>
-                <a class="item-link" href="">
-                  2016 西南位育杯
+                <a class="item-link" href="<%= competitions_path %>">
+                  2016机械奥运
                 </a>
               </li>
             </ul>
@@ -112,38 +106,6 @@
         <a>关于我们</a>
         <span class="separator"></span>
         <a>联系我们</a>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="login-modal">
-  <div class="modal-dialog">
-    <div class="login-content" data-src="<%= image_path('homepage/login-border.png') %>">
-      <div class="sec-t">
-        登录我的robodou
-      </div>
-      <div class="sec-c">
-        <div class="login-form">
-          <form action="/account/sign_in" novalidate="novalidate" method="post">
-            <input name="utf8" type="hidden" value="✓">
-            <input type="hidden" name="authenticity_token" value="">
-            <label class="input-row">
-              用户名 <input type="text" name="user[login]"/>
-            </label>
-            <label class="input-row">
-              密码 <input type="password" name="user[password]"/>
-            </label>
-            <div class="btn-row">
-              <button class="btn-robodou btn-robodou-login-modal" data-src="<%= image_path('homepage/login-btn-modal-bk.png') %>">登
-                录
-              </button>
-            </div>
-          </form>
-          <a href="">忘记密码</a>
-        </div>
-      </div>
-      <div class="sec-f">
-        <a href="<%= new_user_registration_path %>">注 册</a>
       </div>
     </div>
   </div>

@@ -1,0 +1,106 @@
+<div id="main" class="main" data-src="<%= image_path('homepage/bk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="download">
+        <div class="download" data-src="<%= image_path('homepage/download-bk.png') %>">
+          <div class="title">
+            下载
+          </div>
+          <div class="download-inner">
+            <% if @has_role %>
+                <div class="select-front">
+                  <div class="download-item active" data-src="<%= image_path('homepage/download-item-bk.png') %>">
+                    <div class="sec-t">
+                      <i class="glyphicon glyphicon-calendar"></i>
+                    </div>
+                    <div class="sec-c">
+                      比赛年份
+                      <select name="year" id="">
+                        <option value="">请选择年份</option>
+                        <option value="">2014</option>
+                        <option value="">2015</option>
+                        <option value="">2016</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="download-item" data-src="<%= image_path('homepage/download-item-bk.png') %>">
+                    <div class="sec-t">
+                      <i class="glyphicon glyphicon-th-large"></i>
+                    </div>
+                    <div class="sec-c">
+                      比赛项目
+                      <select name="event" id="">
+                        <option value="">请选择比赛项目</option>
+                        <option value="">项目1</option>
+                        <option value="">项目2</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="download-item" data-src="<%= image_path('homepage/download-item-bk.png') %>">
+                    <div class="sec-t">
+                      <i class="glyphicon glyphicon-download-alt"></i>
+                    </div>
+                    <div class="sec-c">
+                      下载项目
+                      <select name="table" id="">
+                        <option value="">请选择下载类型</option>
+                        <option value="">报名表</option>
+                        <option value="">成绩表</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="select-end">
+                  <div class="download-item" data-src="<%= image_path('homepage/download-item-bk.png') %>">
+                    <div class="sec-t">
+                      <i class="glyphicon glyphicon-globe"></i>
+                    </div>
+                    <div class="sec-c">
+                      区县
+                      <select name="download-district" id="">
+                        <option value="">请选择区县</option>
+                        <option value="">黄浦区</option>
+                        <option value="">普陀区</option>
+                        <option value="">长宁区</option>
+                        <option value="">宝山区</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="download-item" data-src="<%= image_path('homepage/download-item-bk.png') %>">
+                    <div class="sec-t">
+                      <i class="glyphicon glyphicon-home"></i>
+                    </div>
+                    <div class="sec-c">
+                      学校
+                      <select name="download-school" id="">
+                        <option value="">请选择学校</option>
+                        <option value="">学校1</option>
+                        <option value="">学校2</option>
+                        <option value="">学校3</option>
+                        <option value="">学校4</option>
+                        <option value="">学校5</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="bottom">
+                  <button class="btn-robodou btn-download">下载</button>
+                </div>
+            <% else %>
+                <h2 style="font-size:36px; padding-bottom: 15px;color: #88D5EC;text-align: center; margin-top: 180px; background: no-repeat transparent center bottom;" data-src="<%= image_path('homepage/info-t-bk.png') %>" >只有老师才能下载</h2>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>

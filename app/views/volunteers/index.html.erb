@@ -1,12 +1,30 @@
-<div class="container">
-  <h1>志愿者页面</h1>
-
-  <%= @competitions.first.name %>
-  <% if current_user.present? && current_user.user_profile.roles.present? && current_user.user_profile.roles.split(',').include?('志愿者') %>
-      <span class="btn btn-warning">申请成为该比赛裁判身份</span>
-  <% else %>
-      <span class="btn btn-warning">去成为比赛志愿者</span>
-  <% end %>
-
-
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div id="volunteer" class="volunteer">
+        <div class="v-list">
+          <% @volunteers.each do |vol| %>
+              <%= link_to "#{volunteers_path}/#{vol.id}", title: '查看' do %>
+                  <div class="v-item" data-src="<%= image_path('homepage/v-item-bk.png') %>">
+                    <div class="v-title"><%= vol.competition.name %></div>
+                    <div class="v-circle">志愿者开始招募</div>
+                  </div>
+              <% end %>
+          <% end %>
+        </div>
+      </div>
+      <nav>
+        <%= paginate @volunteers %>
+      </nav>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
 </div>

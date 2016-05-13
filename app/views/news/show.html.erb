@@ -1,0 +1,27 @@
+<div id="main" class="main" data-src="<%= image_path('homepage/bk.png') %>">
+  <div id="news-content">
+    <div class="container">
+      <div class="news-content">
+        <div class="news-content-image" data-src="<%= image_path('homepage/news-content-bk.png') %>">
+          <img src="" alt="" data-src="<%= image_path('homepage/news-content01.png') %>"/>
+        </div>
+        <div class="news-content-tags">
+
+        </div>
+        <div class="news-content-text">
+          <h2 class="text-center"><%= @new.name %></h2>
+          <%= @new.content.html_safe %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,6 +2,11 @@ class Competition < ApplicationRecord
   has_many :events
   has_many :competition_schedules
   has_many :comp_workers
+  has_many :volunteers
+  has_many :photos
+  has_many :videos
+  accepts_nested_attributes_for :photos
+  accepts_nested_attributes_for :videos
 
 
   validates :name, presence: true, length: {maximum: 50}, uniqueness: true

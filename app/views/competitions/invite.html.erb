@@ -1,48 +1,48 @@
-<style>
-    .form-style > h3 {
-        color: #555;
-        font-size: 18px;
-        font-weight: 400;
-        margin: 30px 0;
-        text-align: center;
-    }
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
 
-</style>
-<div class="container">
-
-
-  <%= simple_form_for(@add_info, url: invite_competitions_path, method: :post) do |f| %>
-      <div class="form-style">
-        <h3>
-          接受 <%= @add_info.leader %> 邀请
-          <br>
-          <br>
-          加入 <%= @add_info.team_name %>
-        </h3>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-8 col-md-4 col-lg-4 col-xs-offset-2 col-md-offset-2 col-lg-offset-4">
-          <div class="form-group optional">
-            <label class="string optional control-label" for="user_email">邮箱</label>
-            <input id="user_email" class="string email optional form-control" disabled type="email" name="user[email]" value="<%= params[:email].present? ? params[:email] : @add_info.email %>">
+  <div class="container">
+    <div class="invite-page">
+      <%= simple_form_for(@add_info, url: invite_competitions_path, method: :post) do |f| %>
+          <div class="form-style">
+            <h3>
+              接受 <%= @add_info.leader %> 邀请
+              <br>
+              <br>
+              加入 <%= @add_info.team_name %>
+            </h3>
           </div>
-          <%= f.hidden_field :email, value: params[:email].present? ? params[:email] : @add_info.email %>
-          <%= f.hidden_field :code, value: params[:code].present? ? params[:code] : @add_info.code %>
-          <%= f.hidden_field :leader, value: @add_info.leader %>
-          <%= f.hidden_field :team_name, value: @add_info.team_name %>
-          <%= f.input :username %>
-          <%= f.input :school %>
-          <%= f.input :grade, collection: {一年级: 1, 二年级: 2, 三年级: 3, 四年级: 4, 五年级: 5, 六年级: 6, 七年级: 7, 八年级: 8, 九年级: 9, 高一: 10, 高二: 11, 高三: 12}.map { |key, val| [key, val] } %>
-          <%= f.input :nickname %>
-          <%= f.input :password %>
-          <div class="form-actions">
-            <%= f.submit class: 'btn btn-block btn-primary', value: '提交', 'data-disable-with' => '提交' %>
+          <div class="row">
+            <div class="form-group optional">
+              <label class="string optional control-label" for="user_email">邮箱</label>
+              <input id="user_email" class="string email optional form-control" disabled type="email" name="user[email]" value="<%= params[:email].present? ? params[:email] : @add_info.email %>">
+            </div>
+            <%= f.hidden_field :email, value: params[:email].present? ? params[:email] : @add_info.email %>
+            <%= f.hidden_field :code, value: params[:code].present? ? params[:code] : @add_info.code %>
+            <%= f.hidden_field :leader, value: @add_info.leader %>
+            <%= f.hidden_field :team_name, value: @add_info.team_name %>
+            <%= f.input :username %>
+            <%= f.input :school %>
+            <%= f.input :gender %>
+            <%= f.input :student_code %>
+            <%= f.input :grade, collection: {一年级: 1, 二年级: 2, 三年级: 3, 四年级: 4, 五年级: 5, 六年级: 6, 七年级: 7, 八年级: 8, 九年级: 9, 高一: 10, 高二: 11, 高三: 12}.map { |key, val| [key, val] } %>
+            <%= f.input :nickname %>
+            <%= f.input :password %>
+            <div class="form-actions">
+              <%= f.submit class: 'btn btn-block btn-primary', value: '提交', 'data-disable-with' => '提交' %>
+            </div>
           </div>
-        </div>
+
+      <% end %>
+
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
       </div>
-
-  <% end %>
-
-
+    </div>
+  </div>
 </div>
