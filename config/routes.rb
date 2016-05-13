@@ -100,11 +100,14 @@ Rails.application.routes.draw do
     get '/checks/teacher_list' => 'checks#teacher_list'
     get '/checks/referee_list' => 'checks#referee_list'
     get '/checks/referees' => 'checks#referees'
+    get '/checks/schools' => 'checks#schools'
+    get '/checks/school_list' => 'checks#school_list'
     get '/checks/points' => 'checks#points'
     get '/checks/point_list' => 'checks#point_list'
     post '/checks/audit_point' => 'checks#audit_point'
     post '/checks/review_teacher' => 'checks#review_teacher'
     post '/checks/review_referee' => 'checks#review_referee'
+    post '/checks/review_school' => 'checks#review_school'
 
     resources :competition_schedules do
       collection do
@@ -128,6 +131,7 @@ Rails.application.routes.draw do
         post :edit_event_sa_desc
       end
     end
+    resources :event_schedules
     resources :news
     resources :activities
     resources :news_types
