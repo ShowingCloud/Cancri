@@ -181,6 +181,10 @@ class CompetitionsController < ApplicationController
       render json: [false, '两所学校不能一样']
       return false
     end
+    unless team_name.length>1 && team_name.length<6
+      render json: [false, '请输入2-5位的队伍名字']
+      return false
+    end
     if team_name.present? && district_id !=0 && ed !=0 && sd !=0 && teacher.present? && group != 0
       already_apply = TeamUserShip.where(user_id: user_id, event_id: ed).exists?
       has_team_name = Team.where(event_id: ed, name: team_name).take
