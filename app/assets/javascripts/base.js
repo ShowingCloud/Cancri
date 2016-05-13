@@ -214,7 +214,7 @@ $(function () {
         init: function (ed) {
             var b = $('.btn-search-team');
             if (b) {
-                b.on('click', function () {
+                b.off('click').on('click', function () {
                     var old = b.text();
                     b.text('查询中');
                     b.prop({'disabled': true});
@@ -270,13 +270,13 @@ $(function () {
 
     var join_team = {
         init: function (ed) {
-            $('.btn-join-team').on('click', function () {
+            $('.btn-join-team').off('click').on('click', function () {
                 $('.search-team').removeClass('active');
                 var td = $(this).parents('tr').attr('data-td');
                 $(this).parents('.team-panel').removeClass('active');
                 var space = $('.team-confirm-join');
                 space.addClass('active');
-                space.find('.open-school').on('click', function () {
+                space.find('.open-school').off('click').on('click', function () {
                     SCHOOL_DATA.type = space.find('input[name="group"]').val();
                     if (!SCHOOL_DATA.type) {
                         return alert('请选择组别');
@@ -296,7 +296,7 @@ $(function () {
                     }
                 });
 
-                space.find('.add-other-school').on('click', function () {
+                space.find('.add-other-school').off('click').on('click', function () {
                     SCHOOL_DATA.type = space.find('input[name="group"]').val();
                     if (!SCHOOL_DATA.type) {
                         return alert('请选择组别');
@@ -318,7 +318,7 @@ $(function () {
                 //开启添加学校
                 add_other_school.init(space);
 
-                space.find('.apply-submit').on('click', function (event) {
+                space.find('.apply-submit').off('click').on('click', function (event) {
                     event.preventDefault();
                     var _self = $(this);
                     var form = space.find('#team-confirm-form');
@@ -398,14 +398,14 @@ $(function () {
         init: function () {
             var b = $('.alert-info-2');
             if (b.length > 0) {
-                b.on('click', function () {
+                b.off('click').on('click', function () {
                     alert('请去个人中心验证您的手机和邮箱');
                 });
             }
 
             var a = $('.btn-join-volunteer');
             if (a.length > 0) {
-                a.on('click', function () {
+                a.off('click').on('click', function () {
                     var form = $('#volunteer-form');
                     var option = {
                         url: '/volunteers/apply_comp_volunteer',
@@ -431,7 +431,7 @@ $(function () {
         init: function () {
             var b = $('.btn-add-school');
             if (b.length > 0) {
-                b.on('click', function (event) {
+                b.off('click').on('click', function (event) {
                     event.preventDefault();
                     var _self = $(this);
                     var type = _self.parent().find('.add-school-type').val();
@@ -480,7 +480,7 @@ $(function () {
     var join_v_school = {
         init: function () {
             var space = $('#join-volunteer');
-            space.find('.open-school').on('click', function () {
+            space.find('.open-school').off('click').on('click', function () {
                 var length = $('.edit-school').length;
                 if (length == 2) {
                     alert('学校已满，无法继续添加！');
@@ -489,7 +489,7 @@ $(function () {
                 }
             });
 
-            space.find('.add-other-school').on('click', function () {
+            space.find('.add-other-school').off('click').on('click', function () {
                 var length = $('.edit-school').length;
                 if (length == 2) {
                     alert('学校已满，无法继续添加！');
@@ -502,15 +502,14 @@ $(function () {
 
     var add_other_school = {
         init: function (space) {
-            $('#add-other-school').find('.apply-submit').off('click');
-            $('#add-other-school').find('.apply-submit').on('click', function (event) {
+            $('#add-other-school').find('.apply-submit').off('click').on('click', function (event) {
                 var _self = $(this);
                 var text = $('#add-other-school').find('input').val();
                 var option = {
                     url: '/user/add_school',
                     dataType: 'json',
                     type: 'post',
-                    data: {type: SCHOOL_DATA.type, district: SCHOOL_DATA.district, school: text},
+                    data: {type: SCHOOL_DATA.type, district: SCHOOL_DATA.districtName, school: text},
                     success: function (data) {
                         if (data[0]) {
                             alert('学校添加成功！');
@@ -546,7 +545,7 @@ $(function () {
         init: function () {
             var a = $('.btn-invitation');
             if (a.length > 0) {
-                a.on('click', function () {
+                a.off('click').on('click', function () {
                     var e = $('.invitation-email').val();
                     var tName = $('.apply-team-name').text();
                     var eName = $('.event-name').text();
@@ -582,7 +581,7 @@ $(function () {
             }
             var b = $('.invitation-text');
             if (b.length > 0) {
-                b.on('keyup', function () {
+                b.off('click').on('keyup', function () {
                     var _self = $(this);
                     var name = _self.val();
                     var reg = /[\u4e00-\u9fa5]{2,}/;
@@ -627,7 +626,7 @@ $(function () {
             }
             var c = $('.btn-add-team-member');
             if (c.length > 0) {
-                c.on('click', function () {
+                c.off('click').on('click', function () {
                     var e = $('.hidden-invitation-id').val();
                     if (e) {
                         var tName = $('.apply-team-name').text();
@@ -694,7 +693,7 @@ $(function () {
             height: 64,
             text: EVENT_DATA[ed].team_info[0].identifier
         });
-        space.find('.btn-exit-event').on('click', function (event) {
+        space.find('.btn-exit-event').off('click').on('click', function (event) {
             event.preventDefault();
             var _self = $(this);
             if (confirm('确定退出比赛么？')) {
@@ -751,7 +750,7 @@ $(function () {
         });
 
         //解散队伍
-        target.parent().find('.delete-team').on('click', function (event) {
+        target.parent().find('.delete-team').off('click').on('click', function (event) {
             event.preventDefault();
             var _self = $(this);
             if (confirm('确定退出比赛么？')) {
@@ -771,7 +770,7 @@ $(function () {
         });
 
         //删除队员
-        target.find('.delete-member').on('click', function (event) {
+        target.find('.delete-member').off('click').on('click', function (event) {
             event.preventDefault();
             var _self = $(this);
             if (confirm('确定将该队员删除么？')) {
@@ -849,7 +848,7 @@ $(function () {
                             var html = $('<li class="item"><div data-school-id="' + id + '" class="choice-school">' + name + '</div></li>');
                             $('#add-school').find('.items').append(html);
                         });
-                        $('.choice-school').on('click', function () {
+                        $('.choice-school').off('click').on('click', function () {
                             var _self = $(this);
                             var id = _self.attr('data-school-id');
                             for (var i = 0; i < SCHOOL_DATA.school_list.length; i++) {
@@ -920,12 +919,12 @@ $(function () {
         search_team.init(ed);
 
         //团队创建队伍
-        $('.btn-create-team').on('click', function (event) {
+        $('.btn-create-team').off('click').on('click', function (event) {
             event.preventDefault();
             space.removeClass('active');
             space = $('.create-team');
             space.addClass('active');
-            space.find('.open-school').on('click', function () {
+            space.find('.open-school').off('click').on('click', function () {
                 SCHOOL_DATA.type = space.find('input[name="group"]').val();
                 if (!SCHOOL_DATA.type) {
                     return alert('请选择组别');
@@ -945,7 +944,7 @@ $(function () {
                 }
             });
 
-            space.find('.add-other-school').on('click', function () {
+            space.find('.add-other-school').off('click').on('click', function () {
                 SCHOOL_DATA.type = space.find('input[name="group"]').val();
                 if (!SCHOOL_DATA.type) {
                     return alert('请选择组别');
@@ -967,7 +966,7 @@ $(function () {
             //开启添加学校
             add_other_school.init(space);
 
-            space.find('.apply-submit').on('click', function (event) {
+            space.find('.apply-submit').off('click').on('click', function (event) {
                 event.preventDefault();
                 var _self = $(this);
                 var old = _self.text();
@@ -1027,7 +1026,7 @@ $(function () {
     function start_single_confirm(ed) {
         var space = $('.single-confirm');
         space.addClass('active');
-        space.find('.open-school').on('click', function () {
+        space.find('.open-school').off('click').on('click', function () {
             SCHOOL_DATA.type = space.find('input[name="group"]').val();
             if (!SCHOOL_DATA.type) {
                 return alert('请选择组别');
@@ -1047,7 +1046,7 @@ $(function () {
             }
         });
 
-        space.find('.add-other-school').on('click', function () {
+        space.find('.add-other-school').off('click').on('click', function () {
             SCHOOL_DATA.type = space.find('input[name="group"]').val();
             if (!SCHOOL_DATA.type) {
                 return alert('请选择组别');
@@ -1070,7 +1069,7 @@ $(function () {
         add_other_school.init(space);
 
         //提交
-        space.find('.apply-submit').on('click', function (event) {
+        space.find('.apply-submit').off('click').on('click', function (event) {
             event.preventDefault();
             var _self = $(this);
             var old = _self.text();
