@@ -64,6 +64,7 @@ gem 'rucaptcha', '~> 0.3.2'
 gem 'carrierwave' #, github: 'carrierwaveuploader/carrierwave'
 gem 'mini_magick'
 gem 'rails-admin-scaffold'
+gem 'to_xls-rails'
 gem 'kaminari', github: 'amatsuda/kaminari'
 gem 'virtus'
 

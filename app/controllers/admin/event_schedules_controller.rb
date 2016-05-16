@@ -4,13 +4,14 @@ class Admin::EventSchedulesController < AdminController
   end
 
   def edit
-    @event_schedules=EventSchedule.includes(:event, :schedule).where(event_id: params[:id])
+    @event_schedules=EventSchedule.includes(:event, :schedule).where(event_id: params[:id]).order('event_schedules.group asc')
     if @event_schedules.present?
       @one_cs = EventSchedule.new(event_id: params[:id])
       @event_schedule = @event_schedules
     else
       @event_schedule = EventSchedule.new(event_id: params[:id])
     end
+    @event_group = Event.find(params[:id]).try(:group)
   end
 
 
