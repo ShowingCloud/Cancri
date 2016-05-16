@@ -13,6 +13,26 @@ class Admin::EventsController < AdminController
     else
       @events = Event.includes(:parent_event, :competition).all.page(params[:page]).per(params[:per])
     end
+
+    respond_to do |format|
+      format.html
+      format.xls {
+        data = Event.all.select(:id, :name, :is_father, :parent_id, :competition_id, :group, :team_min_num, :team_max_num).map { |x| {
+            name: x.name,
+            is_father: x.is_father,
+            parent_id: x.group,
+            competition_id: x.competition_id,
+            group: x.group,
+            team_min_num: x.team_min_num,
+            team_max_num: x.team_max_num,
+        } }
+        filename = "Event-Export-#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+        send_data(data.to_xls, :type => "text/xls;charset=utf-8,header=present", :filename => filename)
+
+      }
+    end
+
+
   end
 
   # GET /admin/events/1

@@ -6,12 +6,12 @@
           <div class="slider" data-src="<%= image_path('homepage/slider-border.png') %>">
             <div class="slider-win">
               <ul class="items">
-                <li class="item"><a href="<%= competitions_path %>"><img
-                data-src="<%= image_path('homepage/slider-02.png') %>"/></a></li>
-                <li class="item"><a href="<%= competitions_path %>"><img
-                data-src="<%= image_path('homepage/slider-02.png') %>"/></a></li>
-                <li class="item"><a href="<%= competitions_path %>"><img
-                data-src="<%= image_path('homepage/slider-02.png') %>"/></a></li>
+                <li class="item"><a href="<%= competitions_path %>/1"><img
+                data-src="<%= image_path('homepage/slider-02.jpg') %>"/></a></li>
+                <li class="item"><a href="<%= competitions_path %>/1"><img
+                data-src="<%= image_path('homepage/slider-02.jpg') %>"/></a></li>
+                <li class="item"><a href="<%= competitions_path %>/1"><img
+                data-src="<%= image_path('homepage/slider-02.jpg') %>"/></a></li>
               </ul>
               <div class="slider-controller">
                 <span class="slider-prev"></span>
@@ -26,7 +26,7 @@
             <div class="sec-c">
               机械奥运活动将科技创新实践的成果交流以体育竞技的形式予以呈现，以“更快、更高、更强”的奥运精神激励青少年不断超越自我。
               <br/>
-              <a class="more-link" href="<%= competitions_path %>">
+              <a class="more-link" href="<%= competitions_path %>/1">
                 <i class="glyphicon glyphicon-triangle-right"></i>&nbsp;更多
               </a>
             </div>
@@ -51,10 +51,10 @@
                   </li>
               <% end %>
               <li class="item">
-                <a class="item-img" href="<%= competitions_path %>" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
+                <a class="item-img" href="<%= competitions_path %>/1" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
                   <img data-src="<%= image_path('homepage/sidebar-item02.jpg') %>" src="" alt=""/>
                 </a>
-                <a class="item-link" href="<%= competitions_path %>">
+                <a class="item-link" href="<%= competitions_path %>/1">
                   2016机械奥运
                 </a>
               </li>
@@ -66,6 +66,7 @@
         <div class="board-inner">
           <div class="row">
             <div class="col-sm-4">
+              <a href="/honors">
               <div class="board-item" data-src="<%= image_path('homepage/board-bk.png') %>">
                 <div class="sec-t">
                   个人积分
@@ -74,9 +75,11 @@
                   敬请期待
                 </div>
               </div>
+              </a>
             </div>
             <div class="col-sm-4">
-              <div class="board-item" data-src="<%= image_path('homepage/board-bk.png') %>">
+              <a href="/honors">
+                <div class="board-item" data-src="<%= image_path('homepage/board-bk.png') %>">
                 <div class="sec-t">
                   学校积分
                 </div>
@@ -84,8 +87,10 @@
                   敬请期待
                 </div>
               </div>
+              </a>
             </div>
             <div class="col-sm-4">
+              <a href="/honors">
               <div class="board-item" data-src="<%= image_path('homepage/board-bk.png') %>">
                 <div class="sec-t">
                   老师积分
@@ -94,6 +99,7 @@
                   敬请期待
                 </div>
               </div>
+              </a>
             </div>
           </div>
         </div>

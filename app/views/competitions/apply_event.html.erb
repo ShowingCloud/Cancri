@@ -101,7 +101,7 @@
                       <select data-select-target="district">
                         <option value="0">选择区县</option>
                         <% District.all.each do |d| %>
-                            <option value="<%= d.id %>"><%= d.name %></option>
+                            <option value="<%= d.name %>"><%= d.name %></option>
                         <% end %>
                       </select>
                       <input type="hidden" name="district"/>
@@ -532,7 +532,7 @@
                       <select data-select-target="district">
                         <option value="0">选择区县</option>
                         <% District.all.each do |d| %>
-                            <option value="<%= d.id %>"><%= d.name %></option>
+                            <option value="<%= d.name %>"><%= d.name %></option>
                         <% end %>
                       </select>
                       <input type="hidden" name="district"/>
@@ -725,7 +725,7 @@
       </ul>
     </div>
     <div class="bottom">
-      <button data-dismiss="modal" class="btn btn-default">取消</button>
+      <button data-dismiss="modal" class="btn-robodou apply-submit">取消</button>
     </div>
   </div>
 </div>

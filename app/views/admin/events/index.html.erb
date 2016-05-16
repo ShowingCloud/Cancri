@@ -6,6 +6,9 @@
     <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
       <i class="icon-search icon-only"></i>
     </a>
+    <a href="<%= admin_events_path(format: 'xls') %>" class="btn btn-default" title="导出数据">
+      <i class="icon-external-link icon-only"></i>
+    </a>
   </small>
 </h1>
 <div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
@@ -56,7 +59,7 @@
         <td><%= event.competition.try(:name) %></td>
         <td><%= event.parent_event.name if event.level==2 %></td>
         <td><%= show_status(event.is_father) if event.is_father %></td>
-        <td><%= event.group.gsub(/[1-4]/, '1' => '小', '2' => '中', 3 => '初', 4 => '高') %></td>
+        <td><%= event.group.gsub(/[1-4]/, '1' => '小', '2' => '中', '3' => '初', '4' => '高') %></td>
         <td><%= t('status.status'+event.status.to_s) %></td>
         <td><%= "#{event.team_min_num}-" if event.team_min_num != event.team_max_num %><%= event.team_max_num %></td>
         <td>

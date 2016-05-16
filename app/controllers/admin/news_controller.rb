@@ -86,7 +86,7 @@ class Admin::NewsController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def news_params
-    params.require(:news).permit(:name, {:news_type => []}, :content, :cover, :admin_id).tap do |list|
+    params.require(:news).permit(:name, {:news_type => []}, :content, :cover, :desc, :admin_id).tap do |list|
       if params[:news][:news_type].present?
         list[:news_type] = params[:news][:news_type].join(',')
       else

@@ -46,7 +46,7 @@
 
   <tbody>
   <% @news_types.each do |news_type| %>
-      <tr>
+      <tr id="news-type-<%= news_type.id %>">
         <td><%= news_type.id %></td>
         <td><%= news_type.name %></td>
         <td><%= news_type.created_at.try(:strftime, '%Y-%m-%d %H:%M:%S') %></td>
@@ -58,7 +58,7 @@
           <%= link_to edit_admin_news_type_path(news_type), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>
           <% end %>
-          <%= link_to [:admin, news_type], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+          <%= link_to [:admin, news_type], method: :delete, data: {confirm: '确认删除吗?', remote: true}, title: '删除', class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash bigger-120"></i>
           <% end %></td>
       </tr>

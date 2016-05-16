@@ -4,4 +4,5 @@ class News < ApplicationRecord
   validates :news_type, presence: true
   validates :content, presence: true
   # validates :admin_id, presence: true
+  mount_uploader :cover, CoverUploader
 end
