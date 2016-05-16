@@ -1,0 +1,49 @@
+
+---
+competitions:
+  columns:
+  - id
+  - name
+  - host_year
+  - description
+  - emc_contact
+  - cover
+  - body_html
+  - guide_units
+  - organizer_units
+  - help_units
+  - support_units
+  - undertake_units
+  - video
+  - file
+  - status
+  - apply_start_time
+  - apply_end_time
+  - start_time
+  - end_time
+  - keyword
+  - created_at
+  - updated_at
+  records: 
+  - - 1
+    - 2016机械奥运会
+    - '2016'
+    - ''
+    - 
+    - 
+    - 
+    - 豆姆智能科技,上海教育局
+    - 豆姆智能科技
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 0
+    - 
+    - 
+    - 
+    - 
+    - 
+    - '2016-05-13 01:10:55.141990'
+    - '2016-05-13 01:10:55.141990'

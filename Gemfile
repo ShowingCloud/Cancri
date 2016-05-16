@@ -86,3 +86,5 @@ gem 'thin'
 gem 'rack', github: 'kikyous/rack'
 gem 'grape-kaminari'
 gem 'carrierwave-video'
+
+gem 'yaml_db', github: 'jetthoughts/yaml_db'
