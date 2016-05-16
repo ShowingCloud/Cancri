@@ -2373,6 +2373,7 @@ ul {
   border: 2px solid #88D5EC;
   padding: 20px;
   color: #88D5EC;
+  background: rgba(5, 62, 88, 0.9);
 }
 
 #add-school .title {
@@ -2404,7 +2405,7 @@ ul {
 }
 
 #add-school .school-list {
-  height: 230px;
+  height: 280px;
 }
 
 #add-school .school-list .items {
@@ -2425,6 +2426,14 @@ ul {
 
 #add-school .bottom {
   text-align: right;
+}
+
+#add-school .bottom .apply-submit{
+  border: 1px solid #88D5EC;
+  background: transparent;
+  color: #88D5EC;
+  border-radius: 4px;
+  padding: 4px 12px;
 }
 
 #add-school .tips {
@@ -2631,6 +2640,7 @@ ul {
 }
 
 #add-other-school .modal-panel {
+  background: rgba(5, 62, 88, 0.9);
   width: 400px;
   border: 2px solid #88D5EC;
   border-radius: 15px;

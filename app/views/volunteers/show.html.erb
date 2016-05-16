@@ -82,16 +82,46 @@
         </div>
         <div class="item-row">
           <div class="item-first">
+            类型
+          </div>
+          <div class="item-second">
+            <select data-select-target="group">
+              <option value="0">选择类型</option>
+              <option value="1">小学</option>
+              <option value="2">初中</option>
+              <option value="3">高中</option>
+              <option value="4">大学</option>
+            </select>
+            <input type="hidden" name="group"/>
+          </div>
+        </div>
+        <div class="item-row">
+          <div class="item-first">
+          区县
+          </div>
+          <div class="item-second">
+            <select data-select-target="district">
+              <option value="0">选择区县</option>
+              <% District.all.each do |d| %>
+                  <option value="<%= d.name %>"><%= d.name %></option>
+              <% end %>
+            </select>
+            <input type="hidden" name="district"/>
+          </div>
+        </div>
+        <div class="item-row">
+          <div class="item-first">
             <i class="glyphicon glyphicon-education"></i>
             学校
           </div>
-          <div class="item-second">
+          <div class="item-second school-target">
             <a class="open-school">
               <i class="glyphicon glyphicon-plus"></i>
               选择学校
             </a>
             <br/>
             <a class="add-other-school">没有你的学校？点击添加</a>
+            <input type="hidden" name="school"/>
           </div>
         </div>
         <div class="item-row">
@@ -128,6 +158,43 @@
     </div>
     <div class="activity-f">
       <button class="btn-robodou btn-join-volunteer">报名志愿者</button>
+    </div>
+  </div>
+</div>
+<!--选择学校-->
+<div id="school-list" class="modal fade">
+  <div id="add-school">
+    <div class="title" data-src="<%= image_path('homepage/info-t-bk.png') %>">
+      选择学校
+    </div>
+    <div class="school-list">
+      <span class="tips">请选择学校</span>
+      <ul class="items">
+
+      </ul>
+    </div>
+    <div class="bottom">
+      <button data-dismiss="modal" class="btn-robodou apply-submit">取消</button>
+    </div>
+  </div>
+</div>
+<!--添加其他学校-->
+<div id="add-other-school" class="modal fade">
+  <div class="modal-panel">
+    <div class="title" data-src="<%= image_path('homepage/info-t-bk.png') %>">
+      添加额外学校
+    </div>
+    <div class="inner">
+      <div class="left">
+        <i class="glyphicon glyphicon-education"></i>
+        学校名称
+      </div>
+      <div class="right">
+        <input type="text" name="other-school"/>
+      </div>
+    </div>
+    <div class="bottom">
+      <button class="btn-robodou apply-submit">确认添加</button>
     </div>
   </div>
 </div>
