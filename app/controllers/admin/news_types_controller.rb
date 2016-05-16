@@ -1,5 +1,5 @@
 class Admin::NewsTypesController < AdminController
-  before_action :set_news_type, only: [:show, :edit, :update, :destroy]
+  before_action :set_news_type, only: [:show, :edit, :update]
 
   # GET /admin/news_types
   # GET /admin/news_types.json
@@ -58,10 +58,16 @@ class Admin::NewsTypesController < AdminController
   # DELETE /admin/news_types/1
   # DELETE /admin/news_types/1.json
   def destroy
-    @news_type.destroy
+    has_use = News.where("locate(#{params[:id]},news_type)>0").exists?
+    if has_use
+      @notice=[false, 0, '该类型已经被使用，不能删除']
+    else
+      @news_type=NewsType.find(params[:id])
+      @news_type.destroy
+      @notice=[true, @news_type.id, '新闻类型删除成功']
+    end
     respond_to do |format|
-      format.html { redirect_to admin_news_types_url, notice: '新闻类型删除成功!' }
-      format.json { head :no_content }
+      format.js
     end
   end
 

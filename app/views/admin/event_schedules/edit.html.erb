@@ -10,6 +10,7 @@
       <table class="table table-bordered table-hover table-striped">
         <thead>
         <tr>
+          <th>组别</th>
           <th>赛程名称</th>
           <th>对抗／评分</th>
           <th>操作</th>
@@ -19,6 +20,18 @@
         <tbody>
         <% @event_schedules.each do |cs| %>
             <tr>
+              <td>
+                <% case cs.group %>
+                <% when 1 then %>
+                    <label class="label label-default">小学</label>
+                <% when 2 then %>
+                    <label class="label label-danger">中学</label>
+                <% when 3 then %>
+                    <label class="label label-info">初中</label>
+                <% else %>
+                    <label class="label label-warning">高中</label>
+                <% end %>
+              </td>
               <td><%= cs.schedule.name %></td>
               <td>
                 <label class="label <%= cs.kind==1 ? 'label-info' : 'label-danger' %>"><%= cs.kind==1 ? '评分' : '对抗' %></label>
@@ -83,18 +96,29 @@
 
             <div class="form-inputs">
               <%= f.input :schedule_id, collection: Schedule.all, label: '赛程名' %>
+              <div class="form-group select optional event_schedule_group">
+                <label class="select optional control-label" for="event_schedule_group">
+                  <abbr title="必填字段">*</abbr> 组别</label>&nbsp;&nbsp;
+                <% @event_group.split(',').each do |c| %>
+                    <% if c.to_i == 1 %>
+                        <label><input name="event_schedule[group]" type="radio" value="1"/> 小学</label>
+                    <% elsif c.to_i == 2 %>
+                        <label><input name="event_schedule[group]" type="radio" value="2"/> 中学</label>
+                    <% elsif c.to_i == 3 %>
+                        <label><input name="event_schedule[group]" type="radio" value="3"/> 初中</label>
+                    <% elsif c.to_i == 4 %>
+                        <label><input name="event_schedule[group]" type="radio" value="4"/> 高中</label>
+                    <% end %>
+                <% end %>
+
+              </div>
               <%= f.hidden_field :event_id, value: params[:id] %>
               <label class="select required control-label" for="event_schedule_kind">
                 <abbr title="必填字段">*</abbr>
                 模式
-              </label>
-              <select id="event_schedule_kind" class="select required form-control" name="event_schedule[kind]">
-                <option value=""></option>
-                <option value="1">评分</option>
-                <option value="2">对抗</option>
-              </select>
-
-
+              </label>&nbsp;&nbsp;
+              <label><input name="event_schedule[kind]" type="radio" value="1"/> 评分</label>
+              <label><input name="event_schedule[kind]" type="radio" value="2"/> 对抗</label>
             </div>
             <div class="form-actions">
               <button data-control="formFormat" type="submit" class="btn btn-primary">
@@ -115,15 +139,29 @@
             <div class="form-inputs">
               <%= f.input :schedule_id, collection: Schedule.all, label: '赛程名' %>
               <%= f.hidden_field :event_id, value: params[:id] %>
+
+              <div class="form-group select optional event_schedule_group">
+                <label class="select optional control-label" for="event_schedule_group">
+                  <abbr title="必填字段">*</abbr> 组别</label>&nbsp;&nbsp;
+                <% @event_group.split(',').each do |c| %>
+                    <% if c.to_i == 1 %>
+                        <label><input name="event_schedule[group]" type="radio" value="1"/> 小学</label>
+                    <% elsif c.to_i == 2 %>
+                        <label><input name="event_schedule[group]" type="radio" value="2"/> 中学</label>
+                    <% elsif c.to_i == 3 %>
+                        <label><input name="event_schedule[group]" type="radio" value="3"/> 初中</label>
+                    <% elsif c.to_i == 4 %>
+                        <label><input name="event_schedule[group]" type="radio" value="4"/> 高中</label>
+                    <% end %>
+                <% end %>
+
+              </div>
               <label class="select required control-label" for="event_schedule_kind">
                 <abbr title="必填字段">*</abbr>
                 模式
-              </label>
-              <select id="event_schedule_kind" class="select required form-control" name="event_schedule[kind]">
-                <option value=""></option>
-                <option value="1">评分</option>
-                <option value="2">对抗</option>
-              </select>
+              </label>&nbsp;&nbsp;
+              <label><input name="event_schedule[kind]" type="radio" value="1"/> 评分</label>
+              <label><input name="event_schedule[kind]" type="radio" value="2"/> 对抗</label>
 
             </div>
             <div class="form-actions">

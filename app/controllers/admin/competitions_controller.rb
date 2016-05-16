@@ -136,7 +136,7 @@ class Admin::CompetitionsController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def competition_params
-    params.require(:competition).permit(:name, :host_year, {:guide_units => []}, {:organizer_units => []}, {:support_units => []}, {:help_units => []}, {:undertake_units => []}, :team_min_num, :team_max_num, :description, :cover, :status, :apply_start_time, :apply_end_time, :start_time, :end_time, :keyword).tap do |list|
+    params.require(:competition).permit(:name, :host_year, {:guide_units => []}, {:organizer_units => []}, {:support_units => []}, {:help_units => []}, {:undertake_units => []}, :team_min_num, :team_max_num, :description, :cover, :time_schedule, :detail_rule, :status, :apply_start_time, :apply_end_time, :start_time, :end_time, :keyword).tap do |list|
       if params[:competition][:guide_units].present?
         list[:guide_units] = params[:competition][:guide_units].join(',')
       else

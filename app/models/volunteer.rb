@@ -4,6 +4,7 @@ class Volunteer < ApplicationRecord
   validates :competition_id, presence: true
   validates :news_type_id, presence: true, uniqueness: {scope: :competition_id, message: '一个比赛对应的同一类型不能超过两个'}
   validate :validate_datetime_parent
+  mount_uploader :cover, CoverUploader
 
   def validate_datetime_parent
 
