@@ -3,7 +3,7 @@ class UserController < ApplicationController
 
   # 个人信息概览
   def preview
-
+    @user_info = User.joins('left join user_profiles u_p on u_p.user_id = users.id').joins('left join schools s on s.id = u_p.school').where(id: current_user.id).select(:email, :mobile, 'u_p.username as name', 'u_p.gender as xb', 'u_p.grade', 'u_p.bj', 'u_p.roles as role', 's.name as school', 'u_p.address').take
   end
 
   # 修改个人信息
@@ -70,7 +70,7 @@ class UserController < ApplicationController
       else
         flash[:error] = '不能提交空信息'
       end
-      redirect_to user_profile_path
+      redirect_to user_preview_path
     end
   end
 
