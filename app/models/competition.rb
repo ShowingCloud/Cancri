@@ -7,7 +7,8 @@ class Competition < ApplicationRecord
   has_many :videos
   accepts_nested_attributes_for :photos
   accepts_nested_attributes_for :videos
-
+  mount_uploader :time_schedule, CompPdfUploader
+  mount_uploader :detail_rule, CompPdfUploader
 
   validates :name, presence: true, length: {maximum: 50}, uniqueness: true
   validates :host_year, presence: true, length: {is: 4}, numericality: true
