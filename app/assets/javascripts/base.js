@@ -52,6 +52,7 @@ $(function () {
                 if (!SCHOOL_DATA.district) {
                     return alert('请选择区县');
                 }
+                SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
                 var length = space.find('.edit-school').length;
                 if (length == 1) {
                     alert('学校已满，无法继续添加！');
@@ -75,6 +76,7 @@ $(function () {
                 if (!SCHOOL_DATA.district) {
                     return alert('请选择区县');
                 }
+                SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
                 var length = space.find('.edit-school').length;
                 if (length == 1) {
                     alert('学校已满，无法继续添加！');
@@ -104,6 +106,7 @@ $(function () {
             if (!SCHOOL_DATA.district) {
                 return alert('请选择区县');
             }
+            SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
             var length = space.find('.edit-school').length;
             if (length == 1) {
                 alert('学校已满，无法继续添加！');
@@ -123,6 +126,8 @@ $(function () {
             if (!SCHOOL_DATA.district) {
                 return alert('请选择区县');
             }
+            SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
+
             var length = space.find('.edit-school').length;
             if (length == 1) {
                 alert('学校已满，无法继续添加！');
@@ -1075,11 +1080,12 @@ $(function () {
                     return alert('请选择组别');
                 }
                 SCHOOL_DATA.typeName = space.find('select[data-select-target="group"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+
                 SCHOOL_DATA.district = space.find('input[name="district"]').val();
                 if (!SCHOOL_DATA.district) {
                     return alert('请选择区县');
                 }
-                SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+                SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
                 var length = space.find('.edit-school').length;
                 if (length == 2) {
                     alert('学校已满，无法继续添加！');
@@ -1099,7 +1105,7 @@ $(function () {
                 if (!SCHOOL_DATA.district) {
                     return alert('请选择区县');
                 }
-                SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+                SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
                 var length = space.find('.edit-school').length;
                 if (length == 2) {
                     alert('学校已满，无法继续添加！');
@@ -1181,7 +1187,7 @@ $(function () {
             if (!SCHOOL_DATA.district) {
                 return alert('请选择区县');
             }
-            SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+            SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
             var length = space.find('.edit-school').length;
             if (length == 2) {
                 alert('学校已满，无法继续添加！');
@@ -1201,7 +1207,7 @@ $(function () {
             if (!SCHOOL_DATA.district) {
                 return alert('请选择区县');
             }
-            SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+            SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
             var length = space.find('.edit-school').length;
             if (length == 2) {
                 alert('学校已满，无法继续添加！');
