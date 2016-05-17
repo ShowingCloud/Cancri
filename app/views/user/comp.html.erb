@@ -1,4 +1,4 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
   <div class="container">
     <div class="row">
       <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
@@ -16,7 +16,7 @@
                       <% if e.status!=2 %>
                           <div class="match-card" data-src="<%= image_path('homepage/card-bk.png') %>">
                             <div class="card-left">
-                              <div class="card-avatar" data-q="1">
+                              <div class="card-avatar" data-q="<%= e.identifier %>">
 
                               </div>
                               <div class="card-download">
@@ -35,7 +35,9 @@
 
                                 <p>参赛项目：<%= e.comp_name %>-<%= e.event_name %></p>
 
-                                <p>指导老师：XXX</p>
+                                <p>指导老师：</p>
+
+                                <p>指导老师电话：</p>
                               </div>
                             </div>
                           </div>

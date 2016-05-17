@@ -1,4 +1,4 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/bk.png') %>">
+<div id="main" class="main" data-src="<%= image_path('homepage/bk.jpg') %>">
   <div class="container">
     <div id="news">
       <div class="row">
@@ -13,8 +13,7 @@
                         <div class="news-simple">
                           <div class="news-tags">
                             <ul class="items">
-                              <li class="item"><a href="">赛事</a></li>
-                              <li class="item"><a href="">报名</a></li>
+                              <li class="item"><a href=""><%= news.news_type %></a></li>
                             </ul>
                             <div class="news-time">
                               <%= news.created_at.try(:strftime, '%Y-%m-%d') %>
