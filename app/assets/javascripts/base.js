@@ -840,6 +840,7 @@ $(function () {
         var user_id = $('#currentUser').attr('data-userId');
         var target = $('.apply-member').find('tbody');
         target.empty();
+        target.parent().find('.col-o').empty();
 
         $.each(EVENT_DATA[ed].team_info, function (k, v) {
             var tr = $('<tr>');
@@ -852,7 +853,7 @@ $(function () {
             if (user_id == v.id) {
                 //leader-row
                 if (user_id == v.user_id) {
-                    target.parent().find('.col-o').empty().append('<button class="delete-team">解散队伍</button>');
+                    target.parent().find('.col-o').append('<button class="delete-team">解散队伍</button>');
                 } else {
                     tBtn = '<td><button data-id="' + v.user_id + '" class="delete-member">删除队员</button></td>';
                 }
