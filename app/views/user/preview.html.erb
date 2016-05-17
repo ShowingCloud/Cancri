@@ -10,8 +10,8 @@
             <div class="user-panel">
               <div class="user-row">
                 <span class="row-name">邮箱</span>
-                <% if current_user.email.present? %>
-                    <span class="row-content edit-input" data-input="text"><%= current_user.email %></span>
+                <% if @user_info.email.present? %>
+                    <span class="row-content edit-input" data-input="text"><%= @user_info.email %></span>
                     <span class="row-tip pull-right"><a href="<%= user_reset_email_path %>">修改</a></span>
                 <% else %>
                     <span class="row-tip pull-right"><a href="<%= user_email_path %>">添加</a></span>
@@ -20,8 +20,8 @@
               <hr>
               <div class="user-row">
                 <span class="row-name">手机</span>
-                <% if current_user.mobile.present? %>
-                    <span class="row-content edit-input" data-input="text"><%= current_user.mobile %></span>
+                <% if @user_info.mobile.present? %>
+                    <span class="row-content edit-input" data-input="text"><%= @user_info.mobile %></span>
                     <span class="row-tip pull-right"><a href="<%= user_reset_mobile_path %>">修改</a></span>
                 <% else %>
                     <span class="row-tip pull-right"><a href="<%= user_mobile_path %>">添加</a></span>
@@ -36,33 +36,39 @@
             </div>
             <div class="user-panel">
               <div class="user-row">
-                <span class="row-name">真实姓名</span>
-                <span class="row-content edit-input" data-input="text"><%= current_user.username %></span>
+                <span class="row-name">姓名</span>
+                <%= @user_info.name %>
               </div>
               <div class="user-row">
                 <span class="row-name">身份</span>
-                <span class="row-content edit-checkbox" data-input="text">
-                  <%= current_user.user_profile.try(:roles) %>
-                </span>
+                <%= @user_info.role %>
               </div>
               <div class="user-row">
                 <span class="row-name">性别</span>
-                <% if current_user.gender == 1 %>
-                    <span class="row-content edit-radio" data-input="radio" data-input-name="">男</span>
-                <% else current_user.gender == 2%>
-                    <span class="row-content edit-radio" data-input="radio" data-input-name="">女</span>
+                <% if @user_info.xb == 1 %>
+                    男
+                <% elsif @user_info.xb == 2 %>
+                    女
                 <% end %>
               </div>
               <div class="user-row">
                 <span class="row-name">学校</span>
                 <span class="row-content edit-input" data-input="text">
-                  测试学校
+                  <%= @user_info.school %>
                 </span>
               </div>
               <div class="user-row">
                 <span class="row-name">班级</span>
                 <span class="row-content edit-input" data-input="text">
-                  <%= current_user.user_profile.try(:grade) %>年级<%= current_user.user_profile.try(:bj) %>班
+                  <% if @user_info.grade.present? && @user_info.bj.present? %>
+                  <%= @user_info.try(:grade) %>年级<%= @user_info.try(:bj) %>班
+                  <% end %>
+                </span>
+              </div>
+              <div class="user-row">
+                <span class="row-name">地址</span>
+                <span class="row-content edit-input" data-input="text">
+                  <%= @user_info.address %>
                 </span>
               </div>
               <div class="panel-control control-top">
