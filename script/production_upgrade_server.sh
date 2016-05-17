@@ -6,7 +6,7 @@ RAILS_ENV=production
 export RAILS_ENV
 
 git pull
-rake db:schema:load
+rake db:migrate
 rake db:data:load_dir dir="datadump"
 rake assets:clean
 rake assets:precompile
