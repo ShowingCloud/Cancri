@@ -1,10 +1,10 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/bk.png') %>">
+<div id="main" class="main" data-src="<%= image_path('homepage/bk.jpg') %>">
   <div class="container">
     <div id="news">
       <div class="row">
-        <% if @news.present? %>
-            <% @news.each do |news| %>
-                <%= link_to news_path(news), title: '查看新闻' do %>
+        <% if @news_array.present? %>
+            <% @news_array.each do |news| %>
+                <%= link_to news_path(news[:id]), title: '查看新闻' do %>
                     <div class="col-sm-6 col-xs-12">
                       <div class="news-item" data-src="<%= image_path('homepage/news-item-bk.png') %>">
                         <div class="news-img">
@@ -13,19 +13,18 @@
                         <div class="news-simple">
                           <div class="news-tags">
                             <ul class="items">
-                              <li class="item"><a href="">赛事</a></li>
-                              <li class="item"><a href="">报名</a></li>
+                              <li class="item"><%= news[:type] %></li>
                             </ul>
                             <div class="news-time">
-                              <%= news.created_at.try(:strftime, '%Y-%m-%d') %>
+                              <%= news[:created_at].try(:strftime, '%Y-%m-%d') %>
                             </div>
                           </div>
 
                           <div class="sec-t">
-                            <%= news.name %>
+                            <%= news[:name] %>
                           </div>
                           <div class="sec-c">
-                            <%= news.content %>
+                            <%= news[:content] %>
                           </div>
                         </div>
                       </div>

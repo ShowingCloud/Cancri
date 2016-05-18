@@ -20,7 +20,7 @@ class Admin::EventsController < AdminController
         data = Event.all.select(:id, :name, :is_father, :parent_id, :competition_id, :group, :team_min_num, :team_max_num).map { |x| {
             name: x.name,
             is_father: x.is_father,
-            parent_id: x.group,
+            parent_id: x.parent_id,
             competition_id: x.competition_id,
             group: x.group,
             team_min_num: x.team_min_num,

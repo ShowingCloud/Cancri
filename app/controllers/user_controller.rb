@@ -3,13 +3,13 @@ class UserController < ApplicationController
 
   # 个人信息概览
   def preview
-
+    @user_info = User.joins('left join user_profiles u_p on u_p.user_id = users.id').joins('left join schools s on s.id = u_p.school').where(id: current_user.id).select(:email, :mobile, 'u_p.username as name', 'u_p.gender as xb', 'u_p.grade', 'u_p.bj', 'u_p.roles as role', 's.name as school', 'u_p.address').take
   end
 
   # 修改个人信息
   def profile
     # 获取Profile
-    @user_profile = current_user.user_profile ||= current_user.build_user_profile
+    @user_profile = UserProfile.left_joins(:schools, :district).where(user_id: current_user.id).select(:username, :roles, :gender, :grade, :bj, :teacher_no, :district, :certificate, :address, 'schools.name as school_name',).take ||= current_user.build_user_profile
     @th_role_status = UserRole.where(user_id: current_user.id, role_id: 1).first # 教师
     if request.method == 'POST'
       if params[:user_profile].present?
@@ -70,7 +70,7 @@ class UserController < ApplicationController
       else
         flash[:error] = '不能提交空信息'
       end
-      redirect_to user_profile_path
+      redirect_to user_preview_path
     end
   end
 
@@ -200,7 +200,7 @@ class UserController < ApplicationController
   end
 
   def comp
-    @user_events = TeamUserShip.joins(:event).joins('inner join user_profiles u_p on u_p.user_id = team_user_ships.user_id').joins('inner join schools s on s.id = u_p.school').joins('inner join competitions comp on comp.id = events.competition_id').where(user_id: current_user.id).select(:user_id, 'events.name as event_name', 'comp.name as comp_name', 's.name as school', 'comp.status')
+    @user_events = TeamUserShip.joins(:event, :team).joins('inner join user_profiles u_p on u_p.user_id = team_user_ships.user_id').joins('inner join schools s on s.id = teams.school_id').joins('inner join competitions comp on comp.id = events.competition_id').where(user_id: current_user.id).select(:user_id, 'events.name as event_name', 'comp.name as comp_name', 's.name as school', 'comp.status', 'u_p.grade', 'u_p.student_code', 'u_p.username', 'teams.identifier', 'teams.teacher', 'teams.teacher_mobile')
   end
 
   def consult

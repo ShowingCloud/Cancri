@@ -44,10 +44,8 @@ group :development do
   gem 'web-console', '~> 3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'roo'
   gem 'quiet_assets'
   gem 'better_errors'
-  gem 'grape-swagger'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -67,6 +65,8 @@ gem 'rails-admin-scaffold'
 gem 'to_xls-rails'
 gem 'kaminari', github: 'amatsuda/kaminari'
 gem 'virtus'
+gem 'grape-swagger'
+gem 'roo'
 
 gem 'grape'
 gem 'active_model_serializers', '0.9.2'

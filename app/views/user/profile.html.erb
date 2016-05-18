@@ -1,4 +1,4 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
   <div class="container">
     <div class="row">
       <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
@@ -15,20 +15,23 @@
                         <%= f.input :username %>
                         <div class="form-group string optional user_profile_roles">
                           <label class="string optional control-label" for="user_profile_roles">身份</label>
+
                           <div>
-                          <% Role.all.each do |r| %>
-                              <% if r.name=='教师' && @th_role_status.present? %>
-                                  <%= label_tag '老师' %> <%= "(待审核)" if @th_role_status.status.blank? %>
-                              <% else %>
-                                  <%= check_box_tag 'user_profile[roles][]', r.name, (true if @user_profile.roles.present? && @user_profile.roles.split(',').include?(r.name.to_s)) %>
-                                  <%= label_tag r.name %>
-                              <% end %>
-                          <% end %>
+                            <% Role.all.each do |r| %>
+                                <% if r.name=='教师' && @th_role_status.present? %>
+                                    <%= label_tag '老师' %> <%= "(待审核)" if @th_role_status.status.blank? %>
+                                <% else %>
+                                    <%= check_box_tag 'user_profile[roles][]', r.name, (true if @user_profile.roles.present? && @user_profile.roles.split(',').include?(r.name.to_s)) %>
+                                    <%= label_tag r.name %>
+                                <% end %>
+                            <% end %>
                           </div>
                         </div>
                         <div class="teacher-part hide">
-                        <%= f.input :teacher_no %>
+                          <%= f.input :teacher_no %>
                         </div>
+                        <%= @user_profile.school_name %>
+                        <%= @user_profile.district %>
                         <div class="form-group teacher-part hide">
                           <label for="user_avatar">上传教师证</label>
                           <%= f.file_field :certificate %>
@@ -59,17 +62,19 @@
                           </div>
                         </div>
                         <div class="form-group school-target">
-                            <a class="open-school">
-                              <i class="glyphicon glyphicon-plus"></i>
-                              选择学校
-                            </a>
-                            <br/>
-                            <a class="add-other-school">没有你的学校？点击添加</a>
+                          <a class="open-school">
+                            <i class="glyphicon glyphicon-plus"></i>
+                            选择学校
+                          </a>
+                          <br/>
+                          <a class="add-other-school">没有你的学校？点击添加</a>
                           <input type="hidden" name="user_profile[school]"/>
                         </div>
                         <br/>
+
                         <div class="form-group">
                           <label>性别</label>
+
                           <div>
                             <label>
                               <input name="user_profile[gender]" type="radio" <%= 'checked' if @user_profile.gender==1 %> value="1"/>男

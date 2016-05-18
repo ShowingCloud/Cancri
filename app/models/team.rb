@@ -36,6 +36,7 @@ class Team < ApplicationRecord
           identity.concat('O')
         end
       end
+      self.save
     end
   end
 end

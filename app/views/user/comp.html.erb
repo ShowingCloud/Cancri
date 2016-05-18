@@ -1,4 +1,4 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
   <div class="container">
     <div class="row">
       <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
@@ -6,7 +6,7 @@
           <%= render 'user/menu' %>
         </div>
         <div class="sec-c">
-          <div class="content">
+          <div class="content" style="width: 730px">
             <% if @user_events.present? %>
                 <div class="match-panel">
                   <div class="panel-title">
@@ -16,7 +16,7 @@
                       <% if e.status!=2 %>
                           <div class="match-card" data-src="<%= image_path('homepage/card-bk.png') %>">
                             <div class="card-left">
-                              <div class="card-avatar" data-q="1">
+                              <div class="card-avatar" data-q="<%= e %>">
 
                               </div>
                               <div class="card-download">
@@ -25,17 +25,19 @@
                             </div>
                             <div class="card-right">
                               <div class="card-info">
-                                <p>姓名：<%= current_user.username %></p>
+                                <p>姓名：<%= e.username %></p>
 
                                 <p>学校：<%= e.school %></p>
 
-                                <p>年级：</p>
+                                <p>年级：<%= e.grade %></p>
 
-                                <p>学籍号：</p>
+                                <p>学籍号：<%= e.student_code %></p>
 
                                 <p>参赛项目：<%= e.comp_name %>-<%= e.event_name %></p>
 
-                                <p>指导老师：XXX</p>
+                                <p>指导老师：<%= e.teacher %></p>
+
+                                <p>指导老师电话：<%= e.teacher_mobile %></p>
                               </div>
                             </div>
                           </div>

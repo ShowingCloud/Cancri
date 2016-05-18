@@ -1,4 +1,4 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.png') %>">
+<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
   <div class="container">
     <div class="row">
       <div class="event" id="event">
@@ -101,7 +101,7 @@
                       <select data-select-target="district">
                         <option value="0">选择区县</option>
                         <% District.all.each do |d| %>
-                            <option value="<%= d.name %>"><%= d.name %></option>
+                            <option value="<%= d.id %>"><%= d.name %></option>
                         <% end %>
                       </select>
                       <input type="hidden" name="district"/>
@@ -532,7 +532,7 @@
                       <select data-select-target="district">
                         <option value="0">选择区县</option>
                         <% District.all.each do |d| %>
-                            <option value="<%= d.name %>"><%= d.name %></option>
+                            <option value="<%= d.id %>"><%= d.name %></option>
                         <% end %>
                       </select>
                       <input type="hidden" name="district"/>

@@ -21,6 +21,7 @@ class CompetitionService
     EventSaShip.includes(:score_attribute, :score_attribute_parent).where(event_id: event_id, is_parent: 0).order('parent_id asc').map { |s| {
         id: s.id,
         name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name,
+        score_type: s.score_attribute.write_type,
         desc: s.desc.blank? ? nil : s.desc
     } }
   end

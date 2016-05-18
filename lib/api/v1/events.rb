@@ -14,15 +14,27 @@ module API
         desc '获取某项目的赛程'
         params do
           requires :ed, type: Integer, desc: '项目ID'
+          requires :group, type: Integer, desc: '组别'
         end
         get '/schedule' do
-          es = EventSchedule.joins(:schedule).where(event_id: params[:ed]).select(:id, :schedule_id, :kind, 'schedules.name').map { |s| {
+          es = EventSchedule.joins(:schedule).where(event_id: params[:ed], group: params[:group]).select(:id, :schedule_id, :kind, 'schedules.name').map { |s| {
               id: s.id,
               schedule_name: s.name,
               schedule_id: s.schedule_id,
               kind: s.kind
           } }
           render event_schedules: es
+        end
+
+        desc '获取特定项目下某分组队伍'
+        params do
+          requires :ed, type: Integer
+          requires :group, type: Integer
+          requires :schedule_id, type: Integer
+        end
+        get '/event/teams' do
+          teams = CompetitionService.get_teams(params[:ed], params[:group], params[:schedule_id])
+          render teams: teams
         end
       end
     end
