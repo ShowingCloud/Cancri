@@ -90,16 +90,13 @@ class CompetitionService
         group: e.group,
         events: e.group.present? ? e.group.split(',').map { |n| {
             name: e.name,
-            id: e.id,
             group: n.to_i,
-            z_e: e.is_father ? e.child_events.map { |z_e| {
+            z_e: e.is_father ? e.child_events.select { |a| a.group.index(n) }.map { |z_e| {
                 id: z_e.id,
-                group: n.to_i,
                 name: z_e.name
             } } : nil
         } } : e.name,
-    }
-    }
+    } }
   end
 
   def self.get_teams(ed, group, schedule)
@@ -116,23 +113,23 @@ class CompetitionService
           status: t.score_num
       } }
       [true, teams]
-    else
-      if ed.present? && group.present?
-        teams=Team.joins('inner join user_profiles u_p on u_p.user_id = teams.user_id').joins('inner join schools s on s.id = teams.school_id').joins('inner join users u on u.id = teams.user_id').where(event_id: ed, group: group).select(:id, :name, :teacher, :teacher_mobile, :identifier, 'u_p.username', 'u.mobile', 's.name as school').map { |t| {
-            id: t.id,
-            name: t.name,
-            username: t.username,
-            mobile: t.mobile,
-            school: t.school,
-            identifier: t.identifier,
-            teacher: t.teacher,
-            teacher_mobile: t.teacher_mobile,
-            status: 0
-        } }
-        [true, teams]
-      else
-        [false, '参数不完整']
-      end
+      # else
+      #   if ed.present? && group.present?
+      #     teams=Team.joins('inner join user_profiles u_p on u_p.user_id = teams.user_id').joins('inner join schools s on s.id = teams.school_id').joins('inner join users u on u.id = teams.user_id').where(event_id: ed, group: group).select(:id, :name, :teacher, :teacher_mobile, :identifier, 'u_p.username', 'u.mobile', 's.name as school').map { |t| {
+      #         id: t.id,
+      #         name: t.name,
+      #         username: t.username,
+      #         mobile: t.mobile,
+      #         school: t.school,
+      #         identifier: t.identifier,
+      #         teacher: t.teacher,
+      #         teacher_mobile: t.teacher_mobile,
+      #         status: 0
+      #     } }
+      #     [true, teams]
+      #   else
+      #     [false, '参数不完整']
+      #   end
     end
   end
 end

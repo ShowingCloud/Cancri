@@ -24,7 +24,7 @@ class Admin::CompetitionsController < AdminController
   end
 
   def events
-    @events = Event.find_by_sql("select a.id,a.name,group_concat(event_workers.user_id) as user_ids,count(event_workers.user_id) as worker_count from events a left join event_workers on a.id = event_workers.event_id where a.competition_id=#{params[:id]} GROUP BY a.id").map { |e| {
+    @events = Event.find_by_sql("select a.id,a.name,group_concat(event_workers.user_id) as user_ids,count(event_workers.user_id) as worker_count from events a left join event_workers on a.id = event_workers.event_id where a.competition_id=#{params[:id]} and a.is_father=0 GROUP BY a.id").map { |e| {
         id: e.id,
         name: e.name,
         worker_count: e.worker_count,
