@@ -19,7 +19,7 @@ module API
           desc '成绩登记'
           params do
             requires :event_id, type: Integer, desc: '项目id'
-            requires :schedule_name, type: String, desc: '赛程名'
+            requires :schedule_id, type: String, desc: '赛程id'
             requires :kind, type: Integer, desc: '对抗/评分'
             requires :th, type: Integer, desc: '第几场'
             requires :team1_id, type: Integer, desc: '队伍1'
@@ -31,7 +31,7 @@ module API
             requires :confirm_sign, type: File, desc: '确认签名'
           end
           post '/score' do
-            result = CompetitionService.post_team_scores(params[:event_id], params[:schedule_name], params[:kind], params[:th], params[:team1_id], params[:team2_id], params[:score1], params[:score2], params[:note], params[:device_no], params[:confirm_sign])
+            result = CompetitionService.post_team_scores(params[:event_id], params[:schedule_id], params[:kind], params[:th], params[:team1_id], params[:team2_id], params[:score1], params[:score2], params[:note], params[:device_no], params[:confirm_sign])
             render status: result[0], message: result[1]
           end
         end
