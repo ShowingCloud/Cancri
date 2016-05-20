@@ -105,7 +105,7 @@ class CompetitionsController < ApplicationController
           m = '个人信息更新失败'
         end
       else
-        up = UserProfile.create!(user_id: current_user.id, username: username, gender: gender, school: school, grade: grade, bj: bj, student_code: student_code, district: district, identity_card: identity_card, birthday: birthday)
+        up = UserProfile.create!(user_id: current_user.id, username: username, identity_card: identity_card, birthday: birthday)
         if up.save
           s = true
           m = '个人信息添加成功'
