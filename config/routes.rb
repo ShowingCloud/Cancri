@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   resources :news
   get '/honors' => 'honors#index'
   get '/demeanor' => 'demeanor#index'
+  get '/demeanor/:id' => 'demeanor#show'
   get '/activities/apply_activity' => 'activities#apply_activity'
   resources :activities do
     collection do
