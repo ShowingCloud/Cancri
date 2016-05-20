@@ -9,7 +9,7 @@ class UserController < ApplicationController
   # 修改个人信息
   def profile
     # 获取Profile
-    @user_profile = UserProfile.left_joins(:schools, :district).where(user_id: current_user.id).select(:username, :roles, :gender, :grade, :bj, :teacher_no, :district, :certificate, :address, 'schools.name as school_name',).take ||= current_user.build_user_profile
+    @user_profile = current_user.user_profile ||= current_user.build_user_profile
     @th_role_status = UserRole.where(user_id: current_user.id, role_id: 1).first # 教师
     if request.method == 'POST'
       if params[:user_profile].present?

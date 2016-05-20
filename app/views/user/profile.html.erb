@@ -30,8 +30,10 @@
                         <div class="teacher-part hide">
                           <%= f.input :teacher_no %>
                         </div>
-                        <%= @user_profile.school_name %>
                         <%= @user_profile.district %>
+                        <% if @user_profile.school.present? %>
+                            <%= @user_profile.schools.try(:name) %>
+                        <% end %>
                         <div class="form-group teacher-part hide">
                           <label for="user_avatar">上传教师证</label>
                           <%= f.file_field :certificate %>
