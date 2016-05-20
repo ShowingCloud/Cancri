@@ -12,78 +12,15 @@
           </div>
         </div>
         <div class="sec-c">
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/1.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 未来工程师大赛</p>
-          </div>
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/2.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 未来工程师大赛</p>
-          </div>
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/3.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 西南位育杯</p>
-          </div>
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/4.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 西南位育杯</p>
-          </div>
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/5.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 西南位育杯</p>
-          </div>
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/6.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 西南位育杯</p>
-          </div>
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/7.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 西南位育杯</p>
-          </div>
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/8.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 未来工程师大赛</p>
-          </div>
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/9.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 RCJ</p>
-          </div>
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/10.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 RCJ</p>
-          </div>
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/11.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 RCJ</p>
-          </div>
-          <div class="col-sm-4 col-xs-12 text-center">
-            <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-              <a href=""><img data-src="<%= image_path('demeanor/12.jpg') %>" src="" alt=""/></a>
-            </div>
-            <p class="video-title">2015 未来工程师大赛</p>
-          </div>
+
+          <% @photos.each do |item| %>
+              <div class="col-sm-4 col-xs-12 text-center">
+                <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
+                  <a href="<%= "/demeanor/#{item.id}" %>"><%= image_tag(item.image_url) %></a>
+                </div>
+                <p class="video-title">2015 未来工程师大赛</p>
+              </div>
+          <% end %>
         </div>
       </div>
     </div>
