@@ -24,23 +24,23 @@ $(function () {
         qr.init();
         download_select.init();
         change_role.init();
-        if($('.user-panel').length>0){
+        if ($('.user-panel').length > 0) {
             user_school.init();
         }
-        if($('#join-volunteer').length>0){
+        if ($('#join-volunteer').length > 0) {
             volunteer_school.init();
         }
     };
 
     var user_school = {
-        init:function(){
+        init: function () {
             var space = $('.user-panel');
             choice_school_part(space);
         }
     };
 
     var volunteer_school = {
-        init:function(){
+        init: function () {
             var space = $('#join-volunteer');
             space.find('.open-school').off('click').on('click', function () {
                 SCHOOL_DATA.type = space.find('input[name="group"]').val();
@@ -57,7 +57,7 @@ $(function () {
                 if (length == 1) {
                     alert('学校已满，无法继续添加！');
                 } else {
-                    get_school(space,function(a){
+                    get_school(space, function (a) {
                         a.modal('show');
                     });
                     space.modal('hide');
@@ -86,14 +86,14 @@ $(function () {
             });
 
             //开启添加学校
-            add_other_school(space,function(a){
+            add_other_school(space, function (a) {
                 a.modal('show');
             });
 
         }
     };
 
-    var choice_school_part = function(space){
+    var choice_school_part = function (space) {
         space.find('.open-school').off('click').on('click', function () {
             SCHOOL_DATA.type = space.find('input[name="group"]').val();
             if (!SCHOOL_DATA.type) {
@@ -139,17 +139,16 @@ $(function () {
     };
 
 
-
     var change_role = {
-        init:function(){
-            if($('.user_profile_roles').length>0){
+        init: function () {
+            if ($('.user_profile_roles').length > 0) {
                 var space = $('.user_profile_roles');
-                space.find('input[type="checkbox"]').off('change').on('change',function(){
+                space.find('input[type="checkbox"]').off('change').on('change', function () {
                     var _self = $(this);
                     var a = _self.val();
-                    if(a=='教师'&&_self.prop('checked')){
+                    if (a == '教师' && _self.prop('checked')) {
                         space.parents('.user-panel').find('.teacher-part').removeClass('hide');
-                    }else if(a=='教师'&& !(_self.prop('checked')) ){
+                    } else if (a == '教师' && !(_self.prop('checked'))) {
                         space.parents('.user-panel').find('.teacher-part').addClass('hide');
                     }
                 });
@@ -612,7 +611,7 @@ $(function () {
     };
 
     var add_other_school =
-         function (namespace,cb) {
+        function (namespace, cb) {
             $('#add-other-school').find('.apply-submit').off('click').on('click', function (event) {
                 event.preventDefault();
                 var _self = $(this);
@@ -635,14 +634,14 @@ $(function () {
                                     remove_school(id);
                                     p.remove();
                                     namespace.find('input[name="user_profile[school]"]').val('');
-                                    if(cb) {
+                                    if (cb) {
                                         namespace.find('input[name="school"]').val('');
                                     }
                                 }
                             });
                             SCHOOL_DATA.school_list.push({'id': data[2], 'name': text});
                             $('#add-school').find('.items').empty();
-                            if(cb){
+                            if (cb) {
                                 cb(namespace);
                                 namespace.find('input[name="school"]').val(data[2]);
                             }
@@ -946,7 +945,7 @@ $(function () {
     }
 
     //获取学校
-    function get_school(space,cb) {
+    function get_school(space, cb) {
         var val1 = SCHOOL_DATA.type;
         var val2 = SCHOOL_DATA.districtName;
         var group = SCHOOL_DATA.typeName;
@@ -958,7 +957,11 @@ $(function () {
                 success: function (data) {
                     $('#add-school').find('.items').empty();
                     if (data.schools) {
-                        $.each(data.schools, function (k, v) {
+                        var arr = [];
+                        if (data.schools.length > 20) {
+                            arr = data.schools.slice(-20);
+                        }
+                        $.each(arr, function (k, v) {
                             var id = v.id;
                             var name = v.name;
                             var html = $('<li class="item"><div data-school-id="' + id + '" class="choice-school">' + name + '</div></li>');
@@ -982,15 +985,15 @@ $(function () {
                                     remove_school(id);
                                     p.remove();
                                     space.find('input[name="user_profile[school]"]').val('');
-                                    if(cb){
-                                    space.find('input[name="school"]').val('');
+                                    if (cb) {
+                                        space.find('input[name="school"]').val('');
                                     }
                                 }
                             });
                             SCHOOL_DATA.school_list.push({'id': id, 'name': _self.text()});
                             $('#add-school').find('.items').empty();
                             $('#school-list').modal('hide');
-                            if(cb){
+                            if (cb) {
                                 cb(space);
                                 space.find('input[name="school"]').val(id);
                             }
@@ -1335,7 +1338,7 @@ $(function () {
                 teacher_mobile = val;
             } else if (name == 'team_name') {
                 teamname = val;
-                if(teamname.length>5 || teamname.length<2){
+                if (teamname.length > 5 || teamname.length < 2) {
                     alert('队伍名长度在2-5个字符之间！');
                     return false;
                 }
