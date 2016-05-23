@@ -957,7 +957,7 @@ $(function () {
                 success: function (data) {
                     $('#add-school').find('.items').empty();
                     if (data.schools) {
-                        var arr = [];
+                        var arr = data.schools;
                         if (data.schools.length > 20) {
                             arr = data.schools.slice(-20);
                         }
