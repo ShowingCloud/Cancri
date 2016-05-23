@@ -63,7 +63,12 @@ class CompetitionsController < ApplicationController
     bj = params[:bj]
     birthday = params[:birthday]
     student_code = params[:student_code]
-    district = params[:district].to_i
+    district = params[:district]
+    puts 'nihao'
+    puts params[:district]
+    puts params[:district].class
+    puts district
+    puts district.class
     school = params[:school1].to_i
     identity_card = params[:identity_card]
     if params[:school2].present? && params[:school2].to_i !=0
@@ -78,7 +83,7 @@ class CompetitionsController < ApplicationController
     if /\A[\u4e00-\u9fa5]{2,4}\Z/.match(username)==nil
       status = false
       message= '姓名为2-4位中文'
-    elsif username.present? && school !=0 && grade.present? && gender !=0 && district != 0 && student_code.present? && bj.present? && birthday.present? && group !=0
+    elsif username.present? && school !=0 && grade.present? && gender !=0 && district.to_i != 0 && student_code.present? && bj.present? && birthday.present? && group !=0
       if group==3 && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(identity_card) == nil
         status = false
         message = '高中生请正确填写18位身份证号'
@@ -95,7 +100,7 @@ class CompetitionsController < ApplicationController
         user.birthday = birthday
         user.bj = bj
         user.student_code = student_code
-        user.district = district
+        user.district = district.to_i
         user.identity_card = identity_card
         if user.save
           s = true
@@ -117,7 +122,7 @@ class CompetitionsController < ApplicationController
 
       if s && join
         if td !=0 && ed !=0
-          result=self.apply_join_team(td, ed)
+          result=self.apply_join_team(td, ed, school, grade)
           status = result[0]
           message = result[1]
         else
@@ -135,12 +140,12 @@ class CompetitionsController < ApplicationController
     render json: [status, message]
   end
 
-  def apply_join_team(td, ed)
+  def apply_join_team(td, ed, school, grade)
     if td.present? && ed.present? && current_user.validate_status=='1'
       if TeamUserShip.where(team_id: td, event_id: ed, user_id: current_user.id).exists?
         [false, '您已经申请过或已是该队队员']
       else
-        t_u = TeamUserShip.create!(event_id: ed, team_id: td, user_id: current_user.id, status: false)
+        t_u = TeamUserShip.create!(event_id: ed, team_id: td, user_id: current_user.id, school_id: school, grade: grade, status: false)
         if t_u.save
           info = Team.joins(:event).where(id: td).where("teams.event_id=events.id").select("teams.name as team_name", "events.name as event_name").first
           notify = Notification.create!(user_id: t_u.user_id, content: current_user.user_profile.username+'申请加入您在比赛项目－'+ info.event_name.to_s + '中创建的队伍－'+info.team_name, t_u_id: t_u.id, team_id: t_u.team_id, message_type: 2, reply_to: t_u.user_id)
@@ -195,7 +200,8 @@ class CompetitionsController < ApplicationController
       else
         team = Team.create!(name: team_name, group: group, district_id: district_id, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: sd, sk_station: skd)
         if team.save
-          team_user_ship = TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed)
+          user_info = current_user.user_profile
+          team_user_ship = TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed, school_id: user_info.school, grade: user_info.grade)
           if team_user_ship.save
             result = [true, '队伍['+team.name+']创建成功!']
           else
