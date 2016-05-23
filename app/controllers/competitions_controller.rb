@@ -63,12 +63,7 @@ class CompetitionsController < ApplicationController
     bj = params[:bj]
     birthday = params[:birthday]
     student_code = params[:student_code]
-    district = params[:district]
-    puts 'nihao'
-    puts params[:district]
-    puts params[:district].class
-    puts district
-    puts district.class
+    district = params[:district].to_i
     school = params[:school1].to_i
     identity_card = params[:identity_card]
     if params[:school2].present? && params[:school2].to_i !=0
@@ -83,7 +78,7 @@ class CompetitionsController < ApplicationController
     if /\A[\u4e00-\u9fa5]{2,4}\Z/.match(username)==nil
       status = false
       message= '姓名为2-4位中文'
-    elsif username.present? && school !=0 && grade.present? && gender !=0 && district.to_i != 0 && student_code.present? && bj.present? && birthday.present? && group !=0
+    elsif username.present? && school !=0 && grade.present? && gender !=0 && district != 0 && student_code.present? && bj.present? && birthday.present? && group !=0
       if group==3 && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(identity_card) == nil
         status = false
         message = '高中生请正确填写18位身份证号'
