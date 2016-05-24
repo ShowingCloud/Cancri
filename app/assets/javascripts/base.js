@@ -30,12 +30,40 @@ $(function () {
         if ($('#join-volunteer').length > 0) {
             volunteer_school.init();
         }
+        if($('.invite-page').length>0){
+            invite_school.init();
+        }
     };
 
     var user_school = {
         init: function () {
             var space = $('.user-panel');
             choice_school_part(space);
+        }
+    };
+
+    var invite_school = {
+        init:function(){
+            var space = $('.invite-page');
+            space.find('.open-school').off('click').on('click', function () {
+                SCHOOL_DATA.type = space.find('input[name="group"]').val();
+                if (!SCHOOL_DATA.type) {
+                    return alert('请选择类型');
+                }
+                SCHOOL_DATA.typeName = space.find('select[data-select-target="group"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+                SCHOOL_DATA.district = space.find('input[name="district"]').val();
+                if (!SCHOOL_DATA.district) {
+                    return alert('请选择区县');
+                }
+                SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
+                var length = space.find('.edit-school').length;
+                if (length == 1) {
+                    alert('学校已满，无法继续添加！');
+                } else {
+                    get_school(space);
+                    $('#school-list').modal('show');
+                }
+            });
         }
     };
 
@@ -97,7 +125,7 @@ $(function () {
         space.find('.open-school').off('click').on('click', function () {
             SCHOOL_DATA.type = space.find('input[name="group"]').val();
             if (!SCHOOL_DATA.type) {
-                return alert('请选择组别');
+                return alert('请选择类型');
             }
             SCHOOL_DATA.typeName = space.find('select[data-select-target="group"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
             SCHOOL_DATA.district = space.find('input[name="district"]').val();
@@ -117,7 +145,7 @@ $(function () {
         space.find('.add-other-school').off('click').on('click', function () {
             SCHOOL_DATA.type = space.find('input[name="group"]').val();
             if (!SCHOOL_DATA.type) {
-                return alert('请选择组别');
+                return alert('请选择类型');
             }
             SCHOOL_DATA.typeName = space.find('select[data-select-target="group"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
             SCHOOL_DATA.district = space.find('input[name="district"]').val();
@@ -990,6 +1018,7 @@ $(function () {
                                     remove_school(id);
                                     p.remove();
                                     space.find('input[name="user_profile[school]"]').val('');
+                                    space.find('input[name="invite_player[school]"]').val('');
                                     if (cb) {
                                         space.find('input[name="school"]').val('');
                                     }
@@ -1003,7 +1032,7 @@ $(function () {
                                 space.find('input[name="school"]').val(id);
                             }
                             space.find('input[name="user_profile[school]"]').val(id);
-
+                            space.find('input[name="invite_player[school]"]').val(id);
                         });
                     }
                 }
