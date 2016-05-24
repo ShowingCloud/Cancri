@@ -699,7 +699,7 @@ $(function () {
             }
             var b = $('.invitation-text');
             if (b.length > 0) {
-                b.off('click').on('keyup', function () {
+                b.off('keyup').on('keyup', function () {
                     var _self = $(this);
                     var name = _self.val();
                     var reg = /[\u4e00-\u9fa5]{2,}/;
@@ -714,22 +714,27 @@ $(function () {
                                 p.find('.user-list').remove();
                                 if (result[0]) {
                                     var div = $('<div class="user-list"></div>');
-                                    $.each(result[1], function (k, v) {
-                                        var s = '';
-                                        if (v.gender == 1) {
-                                            s = '男';
-                                        } else {
-                                            s = '女';
-                                        }
-                                        div.append('<div class="user-info" data-id="' + v.email + '">' + v.username + ' - ' + v.name + ' - ' + v.grade + '年级' + v.bj + '班 - ' + s + ' - ' + v.nickname + '</div>')
-                                    });
-                                    p.append(div);
-                                    $('.user-info').on('click', function () {
-                                        var text = $(this).text();
-                                        p.find('.user-list').remove();
-                                        $('.hidden-invitation-id').val($(this).attr('data-id'));
-                                        b.val(text);
-                                    });
+                                    if (result[1].length < 1) {
+                                        div.append('<div class="user-info">未搜索到相关用户</div>');
+                                        p.append(div);
+                                    } else {
+                                        $.each(result[1], function (k, v) {
+                                            var s = '';
+                                            if (v.gender == 1) {
+                                                s = '男';
+                                            } else {
+                                                s = '女';
+                                            }
+                                            div.append('<div class="user-info" data-id="' + v.email + '">' + v.username + ' - ' + v.name + ' - ' + v.grade + '年级' + v.bj + '班 - ' + s + ' - ' + v.nickname + '</div>')
+                                        });
+                                        p.append(div);
+                                        $('.user-info').off('click').on('click', function () {
+                                            var text = $(this).text();
+                                            p.find('.user-list').remove();
+                                            $('.hidden-invitation-id').val($(this).attr('data-id'));
+                                            b.val(text);
+                                        });
+                                    }
                                 } else {
                                     alert(result[1]);
                                 }
@@ -772,7 +777,7 @@ $(function () {
                         };
                         $.ajax(option);
                     } else {
-                        alert('请选择用户！');
+                        alert('请输入两个或以上中文并选择用户！');
                     }
                 })
             }
