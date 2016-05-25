@@ -287,24 +287,26 @@ class UserController < ApplicationController
     username = params[:username]
     school = params[:school].to_i
     grade = params[:grade]
+    bj = params[:bj]
     gender = params[:gender].to_i
     student_code = params[:student_code]
     identity_card = params[:identity_card]
     td = params[:td].to_i
     ed = params[:ed].to_i
     if td!=0 && ed !=0
-      t_u = TeamUserShip.includes(:team).where(event_id: ed, team_id: td, user_id: current_user.id).select('teams.group', :user_id, :status).take
+      t_u = TeamUserShip.where(event_id: ed, team_id: td, user_id: current_user.id).select(:user_id, :status).take
       if t_u.status
         status = true
         message = '您已经是该队队员'
       else
-        if username.present? && school!=0 && grade.present? && gender!=0 && birthday.present? && student_code.present?
+        if username.present? && school!=0 && grade.present? && gender!=0 && birthday.present? && student_code.present? && bj.present?
           user = UserProfile.find_by(user_id: current_user.id)
           if user.present?
             user.username = username
             user.birthday = birthday
             user.school = school
             user.grade = grade
+            user.bj = bj
             user.gender = gender
             user.student_code = student_code
             user.identity_card = identity_card
