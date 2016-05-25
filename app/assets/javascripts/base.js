@@ -931,7 +931,7 @@ $(function () {
         space.find('[data-name="grade"]').text(EVENT_DATA[ed].team_info[0].grade + '年级' + EVENT_DATA[ed].team_info[0].bj + '班');
         space.find('[data-name="code"]').text(EVENT_DATA[ed].team_info[0].identifier);
         space.find('[data-name="teacher"]').text(EVENT_DATA[ed].team_info[0].teacher);
-        space.find('[data-name="teacher_mobile"]').text(EVENT_DATA[ed].team_info[0].teacher_mobile);
+        space.find('[data-name="teacher_mobile"]').text(EVENT_DATA[ed].team_info[0].teacher_mobile == null ? EVENT_DATA[ed].team_info[0].teacher_mobile : '空');
         space.find('[data-name="qrcode"]').qrcode({
             width: 64,
             height: 64,
@@ -1445,8 +1445,8 @@ $(function () {
         var district = '';
         var grade = '';
         var bj = '';
-        var teacher = '';
-        var teacher_mobile = '';
+        var teacher = '无';
+        var teacher_mobile = '无';
         var school = '';
         var birthday = '';
         var identity_card = '';
@@ -1457,25 +1457,53 @@ $(function () {
             school += '\n      ' + SCHOOL_DATA.school_list[1].name
         }
         var teamname = '';
+        console.log(arr);
         for (var i = 0; i < arr.length; i++) {
             var name = arr[i].name;
             var val = arr[i].value;
             if (name == 'username') {
                 username = val;
+                if (student_code.length < 2) {
+                    alert('请填写正确的用户名');
+                    return false;
+                }
             } else if (name == 'student_code') {
                 student_code = val;
+                if (student_code.length < 1) {
+                    alert('请填写正确的学籍号');
+                    return false;
+                }
             } else if (name == 'gender') {
-                gender = val == 1 ? '男' : '女';
+                if (val == 1) {
+                    gender = '男'
+                } else if (val == 2) {
+                    gender = '女'
+                } else {
+                    alert('请选择性别!');
+                    return false;
+                }
             } else if (name == 'group') {
                 group = space.find('select[data-select-target="group"]').find('option[value="' + val + '"]').text();
             } else if (name == 'district') {
                 district = space.find('select[data-select-target="district"]').find('option[value="' + val + '"]').text();
             } else if (name == 'grade') {
                 grade = val;
+                if (grade.length < 1) {
+                    alert('请选择年级');
+                    return false;
+                }
             } else if (name == 'bj') {
                 bj = val;
+                if (bj.length < 1) {
+                    alert('请选择班级');
+                    return false;
+                }
             } else if (name == 'team_teacher') {
                 teacher = val;
+                if (teacher.length < 2) {
+                    alert('请填写正确的老师姓名');
+                }
+
             } else if (name == 'teacher_mobile') {
                 teacher_mobile = val;
             } else if (name == 'team_name') {
