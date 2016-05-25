@@ -30,8 +30,11 @@ $(function () {
         if ($('#join-volunteer').length > 0) {
             volunteer_school.init();
         }
-        if($('.invite-page').length>0){
+        if ($('.invite-page').length > 0) {
             invite_school.init();
+        }
+        if ($('.invite-panel').length > 0) {
+            invite_user_center.init();
         }
     };
 
@@ -42,8 +45,93 @@ $(function () {
         }
     };
 
+    var invite_user_center = {
+        init: function () {
+            var space = $('.invite-panel');
+            space.find('.open-school').off('click').on('click', function () {
+                SCHOOL_DATA.type = space.find('input[name="group"]').val();
+                if (!SCHOOL_DATA.type) {
+                    return alert('请选择组别');
+                }
+                SCHOOL_DATA.typeName = space.find('select[data-select-target="group"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+                SCHOOL_DATA.district = space.find('input[name="district"]').val();
+                if (!SCHOOL_DATA.district) {
+                    return alert('请选择区县');
+                }
+                SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
+                var length = space.find('.edit-school').length;
+                if (length == 1) {
+                    alert('学校已满，无法继续添加！');
+                } else {
+                    get_school(space);
+                    $('#school-list').modal('show');
+                }
+            });
+
+            space.find('.add-other-school').off('click').on('click', function () {
+                SCHOOL_DATA.type = space.find('input[name="group"]').val();
+                if (!SCHOOL_DATA.type) {
+                    return alert('请选择组别');
+                }
+                SCHOOL_DATA.typeName = space.find('select[data-select-target="group"]').find('option[value="' + SCHOOL_DATA.type + '"]').text();
+                SCHOOL_DATA.district = space.find('input[name="district"]').val();
+                if (!SCHOOL_DATA.district) {
+                    return alert('请选择区县');
+                }
+                SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
+                var length = space.find('.edit-school').length;
+                if (length == 1) {
+                    alert('学校已满，无法继续添加！');
+                } else {
+                    $('#add-other-school').modal('show');
+                }
+            });
+
+            //开启添加学校
+            add_other_school(space);
+
+            space.find('.apply-submit').off('click').on('click', function (event) {
+                event.preventDefault();
+                var _self = $(this);
+                var form = space.find('#team-confirm-form');
+                var data = form.serialize();
+                if (SCHOOL_DATA.school_list[0]) {
+                    data += '&school=' + SCHOOL_DATA.school_list[0].id;
+                }
+
+                var group = space.find('input[name="group"]').val();
+                var identity_card = space.find('input[name="identity_card"]').val();
+                var reg = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
+                if (!reg.test(identity_card) && group == 3) {
+                    alert('请输入正确的身份证号！');
+                    _self.text(old).prop({'disabled': false});
+                } else {
+                    var new_data = space.find('form').serializeArray();
+                    var t = format_data(space, new_data);
+                    if (t) {
+                        if (confirm('请确认您的参赛信息：\n' + format_data(space, new_data))) {
+                            var option = {
+                                url: '/user/agree_invite_info',
+                                dataType: 'json',
+                                type: 'post',
+                                data: data,
+                                success: function (data) {
+                                    alert(data[1]);
+                                    if (data[0]) {
+                                        window.location.reload();
+                                    }
+                                }
+                            };
+                            $.ajax(option);
+                        }
+                    }
+                }
+            })
+        }
+    };
+
     var invite_school = {
-        init:function(){
+        init: function () {
             var space = $('.invite-page');
             space.find('.open-school').off('click').on('click', function () {
                 SCHOOL_DATA.type = space.find('input[name="group"]').val();
@@ -287,7 +375,7 @@ $(function () {
                     var _self = $(this);
                     _self.siblings('input[name="' + _self.attr('data-select-target') + '"]').val(_self.val());
                     if (_self.hasClass('group-choice')) {
-                        var p = _self.parents('.apply-part');
+                        var p = _self.parents('form');
                         if (_self.val() == 3) {
                             p.find('.input-row.idc-row').removeClass('hide');
                         } else {
@@ -426,6 +514,7 @@ $(function () {
                     if (!SCHOOL_DATA.district) {
                         return alert('请选择区县');
                     }
+                    SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
                     var length = space.find('.edit-school').length;
                     if (length == 2) {
                         alert('学校已满，无法继续添加！');
@@ -445,6 +534,7 @@ $(function () {
                     if (!SCHOOL_DATA.district) {
                         return alert('请选择区县');
                     }
+                    SCHOOL_DATA.districtName = space.find('select[data-select-target="district"]').find('option[value="' + SCHOOL_DATA.district + '"]').text();
                     var length = space.find('.edit-school').length;
                     if (length == 2) {
                         alert('学校已满，无法继续添加！');
@@ -479,20 +569,23 @@ $(function () {
                         _self.text(old).prop({'disabled': false});
                     } else {
                         var new_data = space.find('form').serializeArray();
-                        if (confirm('请确认您的参赛信息：\n' + format_data(space, new_data))) {
-                            var option = {
-                                url: 'update_apply_info',
-                                dataType: 'json',
-                                type: 'post',
-                                data: data,
-                                success: function (data) {
-                                    alert(data[1]);
-                                    if (data[0]) {
-                                        window.location.reload();
+                        var t = format_data(space, new_data);
+                        if (t) {
+                            if (confirm('请确认您的参赛信息：\n' + format_data(space, new_data))) {
+                                var option = {
+                                    url: 'update_apply_info',
+                                    dataType: 'json',
+                                    type: 'post',
+                                    data: data,
+                                    success: function (data) {
+                                        alert(data[1]);
+                                        if (data[0]) {
+                                            window.location.reload();
+                                        }
                                     }
-                                }
-                            };
-                            $.ajax(option);
+                                };
+                                $.ajax(option);
+                            }
                         }
                     }
                 })
@@ -984,6 +1077,8 @@ $(function () {
     function get_school(space, cb) {
         var val1 = SCHOOL_DATA.type;
         var val2 = SCHOOL_DATA.districtName;
+        console.log(val1);
+        console.log(val2);
         var group = SCHOOL_DATA.typeName;
         if (val1 != 0 && val2 != 0) {
             var option = {
@@ -1152,34 +1247,39 @@ $(function () {
                     _self.text(old).prop({'disabled': false});
                 } else {
                     var new_data = space.find('form').serializeArray();
-                    if (confirm('请确认您的参赛信息：\n' + format_data(space, new_data))) {
-                        send_confirm(data, function (result) {
-                            if (result[0]) {
-                                var data = space.find('form').serialize();
-                                data += '&team_event=' + ed;
-                                data += '&team_district=' + space.find('input[name="district"]').val();
-                                if (SCHOOL_DATA.school_list[0]) {
-                                    data += '&sd=' + SCHOOL_DATA.school_list[0].id;
-                                    if (SCHOOL_DATA.school_list[1]) {
-                                        data += '&skd=' + SCHOOL_DATA.school_list[1].id;
+                    var t = format_data(space, new_data);
+                    if (t) {
+                        if (confirm('请确认您的参赛信息：\n' + t)) {
+                            send_confirm(data, function (result) {
+                                if (result[0]) {
+                                    var data = space.find('form').serialize();
+                                    data += '&team_event=' + ed;
+                                    data += '&team_district=' + space.find('input[name="district"]').val();
+                                    if (SCHOOL_DATA.school_list[0]) {
+                                        data += '&sd=' + SCHOOL_DATA.school_list[0].id;
+                                        if (SCHOOL_DATA.school_list[1]) {
+                                            data += '&skd=' + SCHOOL_DATA.school_list[1].id;
+                                        }
                                     }
+                                    create_team(data, function (result) {
+                                        if (result[0]) {
+                                            alert('报名成功！');
+                                            window.location.reload();
+                                        } else {
+                                            alert(result[1]);
+                                        }
+                                    }, function () {
+                                        _self.text(old).prop({'disabled': false});
+                                    });
+                                } else {
+                                    alert(result[1]);
                                 }
-                                create_team(data, function (result) {
-                                    if (result[0]) {
-                                        alert('报名成功！');
-                                        window.location.reload();
-                                    } else {
-                                        alert(result[1]);
-                                    }
-                                }, function () {
-                                    _self.text(old).prop({'disabled': false});
-                                });
-                            } else {
-                                alert(result[1]);
-                            }
-                        }, function () {
+                            }, function () {
+                                _self.text(old).prop({'disabled': false});
+                            });
+                        } else {
                             _self.text(old).prop({'disabled': false});
-                        });
+                        }
                     } else {
                         _self.text(old).prop({'disabled': false});
                     }
@@ -1255,35 +1355,40 @@ $(function () {
                 _self.text(old).prop({'disabled': false});
             } else {
                 var new_data = space.find('form').serializeArray();
-                if (confirm('请确认您的参赛信息：\n' + format_data(space, new_data))) {
-                    send_confirm(data, function (result) {
-                        if (result[0]) {
-                            var data = space.find('form').serialize();
-                            data += '&team_name=' + $('#currentUser').attr('data-userName');
-                            data += '&team_event=' + ed;
-                            data += '&team_district=' + space.find('input[name="district"]').val();
-                            if (SCHOOL_DATA.school_list[0]) {
-                                data += '&sd=' + SCHOOL_DATA.school_list[0].id;
-                                if (SCHOOL_DATA.school_list[1]) {
-                                    data += '&skd=' + SCHOOL_DATA.school_list[1].id;
+                var t = format_data(space, new_data);
+                if (t) {
+                    if (confirm('请确认您的参赛信息：\n' + t)) {
+                        send_confirm(data, function (result) {
+                            if (result[0]) {
+                                var data = space.find('form').serialize();
+                                data += '&team_name=' + $('#currentUser').attr('data-userName');
+                                data += '&team_event=' + ed;
+                                data += '&team_district=' + space.find('input[name="district"]').val();
+                                if (SCHOOL_DATA.school_list[0]) {
+                                    data += '&sd=' + SCHOOL_DATA.school_list[0].id;
+                                    if (SCHOOL_DATA.school_list[1]) {
+                                        data += '&skd=' + SCHOOL_DATA.school_list[1].id;
+                                    }
                                 }
+                                create_team(data, function (result) {
+                                    if (result[0]) {
+                                        alert('报名成功！');
+                                        window.location.reload();
+                                    } else {
+                                        alert(result[1]);
+                                    }
+                                }, function () {
+                                    _self.text(old).prop({'disabled': false});
+                                });
+                            } else {
+                                alert(result[1]);
                             }
-                            create_team(data, function (result) {
-                                if (result[0]) {
-                                    alert('报名成功！');
-                                    window.location.reload();
-                                } else {
-                                    alert(result[1]);
-                                }
-                            }, function () {
-                                _self.text(old).prop({'disabled': false});
-                            });
-                        } else {
-                            alert(result[1]);
-                        }
-                    }, function () {
+                        }, function () {
+                            _self.text(old).prop({'disabled': false});
+                        });
+                    } else {
                         _self.text(old).prop({'disabled': false});
-                    });
+                    }
                 } else {
                     _self.text(old).prop({'disabled': false});
                 }
