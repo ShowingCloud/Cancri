@@ -294,7 +294,7 @@ class UserController < ApplicationController
     td = params[:td].to_i
     ed = params[:ed].to_i
     if td!=0 && ed !=0
-      t_u = TeamUserShip.where(event_id: ed, team_id: td, user_id: current_user.id).select(:user_id, :status).take
+      t_u = TeamUserShip.where(event_id: ed, team_id: td, user_id: current_user.id).take
       if t_u.status
         status = true
         message = '您已经是该队队员'
