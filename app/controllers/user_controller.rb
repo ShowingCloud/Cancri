@@ -200,7 +200,7 @@ class UserController < ApplicationController
   end
 
   def comp
-    @user_events = TeamUserShip.joins(:event, :team).joins('inner join user_profiles u_p on u_p.user_id = team_user_ships.user_id').joins('inner join schools s on s.id = teams.school_id').joins('inner join competitions comp on comp.id = events.competition_id').where(user_id: current_user.id).select(:user_id, 'events.name as event_name', 'comp.name as comp_name', 's.name as school', 'comp.status', 'u_p.grade', 'u_p.student_code', 'u_p.username', 'teams.identifier', 'teams.teacher', 'teams.teacher_mobile')
+    @user_events = TeamUserShip.joins(:event, :team, :school).joins('inner join user_profiles u_p on u_p.user_id = team_user_ships.user_id').joins('inner join competitions comp on comp.id = events.competition_id').where(user_id: current_user.id, status: true).select(:user_id, :grade, 'events.name as event_name', 'comp.name as comp_name', 'schools.name as school_name', 'comp.status', 'u_p.student_code', 'u_p.username', 'teams.identifier', 'teams.teacher', 'teams.teacher_mobile')
   end
 
   def consult

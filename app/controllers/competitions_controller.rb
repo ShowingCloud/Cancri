@@ -28,7 +28,7 @@ class CompetitionsController < ApplicationController
     if params[:ed].present?
       event = Event.find(params[:ed])
       if event.present?
-        a_p = TeamUserShip.where(event_id: params[:ed], user_id: current_user.id).take
+        a_p = TeamUserShip.where(event_id: params[:ed], user_id: current_user.id, status: true).take
         if a_p.present?
           team_players = Team.find_by_sql("select t.user_id as id,a.team_id,u_p.username,u_p.bj,t.identifier,t.teacher,t.teacher_mobile,u_p.grade as grade,u_p.user_id as user_id,u_p.gender as gender, a.status,t.name as name,s.name as school from team_user_ships a INNER JOIN teams t on t.id = a.team_id inner join user_profiles u_p on u_p.user_id = a.user_id inner join schools s on s.id = u_p.school where a.team_id = #{a_p.team_id}")
           result =[true, team_players, event.group]
@@ -186,7 +186,7 @@ class CompetitionsController < ApplicationController
       return false
     end
     if team_name.present? && district_id !=0 && ed !=0 && sd !=0 && teacher.present? && group != 0
-      already_apply = TeamUserShip.where(user_id: user_id, event_id: ed).exists?
+      already_apply = TeamUserShip.where(user_id: user_id, event_id: ed, status: true).exists?
       has_team_name = Team.where(event_id: ed, name: team_name).take
       if already_apply
         result = [false, '该比赛您已经报名，请不要再次报名!']
@@ -196,7 +196,7 @@ class CompetitionsController < ApplicationController
         team = Team.create!(name: team_name, group: group, district_id: district_id, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: sd, sk_station: skd)
         if team.save
           user_info = current_user.user_profile
-          team_user_ship = TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed, school_id: user_info.school, grade: user_info.grade)
+          team_user_ship = TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed, school_id: user_info.school, grade: user_info.grade, status: true)
           if team_user_ship.save
             result = [true, '队伍['+team.name+']创建成功!']
           else

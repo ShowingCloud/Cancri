@@ -56,7 +56,7 @@ class InvitePlayer
         u_p = UserProfile.create!(username: username, user_id: u.id, school: school.to_i, grade: grade, student_code: student_code, gender: gender.to_i)
         if u_p.save
           team = Invite.joins(:team).where(email: email, code: code).where("teams.id=invites.team_id").select(:team_id, "teams.event_id as event_id").take
-          t_u = TeamUserShip.create!(team_id: team.team_id, event_id: team.event_id, user_id: u.id)
+          t_u = TeamUserShip.create!(team_id: team.team_id, event_id: team.event_id, user_id: u.id, status: true)
           t_u.save
         end
       else
