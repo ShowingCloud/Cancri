@@ -696,6 +696,7 @@ $(function () {
                     var tName = $('.apply-team-name').text();
                     var eName = $('.event-name').text();
                     var td = $('.apply-team-name').attr('data-team-id');
+                    var ed = $('.event-id').val();
                     var reg = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})+$/;
                     if (reg.test(e)) {
                         var option = {
@@ -706,7 +707,7 @@ $(function () {
                                 team_name: tName,
                                 event_name: eName,
                                 td: td,
-                                ed: EVENT_DATA.ed,
+                                ed: ed,
                                 invited_email: e
                             },
                             success: function (data) {
@@ -782,6 +783,7 @@ $(function () {
                         var tName = $('.apply-team-name').text();
                         var eName = $('.event-name').text();
                         var td = $('.apply-team-name').attr('data-team-id');
+                        var ed = $('.event-id').val();
                         var option = {
                             url: 'leader_invite_player',
                             type: 'post',
@@ -790,7 +792,7 @@ $(function () {
                                 team_name: tName,
                                 event_name: eName,
                                 td: td,
-                                ed: EVENT_DATA.ed,
+                                ed: ed,
                                 invited_email: e
                             },
                             success: function (data) {
@@ -869,6 +871,7 @@ $(function () {
         space.find('.event-name').text(EVENT_DATA[ed].eName);
         space.find('.apply-team-name').text(EVENT_DATA[ed].team_info[0].name).attr({'data-team-id': EVENT_DATA[ed].team_info[0].team_id});
         space.find('.apply-member-num').text(EVENT_DATA[ed].team_info.length + '人');
+        space.find('.event-id').val(ed);
         var user_id = $('#currentUser').attr('data-userId');
         var target = $('.apply-member').find('tbody');
         target.empty();
