@@ -45,11 +45,6 @@ class UserController < ApplicationController
         if message=='-'
           message=''
         end
-        if profile_params[:school].to_i != 0 && profile_params[:grade].present? && profile_params[:gender].to_i !=0 && profile_params[:username].present? && profile_params[:bj].present?
-          current_user.update_attributes(validate_status: 1)
-        else
-          current_user.update_attributes(validate_status: 0)
-        end
         @user_profile.username = profile_params[:username]
         @user_profile.autograph = profile_params[:autograph]
         @user_profile.school = profile_params[:school].to_i
