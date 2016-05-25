@@ -12,8 +12,9 @@ class CompetitionsController < ApplicationController
 
   def apply_event
     if require_email
-      @competition = Competition.find(params[:cd])
+      @competition = Competition.where(id: params[:cd]).select(:name).take
       @events = Event.where(competition_id: params[:cd], is_father: false).select(:name, :id, :team_max_num)
+      @user_info = UserProfile.joins('left join schools s on s.id = user_profiles.school').where(user_id: current_user.id).select(:student_code, :identity_card, :gender, :birthday, :district, 's.name as school_name', :grade, :bj).take
       #   @teams = Team.includes(:team_user_ships).where(event_id: params[:eid])
       #   @already_apply = TeamUserShip.includes(:team).where(event_id: params[:eid], user_id: current_user.id).take
       #   if @already_apply.present?
