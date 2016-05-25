@@ -319,7 +319,7 @@ class UserController < ApplicationController
               message = '个人信息更新失败'
             end
           else
-            up = UserProfile.create!(user_id: t_u.user_id, username: username, age: age, school: school, grade: grade, gender: gender, birthday: birthday, student_code: student_code, identitty_card: identity_card)
+            up = UserProfile.create!(user_id: t_u.user_id, username: username, bj: bj, school: school, grade: grade, gender: gender, birthday: birthday, student_code: student_code, identitty_card: identity_card)
             if up.save
               status = true
               message = '个人信息添加成功'
