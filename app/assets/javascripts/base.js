@@ -1457,7 +1457,6 @@ $(function () {
             school += '\n      ' + SCHOOL_DATA.school_list[1].name
         }
         var teamname = '';
-        console.log(arr);
         for (var i = 0; i < arr.length; i++) {
             var name = arr[i].name;
             var val = arr[i].value;
