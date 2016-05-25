@@ -283,7 +283,6 @@ class UserController < ApplicationController
   end
 
   def agree_invite_info
-    age = params[:age]
     birthday = params[:birthday]
     username = params[:username]
     school = params[:school].to_i
@@ -299,11 +298,10 @@ class UserController < ApplicationController
         status = true
         message = '您已经是该队队员'
       else
-        if username.present? && school!=0 && grade.present? && gender!=0 && age.present? && birthday.present?
+        if username.present? && school!=0 && grade.present? && gender!=0 && birthday.present? && student_code.present?
           user = UserProfile.find_by(user_id: current_user.id)
           if user.present?
             user.username = username
-            user.age = age
             user.birthday = birthday
             user.school = school
             user.grade = grade
