@@ -8,13 +8,17 @@ class UserProfile < ApplicationRecord
   belongs_to :user_district, class_name: District, foreign_key: :district
   mount_uploader :certificate, CertificateUploader
   GENDER = {male: 1, female: 2}
-  after_commit :user_info_validate
+  after_save :user_info_validate
 
   def user_info_validate
     if self.school.present? & self.grade.present? & self.bj.present? & self.gender.present? & self.username.present?
-      self.user.update_attributes(validate_status: 1)
+      if self.user.validate_status == '0'
+        self.user.update_attributes(validate_status: 1)
+      end
     else
-      self.user.update_attributes(validate_status: 0)
+      if self.user.validate_status == '1'
+        self.user.update_attributes(validate_status: 0)
+      end
     end
   end
 end
