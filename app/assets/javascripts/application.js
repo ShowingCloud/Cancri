@@ -14,6 +14,9 @@
 //= require jquery_ujs
 //= require bootstrap.min
 //= require bootstrap-dialog
-
+//= require common
+//= require account
+//= require message-bus
+//= require notify
 //= //require turbolinks
 //= //require_tree .

@@ -1,4 +1,5 @@
-source 'https://rubygems.org'
+# source 'https://rubygems.org'
+source 'https://gems.ruby-china.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -48,3 +49,8 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'mysql2', '~> 0.4.2'
 gem 'devise'
+gem 'settingslogic'
+gem 'simple_form'
+gem 'virtus'
+gem 'rucaptcha'
+gem 'message_bus'

@@ -22,8 +22,11 @@
 
 /.idea
 
-#/config/config.yml
-#/config/database.yml
-#/db/schema.rb
-#/db/seeds.rb
+/config/config.yml
+/config/database.yml
+/.ruby-gemset
+/.ruby-version
+/db/schema.rb
+/db/seeds.rb
 /public/uploads
+
