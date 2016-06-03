@@ -84,6 +84,42 @@ $(function () {
             });
         }
     });
+    $('.user-add-email').on('click', function () {
+        var self = $(this);
+        if (is_sending) {
+            return
+        }
+        var email = $('.email-value').val();
+        var email_exp = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
+        if (email_exp.test(email)) {
+            is_sending = true;
+            self.text('发送中...').addClass('disabled');
+            $.ajax({
+                url: '/user/send_email_code',
+                type: 'post',
+                data: {
+                    "email": email
+                },
+                success: function (data) {
+                    if (data[0]) {
+                        alert(data[1]);
+                    } else {
+                        alert(data[1]);
+                    }
+                },
+                error: function (data) {
+                    alert('发送失败');
+                },
+                complete: function () {
+                    is_sending = false;
+                    self.text('获取验证码').removeClass('disabled');
+                }
+            });
+        } else {
+            alert("邮箱格式不正确");
+        }
+    });
+
 
 });
 function refresh_captcha() {
