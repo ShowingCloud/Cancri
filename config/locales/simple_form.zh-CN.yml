@@ -76,6 +76,7 @@ zh-CN:
         sort: '排序'
         desc: '描述'
         write_type: '计分方式'
+        city: '所属城市'
 
     "yes": '是'
     "no": '否'

@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-3 hidden-xs">
+      <%= render 'user/menu' %>
+    </div>
+    <div class="col-xs-12 col-sm-9">
+      <h1 class="page-header">
+        消息详情
+      </h1>
+
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <% if @notification.present? %>
+              <% if @notification.message_type == 0 %>
+                  <%= @notification.content %>
+              <% end %>
+          <% else %>
+              <div class="alert alert-info">
+                <p> 不是您的消息,无法查看</p>
+              </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

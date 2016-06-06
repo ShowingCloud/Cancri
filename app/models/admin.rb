@@ -13,7 +13,7 @@ class Admin < ApplicationRecord
   PERMISSIONS = {
       super_admin: '超级管理员',
       admin: '管理员',
-      supr_editor: '总编',
+      super_editor: '总编',
       editor: '编辑',
       score: '成绩录入员',
       audit: '审核员',

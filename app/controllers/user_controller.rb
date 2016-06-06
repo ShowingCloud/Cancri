@@ -89,11 +89,11 @@ class UserController < ApplicationController
       session[:return_apply_event] = return_uri
     end
     if request.method == 'POST'
-      current_user.email = params[:user][:email]
-      ec = EmailService.new(params[:user][:email])
+      current_user.email_info = params[:user][:email_info]
+      ec = EmailService.new(params[:user][:email_info])
       status, message = ec.validate?(params[:email_code], EmailService::TYPE_CODE_ADD_EMAIL_CODE)
       if status
-        current_user.email = params[:user][:email]
+        current_user.email = params[:user][:email_info]
         if current_user.save
           flash[:success] = '邮箱添加成功'
           if session[:return_apply_event].present?
@@ -106,7 +106,7 @@ class UserController < ApplicationController
           flash[:error] = '邮箱添加失败'
         end
       else
-        current_user.email = params[:user][:email]
+        current_user.email_info = params[:user][:email_info]
         flash[:error] = message
       end
     end

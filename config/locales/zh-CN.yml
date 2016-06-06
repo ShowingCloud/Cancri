@@ -257,6 +257,7 @@ zh-CN:
       demeanor: '选手风采'
       photo: '图片'
       consult: '用户反馈'
+      course: '课程'
   views:
     pagination:
         first: "首页"

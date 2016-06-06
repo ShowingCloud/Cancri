@@ -1,0 +1,37 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-3 hidden-xs">
+      <%= render 'user/menu' %>
+    </div>
+    <div class="col-xs-12 col-sm-9">
+      <h1 class="page-header">
+        我的消息
+      </h1>
+
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <% if @notifications.present? %>
+              <% @notifications.each do |no| %>
+                  <div class="message" data-src="<%= image_path('homepage/message.png') %>">
+                    <div class="msg-time"><%= no.created_at.try(:strftime, '%Y-%m-%d') %> <%= no.read ? '已读' : '未读' %></div>
+                    <div class="msg-inner">
+                      <%= no.content[0..20] %>
+                    </div>
+                    <div class="msg-control">
+                      <a class="btn-robodou btn-msg" href="<%= "/user/notify?id=#{no.id}" %>">查看详情</a>
+                    </div>
+                  </div>
+              <% end %>
+              <nav>
+                <%= paginate @notifications %>
+              </nav>
+          <% else %>
+              <p> 暂无消息</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
