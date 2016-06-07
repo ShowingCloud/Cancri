@@ -4,6 +4,15 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :configure_permitted_parameters, if: :devise_controller?
+
+  def require_user
+    if current_user.blank?
+      respond_to do |format|
+        format.html { authenticate_user! }
+        format.all { head(:unauthorized) }
+      end
+    end
+  end
   private
 
   def configure_permitted_parameters

@@ -1,3 +1,10 @@
+/* jason */
+.show-span-width {
+    width: 70px;
+    display: block;
+    float: left
+}
+
 .add-score-attribute {
     list-style-type: none;
     display: none;

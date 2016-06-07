@@ -1,0 +1,14 @@
+<div class="container">
+  <p>对象:<%= @course.target %></p>
+  <p>开课时间:<%= @course.start_time.strftime('%Y-%m-%d') %> -- <%= @course.end_time.strftime('%Y-%m-%d') %></p>
+  <p>上课时间:<%= @course.run_time %></p>
+  <p>招募人数:<%= @course.num %></p>
+  <% if @has_apply %>
+      <span class="label label-info">您已报名</span>
+  <% else %>
+      <%= link_to "/courses/apply?cd=#{@course.id}", data: {cd: @course.id, method: :post}, class: 'btn btn-sm btn-primary' do %>
+          报名
+      <% end %>
+  <% end %>
+
+</div>

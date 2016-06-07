@@ -1,0 +1,6 @@
+<div class="container">
+  <% @courses.each do |c| %>
+      <a href="<%= "/courses/#{c.id}" %>"><%= c.name %></a>
+      <hr>
+  <% end %>
+</div>

@@ -77,6 +77,8 @@ zh-CN:
         desc: '描述'
         write_type: '计分方式'
         city: '所属城市'
+        target: '对象'
+        district_id: '区县'
 
     "yes": '是'
     "no": '否'
