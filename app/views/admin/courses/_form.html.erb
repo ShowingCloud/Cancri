@@ -30,10 +30,15 @@
         <% end %>
 
         <div class="form-inputs">
-          <%= f.input :name %>
+          <% if params[:action]=='new' %>
+              <%= f.input :name, autofocus: true %>
+          <% else %>
+              <%= f.input :name %>
+          <% end %>
           <%= f.input :target %>
           <%= f.input :num, label: '接纳人数' %>
           <%= f.input :district_id, collection: District.all %>
+          <%= f.input :run_address %>
           <%= f.input :desc %>
           <%= f.input :run_time, label: '每天上课时间', placeholder: '例如:9:30-10:30  14:00-15:30' %>
           <%= f.input :status, collection: Course::STATUS.map { |key, val| [t('status.'+key.to_s), val] } %>
@@ -78,6 +83,7 @@
             </div>
             <div class="form-group datetime require col-md-3" data-date-merge>
               <label class="datetime optional control-label">
+                <abbr title="必填字段">*</abbr>
                 课程结束日期</label>
 
               <div class="row">

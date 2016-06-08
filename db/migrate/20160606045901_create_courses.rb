@@ -4,6 +4,7 @@ class CreateCourses < ActiveRecord::Migration[5.0]
       t.string :name, null: false
       t.string :target, null: false
       t.text :desc
+      t.string :run_address, null: false
       t.integer :num, null: false
       t.datetime :apply_start_time, null: false
       t.datetime :apply_end_time, null: false

@@ -13,6 +13,15 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+
+  def require_mobile
+    if current_user.present?
+      current_user.mobile.present?
+    else
+      require_user
+    end
+  end
+
   private
 
   def configure_permitted_parameters

@@ -79,6 +79,7 @@ zh-CN:
         city: '所属城市'
         target: '对象'
         district_id: '区县'
+        run_address: '上课地点'
 
     "yes": '是'
     "no": '否'

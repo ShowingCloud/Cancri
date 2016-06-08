@@ -6,6 +6,7 @@ class Course < ApplicationRecord
   validates :target, presence: true, format: {with: /\A[\u4e00-\u9fa5]+\Z/i, message: '请用汉字描述'}
   validates :num, presence: true, format: {with: /\A[1-9]\d+\Z/i, message: '只能为整数'}
   validates :run_time, presence: true
+  validates :run_address, presence: true
   validates :status, presence: true
   validates :district_id, presence: true
   after_validation :validate_datetime

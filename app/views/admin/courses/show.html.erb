@@ -1,7 +1,7 @@
 <h1 class="page-header">
   显示<%= t('activerecord.models.course') %>
   <small class="pull-right">
-    <a href="<%= edit_admin_course_path(@course) %>" title="新增<%= t('activerecord.models.course') %>" class="btn btn-default">
+    <a href="<%= new_admin_course_path(@course) %>" title="新增<%= t('activerecord.models.course') %>" class="btn btn-default">
       <i class="icon-plus icon-only"></i></a>
     <a href="<%= edit_admin_course_path(@course) %>" title="编辑该<%= t('activerecord.models.course') %>" class="btn btn-default">
       <i class="icon-edit icon-only"></i></a>
@@ -27,10 +27,6 @@
       <%= @course.name %>
     </li>
     <li class="list-group-item">
-      <span class="text-primary"><%= t('simple_form.labels.defaults.desc') %>:</span>
-      <%= @course.desc %>
-    </li>
-    <li class="list-group-item">
       <span class="text-primary show-span-width"><%= t('simple_form.labels.defaults.district_id') %>:</span>
       <%= @course.district.name %>
     </li>
@@ -47,8 +43,16 @@
       <%= @course.start_time.strftime('%Y-%m-%d') %> - <%= @course.end_time.strftime('%Y-%m-%d') %>
     </li>
     <li class="list-group-item">
+      <span class="text-primary show-span-width">上课地点:</span>
+      <%= @course.run_address %>
+    </li>
+    <li class="list-group-item">
       <span class="text-primary show-span-width"> 上课时间:</span>
       <%= @course.run_time %>
+    </li>
+    <li class="list-group-item">
+      <span class="text-primary"><%= t('simple_form.labels.defaults.desc') %>:</span>
+      <%= @course.desc %>
     </li>
 
   </ul>
