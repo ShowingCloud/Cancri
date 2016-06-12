@@ -16,6 +16,7 @@
 //= require bootstrap-dialog
 //= require common
 //= require account
+//= require course
 //= require message-bus
 //= require notify
 //= //require turbolinks

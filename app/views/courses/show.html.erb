@@ -4,49 +4,51 @@
   <p>上课时间:<%= @course.run_time %></p>
   <p>上课地点:<%= @course.run_address %></p>
   <p>招募人数:<%= @course.num %></p>
+  <input type="hidden" id="apply-course" value="<%= @course.id %>">
   <% if @has_apply %>
       <span class="label label-info">您已报名</span>
   <% else %>
-      <%= link_to "/courses/apply?cd=#{@course.id}", data: {cd: @course.id, method: :post}, class: 'btn btn-sm btn-primary' do %>
-          报名
+      <% if current_user %>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#course-user-info">报名</button>
+          <div class="modal fade" id="course-user-info" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title text-center" id="exampleModalLabel">添加或确认信息</h4>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                      <label for="user-info-username" class="control-label">姓名:</label>
+                      <input type="text" class="form-control" id="user-info-username" value="<%= @user_info.username %>">
+                    </div>
+                    <div class="form-group">
+                      <label for="user-info-district" class="control-label">区县:</label>
+                      <input class="form-control" id="user-info-district">
+                    </div>
+                    <div class="form-group">
+                      <label for="user-info-school" class="control-label">学校:</label>
+                      <input class="form-control" id="user-info-school">
+                    </div>
+                    <div class="form-group">
+                      <label for="user-info-grade" class="control-label">年级:</label>
+                      <input class="form-control" id="user-info-grade">
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                  <button type="button" class="btn btn-primary" id="user-apply-course">提交</button>
+                </div>
+              </div>
+            </div>
+          </div>
+      <% else %>
+          <a href="<%= "/account/sign_in?return_to=#{request.fullpath}" %>">报名</a>
       <% end %>
+
   <% end %>
 
-
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#course-user-info">Open modal</button>
-  <div class="modal fade" id="course-user-info" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title text-center" id="exampleModalLabel">添加或确认信息</h4>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="form-group">
-              <label for="user-info-username" class="control-label">姓名:</label>
-              <input type="text" class="form-control" id="user-info-username" value="<%= @user_info.username %>">
-            </div>
-            <div class="form-group">
-              <label for="user-info-district" class="control-label">区县:</label>
-              <input class="form-control" id="user-info-district">
-            </div>
-            <div class="form-group">
-              <label for="user-info-school" class="control-label">学校:</label>
-              <input class="form-control" id="user-info-school">
-            </div>
-            <div class="form-group">
-              <label for="user-info-grade" class="control-label">年级:</label>
-              <input class="form-control" id="user-info-grade">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-          <button type="button" class="btn btn-primary" id="user-apply-course">提交</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
