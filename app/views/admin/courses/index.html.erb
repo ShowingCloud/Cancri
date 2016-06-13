@@ -38,6 +38,7 @@
   <tr>
     <th>ID</th>
     <th><%= t('simple_form.labels.defaults.name') %></th>
+    <th>显示</th>
     <th>操作</th>
   </tr>
   </thead>
@@ -47,8 +48,14 @@
       <tr>
         <td><%= c.id %></td>
         <td><%= c.name %></td>
+        <td>
+          <span class="<%= "label #{c.status==1 ? 'label-info' : 'label-danger'}" %>"><%= c.status==1 ? '是' : '否' %></span>
+        </td>
         <td><%= link_to [:admin, c], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>
+          <% end %>
+          <%= link_to "/admin/courses/apply_info/#{c.id}", title: '报名名单', class: 'btn btn-xs btn-primary' do %>
+              <i class="icon-group bigger-120"></i>
           <% end %>
           <%= link_to edit_admin_course_path(c), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>

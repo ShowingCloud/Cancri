@@ -3,7 +3,11 @@ class CoursesController < ApplicationController
   before_action :require_mobile, only: [:apply]
 
   def index
-    @courses = Course.where(status: 1).select(:id, :name).page(params[:page]).per(params[:per])
+    course=Course.where(status: 1)
+    if cookies[:area]=='0'
+      course = course.where(district_id: 9)
+    end
+    @courses = course.select(:id, :name).page(params[:page]).per(params[:per])
   end
 
   def show
@@ -36,8 +40,6 @@ class CoursesController < ApplicationController
       end
     end
     render json: result
-      # flash[:notice] = result[1]
-      # redirect_to "/courses/#{params[:cd]}"
   end
 end
 

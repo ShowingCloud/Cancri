@@ -13,6 +13,7 @@ $('#user-apply-course').on('click', function () {
             if (data[0]) {
                 $('#course-user-info').modal('hide');
                 alert(data[1]);
+                window.location.reload();
             }
             else {
                 alert(data[1]);

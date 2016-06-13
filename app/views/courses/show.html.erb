@@ -46,7 +46,7 @@
             </div>
           </div>
       <% else %>
-          <a href="<%= "/account/sign_in?return_to=#{request.fullpath}" %>">报名</a>
+          <a href="<%= "/account/sign_in?return_url=#{url_encode(request.fullpath)}" %>">报名</a>
       <% end %>
 
   <% end %>

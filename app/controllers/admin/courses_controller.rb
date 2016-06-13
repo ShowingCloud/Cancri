@@ -1,5 +1,5 @@
 class Admin::CoursesController < AdminController
-  before_action :set_course, only: [:show, :edit, :update, :destroy]
+  before_action :set_course, only: [:show, :edit, :update, :destroy, :apply_info]
 
   # GET /admin/courses
   # GET /admin/courses.json
@@ -14,6 +14,10 @@ class Admin::CoursesController < AdminController
   # GET /admin/courses/1
   # GET /admin/courses/1.json
   def show
+  end
+
+  def apply_info
+    @apply_info = CourseUserShip.joins(:course, :user, :school).where(course_id: params[:id]).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').joins('left join districts d on u_p.district_id = d.id').select(:id, :grade, 'courses.name as course_name', 'u_p.username', 'd.name as district_name', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
   end
 
   # GET /admin/courses/new

@@ -5,6 +5,7 @@
   <%= csrf_meta_tags %>
   <link rel="icon" href="<%= asset_path('icon.png') %>"/>
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'jquery_cookier', 'data-turbolinks-track' => true %>
 </head>
 
 <body>
@@ -19,6 +20,10 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand navbar-padding" href="/">豆姆科技</a>
+        <select id="select-area" style="margin-top: 15px">
+          <option value="0" <%= 'selected' if cookies[:area]=='0' %>>宝山</option>
+          <option value="1" <%= 'selected' if cookies[:area]=='1' %>>上海</option>
+        </select>
         <!-- begin visible xs -->
         <% if user_signed_in? %>
 
