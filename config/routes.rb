@@ -5,7 +5,7 @@ Rails.application.routes.draw do
       sessions: 'users/sessions', registrations: 'users/registrations',
       confirmations: 'users/confirmations',
       passwords: 'users/passwords'
-  }
+  } #, path_names: {sign_in: 'login'}
   mount RuCaptcha::Engine => '/rucaptcha'
   resources :accounts, only: [:new, :create, :destroy] do
     collection do
@@ -21,7 +21,9 @@ Rails.application.routes.draw do
       post :register_nickname_exists
     end
   end
-
+  get 'courses/index'
+  post 'courses/apply' => 'courses#apply'
+  resources :courses
   resources :notifications
 
   # -----------------------------------------------------------
@@ -46,6 +48,7 @@ Rails.application.routes.draw do
     resources :roles
     resources :districts
     resources :courses
+    get '/courses/apply_info/:id' => 'courses#apply_info'
 
 
     resources :competitions do
