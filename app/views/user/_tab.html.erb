@@ -27,6 +27,9 @@
         <a href="<%= user_email_path %>"><span class="hidden-xs">添加</span>邮箱</a>
       </li>
   <% end %>
+  <li <%= 'class=active' if action_name == 'family_hacker' %>>
+    <a href="<%= user_family_hacker_path %>"><span class="hidden-xs">家庭</span>创客</a>
+  </li>
 
 
 </ul>

@@ -15,14 +15,14 @@ class UserController < ApplicationController
     if request.method == 'POST'
       if params[:user_profile].present?
         # 过滤Profile参数
-        profile_params = params.require(:user_profile).permit(:username, :school, :bj, :gender, :birthday, :address, :teacher_no, :certificate, :grade, :autograph, {:roles => []}).tap do |list|
+        profile_params = params.require(:user_profile).permit(:username, :school_id, :bj, :gender, :birthday, :address, :teacher_no, :certificate, :grade, :autograph, {:roles => []}).tap do |list|
           if params[:user_profile][:roles].present? && params[:user_profile][:roles] != '教师'
             list[:roles] = params[:user_profile][:roles].join(',')
           else
             list[:roles] = nil
           end
         end
-        if ['高一', '高二', '高三'].include?(profile_params[:grade])
+        if [10, 11, 12].include?(profile_params[:grade])
           unless /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(profile_params[:identity_card]) != nil
             flash[:error] = '高中生请正确填写18位身份证号'
             return false
@@ -30,12 +30,12 @@ class UserController < ApplicationController
         end
         message = ''
         if profile_params[:roles].present? && profile_params[:roles].include?('教师')
-          unless profile_params[:teacher_no].present? && profile_params[:certificate].present? && profile_params[:school].present? && profile_params[:username].present?
+          unless profile_params[:teacher_no].present? && profile_params[:certificate].present? && profile_params[:school_id].present? && profile_params[:username].present?
             flash[:error] = '选择教师身份时，请填写姓名、学校、教师编号、和上传教师证件'
             return false
           end
           unless UserRole.where(user_id: current_user.id, role_id: 1).exists?
-            th_role = UserRole.create!(user_id: current_user.id, role_id: 1, status: false) # 教师
+            th_role = UserRole.create!(user_id: current_user.id, role_id: 1, status: 0, cover: profile_params[:certificate]) # 教师
             if th_role.save
               message = '您的老师身份已提交审核，审核通过后会在［消息］中告知您！'
             else
@@ -48,7 +48,7 @@ class UserController < ApplicationController
         end
         @user_profile.username = profile_params[:username]
         @user_profile.autograph = profile_params[:autograph]
-        @user_profile.school_id = profile_params[:school]
+        @user_profile.school_id = profile_params[:school_id]
         @user_profile.district_id = profile_params[:district_id]
         @user_profile.grade = profile_params[:grade]
         @user_profile.bj = profile_params[:bj]
@@ -60,14 +60,41 @@ class UserController < ApplicationController
         @user_profile.teacher_no = profile_params[:teacher_no]
         @user_profile.certificate = profile_params[:certificate]
         if @user_profile.save
-          flash[:success] = '更新成功'+message
+          flash[:success] = '更新成功-'+message
         else
-          flash[:error] = '更新失败'+message
+          flash[:error] = '更新失败-'+message
         end
       else
         flash[:error] = '不能提交空信息'
       end
       redirect_to user_profile_path
+    end
+  end
+
+  def family_hacker
+    @has_already = UserRole.where(user_id: current_user.id, role_id: 2).exists?
+    unless @has_already
+      @family_hacker = UserRole.new
+    end
+    if request.method == 'POST'
+      if @has_already
+        flash[:notice] = '您已经申请过该身份,无需再次申请'
+      else
+        hacker_params=params.require(:user_role).permit(:desc, :cover)
+        desc = hacker_params[:desc]
+        cover = hacker_params[:cover]
+        if desc.present? && cover.present?
+          u_r = UserRole.create!(user_id: current_user.id, role_id: 2, status: 0, cover: cover, desc: desc)
+          if u_r.save
+            flash[:success] = '申请成功,审核结果将会通过[消息]告知您'
+            redirect_to user_preview_path
+          else
+            flash[:success] = '申请失败'
+          end
+        else
+          flash[:notice] = '请将描述和图片信息填写完整'
+        end
+      end
     end
   end
 

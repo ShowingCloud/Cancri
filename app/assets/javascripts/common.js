@@ -5,17 +5,17 @@
 function trim(str) {
     return str.replace(/(^\s*)|(\s*$)/g, "");
 }
+// change bs set cookie = 1
 $('#select-area').on('change', function () {
-    var area = $('.select-area').val();
+    var area = $('#select-area').val();
     if (area == 1) {
-        setCookie('area', 1);
+        setCookie('area', area, '/');
     } else {
-        setCookie('area', 0);
+        $.removeCookie('area', {path: '/'});
     }
-    alert($.cookie('area'));
     window.location.reload();
 });
 
-function setCookie(key, value) {
-    document.cookie = key + "=" + value
+function setCookie(key, value, path) {
+    $.cookie(key, value, {path: path});
 }

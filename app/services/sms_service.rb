@@ -4,6 +4,7 @@ class SMSService
 
   TYPE_CODE_REGISTER = 'REGISTER'
   TYPE_CODE_ADD_MOBILE = 'ADD_MOBILE'
+  TYPE_CODE_RESET_MOBILE = 'RESET_MOBILE'
   TYPE_CODE_RESET_PASSWORD = 'RESET_PASSWORD'
 
   #接口变量定义
@@ -55,7 +56,7 @@ class SMSService
       return [FALSE, '发送密度过大，请稍等重试']
     end
     user = User.where(mobile: @mobile).exists?
-    if user and (type == TYPE_CODE_ADD_MOBILE || type == TYPE_CODE_REGISTER)
+    if user and (type == TYPE_CODE_ADD_MOBILE || type == TYPE_CODE_REGISTER || type == TYPE_CODE_RESET_MOBILE)
       return [FALSE, '该手机已经被使用']
     elsif !user and type == TYPE_CODE_RESET_PASSWORD
       return [FALSE, '该手机还没有被认证']
@@ -73,11 +74,15 @@ class SMSService
       return [FALSE, "验证码发送间隔为#{WAIT_MINUTE}分钟"]
     end
     # 根据类型发送不同消息
-    status = true
-    # status = FALSE
-    # status = send_code_for_add_mobile(code) if type == TYPE_CODE_ADD_MOBILE
-    # status = send_code_for_register(code) if type == TYPE_CODE_REGISTER
-    # status = send_code_for_reset_password(code) if type == TYPE_CODE_RESET_PASSWORD
+
+    if IS_TEST
+      status = true
+    else
+      status = FALSE
+      status = send_code_for_add_mobile(code) if type == TYPE_CODE_ADD_MOBILE
+      status = send_code_for_register(code) if type == TYPE_CODE_REGISTER
+      status = send_code_for_reset_password(code) if type == TYPE_CODE_RESET_PASSWORD
+    end
     if status
       [TRUE, '验证码发送成功']
     else

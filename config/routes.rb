@@ -60,8 +60,8 @@ Rails.application.routes.draw do
     end
     # get '/competitions/events/:id' => 'competitions#events'
     # get '/competitions/workers/:id' => 'competitions#workers'
-    # get '/checks/teachers' => 'checks#teachers'
-    # get '/checks/teacher_list' => 'checks#teacher_list'
+    get '/checks/teachers' => 'checks#teachers'
+    get '/checks/teacher_list' => 'checks#teacher_list'
     # get '/checks/referee_list' => 'checks#referee_list'
     # get '/checks/referees' => 'checks#referees'
     # get '/checks/schools' => 'checks#schools'
@@ -69,7 +69,7 @@ Rails.application.routes.draw do
     # get '/checks/points' => 'checks#points'
     # get '/checks/point_list' => 'checks#point_list'
     # post '/checks/audit_point' => 'checks#audit_point'
-    # post '/checks/review_teacher' => 'checks#review_teacher'
+    post '/checks/review_teacher' => 'checks#review_teacher'
     # post '/checks/review_referee' => 'checks#review_referee'
     # post '/checks/review_school' => 'checks#review_school'
     #
@@ -110,6 +110,7 @@ Rails.application.routes.draw do
 
   match 'user/preview' => 'user#preview', as: 'user_preview', via: [:get, :post]
   match 'user/profile' => 'user#profile', as: 'user_profile', via: [:get, :post]
+  match 'user/family_hacker' => 'user#family_hacker', as: 'user_family_hacker', via: [:get, :post]
   match 'user/update_avatar' => 'user#update_avatar', as: 'user_update_avatar', via: [:post]
   match 'user/remove_avatar' => 'user#remove_avatar', as: 'user_remove_avatar', via: [:post]
   match 'user/passwd' => 'user#passwd', as: 'user_passwd', via: [:get, :post]
