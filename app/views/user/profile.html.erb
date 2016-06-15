@@ -46,6 +46,7 @@
                 <div class="col-sm-12">
                   <div class="form-inputs">
                     <%= f.input :username %>
+                    <%= f.input :gender, collection: UserProfile::GENDER.map { |key, val| [t('gender.'+key.to_s), val] } %>
                     <div class="form-group string optional user_profile_roles">
                       <label class="string optional control-label" for="user_profile_roles">身份</label>
 
@@ -60,6 +61,11 @@
                         <% end %>
                       </div>
                     </div>
+                    <div class="form-group teacher-part">
+                      <label for="user_avatar">上传图片</label>
+                      <%= f.file_field :cover %>
+                    </div>
+                    <%= f.input :desc %>
                     <div class="teacher-part">
                       <%= f.input :teacher_no %>
                     </div>
@@ -72,8 +78,10 @@
                     <%= f.input :school_id, label: '学校' %>
                     <%= f.input :grade %>
                     <%= f.input :bj %>
-                    <%= f.input :gender, collection: UserProfile::GENDER.map { |key, val| [t('gender.'+key.to_s), val] } %>
+
                     <%= f.input :birthday, as: :date, html5: true %>
+                    <%= f.input :student_code %>
+                    <%= f.input :identity_card %>
                     <%= f.input :address %>
                   </div>
                   <div class="form-actions">

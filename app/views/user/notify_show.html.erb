@@ -11,6 +11,9 @@
       <div class="panel panel-default">
         <div class="panel-body">
           <% if @notification.present? %>
+              <% unless @notification.read %>
+                  <% @notification.update_attributes(read: 1) %>
+              <% end %>
               <% if @notification.message_type == 0 %>
                   <%= @notification.content %>
               <% end %>

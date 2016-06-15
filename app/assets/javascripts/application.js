@@ -16,6 +16,7 @@
 //= require common
 //= require account
 //= require course
+//= require user
 //= require message-bus
 //= require notify
 //= //require turbolinks

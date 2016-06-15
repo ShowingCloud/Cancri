@@ -64,8 +64,8 @@ Rails.application.routes.draw do
     get '/checks/teacher_list' => 'checks#teacher_list'
     # get '/checks/referee_list' => 'checks#referee_list'
     # get '/checks/referees' => 'checks#referees'
-    # get '/checks/schools' => 'checks#schools'
-    # get '/checks/school_list' => 'checks#school_list'
+    get '/checks/schools' => 'checks#schools'
+    get '/checks/school_list' => 'checks#school_list'
     # get '/checks/points' => 'checks#points'
     # get '/checks/point_list' => 'checks#point_list'
     # post '/checks/audit_point' => 'checks#audit_point'
@@ -127,5 +127,7 @@ Rails.application.routes.draw do
   match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get]
   get '/user/notify' => 'user#notify_show'
   match '/user/add_school' => 'user#add_school', as: 'user_add_school', via: [:post]
+  match '/user/apply' => 'user#apply', as: 'user_apply', via: [:get]
+  match '/user/cancel_apply' => 'user#cancel_apply', as: 'user_cancel_apply', via: [:post, :get]
   # mount ActionCable.server => '/cable'
 end

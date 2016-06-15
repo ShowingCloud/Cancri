@@ -65,5 +65,42 @@ class Admin::ChecksController < AdminController
         certificate: c.certificate.present? ? ActionController::Base.helpers.asset_path(c.certificate_url(:large)) : nil
     } }
   end
+
+  def schools
+    @schools = School.joins('left join user_profiles u_p on u_p.user_id=schools.user_id').where(status: 0, audit: nil).select(:id, :name, :school_type, :district, 'u_p.username').page(params[:page]).per(params[:per])
+  end
+
+  def school_list
+    @schools = School.joins('left join user_profiles u_p on u_p.user_id=schools.user_id').where(user_add: true).where('audit is not NULL').select(:id, :name, :school_type, :audit, :district, 'u_p.username').page(params[:page]).per(params[:per])
+  end
+
+  def review_school
+    if request.method == 'POST'
+      status = params[:status]
+      school_id = params[:school_id].to_i
+      if status.present? && school_id !=0
+        school = School.find(school_id)
+        if school.present? && school.user_id.present? && school.status == false && school.audit==nil
+          if status
+            school.status = status
+          end
+          school.audit = status
+          if school.save
+            result=[true, '审核成功']
+          else
+            result=[false, '审核失败']
+          end
+        else
+          result=[false, '对象不存在']
+        end
+      else
+        result=[false, '参数不完整']
+      end
+    else
+      result=[false, '非法请求']
+    end
+    render json: result
+  end
+
 end
 

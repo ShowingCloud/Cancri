@@ -1,0 +1,44 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-3 hidden-xs">
+      <%= render 'user/menu' %>
+    </div>
+    <div class="col-xs-12 col-sm-9">
+      <h1 class="page-header">
+        我的报名信息
+      </h1>
+      <ul class="nav nav-tabs" role="tablist">
+        <li <%= 'class=active' if (params[:type]==nil) %>>
+          <a href="/user/apply">课程</a>
+        </li>
+
+        <li <%= 'class=active' if params[:type] == '2' %>>
+          <a href="/user/apply?type=2">比赛</a>
+        </li>
+        <li <%= 'class=active' if params[:type] == '3' %>>
+          <a href="/user/apply?type=3">活动</a>
+        </li>
+
+
+      </ul>
+      <br>
+
+      <div class="panel panel-default">
+
+        <% @apply_info.each do |a| %>
+            <div class="panel-body" id="<%= "hide-course-#{a.id}" %>">
+              <%= a.name %>
+              <%= a.course_id %>
+              <%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.id}", data: {confirm: "确认取消报名#{a.name}吗?", method: :post, type: 'script', remote: true} do %>
+                  取消报名
+              <% end %>
+            </div>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

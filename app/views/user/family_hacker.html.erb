@@ -11,7 +11,7 @@
       <%= render 'user/tab' %>
       <div class="panel panel-default">
         <div class="panel-body">
-          <% if @has_already %>
+          <% if @has_already.status %>
               <div class="alert alert-info">您已经申请该角色,无需再次申请</div>
           <% else %>
               <%= simple_form_for(@family_hacker, html: {}, url: user_family_hacker_path, method: :post) do |f| %>

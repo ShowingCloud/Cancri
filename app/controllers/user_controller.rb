@@ -15,7 +15,7 @@ class UserController < ApplicationController
     if request.method == 'POST'
       if params[:user_profile].present?
         # 过滤Profile参数
-        profile_params = params.require(:user_profile).permit(:username, :school_id, :bj, :gender, :birthday, :address, :teacher_no, :certificate, :grade, :autograph, {:roles => []}).tap do |list|
+        profile_params = params.require(:user_profile).permit(:username, :school_id, :bj, :gender, :birthday, :student_code, :identity_card, :address, :cover, :teacher_no, :certificate, :grade, :autograph, {:roles => []}).tap do |list|
           if params[:user_profile][:roles].present? && params[:user_profile][:roles] != '教师'
             list[:roles] = params[:user_profile][:roles].join(',')
           else
@@ -43,6 +43,21 @@ class UserController < ApplicationController
             end
           end
         end
+        if profile_params[:roles].present? && profile_params[:roles].include?('家庭创客')
+          unless profile_params[:cover].present? && profile_params[:school_id].present? && profile_params[:username].present?
+            flash[:error] = '选择家庭创客身份时，请填写姓名、学校、描述和图片'
+            return false
+          end
+          unless UserRole.where(user_id: current_user.id, role_id: 2).exists?
+            th_role = UserRole.create!(user_id: current_user.id, role_id: 2, status: 0, cover: profile_params[:cover]) # 家庭创客
+            if th_role.save
+              message = '您的家庭创客身份已提交审核，审核通过后会在［消息］中告知您！'
+            else
+              message
+            end
+          end
+        end
+
         if message=='-'
           message=''
         end
@@ -52,6 +67,8 @@ class UserController < ApplicationController
         @user_profile.district_id = profile_params[:district_id]
         @user_profile.grade = profile_params[:grade]
         @user_profile.bj = profile_params[:bj]
+        @user_profile.student_code = profile_params[:student_code]
+        @user_profile.identity_card = profile_params[:identity_card]
         @user_profile.age = profile_params[:age]
         @user_profile.birthday = profile_params[:birthday]
         @user_profile.gender = profile_params[:gender]
@@ -72,12 +89,12 @@ class UserController < ApplicationController
   end
 
   def family_hacker
-    @has_already = UserRole.where(user_id: current_user.id, role_id: 2).exists?
-    unless @has_already
+    @has_already = UserRole.where(user_id: current_user.id, role_id: 2).take
+    unless @has_already.present?
       @family_hacker = UserRole.new
     end
     if request.method == 'POST'
-      if @has_already
+      if @has_already.present?
         flash[:notice] = '您已经申请过该身份,无需再次申请'
       else
         hacker_params=params.require(:user_role).permit(:desc, :cover)
@@ -95,6 +112,47 @@ class UserController < ApplicationController
           flash[:notice] = '请将描述和图片信息填写完整'
         end
       end
+    end
+  end
+
+  def apply
+    if params[:type]=='2'
+      apply = []
+    elsif params[:type]=='3'
+      apply = []
+    else
+      apply = CourseUserShip.joins(:course).where(user_id: current_user.id).select(:id, :course_id, 'courses.name') #current_user.course_user_ships
+    end
+    @apply_info = apply
+  end
+
+  def cancel_apply
+    if request.method == 'POST'
+      type = params[:t].to_i
+      identifier = params[:identifier]
+      no_rule = [false, '不规范请求', type]
+      if type.present? && identifier.present?
+        case type
+          when 1 then
+            c_u = CourseUserShip.find(identifier)
+            if c_u.present? && (c_u.user_id == current_user.id)
+              if c_u.delete
+                @result = [true, '取消成功', type, identifier]
+              else
+                @result = [false, '取消失败', type]
+              end
+            else
+              @result = no_rule
+            end
+          else
+            @result = no_rule
+        end
+      else
+        @result = no_rule
+      end
+    end
+    respond_to do |format|
+      format.js
     end
   end
 
