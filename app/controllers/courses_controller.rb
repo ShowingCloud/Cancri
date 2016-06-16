@@ -10,11 +10,15 @@ class CoursesController < ApplicationController
   end
 
   def show
-    @course = Course.find(params[:id])
+    course = Course.left_joins(:course_user_ships).where(id: params[:id]).select(:id, :name, :target, :desc, :num, :start_time, :end_time, :apply_start_time, :apply_end_time, :run_time, :run_address, :district_id, 'count(course_user_ships.id) as already_num').take
+    if cookies[:area] && course.district_id !=9
+      course = nil
+    end
     if current_user.present?
       @has_apply = CourseUserShip.where(user_id: current_user.id, course_id: params[:id]).exists?
-      @user_info = UserProfile.left_joins(:school, :district).where(user_id: current_user.id).select(:grade, :username, :district_id, :school_id, 'districts.name as district_name', 'schools.name as school_name').first ||= current_user.build_user_profile
     end
+    @course = course
+    @user_info = UserProfile.left_joins(:school, :district).where(user_id: current_user.id).select(:grade, :username, :district_id, :school_id, 'districts.name as district_name', 'schools.name as school_name').first ||= current_user.build_user_profile
   end
 
   def apply

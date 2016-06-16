@@ -3,7 +3,8 @@ class AdminController < ActionController::Base
 
   def index
     @all_user_num = User.count
-    @review_th_num = UserRole.where(role_id: 1).where('status is NULL').count
+    @review_th_num = UserRole.where(role_id: 1, status: 0).count
+    @review_fh_num = UserRole.where(role_id: 2, status: 0).count
     # @review_re_num = CompWorker.where('status is NULL').count
     @review_sc_num = School.where(user_add: 1).where('audit is NULL').count
   end

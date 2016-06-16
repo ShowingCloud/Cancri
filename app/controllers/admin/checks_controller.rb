@@ -5,7 +5,7 @@ class Admin::ChecksController < AdminController
   end
 
   def teachers
-    @teachers = UserProfile.joins(:user_roles).joins('inner join schools s on user_profiles.school_id=s.id').where('user_roles.role_id=?', 1).where('user_roles.status is false').select(:id, :user_id, :username, :gender, :certificate, 's.name as school_name', :mobile, :teacher_no).page(params[:page]).per(params[:per])
+    @teachers = UserProfile.joins(:user_roles).joins('inner join schools s on user_profiles.school_id=s.id').where('user_roles.role_id=?', 1).where('user_roles.status=?', 0).select(:id, :user_id, :username, :gender, :certificate, 'user_roles.cover as cover', 's.name as school_name', :mobile, :teacher_no).page(params[:page]).per(params[:per])
     @teacher_array = @teachers.map { |c| {
         id: c.id,
         user_id: c.user_id,
@@ -37,7 +37,7 @@ class Admin::ChecksController < AdminController
           else
             th_level = '校级'
           end
-          Notification.create!(user_id: ur.user_id, content: '您的教师身份审核'+(status==1 ? '通过! 角色为'+th_level : '未通过!'), message_type: 5)
+          Notification.create!(user_id: ur.user_id, content: '您的教师身份审核'+(status==1 ? '通过! 角色为'+th_level : '未通过!'), message_type: 0)
           result = [true, '操作成功，即将推送消息告知被审核用户']
         else
           result = [false, '操作失败']
@@ -52,18 +52,68 @@ class Admin::ChecksController < AdminController
   end
 
   def teacher_list
-    @teachers = UserProfile.joins(:user_roles).where('user_roles.role_id=?', 1).where('user_roles.status is true').select(:id, :user_id, :username, :gender, :certificate, :school_id, :mobile, :teacher_no, 'user_roles.role_type').page(params[:page]).per(params[:per])
+    @teachers = UserProfile.joins(:user_roles, :school).where('user_roles.role_id=?', 1).where('user_roles.status=?', 1).select(:id, :user_id, :username, :gender, :certificate, :school_id, 'schools.name as school_name', :mobile, :teacher_no, 'user_roles.role_type').page(params[:page]).per(params[:per])
     @teacher_array = @teachers.map { |c| {
         id: c.id,
         user_id: c.user_id,
-        school: c.school,
+        school: c.school_name,
         mobile: c.mobile,
         num: c.teacher_no,
         username: c.username,
         gender: c.gender,
         role: c.role_type,
-        certificate: c.certificate.present? ? ActionController::Base.helpers.asset_path(c.certificate_url(:large)) : nil
+        certificate: c.certificate.present? ? ActionController::Base.helpers.asset_path(c.certificate_url) : nil
     } }
+  end
+
+  def hackers
+    @hackers = UserRole.joins('inner join user_profiles u_p on u_p.user_id = user_roles.user_id').joins('left join schools s on s.id = u_p.school_id').joins('left join districts d on u_p.district_id = d.id').where('user_roles.role_id=?', 2).where('user_roles.status=?', 0)
+                   .select(:id, :cover, :desc, 's.name as school_name', 'd.name as district_name', 'u_p.username', 'u_p.gender').page(params[:page]).per(params[:per])
+    @hackers_array = @hackers.map { |c| {
+        id: c.id,
+        username: c.username,
+        gender: c.gender,
+        school: c.school_name,
+        district: c.district_name,
+        desc: c.desc,
+        cover: c.cover.present? ? ActionController::Base.helpers.asset_path(c.cover_url) : nil
+    } }
+  end
+
+  def hacker_list
+    @hackers = UserRole.joins('inner join user_profiles u_p on u_p.user_id = user_roles.user_id').joins('left join schools s on s.id = u_p.school_id').joins('left join districts d on u_p.district_id = d.id').where('user_roles.role_id=?', 2).where('user_roles.status=?', 1)
+                   .select(:id, :cover, :desc, 's.name as school_name', 'd.name as district_name', 'u_p.username', 'u_p.gender').page(params[:page]).per(params[:per])
+    @hackers_array = @hackers.map { |c| {
+        id: c.id,
+        username: c.username,
+        gender: c.gender,
+        school: c.school_name,
+        district: c.district_name,
+        desc: c.desc,
+        cover: c.cover.present? ? ActionController::Base.helpers.asset_path(c.cover_url) : nil
+    } }
+  end
+
+  def review_hacker
+    status = params[:status]
+    id = params[:id]
+    if status.present?
+      ur = UserRole.find(id)
+      if ur.present?
+        ur.status = status=='1' ? 1 : 2
+        if ur.save
+          Notification.create!(user_id: ur.user_id, content: '您的家庭创客身份审核'+(status=='1' ? '通过!' : '未通过!'), message_type: 0)
+          result = [true, '操作成功，即将推送消息告知被审核用户']
+        else
+          result = [false, '操作失败']
+        end
+      else
+        result = [false, '该角色不存在']
+      end
+    else
+      result = [false, '请选择审核结果']
+    end
+    render json: result
   end
 
   def schools

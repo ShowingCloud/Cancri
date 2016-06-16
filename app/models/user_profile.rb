@@ -7,5 +7,5 @@ class UserProfile < ApplicationRecord
   mount_uploader :certificate, CoverUploader
 
   attr_accessor :desc
-  attr_accessor :cover
+  attr_accessor :coverqq
 end
