@@ -62,6 +62,8 @@ Rails.application.routes.draw do
     # get '/competitions/workers/:id' => 'competitions#workers'
     get '/checks/teachers' => 'checks#teachers'
     get '/checks/teacher_list' => 'checks#teacher_list'
+    get '/checks/hackers' => 'checks#hackers'
+    get '/checks/hacker_list' => 'checks#hacker_list'
     # get '/checks/referee_list' => 'checks#referee_list'
     # get '/checks/referees' => 'checks#referees'
     get '/checks/schools' => 'checks#schools'
@@ -70,6 +72,7 @@ Rails.application.routes.draw do
     # get '/checks/point_list' => 'checks#point_list'
     # post '/checks/audit_point' => 'checks#audit_point'
     post '/checks/review_teacher' => 'checks#review_teacher'
+    post '/checks/review_hacker' => 'checks#review_hacker'
     # post '/checks/review_referee' => 'checks#review_referee'
     # post '/checks/review_school' => 'checks#review_school'
     #
@@ -129,5 +132,6 @@ Rails.application.routes.draw do
   match '/user/add_school' => 'user#add_school', as: 'user_add_school', via: [:post]
   match '/user/apply' => 'user#apply', as: 'user_apply', via: [:get]
   match '/user/cancel_apply' => 'user#cancel_apply', as: 'user_cancel_apply', via: [:post, :get]
+  get '/user/get_school' => 'user#get_school', as: 'user_get_school'
   # mount ActionCable.server => '/cable'
 end

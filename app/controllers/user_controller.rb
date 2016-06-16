@@ -11,11 +11,14 @@ class UserController < ApplicationController
   def profile
     # 获取Profile
     @user_profile = current_user.user_profile ||= current_user.build_user_profile
-    @th_role_status = UserRole.where(user_id: current_user.id, role_id: 1).first # 教师
+    # @th_role_status = UserRole.where(user_id: current_user.id, role_id: 1).first # 教师
+    @has_roles = UserRole.where(user_id: current_user.id).pluck(:role_id, :status)
+
+    # @has_roles = current_user.user_roles.select(:role_id, :status)
     if request.method == 'POST'
       if params[:user_profile].present?
         # 过滤Profile参数
-        profile_params = params.require(:user_profile).permit(:username, :school_id, :bj, :gender, :birthday, :student_code, :identity_card, :address, :cover, :teacher_no, :certificate, :grade, :autograph, {:roles => []}).tap do |list|
+        profile_params = params.require(:user_profile).permit(:username, :school_id, :bj, :gender, :birthday, :student_code, :identity_card, :address, :cover, :desc, :teacher_no, :certificate, :grade, :autograph, {:roles => []}).tap do |list|
           if params[:user_profile][:roles].present? && params[:user_profile][:roles] != '教师'
             list[:roles] = params[:user_profile][:roles].join(',')
           else
@@ -30,26 +33,26 @@ class UserController < ApplicationController
         end
         message = ''
         if profile_params[:roles].present? && profile_params[:roles].include?('教师')
-          unless profile_params[:teacher_no].present? && profile_params[:certificate].present? && profile_params[:school_id].present? && profile_params[:username].present?
-            flash[:error] = '选择教师身份时，请填写姓名、学校、教师编号、和上传教师证件'
+          unless profile_params[:teacher_no].present? && profile_params[:certificate].present? && profile_params[:school_id].present? && profile_params[:username].present? && [1, 2].include?(profile_params[:gender].to_i)
+            flash[:error] = '选择教师身份时，请填写姓名、性别、学校、教师编号、和上传教师证件'
             return false
           end
           unless UserRole.where(user_id: current_user.id, role_id: 1).exists?
-            th_role = UserRole.create!(user_id: current_user.id, role_id: 1, status: 0, cover: profile_params[:certificate]) # 教师
+            th_role = UserRole.create!(user_id: current_user.id, role_id: 1, status: 0) # 教师
             if th_role.save
               message = '您的老师身份已提交审核，审核通过后会在［消息］中告知您！'
             else
-              message
+              message = '您的老师身份申请出现意外'
             end
           end
         end
         if profile_params[:roles].present? && profile_params[:roles].include?('家庭创客')
-          unless profile_params[:cover].present? && profile_params[:school_id].present? && profile_params[:username].present?
-            flash[:error] = '选择家庭创客身份时，请填写姓名、学校、描述和图片'
+          unless profile_params[:cover].present? && profile_params[:school_id].present? && profile_params[:username].present? && [1, 2].include?(profile_params[:gender].to_i)
+            flash[:error] = '选择家庭创客身份时，请填写姓名、性别、学校、描述和图片'
             return false
           end
           unless UserRole.where(user_id: current_user.id, role_id: 2).exists?
-            th_role = UserRole.create!(user_id: current_user.id, role_id: 2, status: 0, cover: profile_params[:cover]) # 家庭创客
+            th_role = UserRole.create!(user_id: current_user.id, role_id: 2, status: 0, cover: profile_params[:cover], desc: profile_params[:desc]) # 家庭创客
             if th_role.save
               message = '您的家庭创客身份已提交审核，审核通过后会在［消息］中告知您！'
             else
@@ -381,12 +384,19 @@ class UserController < ApplicationController
     redirect_to user_profile_path
   end
 
+  def get_school
+    school_type = params[:school_type]
+    district_id = params[:district_id]
+    schools = School.where(status: 1, school_type: school_type, district_id: district_id).select(:id, :name)
+    render json: schools
+  end
+
   def add_school
     name = params[:school]
     district = params[:district]
     type = params[:type].to_i
     if name.present? && district.present? && type !=0
-      school = School.where(name: name, district: district, school_type: type).take
+      school = School.where(name: name, district_id: district, school_type: type).take
       if school.present?
         result=[false, '该学校已存在或已被添加(待审核)']
       else
@@ -394,7 +404,7 @@ class UserController < ApplicationController
         if has_add.present?
           result= [false, '您已经添加过一所待审核学校，在审核前不能再次添加']
         else
-          add_s = School.create!(name: name, district: district, school_type: type, school_city: '上海市', user_id: current_user.id, user_add: true, status: false)
+          add_s = School.create!(name: name, district_id: district, school_type: type, user_id: current_user.id, user_add: true, status: false)
           if add_s.save
             result=[true, '添加成功,该学校仅为您显示，审核通过后才能选择该学校', add_s.id]
           else
