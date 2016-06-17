@@ -139,7 +139,7 @@ class UserController < ApplicationController
           when 1 then
             c_u = CourseUserShip.find(identifier)
             if c_u.present? && (c_u.user_id == current_user.id)
-              if c_u.delete
+              if c_u.destroy
                 @result = [true, '取消成功', type, identifier]
               else
                 @result = [false, '取消失败', type]

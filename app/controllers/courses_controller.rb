@@ -10,7 +10,7 @@ class CoursesController < ApplicationController
   end
 
   def show
-    course = Course.left_joins(:course_user_ships).where(id: params[:id]).select(:id, :name, :target, :desc, :num, :start_time, :end_time, :apply_start_time, :apply_end_time, :run_time, :run_address, :district_id, 'count(course_user_ships.id) as already_num').take
+    course = Course.left_joins(:course_user_ships).where(id: params[:id]).select(:id, :name, :target, :desc, :num, :start_time, :end_time, :apply_start_time, :apply_end_time, :run_time, :run_address, :district_id, 'course_user_ships.id as course_id', 'count(course_user_ships.id) as already_num').take
     if cookies[:area] && course.district_id !=9
       course = nil
     end
