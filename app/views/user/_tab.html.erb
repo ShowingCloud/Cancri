@@ -1,36 +1,45 @@
-<ul class="nav nav-tabs" role="tablist">
-  <li <%= 'class=active' if action_name == 'preview' %>>
-    <a href="<%= user_preview_path %>"><span class="hidden-xs">信息</span>概览</a>
-  </li>
-
-  <li <%= 'class=active' if action_name == 'profile' %>>
-    <a href="<%= user_profile_path %>"><span class="hidden-xs">个人</span>资料</a>
-  </li>
-  <li <%= 'class=active' if action_name == 'passwd' %>>
-    <a href="<%= user_passwd_path %>"><span class="hidden-xs">修改</span>密码</a>
-  </li>
-  <% if current_user.mobile.present? %>
-      <li <%= 'class=active' if action_name == 'reset_mobile' %>>
-        <a href="<%= user_reset_mobile_path %>"><span class="hidden-xs">修改</span>手机</a>
-      </li>
-  <% else %>
-      <li <%= 'class=active' if action_name == 'mobile' %>>
-        <a href="<%= user_mobile_path %>"><span class="hidden-xs">添加</span>手机</a>
-      </li>
+<div class="sub-menu">
+  <% if @action_preview_array.include?(action_name) %>
+      <a href="<%= user_preview_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'preview' or action_name == 'profile' %>">
+          基本信息
+        </div>
+      </a>
+      <a href="<%= user_email_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'email' or action_name == 'reset_email' %>">
+          邮箱信息
+        </div>
+      </a>
+      <a href="<%= user_mobile_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'mobile' or action_name == 'reset_mobile' %>">
+          手机信息
+        </div>
+      </a>
+      <a href="<%= user_passwd_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'passwd' %>">
+          修改密码
+        </div>
+      </a>
   <% end %>
-  <% if current_user.email.present? %>
-      <li <%= 'class=active' if action_name == 'reset_email' %>>
-        <a href="<%= user_reset_email_path %>"><span class="hidden-xs">修改</span>邮箱</a>
-      </li>
-  <% else %>
-      <li <%= 'class=active' if action_name == 'email' %>>
-        <a href="<%= user_email_path %>"><span class="hidden-xs">添加</span>邮箱</a>
-      </li>
+  <% if action_name == 'notification' %>
+      <a href="<%= user_notification_path %>">
+        <div class="sub-menu-item active">
+          我的消息
+        </div>
+      </a>
   <% end %>
-  <li <%= 'class=active' if action_name == 'family_hacker' %>>
-    <a href="<%= user_family_hacker_path %>"><span class="hidden-xs">家庭</span>创客</a>
-  </li>
-
-
-</ul>
-<br>
+  <% if action_name == 'notify_show' %>
+      <a href="<%= user_notify_show %>">
+        <div class="sub-menu-item active">
+          消息详情
+        </div>
+      </a>
+  <% end %>
+  <% if @action_apply_array.include?(action_name) %>
+      <a href="<%= user_apply_path %>">
+        <div class="sub-menu-item active">
+          课程
+        </div>
+      </a>
+  <% end %>
+</div>

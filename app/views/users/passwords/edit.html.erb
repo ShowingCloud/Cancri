@@ -1,29 +1,45 @@
-<div class="container">
-
-  <div class="row">
-    <div class="col-sm-4 col-md-4 ">
-      <h2 class="text-center">重置密码</h2>
-      <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: {method: :put}) do |f| %>
+<div id="main" class="main" data-src="<%= image_path('pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div class="passport">
+        <div class="title">
+          修改密码
+        </div>
+        <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: {method: :put}) do |f| %>
           <%= devise_error_messages! %>
           <%= f.hidden_field :reset_password_token %>
-
-          <div class="field form-group">
-            <%= f.label :password, '新密码', class: 'label-control' %><br/>
-            <%= f.password_field :password, autofocus: true, autocomplete: "off", class: 'form-control', placeholder: '请设置6-20位的新密码' %>
+          <div class="passport-box">
+            <div class="passport-sub-box">
+              <i class="glyphicon glyphicon-lock"></i>
+              <input class="input-robodou" id="password-password" type="password" name="user[password]"
+                     placeholder="请输入6-20位新密码">
+            </div>
+            <div class="passport-sub-box">
+              <i class="glyphicon glyphicon-lock"></i>
+              <input class="input-robodou" id="password-password-repeat" type="password" name="user[password_confirmation]"
+                     placeholder="请重复输入新密码">
+            </div>
           </div>
 
-          <div class="field form-group">
-            <%= f.label :password_confirmation, '确认新密码', class: 'control-label' %><br/>
-            <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', placeholder: '请重复输入新密码' %>
+          <div class="other-link">
+
           </div>
 
-          <div class="actions">
-            <%= f.submit class: 'btn btn-danger btn-block', value: '重置密码', 'data-disable-with': '正在提交' %>
-          </div>
-      <% end %>
+          <button class="btn-robodou btn-password-submit" type="submit">修改密码</button>
+        <% end %>
+      </div>
     </div>
   </div>
-
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
 </div>
+
 
 

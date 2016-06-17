@@ -13,6 +13,8 @@
  *= require bootstrap.min
  *= require bootstrap-dialog
  *= require bootstrap-theme.min
+ *= require base
+ *= require admin/datepicker
  *= //require_tree .
  *= require_self
  */

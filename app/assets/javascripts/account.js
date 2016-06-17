@@ -10,9 +10,10 @@ $(function () {
         if (is_sending) {
             return;
         }
-        mobile = $('#' + self.attr('data-key') + '_mobile');
+        mobile = $('#' + self.attr('data-key'));
         captcha = $('input[name="_rucaptcha"]').val();
         mobile_number = mobile.val();
+        console.log(mobile_number);
         if (captcha == '' || captcha == null) {
             alert('请输入校验码');
             $('input[name="_rucaptcha"]').focus();

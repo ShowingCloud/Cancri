@@ -1,39 +1,53 @@
-<div class="container">
-  <div class="row">
-    <div class="col-sm-4 col-md-4">
-      <h2 class="text-center">注册</h2>
-      <div class="text-right">没有邮箱？请用<a class="blue" href="/accounts/register">手机</a>注册</div>
-      <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+<div id="main" class="main" data-src="<%= image_path('pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div class="passport">
+        <div class="title">
+          用户注册
+        </div>
+        <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+            <div class="passport-box">
+              <div class="passport-sub-box">
+                <i class="glyphicon glyphicon-user"></i>
+                <input class="input-robodou" id="register-username" type="text" name="user[nickname]"
+                       placeholder="请输入用户名">
+              </div>
+              <div class="passport-sub-box">
+                <i class="glyphicon glyphicon-envelope"></i>
+                <input class="input-robodou" id="register-password" type="email" name="user[email]"
+                       placeholder="请输入邮箱">
+              </div>
+              <div class="passport-sub-box">
+                <i class="glyphicon glyphicon-lock"></i>
+                <input class="input-robodou" id="register-password-repeat" type="password" name="user[password]"
+                       placeholder="请输入密(6-20位)">
+              </div>
+              <div class="passport-sub-box">
+                <i class="glyphicon glyphicon-lock"></i>
+                <input class="input-robodou" id="register-password-repeat" type="password" name="user[password_confirmation]"
+                       placeholder="请重复输入密码">
+              </div>
+            </div>
 
-          <div class="field form-group">
-            <%= f.input :nickname, placeholder: '请输入昵称', class: 'form-control' %>
-          </div>
+            <div class="other-link">
+              <a class="login-link pull-left" href="<%= new_user_session_path %>">已有账号,去登录</a>
+              <a class="mobile-link pull-right" href="/accounts/register">手机注册</a>
+            </div>
 
-          <div class="field form-group">
-
-            <%= f.input :email, placeholder: '请输入邮箱', class: 'form-control register-email' %>
-          </div>
-
-          <div class="field form-group">
-
-            <%= f.input :password, placeholder: '请输入密码（6-20位）', autocomplete: "off", class: 'form-control' %>
-          </div>
-
-          <div class="field form-group">
-
-            <%= f.input :password_confirmation, placeholder: '请输入确认密码', autocomplete: "off", class: 'form-control' %>
-          </div>
-
-
-          <div class="actions">
-            <%= f.submit class: 'btn btn-primary btn-block', value: '立即注册', 'data-disable-with' => '正在注册' %>
-          </div>
-      <% end %>
-      <p class="clearfix text-right">
-        <a class="blue" href="<%= new_user_session_path %>">使用已有账户登录</a>
-      </p>
+            <button class="btn-robodou btn-register-submit" type="submit">注册账号</button>
+        <% end %>
+      </div>
     </div>
   </div>
-
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
 </div>
+
 

@@ -1,80 +1,124 @@
-<div class="container">
-  <% if @course.present? %>
-      <p>name:<%= @course.name %></p>
-      <p>对象:<%= @course.target %></p>
-      <p>开课时间:<%= @course.start_time.strftime('%Y-%m-%d') %> -- <%= @course.end_time.strftime('%Y-%m-%d') %></p>
-      <p>上课时间:<%= @course.run_time %></p>
-      <p>上课地点:<%= @course.run_address %></p>
-      <p>招募人数:<%= @course.num %></p>
-      <input type="hidden" id="apply-course" value="<%= @course.id %>">
-      <% if @has_apply %>
-          <span class="label label-info">您已报名</span>
-      <% else %>
-          <% if current_user %>
-              <% if current_user.mobile.present? %>
-              <% else %>
-              <% end %>
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#course-user-info">报名</button>
-              <div class="modal fade" id="course-user-info" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title text-center" id="exampleModalLabel">添加或确认报名信息</h4>
-                    </div>
-                    <div class="modal-body">
-                      <form>
-                        <div class="form-group">
-                          <label for="user-info-username" class="control-label">姓名:</label>
-                          <input type="text" class="form-control" id="user-info-username" value="<%= @user_info.username %>">
-                        </div>
-                        <div class="form-group">
-                          <label for="user-info-district" class="control-label">区县:</label>
-                          <% if @user_info.district_name.present? %>
-                              <span><%= @user_info.district_name %></span>
-                              <button>更改</button>
-                          <% else %>
-                              <select class="form-control">
-                                <option>请选择区县</option>
-                                <% District.all.each do |d| %>
-                                    <option value="<%= d.id %>"><%= d.name %></option>
-                                <% end %>
-                              </select>
-                          <% end %>
-                        </div>
-                        <input type="hidden" class="form-control" id="user-info-district" value="<%= @user_info.district_name %>">
-                        <input type="hidden" class="form-control" id="user-info-school" value="<%= @user_info.school_id %>">
-                        <div class="form-group">
-                          <label for="user-info-school" class="control-label">学校:</label>
-                          <% if @user_info.school_name.present? %>
-                              <span><%= @user_info.school_name %></span>
-                              <button>更改</button>
-                          <% else %>
-                              选择学校
-                          <% end %>
-                        </div>
-                        <div class="form-group">
-                          <label for="user-info-grade" class="control-label">年级:</label>
-                          <input class="form-control" id="user-info-grade" value="<%= @user_info.grade %>">
-                        </div>
-                      </form>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                      <button type="button" class="btn btn-primary" id="user-apply-course">提交</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+<div id="main" class="main" data-src="<%= image_path('pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div class="lesson-show">
+        <div class="title" data-id="<%= @course.id %>">
+          <%= @course.name %>
+        </div>
+        <div class="content">
+          <p>对象：<%= @course.target %></p>
+
+          <p>报名时间：<%= @course.apply_start_time.strftime('%Y-%m-%d') %>
+            -- <%= @course.apply_end_time.strftime('%Y-%m-%d') %></p>
+
+          <p>开课时间：<%= @course.start_time.strftime('%Y-%m-%d') %> -- <%= @course.end_time.strftime('%Y-%m-%d') %></p>
+
+          <p>上课时间：<%= @course.run_time %></p>
+
+          <p>上课地点：<%= @course.run_address %></p>
+
+          <p>招募人数：<%= @course.num %></p>
+          <input type="hidden" id="apply-course" value="<%= @course.id %>">
+          <% if @has_apply %>
+              <span class="label label-info">您已报名</span>
           <% else %>
-              <a href="<%= "/account/sign_in?return_url=#{url_encode(request.fullpath)}" %>">报名</a>
+              <% if current_user %>
+                  <button type="button" class="btn-robodou go-apply">我要报名</button>
+              <% else %>
+                  <a href="<%= "/account/sign_in?return_url=#{url_encode(request.fullpath)}" %>">我要报名</a>
+              <% end %>
           <% end %>
+          <div class="apply">
+            <form>
+              <div class="input-row">
+                <label for="user-info-username" class=""><i class="glyphicon glyphicon-user"></i> 姓名:</label>
+                <input type="text" class="" id="user-info-username" value="<%= @user_info.username %>">
+              </div>
+              <div class="input-row">
+                <label for="user-info-district" class=""><i class="glyphicon glyphicon-globe"></i> 区县:</label>
+                <select id="district-select" class="">
+                  <option>请选择区县</option>
+                  <% District.all.each do |d| %>
+                      <option value="<%= d.id %>" <%= 'selected="selected"' if @user_info.district_id == d.id %>><%= d.name %></option>
+                  <% end %>
+                </select>
+              </div>
+              <input type="hidden" id="user-info-district" value="<%= @user_info.district_id %>">
+              <input type="hidden" id="user-info-school" value="<%= @user_info.school_id %>">
 
-      <% end %>
-  <% else %>
-  暂无信息
-  <% end %>
-
-
+              <div class="input-row">
+                <label for="user-info-school" class="control-label"><i class="glyphicon glyphicon-education"></i>
+                  学校:</label>
+                <% if @user_info.school_name.present? %>
+                    <button class="choice-school btn-robodou">更改学校</button>
+                    <span class="selected-school"><%= @user_info.school_name %></span>
+                <% else %>
+                    <button class="choice-school btn-robodou">选择学校</button>
+                <% end %>
+              </div>
+              <div class="input-row">
+                <label for="user-info-grade" class="control-label"><i class="glyphicon glyphicon-registration-mark"></i>
+                  年级:</label>
+                <select name="user-info-grade" id="user-info-grade">
+                  <option value="0">请选择年级</option>
+                  <option value="1" <%= 'selected="selected"' if @user_info.grade == 1 %>>一年级</option>
+                  <option value="2" <%= 'selected="selected"' if @user_info.grade == 2 %>>二年级</option>
+                  <option value="3" <%= 'selected="selected"' if @user_info.grade == 3 %>>三年级</option>
+                  <option value="4" <%= 'selected="selected"' if @user_info.grade == 4 %>>四年级</option>
+                  <option value="5" <%= 'selected="selected"' if @user_info.grade == 5 %>>五年级</option>
+                  <option value="6" <%= 'selected="selected"' if @user_info.grade == 6 %>>六年级（初中预备）</option>
+                  <option value="7" <%= 'selected="selected"' if @user_info.grade == 7 %>>七年级（初中一年级）</option>
+                  <option value="8" <%= 'selected="selected"' if @user_info.grade == 8 %>>八年级（初中二年级）</option>
+                  <option value="9" <%= 'selected="selected"' if @user_info.grade == 9 %>>九年级（初中三年级）</option>
+                  <option value="10" <%= 'selected="selected"' if @user_info.grade == 10 %>>高中一年级</option>
+                  <option value="11" <%= 'selected="selected"' if @user_info.grade == 11 %>>高中二年级</option>
+                  <option value="12" <%= 'selected="selected"' if @user_info.grade == 12 %>>高中三年级</option>
+                </select>
+              </div>
+              <div class="button-row">
+                <button class="btn-robodou apply-lesson">确认报名</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="school-modal">
+  <div class="school-modal-inner">
+    <div class="title">
+      选择学校
+    </div>
+    <div class="content">
+      <div class="screening">
+        <label for="selected-dis">区县</label>
+        <select name="district" id="selected-dis" disabled>
+          <option>请选择区县</option>
+          <% District.all.each do |d| %>
+              <option value="<%= d.id %>"><%= d.name %></option>
+          <% end %>
+        </select>
+        <label for="school-group">类型</label>
+        <select name="group" id="school-group">
+          <option value="0">请选择类型</option>
+          <option value="1">小学</option>
+          <option value="2">初中</option>
+          <option value="3">高中</option>
+          <option value="4">大学</option>
+        </select>
+      </div>
+      <div class="school-list">
+      </div>
+    </div>
+  </div>
 </div>

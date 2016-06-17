@@ -1,6 +1,34 @@
-<div class="container">
-  <% @courses.each do |c| %>
-      <a href="<%= "/courses/#{c.id}" %>"><%= c.name %></a>
-      <hr>
-  <% end %>
+<div id="main" class="main" data-src="<%= image_path('pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div class="lesson">
+        <% if @courses.size>0 %>
+            <div class="lesson-screening">
+
+            </div>
+            <div class="lesson-list">
+              <% @courses.each do |c| %>
+                  <div class="lesson-item">
+                    <div class="title">
+                      <%= c.name %>
+                    </div>
+                    <a href="<%= "/courses/#{c.id}" %>" class="btn-robodou show-lesson">查看详情</a>
+                  </div>
+              <% end %>
+            </div>
+        <% else %>
+            <h3>暂无课程信息</h3>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,9 +1,88 @@
-<div class="list-group" style="margin-top: 40px;">
-
-  <a class="list-group-item" href="<%= user_preview_path %>">个人信息<span class="visible-xs pull-right">[ <%= current_user.nickname %>
-    ]</span></a>
-  <a class="list-group-item" href="<%= user_notification_path %>">消息通知</a>
-  <a class="list-group-item" href="<%= user_apply_path %>">报名信息</a>
+<% @action_preview_array = Array['email', 'reset_email', 'mobile', 'preview', 'profile', 'passwd', 'reset_mobile'] %>
+<% @action_notify_array = Array['notification', 'notify_show'] %>
+<% @action_apply_array = Array['apply'] %>
 
 
+<div class="sidebar">
+  <div class="sidebar-top">
+    <div class="avatar">
+      <div class="change-avatar">
+        修改头像
+        <i class="glyphicon glyphicon-cog"></i>
+      </div>
+      <%= image_tag(current_user.avatar_url(:middle), class: 'img-thumbnail avatar-img') %>
+    </div>
+    <span class="username">Username</span>
+  </div>
+  <div class="sidebar-menu">
+    <a href="<%= user_preview_path %>">
+      <div class="sidebar-item <%= 'active' if @action_preview_array.include?(action_name) %>">
+        <i class="glyphicon glyphicon-user"></i>
+        个人信息
+      </div>
+    </a>
+    <a href="<%= user_apply_path %>">
+      <div class="sidebar-item <%= 'active' if @action_apply_array.include?(action_name) %>">
+        <i class="glyphicon glyphicon-flag"></i>
+        报名信息
+      </div>
+    </a>
+    <a href="">
+      <div class="sidebar-item">
+        <i class="glyphicon glyphicon-cog"></i>
+        个人管理
+      </div>
+    </a>
+    <a href="<%= user_notification_path %>">
+      <div class="sidebar-item <%= 'active' if @action_notify_array.include?(action_name) %>">
+        <i class="glyphicon glyphicon-bell"></i>
+        消息通知
+      </div>
+    </a>
+    <a href="">
+      <div class="sidebar-item">
+        <i class="glyphicon glyphicon-grain"></i>
+        我的积分
+      </div>
+    </a>
+    <a href="">
+      <div class="sidebar-item">
+        <i class="glyphicon glyphicon-comment"></i>
+        调戏小豆
+      </div>
+    </a>
+  </div>
+</div>
+
+<div id="change-avatar" class="modal fade">
+  <div class="change-avatar-inner">
+    <div class="title">
+      修改昵称和头像
+    </div>
+    <form action="update_avatar" method="post" enctype="multipart/form-data">
+      <div class="input-row">
+        <div class="left">
+          <i class="glyphicon glyphicon-user"></i>
+          新昵称
+        </div>
+        <div class="right">
+          <input type="text" name="user[nickname]" placeholder="输入新昵称" value="<%= current_user.nickname %>"/>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="left">
+          <i class="glyphicon glyphicon-user"></i>
+          新头像
+        </div>
+        <div class="right">
+          <input id="changeAvatar" name="user[avatar]" type="file" class="hide"/>
+          <label class="avatar-btn" for="changeAvatar"><i class="glyphicon glyphicon-upload"></i>请选择图片</label>
+        </div>
+      </div>
+      <input type="hidden" name="authenticity_token"/>
+      <div class="form-b">
+        <button type="submit" class="btn-robodou btn-submit-avatar">提交</button>
+      </div>
+    </form>
+  </div>
 </div>
