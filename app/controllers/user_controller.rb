@@ -124,7 +124,7 @@ class UserController < ApplicationController
     elsif params[:type]=='3'
       apply = []
     else
-      apply = CourseUserShip.joins(:course).where(user_id: current_user.id).select(:id, :course_id, 'courses.name') #current_user.course_user_ships
+      apply = CourseUserShip.joins(:course).where(user_id: current_user.id).select(:id, :course_id, :run_time, :created_at, :run_address, 'courses.name') #current_user.course_user_ships
     end
     @apply_info = apply
   end
