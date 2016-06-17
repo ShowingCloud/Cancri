@@ -18,7 +18,7 @@ class UserController < ApplicationController
     if request.method == 'POST'
       if params[:user_profile].present?
         # 过滤Profile参数
-        profile_params = params.require(:user_profile).permit(:username, :school_id, :bj, :gender, :birthday, :student_code, :identity_card, :address, :cover, :desc, :teacher_no, :certificate, :grade, :autograph, {:roles => []}).tap do |list|
+        profile_params = params.require(:user_profile).permit(:username, :school_id, :bj, :district_id, :gender, :birthday, :student_code, :identity_card, :address, :cover, :desc, :teacher_no, :certificate, :grade, :autograph, {:roles => []}).tap do |list|
           if params[:user_profile][:roles].present? && params[:user_profile][:roles] != '教师'
             list[:roles] = params[:user_profile][:roles].join(',')
           else
