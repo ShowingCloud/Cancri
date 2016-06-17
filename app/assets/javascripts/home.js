@@ -22,9 +22,7 @@ $(function () {
                 } else {
                     if (jqObj.hasClass('main')) {
                         if ($.cookie('area') == 1) {
-                            console.log(src);
                             src = $('#bs-pg').attr('data-bk');
-                            console.log(src);
                         }
                     }
                     jqObj.css({"background-image": "url(" + src + ")"});//lazy load
