@@ -25,10 +25,14 @@
           <% if @has_apply %>
               <span class="label label-info">您已报名</span>
           <% else %>
-              <% if current_user %>
-                  <button type="button" class="btn-robodou go-apply">我要报名</button>
+              <% if @course.apply_end_time < Time.now %>
+                  <span class="label label-warning">报名结束</span>
               <% else %>
-                  <a href="<%= "/account/sign_in?return_url=#{url_encode(request.fullpath)}" %>">我要报名</a>
+                  <% if current_user %>
+                      <button type="button" class="btn-robodou go-apply">我要报名</button>
+                  <% else %>
+                      <a class="btn-robodou" href="<%= "/account/sign_in?return_url=#{url_encode(request.fullpath)}" %>">我要报名</a>
+                  <% end %>
               <% end %>
           <% end %>
           <% if current_user.present? %>
