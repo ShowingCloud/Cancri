@@ -1,44 +1,45 @@
-<div class="container">
-  <div class="row">
-    <div class="col-xs-12 col-sm-3 hidden-xs">
-      <%= render 'user/menu' %>
+<div id="main" class="main" data-src="<%= image_path('pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @apply_info.size>0 %>
+                <% @apply_info.each do |a| %>
+                    <div class="lesson-item" data-id="<%= a.course_id %>">
+                      <div class="title"><%= a.name %></div>
+                      <p>报名时间: 2016年06月12日 8:00-10:00 10:00-11:00</p>
+                      <p>上课时间：</p>
+                      <p>上课地点: </p>
+                      <div class="btn-row">
+                        <%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.id}",class:'btn-robodou btn-abort-lesson', data: {confirm: "确认取消报名#{a.name}吗?", method: :post, type: 'script', remote: true} do %>
+                            取消报名
+                        <% end %>
+                      </div>
+                    </div>
+                <% end %>
+            <% else %>
+                对不起，您暂时没有报名任何课程。
+            <% end %>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="col-xs-12 col-sm-9">
-      <h1 class="page-header">
-        我的报名信息
-      </h1>
-      <ul class="nav nav-tabs" role="tablist">
-        <li <%= 'class=active' if (params[:type]==nil) %>>
-          <a href="/user/apply">课程</a>
-        </li>
-
-        <li <%= 'class=active' if params[:type] == '2' %>>
-          <a href="/user/apply?type=2">比赛</a>
-        </li>
-        <li <%= 'class=active' if params[:type] == '3' %>>
-          <a href="/user/apply?type=3">活动</a>
-        </li>
-
-
-      </ul>
-      <br>
-
-      <div class="panel panel-default">
-
-        <% @apply_info.each do |a| %>
-            <div class="panel-body" id="<%= "hide-course-#{a.id}" %>">
-              <%= a.name %>
-              <%= a.course_id %>
-              <%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.id}", data: {confirm: "确认取消报名#{a.name}吗?", method: :post, type: 'script', remote: true} do %>
-                  取消报名
-              <% end %>
-            </div>
-        <% end %>
-
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
       </div>
     </div>
   </div>
 </div>
-
 
 

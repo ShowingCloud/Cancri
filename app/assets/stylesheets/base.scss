@@ -1,0 +1,870 @@
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+#top {
+  height: 100px;
+  background: center center;
+  background-size: cover;
+}
+
+#top .logo {
+  height: 70px;
+  margin: 15px;
+  font-size: 28px;
+  line-height: 70px;
+}
+
+#top .logo a {
+  color: #ffffff;
+}
+
+#top .logo a:hover {
+  text-decoration: none;
+}
+
+#top .user-info {
+  height: 40px;
+  margin-top: 40px;
+}
+
+#top .user-info .un-login {
+
+}
+
+#top .user-info .login-info {
+
+}
+
+#top .user-info .un-login .btn-robodou {
+  border-color: #979797;
+  color: #979797;
+  padding: 3px 12px;
+  margin: 0 4px;
+  cursor: pointer;
+}
+
+#top .user-info .login-info .btn-robodou {
+  padding: 3px 12px;
+}
+
+#top .user-info .un-login .btn-robodou:hover {
+  border-color: #A6CFFF;
+  color: #A6CFFF;
+}
+
+.btn-robodou {
+  text-align: center;
+  background: transparent;
+  border: 1px solid #6699cc;
+  outline: none;
+  border-radius: 5px;
+  color: #6699cc;
+}
+
+.btn-login-link {
+  padding: 4px 12px;
+}
+
+.btn-register-link {
+  padding: 4px 12px;
+}
+
+.dropdown-menu-robodou {
+  background: transparent;
+  border: 1px solid #6699cc;
+  outline: none;
+  border-radius: 5px;
+  color: #6699cc;
+  min-width: 0;
+}
+
+.dropdown-menu-robodou > li > a {
+  color: #6699cc;
+}
+
+.dropdown-menu-robodou > li > a:hover {
+  background: #6699cc;
+  color: #A6CFFF;
+}
+
+#nav {
+  background: #3E4648;
+  border-radius: 0;
+}
+
+#nav.navbar {
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+#nav-menu {
+  text-align: center;
+}
+
+#nav .nav {
+  display: inline-block;
+  text-align: center;
+}
+
+#nav .nav > li {
+  display: inline-block;
+}
+
+#nav .nav > li > a {
+  padding: 8px 10px;
+  color: #fff;
+  font-size: 16px;
+  margin: 0 20px;
+}
+
+#nav .navbar-nav > li {
+  float: none;
+}
+
+#nav .navbar-nav {
+  float: none;
+}
+
+#nav .nav > li > a:hover {
+  background: transparent;
+}
+
+#nav .nav > li > a:focus {
+  background: transparent;
+}
+
+#main {
+  background-size: cover;
+  position: relative;
+  padding-bottom: 26px;
+}
+
+#main #footer {
+  position: absolute;
+  bottom: 0;
+  font-size: 12px;
+  border-top: 1px solid #979797;
+  color: #979797;
+  padding: 4px 20px;
+  width: 100%;
+}
+
+#main #footer a {
+  color: #979797;
+  cursor: pointer;
+}
+
+#main #footer a:hover {
+  text-decoration: none;
+}
+
+#main #footer .separator {
+  width: 0;
+  border-left: 1px solid #979797;
+  margin: 0 9px 0 8px;
+}
+
+#banner {
+  height: 500px;
+  padding: 40px;
+}
+
+#banner #banner-slider {
+  height: 420px;
+}
+
+#comps {
+  text-align: center;
+}
+
+#comps .title {
+  font-size: 16px;
+  color: #fff;
+  line-height: 22px;
+  margin-bottom: 20px;
+}
+
+#comps .comp {
+  text-align: center;
+  margin: 5px;
+}
+
+#comps .comp img {
+  border-radius: 50%;
+  height: 200px;
+  width: 200px;
+  margin-bottom: 20px;
+}
+
+#comps .comp p {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #FFFFFF;
+  font-size: 14px;
+}
+
+.lesson {
+  width: 100%;
+  position: relative;
+  padding: 40px;
+  color: #fff;
+}
+
+.select-robodou {
+  text-align: center;
+  background: transparent;
+  border: 1px solid #6699cc;
+  outline: none;
+  border-radius: 5px;
+  color: #6699cc;
+}
+
+.lesson .lesson-screening {
+  padding: 20px 0;
+}
+
+.lesson .lesson-screening select {
+  background-color: #333e4e;
+  border-color: #333e4e;
+}
+
+.lesson-list {
+  width: 100%;
+}
+
+.lesson-item {
+  width: 100%;
+  border: 1px solid #333e4e;
+  border-radius: 15px;
+  padding: 20px;
+  color: #FFFFFF;
+  background-color: #333e4e;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.lesson-item:last-child {
+  margin-bottom: 0;
+}
+
+.lesson-item:hover {
+  border-color: #6699cc;
+}
+
+.lesson-item .title {
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.lesson-item .apply-lesson {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  padding: 3px 18px;
+}
+
+.lesson-show {
+  margin: 40px auto;
+  width: 80%;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 15px;
+  padding: 20px;
+  font-size: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.lesson-show .title {
+  font-size: 18px;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.lesson-show .content {
+  padding: 20px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.apply {
+  width: 400px;
+  margin: 0 auto;
+  transition: all .3s;
+  overflow: hidden;
+  color: #fff;
+  font-size: 12px;
+  position: absolute;
+  top: 0;
+  right: -400px;
+  border-left: 1px solid #fff;
+  padding: 20px;
+}
+
+.apply.active {
+  right: 0;
+}
+
+.apply .input-row {
+  height: 24px;
+  margin-bottom: 15px;
+  line-height: 24px;
+}
+
+.apply input[type="text"] {
+  width: 160px;
+  background: #445d79;
+  border: 1px solid #445d79;
+  outline: none;
+  padding-left: .5em;
+  height: 24px;
+}
+
+.apply .choice-school {
+  height: 24px;
+  line-height: 24px;
+  padding: 0 12px;
+}
+
+.apply .button-row {
+  text-align: left;
+}
+
+.apply .apply-lesson {
+  padding: 4px 20px;
+}
+
+.apply select {
+  width: 160px;
+  height: 24px;
+  line-height: 24px;
+}
+
+.apply input[type="text"]:focus {
+  border-color: #fff;
+}
+
+.apply label {
+  margin-right: 10px;
+}
+
+.user-center {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  padding: 30px;
+  color: #FFFFFF;
+}
+
+.user-center .sidebar {
+  float: left;
+  width: 200px;
+}
+
+.user-center .main-title {
+  font-size: 18px;
+  padding-bottom: 12px;
+  padding-left: 12px;
+  border-bottom: 2px solid #FFFFFF;
+}
+
+.user-center .sidebar .sidebar-top {
+  margin-bottom: 20px;
+}
+
+.user-center .sidebar .sidebar-top {
+
+}
+
+.user-center .sidebar .sidebar-top .username {
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  cursor: default;
+}
+
+.user-center .sidebar .avatar {
+  width: 180px;
+  height: 180px;
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid #FFFFFF;
+  border-radius: 5px;
+  background: #445d79;
+  position: relative;
+  overflow: hidden;
+}
+
+.user-center .sidebar .avatar .change-avatar {
+  position: absolute;
+  right: 0;
+  top: -26px;
+  cursor: pointer;
+  transition: all .3s;
+  background: rgba(0, 0, 0, .3);
+  width: 180px;
+  height: 26px;
+  line-height: 26px;
+  font-size: 12px;
+  padding: 0 10px;
+  color: #6699cc;
+}
+
+.user-center .sidebar .avatar .change-avatar i {
+  float: right;
+  margin-top: 6px;
+  transition: transform .6s;
+}
+
+.user-center .sidebar .avatar:hover .change-avatar {
+  top: 0;
+}
+
+.user-center .sidebar .avatar .change-avatar:hover {
+}
+
+.user-center .sidebar .avatar .change-avatar:hover i {
+  transform: rotate(180deg);
+}
+
+.user-center .sidebar .avatar .avatar-img {
+  height: 160px;
+  width: 160px;
+}
+
+.user-center .sidebar .sidebar-menu {
+  width: 180px;
+  margin: 0 auto;
+}
+
+.user-center .sidebar .sidebar-menu .sidebar-menu-top {
+  padding: 10px;
+  border-bottom: 1px solid #FFFFFF;
+  background: #445d79;
+}
+
+.user-center .sidebar .sidebar-menu .sidebar-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #FFFFFF;
+  background: #445d79;
+  text-align: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: #FFFFFF;
+}
+
+.user-center .sidebar .sidebar-menu .sidebar-item:hover {
+  border-color: #6699cc;
+  color: #6699cc;
+}
+
+.user-center .sidebar .sidebar-menu .sidebar-item i {
+  margin-right: 10px;
+  transition: transform .6s;
+}
+
+.user-center .sidebar .sidebar-menu .sidebar-item:hover i {
+  transform: rotateY(180deg);
+}
+
+.user-center .sidebar .sidebar-menu .sidebar-item.active {
+  border-color: #6699cc;
+  color: #6699cc;
+}
+
+.user-center .user-main {
+  margin-left: 200px;
+  padding: 20px;
+}
+
+.user-center .user-main .sub-menu {
+  overflow: hidden;
+  border-bottom: 1px solid #FFFFFF;
+}
+
+.user-center .user-main .sub-menu .sub-menu-item {
+  padding: 10px 20px;
+  font-size: 14px;
+  float: left;
+  color: #FFFFFF;
+}
+
+.user-center .user-main .sub-menu .sub-menu-item:hover {
+  color: #6699cc;
+}
+
+.user-center .user-main .sub-menu .sub-menu-item.active {
+  color: #6699cc;
+}
+
+.user-center .user-main .sub-content {
+  border: 1px solid #FFFFFF;
+  margin: 10px 0;
+  min-height: 453px;
+  border-radius: 15px;
+  padding: 20px;
+  background: #445d79;
+}
+
+.user-center .user-main .sub-content .sub-header {
+  border-bottom: 1px solid #fff;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.user-center .user-main .sub-content .btn-upload-ck {
+  padding: 3px 12px;
+  cursor: pointer;
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+}
+
+.user-center .user-main .sub-content .btn-upload-ck:hover {
+  color: #6699cc;
+  border-color: #6699cc;
+}
+
+.user-center .user-main .form-control {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+div.separator {
+  border-bottom: 1px solid #FFFFFF;
+  margin: 10px 0;
+}
+
+.radio-row {
+  margin-bottom: 10px;
+}
+
+.radio-row label {
+  margin: 0 10px;
+}
+
+.radio-row input {
+  margin: 0 10px;
+}
+
+.file-row {
+  margin-bottom: 10px;
+}
+
+.textarea-row {
+  margin-bottom: 10px;
+}
+
+.textarea-row label {
+  font-size: 12px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.user-center .textarea-row textarea {
+  width: 100%;
+  height: 200px;
+  border: 1px solid #6699cc;
+  background: transparent;
+  resize: none;
+}
+
+.btn-row {
+  text-align: right;
+}
+
+.user-center .btn-ck-submit {
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+}
+
+.user-center .btn-ck-submit:hover {
+  color: #6699cc;
+  border-color: #6699cc;
+}
+
+.user-center .lesson-result {
+
+}
+
+.user-center .lesson-result .result-table {
+  width: 100%;
+}
+
+.user-center .lesson-result .result-table th {
+  border-bottom: 1px solid #FFFFFF;
+  padding: 15px 10px;
+}
+
+.user-center .lesson-result .result-table td {
+  padding: 10px;
+}
+
+.passport {
+
+}
+
+.passport {
+  width: 300px;
+  margin: 80px auto;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.passport .title {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.passport .passport-box {
+  text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  overflow: hidden;
+  line-height: 36px;
+}
+
+.passport .passport-box .passport-sub-box {
+  font-size: 18px;
+  border-bottom: 1px solid #ccc;
+  padding: 5px 15px;
+}
+
+.passport .send-code-special {
+  position: absolute;
+  right: 18px;
+  top: 12px;
+  display: block;
+  height: 28px;
+  line-height: 28px;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  padding: 0 12px;
+  background-image: linear-gradient(to bottom, #6699cc, #66ccff);
+  outline: none;
+  cursor: pointer;
+}
+
+#rucaptcha-image-style {
+  border-radius: 5px;
+  top: 8px;
+  cursor: pointer;
+}
+
+.passport .passport-box .passport-sub-box.rucaptcha-special {
+  position: relative;
+}
+
+.passport .passport-box .passport-sub-box:last-child {
+  border-bottom: none;
+}
+
+.passport .passport-box .input-robodou {
+  border-left: 1px solid #ccc;
+  background: transparent;
+  width: 200px;
+  margin-left: 6px;
+}
+
+.btn-register-submit, .btn-forget-submit, .btn-login-submit, .btn-password-submit {
+  width: 100%;
+  height: 36px;
+  color: #FFFFFF;
+  background: #6699cc;
+  background-image: linear-gradient(to bottom right, #6699cc, #87e9ff);
+  border: none;
+}
+
+.btn-register-submit:hover, .btn-forget-submit:hover, .btn-login-submit:hover, .btn-password-submit:hover {
+}
+
+.passport .other-link {
+  width: 100%;
+  height: 20px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.passport .other-link .register-link {
+  float: left;
+}
+
+.passport .other-link .forget-link {
+  float: right;
+}
+
+.input-robodou[type="text"],
+.input-robodou[type="password"],
+.input-robodou[type="tel"],
+.input-robodou[type="email"] {
+  background: #6699cc;
+  border: none;
+  outline: none;
+  padding-left: .5em;
+}
+
+.school-modal-inner {
+  width: 400px;
+  margin: 60px auto;
+  border: 2px solid #fff;
+  border-radius: 15px;
+  padding: 20px;
+  color: #fff;
+  background: #445d79;
+}
+
+.school-modal-inner .title {
+  font-size: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #fff;
+}
+
+.school-modal-inner .screening {
+  padding: 20px 0;
+}
+
+.school-modal-inner .school-list {
+  padding: 20px 0;
+  min-height: 200px;
+  overflow: hidden;
+}
+
+.school-modal-inner .school-list .item {
+  float: left;
+  margin-right: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  padding: 5px;
+  border: 1px dotted #ccc;
+  font-size: 12px;
+}
+
+.school-modal-inner .school-list .item:hover {
+  border-style: solid;
+}
+
+.notify-b {
+  background: #445d79;
+  width: 240px;
+  color: #93e0f7;
+  font-size: 14px;
+  margin: 200px auto;
+  border: 2px solid #88D5EC;
+}
+
+.notify-b .title {
+  text-align: left;
+  border-bottom: 2px solid #88D5EC;
+  padding: 4px 10px;
+}
+
+.notify-b .content {
+  text-align: center;
+  padding: 40px;
+}
+
+.notify-b .close-flash {
+  float: right;
+  cursor: pointer;
+}
+
+fieldset {
+  border: 1px solid #fff;
+  padding: 10px;
+  border-radius: 15px;
+  margin-bottom: 10px;
+}
+
+legend {
+  font-size: 12px;
+  background: transparent;
+  border: none;
+  width: auto;
+  color: #fff;
+}
+
+.no-border {
+  border: none !important;
+}
+
+.gender-label {
+  margin-right: 10px;
+}
+
+.fieldset-label {
+  margin-right: 10px;
+}
+
+.gender-label input {
+  margin-right: 8px;
+}
+
+.fieldset-label input {
+  margin-right: 8px;
+}
+
+.user_profile_identity_card {
+  display: none;
+}
+
+.user_profile_identity_card.active {
+  display: block;
+}
+
+.profile-path {
+  display: inline-block;
+  padding: 4px 12px;
+}
+
+.change-avatar-inner {
+  width: 400px;
+  margin: 60px auto;
+  border: 2px solid #fff;
+  padding: 20px;
+  border-radius: 15px;
+  background: #445d79;
+}
+
+.change-avatar-inner {
+
+}
+
+.change-avatar-inner .title{
+  font-size: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #fff;
+  margin-bottom: 10px;
+}
+.change-avatar-inner .input-row {
+  height: 24px;
+  margin-bottom: 15px;
+  line-height: 24px;
+}
+
+.change-avatar-inner .input-row .left{
+  float: left;
+}
+
+.change-avatar-inner .input-row .right{
+  margin-left: 80px;
+}
+
+.change-avatar-inner input[type="text"] {
+  width: 160px;
+  background: #6699cc;
+  border: 1px solid #445d79;
+  outline: none;
+  padding-left: .5em;
+  height: 24px;
+}

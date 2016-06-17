@@ -1,71 +1,79 @@
-<div class="container">
-  <div class="row">
-    <div class="col-xs-12 col-sm-3 hidden-xs">
-      <%= render 'user/menu' %>
-    </div>
-    <div class="col-xs-12 col-sm-9">
-      <h1 class="page-header">
-        我的账户
-      </h1>
+<div id="main" class="main" data-src="<%= image_path('pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if current_user.present? && current_user.email.present? %>
+                当前邮箱: <%= current_user.email %>
+                <hr>
+                <%= simple_form_for(current_user, url: user_reset_email_path, method: :post) do |f| %>
+                    <div class="row">
+                      <div class="col-xs-9">
 
-      <%= render 'user/tab' %>
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <% if current_user.present? && current_user.email.present? %>
-              当前邮箱: <%= current_user.email %>
-              <hr>
-              <%= simple_form_for(current_user, url: user_reset_email_path, method: :post) do |f| %>
-                  <div class="row">
-                    <div class="col-xs-9">
+                        <div class="input-group form-group email_info optional">
+                          <input id="user-email" class="email-value string optional form-control" type="text" placeholder="请输入要更换的邮箱" name="email_info" value="<%= current_user.email_info %>">
+                          <span class="input-group-addon btn btn-default user-add-email" id="basic-addon2">发送验证码</span>
+                        </div>
+                        <div class="form-inputs">
+                          <input id="email_code" class="string required form-control" placeholder="请输入邮箱收到的验证码" type="text" name="email_code" value="<%= current_user.email_code %>">
+                        </div>
+                        <br>
 
-                      <div class="input-group form-group email_info optional">
-                        <input id="user-email" class="email-value string optional form-control" type="text" placeholder="请输入要更换的邮箱" name="email_info" value="<%= current_user.email_info %>">
-                        <span class="input-group-addon btn btn-default user-add-email" id="basic-addon2">发送验证码</span>
-                      </div>
-                      <div class="form-inputs">
-                        <input id="email_code" class="string required form-control" placeholder="请输入邮箱收到的验证码" type="text" name="email_code" value="<%= current_user.email_code %>">
-                      </div>
-                      <br>
+                        <div class="form-inputs">
+                          <input id="password" class="string password required form-control" placeholder="请输入账号密码" type="text" name="password">
+                        </div>
+                        <br>
 
-                      <div class="form-inputs">
-                        <input id="password" class="string password required form-control" placeholder="请输入账号密码" type="text" name="password">
-                      </div>
-                      <br>
-
-                      <div class="form-group">
-                        <div class="row">
-                          <div class="col-xs-12">
-                            <div class="row">
-                              <div class="col-xs-7">
-                                <div class="<%= "form-group string #{request.post? && !verify_rucaptcha?(current_user) ? 'has-error' : ''}" %>">
-                                  <%= rucaptcha_input_tag(class: 'form-control', placeholder: '请输入验证码') %>
-                                  <% if request.post? && !verify_rucaptcha?(current_user) %>
-                                      <span class="help-block">验证码不正确</span>
-                                  <% end %>
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-xs-12">
+                              <div class="row">
+                                <div class="col-xs-7">
+                                  <div class="<%= "form-group string #{request.post? && !verify_rucaptcha?(current_user) ? 'has-error' : ''}" %>">
+                                    <%= rucaptcha_input_tag(class: 'form-control', placeholder: '请输入验证码') %>
+                                    <% if request.post? && !verify_rucaptcha?(current_user) %>
+                                        <span class="help-block">验证码不正确</span>
+                                    <% end %>
+                                  </div>
                                 </div>
-                              </div>
-                              <div class="col-xs-5">
-                                      <span class="refresh-captcha">
-                                        <%= rucaptcha_image_tag(alt: 'rucaptcha', id: 'rucaptcha-image-style') %>
-                                      </span>
+                                <div class="col-xs-5">
+                            <span class="refresh-captcha">
+                              <%= rucaptcha_image_tag(alt: 'rucaptcha', id: 'rucaptcha-image-style') %>
+                            </span>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div class="form-actions">
-                        <%= f.submit class: 'btn btn-primary btn-block', value: '提交', 'data-disable-with' => '提交' %>
+                        <div class="form-actions">
+                          <%= f.submit class: 'btn btn-primary btn-block', value: '提交', 'data-disable-with' => '提交' %>
+                        </div>
                       </div>
                     </div>
-                  </div>
-              <% end %>
-          <% else %>
-              您还没有认证邮箱，无法重置邮箱！<a href="<%= user_email_path %>">去认证</a>
-          <% end %>
+                <% end %>
+            <% else %>
+                您还没有认证邮箱，无法重置邮箱！<a href="<%= user_email_path %>">去认证</a>
+            <% end %>          </div>
         </div>
       </div>
     </div>
   </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
 </div>
+
 

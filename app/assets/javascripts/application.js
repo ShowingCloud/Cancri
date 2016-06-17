@@ -19,5 +19,7 @@
 //= require user
 //= require message-bus
 //= require notify
+//= require home
+//= require admin/bootstrap-datepicker.min
 //= //require turbolinks
 //= //require_tree .

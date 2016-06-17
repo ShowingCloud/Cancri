@@ -1,50 +1,58 @@
-<div class="container">
-
-  <div class="row">
-    <div class="passport">
-
-      <div class="col-sm-4 col-md-4">
-        <h2 class="text-center">注册</h2>
+<div id="main" class="main" data-src="<%= image_path('pagebk.png') %>">
+  <div class="container">
+    <div class="row">
+      <div class="passport">
+        <div class="title">
+          用户注册
+        </div>
         <%= simple_form_for(@sing_up, url: register_post_accounts_path, method: :post) do |f| %>
-            <div class="text-right">没有手机？请用<a class="blue" href="/account/sign_up">邮箱</a>注册<br/>
-            </div>
-            <%= f.input :nickname, as: :tel, placeholder: '请输入昵称' %>
-            <%= f.input :password, placeholder: '请输入至少6位密码', wrapper_html: {class: ''} %>
-
-            <div class="form-group">
-              <div class="row">
-                <div class="col-xs-12">
-                  <div class="row">
-                    <div class="col-xs-7">
-                      <div class="form-group string">
-                        <%= rucaptcha_input_tag(class: 'form-control ', placeholder: '请输入校验码') %>
-                      </div>
-                    </div>
-                    <div class="col-xs-5">
-                      <span class="refresh-captcha">
-                        <%= rucaptcha_image_tag(alt: '校验码', id: 'rucaptcha-image-style') %>
-                      </span>
-                    </div>
-                  </div>
-                </div>
+            <div class="passport-box">
+              <div class="passport-sub-box">
+                <i class="glyphicon glyphicon-user"></i>
+                <input class="input-robodou" id="register-username" type="text" name="sing_up[nickname]"
+                       placeholder="请输入用户名">
+              </div>
+              <div class="passport-sub-box rucaptcha-special">
+                <i class="glyphicon glyphicon-phone"></i>
+                <input class="input-robodou" id="register-mobile" type="tel" name="sing_up[mobile]"
+                       placeholder="请输入手机号码">
+                <span class="send-code-special" id="btn_send_mobile_code" data-key="register-mobile" data-type="REGISTER">发送验证码</span>
+              </div>
+              <div class="passport-sub-box rucaptcha-special">
+                <i class="glyphicon glyphicon-check"></i>
+                <%= rucaptcha_input_tag(class: 'rucaptcha-input-sepcial input-robodou', placeholder: '请输入校验码') %>
+                <span class="refresh-captcha">
+                  <%= rucaptcha_image_tag(alt: '校验码', id: 'rucaptcha-image-style') %>
+                </span>
+              </div>
+              <div class="passport-sub-box">
+                <i class="glyphicon glyphicon-edit"></i>
+                <input class="input-robodou" id="register-mobile-code" type="text" name="sing_up[mobile_code]"
+                       placeholder="请输入手机验证码">
+              </div>
+              <div class="passport-sub-box">
+                <i class="glyphicon glyphicon-lock"></i>
+                <input class="input-robodou" id="register-password" type="password" name="sing_up[password]"
+                       placeholder="请输入密码(6-20位)">
               </div>
             </div>
 
-            <div class="input-group form-group required sing_up_mobile">
-
-              <input id="sing_up_mobile" class="string tel required form-control" type="tel" name="sing_up[mobile]" value="<%= @sing_up.mobile %>" placeholder="请输入手机号">
-              <span class="input-group-addon btn btn-default" id="btn_send_mobile_code" data-key="sing_up" data-type="REGISTER">发送验证码</span>
+            <div class="other-link">
+              <a class="login-link pull-left" href="<%= new_user_session_path %>">已有账号,去登录</a>
+              <a class="email-link pull-right" href="/account/sign_up">邮箱注册</a>
             </div>
 
-            <%= f.input :mobile_code, as: :tel, placeholder: '请输入手机验证码' %>
-
-            <div class="form-group form-group-lg">
-              <%= f.submit class: 'btn btn-primary btn-block', value: '立即注册', 'data-disable-with' => '正在注册' %>
-            </div>
+            <button class="btn-robodou btn-register-submit" type="submit">注册账号</button>
         <% end %>
-        <p class="clearfix text-right">
-          <a href="<%= new_user_session_path %>">使用已有账户登录</a>
-        </p>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
       </div>
     </div>
   </div>
