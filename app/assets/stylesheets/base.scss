@@ -892,3 +892,11 @@ select {
 .form-group #rucaptcha-image-style{
   top: 0;
 }
+
+.form-group {
+  position: relative;
+}
+
+.special-captcha{
+  width: 50%;
+}

@@ -13,17 +13,17 @@
                        placeholder="请输入用户名">
               </div>
               <div class="passport-sub-box rucaptcha-special">
-                <i class="glyphicon glyphicon-phone"></i>
-                <input class="input-robodou" id="register-mobile" type="tel" name="sing_up[mobile]"
-                       placeholder="请输入手机号码">
-                <span class="send-code-special" id="btn_send_mobile_code" data-key="register-mobile" data-type="REGISTER">发送验证码</span>
-              </div>
-              <div class="passport-sub-box rucaptcha-special">
                 <i class="glyphicon glyphicon-check"></i>
                 <%= rucaptcha_input_tag(class: 'rucaptcha-input-sepcial input-robodou', placeholder: '请输入校验码') %>
                 <span class="refresh-captcha">
                   <%= rucaptcha_image_tag(alt: '校验码', id: 'rucaptcha-image-style') %>
                 </span>
+              </div>
+              <div class="passport-sub-box rucaptcha-special">
+                <i class="glyphicon glyphicon-phone"></i>
+                <input class="input-robodou" id="register-mobile" type="tel" name="sing_up[mobile]"
+                       placeholder="请输入手机号码">
+                <span class="send-code-special" id="btn_send_mobile_code" data-key="register-mobile" data-type="REGISTER">发送验证码</span>
               </div>
               <div class="passport-sub-box">
                 <i class="glyphicon glyphicon-edit"></i>
