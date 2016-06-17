@@ -10,7 +10,6 @@ class Course < ApplicationRecord
   validates :status, presence: true
   validates :district_id, presence: true
   after_validation :validate_datetime
-  attr_readonly :count_of_course_user_of_ships
   STATUS = {
       待审核: 0,
       通过: 1,

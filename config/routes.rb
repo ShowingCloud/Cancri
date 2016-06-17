@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   end
   get 'courses/index'
   post 'courses/apply' => 'courses#apply'
+  post 'courses/cancel' => 'courses#cancel_apply'
   resources :courses
   resources :notifications
 
