@@ -8,7 +8,7 @@
         <div class="content">
           <p>对象：<%= @course.target %></p>
 
-          <p>报名时间：<%= @course.apply_start_time.strftime('%Y-%m-%d') %>
+          <p class="already_time">报名时间：<%= @course.apply_start_time.strftime('%Y-%m-%d') %>
             -- <%= @course.apply_end_time.strftime('%Y-%m-%d') %></p>
 
           <p>开课时间：<%= @course.start_time.strftime('%Y-%m-%d') %> -- <%= @course.end_time.strftime('%Y-%m-%d') %></p>
@@ -18,6 +18,9 @@
           <p>上课地点：<%= @course.run_address %></p>
 
           <p>招募人数：<%= @course.num %></p>
+
+          <p class="already_num">已报名人数：<%= @course.already_num %></p>
+
           <input type="hidden" id="apply-course" value="<%= @course.id %>">
           <% if @has_apply %>
               <span class="label label-info">您已报名</span>
@@ -61,18 +64,18 @@
                   年级:</label>
                 <select name="user-info-grade" id="user-info-grade">
                   <option value="0">请选择年级</option>
-                  <option value="1" <%= 'selected="selected"' if @user_info.grade == 1 %>>一年级</option>
-                  <option value="2" <%= 'selected="selected"' if @user_info.grade == 2 %>>二年级</option>
-                  <option value="3" <%= 'selected="selected"' if @user_info.grade == 3 %>>三年级</option>
-                  <option value="4" <%= 'selected="selected"' if @user_info.grade == 4 %>>四年级</option>
-                  <option value="5" <%= 'selected="selected"' if @user_info.grade == 5 %>>五年级</option>
-                  <option value="6" <%= 'selected="selected"' if @user_info.grade == 6 %>>六年级（初中预备）</option>
-                  <option value="7" <%= 'selected="selected"' if @user_info.grade == 7 %>>七年级（初中一年级）</option>
-                  <option value="8" <%= 'selected="selected"' if @user_info.grade == 8 %>>八年级（初中二年级）</option>
-                  <option value="9" <%= 'selected="selected"' if @user_info.grade == 9 %>>九年级（初中三年级）</option>
-                  <option value="10" <%= 'selected="selected"' if @user_info.grade == 10 %>>高中一年级</option>
-                  <option value="11" <%= 'selected="selected"' if @user_info.grade == 11 %>>高中二年级</option>
-                  <option value="12" <%= 'selected="selected"' if @user_info.grade == 12 %>>高中三年级</option>
+                  <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
+                  <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
+                  <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
+                  <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
+                  <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
+                  <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
+                  <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
+                  <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
+                  <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
+                  <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
+                  <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
+                  <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
                 </select>
               </div>
               <div class="button-row">

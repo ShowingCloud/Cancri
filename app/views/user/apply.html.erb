@@ -13,11 +13,14 @@
                 <% @apply_info.each do |a| %>
                     <div class="lesson-item" data-id="<%= a.course_id %>">
                       <div class="title"><%= a.name %></div>
-                      <p>报名时间: 2016年06月12日 8:00-10:00 10:00-11:00</p>
-                      <p>上课时间：</p>
-                      <p>上课地点: </p>
+                      <p>报名时间: <%= a.created_at.strftime('%Y-%m-%d')%></p>
+
+                      <p>上课时间: <%= a.run_time %> </p>
+
+                      <p>上课地点: <%= a.run_address %></p>
+
                       <div class="btn-row">
-                        <%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.id}",class:'btn-robodou btn-abort-lesson', data: {confirm: "确认取消报名#{a.name}吗?", method: :post, type: 'script', remote: true} do %>
+                        <%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.id}", class: 'btn-robodou btn-abort-lesson', data: {confirm: "确认取消报名#{a.name}吗?", method: :post, type: 'script', remote: true} do %>
                             取消报名
                         <% end %>
                       </div>
