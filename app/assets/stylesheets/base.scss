@@ -176,6 +176,7 @@ a:hover {
 
 #banner #banner-slider {
   height: 420px;
+  overflow: hidden;
 }
 
 #comps {
@@ -872,4 +873,17 @@ legend {
 a.btn-robodou{
   display: inline-block;
   padding: 4px 8px;
+}
+
+.carousel-inner img{
+  width: 1090px;
+}
+
+#select-area{
+  line-height: 18px;
+  font-size: 12px;
+}
+
+select{
+  color: #444;
 }
