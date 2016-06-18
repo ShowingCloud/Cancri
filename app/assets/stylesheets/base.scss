@@ -247,6 +247,7 @@ a:hover {
   background-color: #333e4e;
   position: relative;
   margin-bottom: 30px;
+  overflow: hidden;
 }
 
 .lesson-item:last-child {
@@ -889,7 +890,7 @@ select {
   color: #444;
 }
 
-.form-group #rucaptcha-image-style{
+.form-group #rucaptcha-image-style {
   top: 0;
 }
 
@@ -897,6 +898,26 @@ select {
   position: relative;
 }
 
-.special-captcha{
+.special-captcha {
   width: 50%;
+}
+
+.icon-arrow-left,.icon-arrow-right{
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale
+}
+
+.icon-arrow-left:before {
+  content: "\e251";
+}
+
+.icon-arrow-right:before{
+  content: "\e250";
 }

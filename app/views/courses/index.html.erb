@@ -12,7 +12,10 @@
                     <div class="title">
                       <%= c.name %>
                     </div>
-                    <a href="<%= "/courses/#{c.id}" %>" class="btn-robodou show-lesson">查看详情</a>
+                    <p>招募人数：<%= c.num %> </p>
+
+                    <p>剩余名额：<%= c.num-c.apply_count %></p>
+                    <a href="<%= "/courses/#{c.id}" %>" class="pull-right btn-robodou show-lesson">查看详情</a>
                   </div>
               <% end %>
             </div>
