@@ -70,8 +70,8 @@ $(function () {
     });
 
     // 检测用户名是否存在
-    $('#sing_up_nickname,#user_nickname').blur(function () {
-        var nickname = trim($('#sing_up_nickname,#user_nickname').val());
+    $('#sing_up_nickname,#user_nickname,#register-username').blur(function () {
+        var nickname = trim($('#sing_up_nickname,#user_nickname,#register-username').val());
         if (nickname) {
             $.ajax({
                 url: '/accounts/register_nickname_exists',
@@ -79,7 +79,8 @@ $(function () {
                 data: {"nickname": nickname},
                 success: function (data) {
                     if (data) {
-                        alert(nickname + '已经存在,请更改用户名')
+                        alert(nickname + '已经存在,请更改用户名');
+
                     }
                 }
             });

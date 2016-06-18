@@ -111,7 +111,7 @@
     <div class="content">
       <div class="screening">
         <label for="selected-dis">区县</label>
-        <select name="district" id="selected-dis" disabled>
+        <select name="district" id="selected-dis">
           <option>请选择区县</option>
           <% District.all.each do |d| %>
               <option value="<%= d.id %>"><%= d.name %></option>
