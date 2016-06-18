@@ -79,7 +79,7 @@ $(function () {
                 alert('请填写正确的姓名！');
                 return;
             }
-            var district = form.find('#user-info-district').val();
+            var district = form.find('#district-select').val();
             if (district == 0 || !district) {
                 alert('请选择区县！');
                 return;
