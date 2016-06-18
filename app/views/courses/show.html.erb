@@ -57,7 +57,7 @@
                   <div class="input-row">
                     <label for="user-info-school" class="control-label"><i class="glyphicon glyphicon-education"></i>
                       学校:</label>
-                    <% if @user_info.school_name.present? %>
+                    <% if @user_info.school_id %>
                         <button class="choice-school btn-robodou">更改学校</button>
                         <span class="selected-school"><%= @user_info.school_name %></span>
                     <% else %>
