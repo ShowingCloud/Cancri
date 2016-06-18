@@ -6,7 +6,7 @@ class CoursesController < ApplicationController
     if cookies[:area]
       course = course.where(district_id: 9)
     end
-    @courses = course.select(:id, :name, :num, :apply_count).page(params[:page]).per(params[:per])
+    @courses = course.page(params[:page]).per(params[:per])
   end
 
   def show
