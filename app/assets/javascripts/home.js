@@ -97,7 +97,7 @@ $(function () {
                 return;
             }
 
-            var cd = $('.title').attr('data-id');
+            var cd = $('#lesson-id').attr('data-id');
 
             var option = {
                 url: '/courses/apply',
