@@ -16,6 +16,7 @@ class User < ApplicationRecord
   validates :nickname, presence: true, uniqueness: true, length: {in: 2..10}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含中文、数字、字母、下划线'}
   validates :password, length: {in: 6..128}, format: {with: /\A[\x21-\x7e]+\Z/i, message: '密码只能包含数字、字母、特殊字符'}, allow_nil: true
   validates :password, presence: true, on: :create
+  validates :email, uniqueness: true, allow_nil: true, format: {with: /\A[^@\s]+@[^@\s]+\z/, message: '已被使用'}
 
 
   def email_changed?
