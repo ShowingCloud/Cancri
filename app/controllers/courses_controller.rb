@@ -19,7 +19,7 @@ class CoursesController < ApplicationController
     end
     @course = course
     if current_user.present?
-      user_info = UserProfile.left_joins(:school, :district).where(user_id: current_user.id).select(:grade, :username, :district_id, :school_id, 'districts.name as district_name', 'schools.name as school_name')
+      user_info = UserProfile.where(user_id: current_user.id).left_joins(:school, :district).select(:grade, :username, :district_id, :school_id, 'districts.name as district_name', 'schools.name as school_name')
       if user_info.present?
         user_info = user_info.to_a.first
       else
@@ -40,15 +40,17 @@ class CoursesController < ApplicationController
       if has_apply
         result=[false, '您已经报名该比赛']
       else
-        if current_user.user_profile.update_attributes!(username: username, grade: grade, district_id: district_id, school_id: school_id)
-          c_u = CourseUserShip.create!(user_id: current_user.id, course_id: cd, school_id: school_id, grade: grade)
-          if c_u.save
-            result = [true, '报名成功']
-          else
-            result = [false, '报名失败']
-          end
+        u_r = UserProfile.where(user_id: current_user.id).take
+        if u_r.present?
+          u_r.update_attributes(username: username, grade: grade, district_id: district_id, school_id: school_id)
         else
-          result = [false, '信息填写不规范']
+          UserProfile.create!(user_id: current_user.id, username: username, grade: grade, district_id: district_id, school_id: school_id)
+        end
+        c_u = CourseUserShip.create!(user_id: current_user.id, course_id: cd, school_id: school_id, grade: grade)
+        if c_u.save
+          result = [true, '报名成功']
+        else
+          result = [false, '报名失败']
         end
       end
     else
