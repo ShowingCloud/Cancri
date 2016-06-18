@@ -19,8 +19,10 @@ class CoursesController < ApplicationController
     end
     @course = course
     if current_user.present?
-      user_info = UserProfile.left_joins(:school, :district).where(user_id: current_user.id).select(:grade, :username, :district_id, :school_id, 'districts.name as district_name', 'schools.name as school_name').first
-      unless @user_info.present?
+      user_info = UserProfile.left_joins(:school, :district).where(user_id: current_user.id).select(:grade, :username, :district_id, :school_id, 'districts.name as district_name', 'schools.name as school_name')
+      if user_info.present?
+        user_info = user_info.first
+      else
         user_info = current_user.build_user_profile
       end
       @user_info = user_info
