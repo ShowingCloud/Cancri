@@ -15,6 +15,9 @@
               <div class="passport-sub-box rucaptcha-special">
                 <i class="glyphicon glyphicon-check"></i>
                 <%= rucaptcha_input_tag(class: 'rucaptcha-input-sepcial input-robodou', placeholder: '请输入校验码') %>
+                <% if request.post? && resource.status==1000 %>
+                    <span class="error-notice hide">验证码不正确</span>
+                <% end %>
                 <span class="refresh-captcha">
                   <%= rucaptcha_image_tag(alt: '校验码', id: 'rucaptcha-image-style') %>
                 </span>

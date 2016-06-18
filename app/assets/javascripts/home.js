@@ -157,6 +157,15 @@ $(function () {
         $('#change-avatar').modal('show');
     });
 
+    $('.un-do').on('click', function (event) {
+        event.preventDefault();
+        alert_r('功能开发中，敬请期待！');
+    });
+
+    if ($('.error-notice').length > 0) {
+        alert_r($('.error-notice').text());
+    }
+
 
     function school_handle(_target, dis, cb) {
         var _modals = $('#school-modal');
