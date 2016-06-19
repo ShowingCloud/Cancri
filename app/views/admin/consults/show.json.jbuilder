@@ -1,1 +1,0 @@
-json.extract! @consult, :created_at, :updated_at
