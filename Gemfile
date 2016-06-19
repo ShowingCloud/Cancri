@@ -1,16 +1,11 @@
-if ENV['USE_OFFICE_SOURCE']
-  source 'https://rubygems.org'
-else
-  source 'https://gems.ruby-china.org'
-end
+source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '>= 5.0.0.beta2', '< 5.1'
+gem 'rails', '>= 5.0.0.rc1', '< 5.1'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use Puma as the app server
-gem 'puma'
-gem 'mysql2', '~> 0.4.2'
+gem 'puma', '~> 3.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -22,12 +17,12 @@ gem 'coffee-rails', '~> 4.1.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-gem 'turbolinks'
+# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
+gem 'turbolinks', '~> 5.x'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
-# Action Cable dependencies for the Redis adapter
-gem 'redis', '~> 3.0'
+# Use Redis adapter to run Action Cable in production
+# gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -36,55 +31,30 @@ gem 'redis', '~> 3.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
+  gem 'byebug', platform: :mri
 end
 
 group :development do
-  # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 3.0'
+  # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
+  gem 'web-console'
+  gem 'listen', '~> 3.0.5'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'quiet_assets'
-  gem 'better_errors'
+  gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-# gem 'refinerycms', git: 'https://github.com/refinery/refinerycms', branch: 'master'
-# gem 'refinerycms-acts-as-indexed', '~> 2.0', '>= 2.0.1'
-# gem 'refinerycms-wymeditor', '~> 1.0', '>= 1.0.6'
-# gem 'refinerycms-authentication-devise', '~> 1.0', '>= 1.0.4'
-gem 'devise'
-gem 'simple_form'
-gem 'settingslogic'
-gem 'rucaptcha', '~> 0.3.2'
-
-gem 'carrierwave' #, github: 'carrierwaveuploader/carrierwave'
-gem 'mini_magick'
-gem 'rails-admin-scaffold'
-gem 'to_xls-rails'
-gem 'kaminari', github: 'amatsuda/kaminari'
-gem 'virtus'
-gem 'grape-swagger'
-gem 'roo'
-
-gem 'grape'
-gem 'active_model_serializers', '0.9.2'
-gem 'grape-active_model_serializers'
-gem 'rack-cors', require: 'rack/cors'
-gem 'doorkeeper'
-gem 'omniauth'
-gem 'oauth'
-gem 'oauth2'
-gem 'omniauth-oauth2'
-gem 'sinatra', github: 'sinatra/sinatra'
-gem 'rack-contrib', '~> 1.2.0'
-gem 'soulmate', :require => 'soulmate/server'
-gem 'message_bus', '~>1.0.16'
-gem 'rails_kindeditor', github: 'javyliu/rails_kindeditor'
 gem 'thin'
-gem 'rack', github: 'kikyous/rack'
-gem 'grape-kaminari'
-gem 'carrierwave-video'
-
 gem 'yaml_db', github: 'jetthoughts/yaml_db'
+gem 'mysql2', '~> 0.4.2'
+gem 'devise'
+gem 'settingslogic'
+gem 'simple_form'
+gem 'virtus'
+gem 'rucaptcha'
+gem 'message_bus'
+gem 'carrierwave'
+gem 'mini_magick'
+gem 'kaminari', github: 'amatsuda/kaminari'
+# gem 'rails_kindeditor'

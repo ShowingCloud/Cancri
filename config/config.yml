@@ -1,7 +1,4 @@
 defaults: &defaults
-  site_name: 'Robodou'
-  email_username: 'robodou@robodou.cn'
-  email_form: 'DouMu<robodou@robodou.cn>'
 
 development:
   <<: *defaults

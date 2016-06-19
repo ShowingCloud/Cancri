@@ -1,236 +1,26 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
   <div class="container">
     <div class="row">
-      <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
-        <div class="sec-t">
-          <%= render 'user/menu' %>
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
         </div>
-        <div class="sec-c">
-          <div class="content">
-            <div class="message-panel">
-              <% if @notification.present? %>
-                  <% unless @notification.read %>
-                      <% @notification.update_attributes(read: 1) %>
-                  <% end %>
-                  <!-- 友情提示 -->
-
-                  <% if @notification.message_type==0 %>
-                      <%= @notification.content.html_safe %>
-                  <% end %>
-
-                  <!-- 队长邀请队员 -->
-                  <% if @notification.message_type==1 %>
-                      <%= @notification.content %>
-                      <% if @t_u.status %>
-                          <label class="label label-default">您已经是该队成员</label>
-                      <% else %>
-                          <% if @t_u.apply_end_time > Time.now %>
-                              <span class="agree-leader-invite btn btn-xs btn-primary">接受邀请</span>
-
-                              <div class="hide add-agree-invited-info">
-                                <div class="invite-panel">
-                                  <form id="team-confirm-form">
-                                    <div class="confirm-t" data-src="<%= image_path('homepage/info-t-bk.png') %>">
-                                      确认个人信息
-                                    </div>
-                                    <input type="hidden" name="td" value="<%= @notification.team_id %>"/>
-                                    <input type="hidden" name="ed" value="<%= @t_u.event_id  %>"/>
-                                    <div class="confirm-c">
-                                      <div class="input-row">
-                                        <div class="input-t">
-                                          <i class="glyphicon glyphicon-user"></i>
-                                          姓&nbsp;&nbsp;&nbsp;&nbsp;名
-                                        </div>
-                                        <div class="input-c">
-                                          <input class="input-b" type="text" name="username" value="<%= current_user.username %>"/>
-                                        </div>
-                                      </div>
-                                      <div class="input-row">
-                                        <div class="input-t">
-                                          <i class="glyphicon glyphicon-tag"></i>
-                                          学籍号
-                                        </div>
-                                        <div class="input-c">
-                                          <input class="input-b" type="text" name="student_code" value=""/>
-                                        </div>
-                                      </div>
-                                      <div class="input-row">
-                                        <div class="input-t">
-                                          <i class="glyphicon glyphicon-tag"></i>
-                                          性&nbsp;&nbsp;&nbsp;&nbsp;别
-                                        </div>
-                                        <div class="input-c">
-                                          <label class="radio-b"><input type="radio" name="gender" value="1"/>男</label>
-                                          <label class="radio-b"><input type="radio" name="gender" value="2"/>女</label>
-                                        </div>
-                                      </div>
-                                      <div class="input-row">
-                                        <div class="input-t">
-                                          <i class="glyphicon glyphicon-calendar"></i>
-                                          生&nbsp;&nbsp;&nbsp;&nbsp;日
-                                        </div>
-                                        <div class="input-c">
-                                          <input class="input-b" type="date" name="birthday"/>
-                                        </div>
-                                      </div>
-                                      <div class="input-row">
-                                        <div class="input-t">
-                                          <i class="glyphicon glyphicon-globe"></i>
-                                          所属组别
-                                        </div>
-                                        <div class="input-c">
-                                          <select data-select-target="group" class="group-choice">
-                                            <option value="0">选择组别</option>
-                                            <option value="1">小学</option>
-                                            <option value="2">初中</option>
-                                            <option value="3">高中</option>
-                                          </select>
-                                          <input type="hidden" name="group"/>
-                                        </div>
-                                      </div>
-                                      <div class="input-row hide idc-row">
-                                        <div class="input-t">
-                                          <i class="glyphicon glyphicon-credit-card"></i>
-                                          身份证
-                                        </div>
-                                        <div class="input-c">
-                                          <input class="input-b" type="text" name="identity_card"/>
-                                        </div>
-                                      </div>
-                                      <div class="input-row">
-                                        <div class="input-t">
-                                          <i class="glyphicon glyphicon-globe"></i>
-                                          区&nbsp;&nbsp;&nbsp;&nbsp;县
-                                        </div>
-                                        <div class="input-c">
-                                          <select data-select-target="district">
-                                            <option value="0">选择区县</option>
-                                            <% District.all.each do |d| %>
-                                                <option value="<%= d.id %>"><%= d.name %></option>
-                                            <% end %>
-                                          </select>
-                                          <input type="hidden" name="district"/>
-                                        </div>
-                                      </div>
-                                      <div class="input-row">
-                                        <div class="input-t">
-                                          <i class="glyphicon glyphicon-tag"></i>
-                                          学&nbsp;&nbsp;&nbsp;&nbsp;校
-                                        </div>
-                                        <div class="input-c school-target">
-                                          <a class="open-school">
-                                            <i class="glyphicon glyphicon-plus"></i>
-                                            选择学校
-                                          </a>
-                                          <br/>
-                                          <a class="add-other-school">没有你的学校？点击添加</a>
-                                        </div>
-                                      </div>
-                                      <div class="input-row">
-                                        <div class="input-t">
-                                          <i class="glyphicon glyphicon-tag"></i>
-                                          年&nbsp;&nbsp;&nbsp;&nbsp;级
-                                        </div>
-                                        <div class="input-c">
-                                          <select data-select-target="grade">
-                                            <option value="0">请选择年级</option>
-                                            <option value="一">一</option>
-                                            <option value="二">二</option>
-                                            <option value="三">三</option>
-                                            <option value="四">四</option>
-                                            <option value="五">五</option>
-                                            <option value="六">六</option>
-                                            <option value="七">七</option>
-                                            <option value="八">八</option>
-                                            <option value="九">九</option>
-                                            <option value="高一">高一</option>
-                                            <option value="高二">高二</option>
-                                            <option value="高三">高三</option>
-                                          </select>
-                                          <input type="hidden" name="grade" value=""/>
-                                        </div>
-                                      </div>
-                                      <div class="input-row">
-                                        <div class="input-t">
-                                          <i class="glyphicon glyphicon-tag"></i>
-                                          班&nbsp;&nbsp;&nbsp;&nbsp;级
-                                        </div>
-                                        <div class="input-c">
-                                          <select data-select-target="bj">
-                                            <option value="0">请选择班级</option>
-                                            <% for n in 1..100 %>
-                                                <option value="<%= n %>"><%= n %></option>
-                                            <% end %>
-                                          </select>
-                                          <input type="hidden" name="bj" value=""/>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="confirm-b">
-                                      <button type="submit" class="apply-submit">提交个人信息</button>
-                                    </div>
-                                  </form>
-                                </div>
-                              </div>
-                          <% else %>
-                              <label class="label label-danger">该比赛已停止报名</label>
-                          <% end %>
-                      <% end %>
-                  <% end %>
-                  <!-- 申请加入队伍 -->
-                  <% if @notification.message_type==2 %>
-                      <%= @notification.content %>
-                      <% if @t_u.present? %>
-                          <% if @t_u.status %>
-                              <label class="label label-danger">申请者已是该队队员</label>
-                          <% else %>
-                              <% if @t_u.apply_end_time > Time.now %>
-                                  <% if @has_agree==2 %>
-                                      <label class="label label-danger">已拒绝申请</label>
-                                  <% elsif @has_agree %>
-                                      <label class="label label-info">已同意申请</label>
-                                  <% else %>
-                                      <%= link_to "#{leader_agree_apply_competitions_path}?tud=#{@t_u.id.to_s}&nd=#{params[:id]}", data: {confirm: '确认同意加入吗?', method: :post}, title: '同意加入', class: 'btn btn-xs btn-primary' do %>
-                                          同意加入
-                                      <% end %>
-                                      <%= link_to "#{leader_agree_apply_competitions_path}?tud=#{@t_u.id.to_s}&nd=#{params[:id]}&reject=1", data: {confirm: '确认拒绝加入吗?', method: :post}, title: '拒绝加入', class: 'btn btn-xs btn-danger' do %>
-                                          拒绝加入
-                                      <% end %>
-                                  <% end %>
-                              <% else %>
-                                  <label class="label label-danger">该比赛已停止报名</label>
-                              <% end %>
-                          <% end %>
-                      <% else %>
-                          <label class="label label-danger">该队伍不存在或已解散</label>
-                      <% end %>
-                  <% end %>
-
-                  <!-- 申请退出队伍 -->
-
-                  <% if @notification.message_type == 3 %>
-                      <%= @notification.content %>
-                      <% if @has_agree %>
-                          <label class="label label-danger">已同意退出</label>
-                      <% else %>
-                          <% if @t_u.apply_end_time > Time.now %>
-                              <%= link_to "#{leader_deal_cancel_team_competitions_path}?tud=#{@notification.t_u_id.to_s}&nd=#{params[:id]}", data: {confirm: '确认同意退出吗?', method: :post}, title: '同意退出', class: 'btn btn-xs btn-primary' do %>
-                                  同意退出
-                              <% end %>
-                          <% else %>
-                              <label class="label label-danger">该比赛已截至报名</label>
-                          <% end %>
-                      <% end %>
-                  <% end %>
-                  <!-- 拒绝/同意申请 -->
-                  <!-- 审核结果 -->
-                  <!-- 比赛通知裁判信息 -->
-              <% else %>
-                  <div class="alert alert-info">
-                    <p> 不是您的消息,无法查看</p>
-                  </div>
-              <% end %>
-            </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @notification.present? %>
+                <% unless @notification.read %>
+                    <% @notification.update_attributes(read: 1) %>
+                <% end %>
+                <% if @notification.message_type == 0 %>
+                    <%= @notification.content %>
+                <% end %>
+            <% else %>
+                <div class="alert alert-info">
+                  <p> 不是您的消息,无法查看</p>
+                </div>
+            <% end %>
           </div>
         </div>
       </div>
@@ -246,40 +36,5 @@
     </div>
   </div>
 </div>
-<!--选择学校-->
-<div id="school-list" class="modal fade">
-  <div id="add-school">
-    <div class="title" data-src="<%= image_path('homepage/info-t-bk.png') %>">
-      选择学校
-    </div>
-    <div class="school-list">
-      <span class="tips">请选择学校</span>
-      <ul class="items">
 
-      </ul>
-    </div>
-    <div class="bottom">
-      <button data-dismiss="modal" class="btn-robodou apply-submit">取消</button>
-    </div>
-  </div>
-</div>
-<!--添加其他学校-->
-<div id="add-other-school" class="modal fade">
-  <div class="modal-panel">
-    <div class="title" data-src="<%= image_path('homepage/info-t-bk.png') %>">
-      添加额外学校
-    </div>
-    <div class="inner">
-      <div class="left">
-        <i class="glyphicon glyphicon-education"></i>
-        学校名称
-      </div>
-      <div class="right">
-        <input type="text" name="other-school"/>
-      </div>
-    </div>
-    <div class="bottom">
-      <button class="btn-robodou apply-submit">确认添加</button>
-    </div>
-  </div>
-</div>
+

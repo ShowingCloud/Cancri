@@ -11,6 +11,7 @@
     <th>姓名</th>
     <th>性别</th>
     <th>级别</th>
+    <th>教师证</th>
     <th>手机</th>
     <th>学校</th>
   </tr>
@@ -21,13 +22,18 @@
         <td><%= th[:username] %></td>
         <td><%= th[:gender] == 1 ? '男' : '女' %></td>
         <td>
-          <% if th[:role]=='1' %>
+          <% if th[:role]==1 %>
               <label class="label label-danger">市级</label>
-          <% elsif th[:role]=='2' %>
+          <% elsif th[:role]==2 %>
               <label class="label label-warning">区级</label>
-          <% elsif th[:role]=='3' %>
+          <% elsif th[:role]==3 %>
               <label class="label label-info">校级</label>
           <% end %>
+        </td>
+        <td class="ace-thumbnails">
+          <a href="<%= th[:certificate] %>" title="<%= th[:username] %>" data-rel="colorbox">
+            教师证
+          </a>
         </td>
         <td><%= th[:mobile] %></td>
         <td><%= th[:school] %></td>

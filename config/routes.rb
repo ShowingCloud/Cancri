@@ -1,70 +1,31 @@
 Rails.application.routes.draw do
 
   root to: 'home#index'
-  resources :competitions, only: [:index, :show] do
-    collection do
-      get :apply_event
-      get :invite
-      get :search_team
-      get :search_user
-      post :invite
-      post :update_apply_info
-      post :leader_create_team
-      post :leader_invite_player
-      post :apply_join_team
-      post :leader_agree_apply
-      post :delete_team
-      post :leader_delete_player
-      post :player_cancel_join
-      post :leader_deal_cancel_team
-      post :already_apply
-    end
-  end
-  resource :chats
-  resources :news
-  get '/honors' => 'honors#index'
-  get '/demeanor' => 'demeanor#index'
-  get '/demeanor/:id' => 'demeanor#show'
-  get '/activities/apply_activity' => 'activities#apply_activity'
-  resources :activities do
-    collection do
-      post :apply_activity
-      get :apply_require
-    end
-  end
-  resources :volunteers do
-    collection do
-      post :apply_comp_volunteer
-      get :apply_require
-    end
-  end
-  get '/downloads' => 'downloads#index'
-  get '/scenes' => 'scenes#index'
-  resource :notifications
-
-
   devise_for :users, path: 'account', controllers: {
-                       sessions: 'users/sessions',
-                       registrations: 'users/registrations',
-                       passwords: 'users/passwords',
-                       confirmations: 'users/confirmations'}
+      sessions: 'users/sessions', registrations: 'users/registrations',
+      confirmations: 'users/confirmations',
+      passwords: 'users/passwords'
+  } #, path_names: {sign_in: 'login'}
   mount RuCaptcha::Engine => '/rucaptcha'
-
-  # ios Provider
-  match '/auth/login/authorize' => 'auth#authorize', via: :all
-  match '/auth/login/access_token' => 'auth#access_token', via: :all
-  match '/auth/login/user' => 'auth#user', via: :all
-  match '/oauth/token' => 'auth#access_token', via: :all
-
   resources :accounts, only: [:new, :create, :destroy] do
     collection do
+      get :register
+      post :register_post
       post :validate_captcha
+      get :forget_password
       get :reset_password
-      post :send_code
       post :reset_password_post
+      post :send_code
+      post :register_email_exists
+      post :register_mobile_exists
+      post :register_nickname_exists
     end
   end
-  resources :test
+  get 'courses/index'
+  post 'courses/apply' => 'courses#apply'
+  post 'courses/cancel' => 'courses#cancel_apply'
+  resources :courses
+  resources :notifications
 
   # -----------------------------------------------------------
   # Admin
@@ -87,6 +48,9 @@ Rails.application.routes.draw do
     resources :schedules
     resources :roles
     resources :districts
+    resources :courses
+    get '/courses/apply_info/:id' => 'courses#apply_info'
+
 
     resources :competitions do
       collection do
@@ -95,21 +59,24 @@ Rails.application.routes.draw do
         post :delete_event_worker
       end
     end
-    get '/competitions/events/:id' => 'competitions#events'
-    get '/competitions/workers/:id' => 'competitions#workers'
+    # get '/competitions/events/:id' => 'competitions#events'
+    # get '/competitions/workers/:id' => 'competitions#workers'
     get '/checks/teachers' => 'checks#teachers'
     get '/checks/teacher_list' => 'checks#teacher_list'
-    get '/checks/referee_list' => 'checks#referee_list'
-    get '/checks/referees' => 'checks#referees'
+    get '/checks/hackers' => 'checks#hackers'
+    get '/checks/hacker_list' => 'checks#hacker_list'
+    # get '/checks/referee_list' => 'checks#referee_list'
+    # get '/checks/referees' => 'checks#referees'
     get '/checks/schools' => 'checks#schools'
     get '/checks/school_list' => 'checks#school_list'
-    get '/checks/points' => 'checks#points'
-    get '/checks/point_list' => 'checks#point_list'
-    post '/checks/audit_point' => 'checks#audit_point'
+    # get '/checks/points' => 'checks#points'
+    # get '/checks/point_list' => 'checks#point_list'
+    # post '/checks/audit_point' => 'checks#audit_point'
     post '/checks/review_teacher' => 'checks#review_teacher'
-    post '/checks/review_referee' => 'checks#review_referee'
-    post '/checks/review_school' => 'checks#review_school'
-
+    post '/checks/review_hacker' => 'checks#review_hacker'
+    # post '/checks/review_referee' => 'checks#review_referee'
+    # post '/checks/review_school' => 'checks#review_school'
+    #
     resources :competition_schedules do
       collection do
         post :update_cs
@@ -142,33 +109,19 @@ Rails.application.routes.draw do
     resources :videos
     resources :consults
   end
-  namespace :kindeditor do
-    post '/upload' => 'assets#create'
-    get '/filemanager' => 'assets#list'
-  end
-
-
-  mount Soulmate::Server, :at => '/sm'
-
-  # use_doorkeeper do
-  #   controllers applications: 'oauth/applications', authorized_applications: 'oauth/authorized_applications'
-  # end
-
-  # -----------------------------------------------------------
-  # User
-  # -----------------------------------------------------------
 
   get 'user' => redirect('/user/preview')
 
   match 'user/preview' => 'user#preview', as: 'user_preview', via: [:get, :post]
-  match 'user/email' => 'user#email', as: 'user_email', via: [:get, :post]
   match 'user/profile' => 'user#profile', as: 'user_profile', via: [:get, :post]
+  match 'user/family_hacker' => 'user#family_hacker', as: 'user_family_hacker', via: [:get, :post]
   match 'user/update_avatar' => 'user#update_avatar', as: 'user_update_avatar', via: [:post]
   match 'user/remove_avatar' => 'user#remove_avatar', as: 'user_remove_avatar', via: [:post]
   match 'user/passwd' => 'user#passwd', as: 'user_passwd', via: [:get, :post]
+  match 'user/mobile' => 'user#mobile', as: 'user_mobile', via: [:get, :post]
+  match 'user/email' => 'user#email', as: 'user_email', via: [:get, :post]
   match 'user/reset_mobile' => 'user#reset_mobile', as: 'user_reset_mobile', via: [:get, :post]
   match 'user/reset_email' => 'user#reset_email', as: 'user_reset_email', via: [:get, :post]
-  match 'user/mobile' => 'user#mobile', as: 'user_mobile', via: [:get, :post]
   match 'user/send_email_code' => 'user#send_email_code', as: 'user_send_email_code', via: [:post]
   match 'user/send_add_mobile_code' => 'user#send_add_mobile_code', as: 'user_send_add_mobile_code', via: [:post]
   match 'user/comp' => 'user#comp', as: 'user_comp', via: [:get]
@@ -177,18 +130,9 @@ Rails.application.routes.draw do
   match 'user/add_point' => 'user#add_point', as: 'user_add_point', via: [:get, :post]
   match 'user/notification' => 'user#notification', as: 'user_notification', via: [:get]
   get '/user/notify' => 'user#notify_show'
-  match '/user/agree_invite_info' => 'user#agree_invite_info', via: [:post]
   match '/user/add_school' => 'user#add_school', as: 'user_add_school', via: [:post]
-  match '/user/check_email_exists' => 'user#check_email_exists', as: 'user_check_email_exists', via: [:post]
-  match '/user/check_mobile_exists' => 'user#check_mobile_exists', as: 'user_check_mobile_exists', via: [:post]
-  match '/user/check_email_mobile' => 'user#check_email_mobile', as: 'user_check_email_mobile', via: [:post]
-
-  mount API::Dispatch => '/'
-
-
-  match '*path', via: :all, to: 'home#error_404'
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-
-  # Serve websocket cable requests in-process
+  match '/user/apply' => 'user#apply', as: 'user_apply', via: [:get]
+  match '/user/cancel_apply' => 'user#cancel_apply', as: 'user_cancel_apply', via: [:post, :get]
+  get '/user/get_school' => 'user#get_school', as: 'user_get_school'
   # mount ActionCable.server => '/cable'
 end

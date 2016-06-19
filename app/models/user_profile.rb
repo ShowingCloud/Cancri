@@ -1,24 +1,11 @@
 class UserProfile < ApplicationRecord
-  belongs_to :user, :dependent => :destroy
-  has_many :invites, through: :user
-  has_many :comp_workers, through: :user
+  belongs_to :user
+  belongs_to :school, optional: true
+  belongs_to :district, optional: true
   has_many :user_roles, through: :user
-  has_many :competitions, through: :comp_workers
-  belongs_to :schools, class_name: School, foreign_key: :school
-  belongs_to :user_district, class_name: District, foreign_key: :district
-  mount_uploader :certificate, CertificateUploader
   GENDER = {male: 1, female: 2}
-  after_save :user_info_validate
+  mount_uploader :certificate, CoverUploader
 
-  def user_info_validate
-    if self.school.present? & self.grade.present? & self.bj.present? & self.gender.present? & self.username.present?
-      if self.user.validate_status == '0'
-        self.user.update_attributes(validate_status: 1)
-      end
-    else
-      if self.user.validate_status == '1'
-        self.user.update_attributes(validate_status: 0)
-      end
-    end
-  end
+  attr_accessor :desc
+  attr_accessor :coverqq
 end

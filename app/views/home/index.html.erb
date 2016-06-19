@@ -1,106 +1,57 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/bk.jpg') %>">
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
   <div class="container">
     <div class="row">
-      <div id="banner" class="col-sm-9 col-xs-12">
-        <div class="banner-inner">
-          <div class="slider" data-src="<%= image_path('homepage/slider-border.png') %>">
-            <div class="slider-win">
-              <ul class="items">
-                <li class="item"><a href="<%= competitions_path %>/1"><img
-                data-src="<%= image_path('homepage/slider-02.jpg') %>"/></a></li>
-                <li class="item"><a href="<%= competitions_path %>/1"><img
-                data-src="<%= image_path('homepage/slider-02.jpg') %>"/></a></li>
-                <li class="item"><a href="<%= competitions_path %>/1"><img
-                data-src="<%= image_path('homepage/slider-02.jpg') %>"/></a></li>
-              </ul>
-              <div class="slider-controller">
-                <span class="slider-prev"></span>
-                <span class="slider-next"></span>
-              </div>
+      <div id="banner">
+        <div class="carousel slider" id="banner-slider" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#banner-slider" data-slide-to="0" class="active"></li>
+            <li data-target="#banner-slider" data-slide-to="1"></li>
+            <li data-target="#banner-slider" data-slide-to="2"></li>
+          </ol>
+          <div class="carousel-inner" role="listbox">
+            <div class="item active">
+              <img src="<%= image_path('banner01.png') %>" alt="...">
+            </div>
+            <div class="item">
+              <img src="<%= image_path('banner01.png') %>" alt="...">
+            </div>
+            <div class="item">
+              <img src="<%= image_path('banner01.png') %>" alt="...">
             </div>
           </div>
-          <div class="intro" data-src="<%= image_path('homepage/intro-bk.png') %>">
-            <div class="sec-t">
-              2016 机械奥运
-            </div>
-            <div class="sec-c">
-              机械奥运活动将科技创新实践的成果交流以体育竞技的形式予以呈现，以“更快、更高、更强”的奥运精神激励青少年不断超越自我。
-              <br/>
-              <a class="more-link" href="<%= competitions_path %>/1">
-                <i class="glyphicon glyphicon-triangle-right"></i>&nbsp;更多
-              </a>
-            </div>
-          </div>
+          <a class="left carousel-control" href="#banner-slider" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#banner-slider" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
         </div>
       </div>
-      <div id="sidebar" class="hidden-xs">
-        <div class="sidebar-inner">
-          <div class="sec-t" data-src="<%= image_path('homepage/sidebar-title-bk.png') %>">
-            近期比赛&活动
-          </div>
-          <div class="sec-c">
-            <ul class="items">
-              <% @recent_activities.each do |a| %>
-                  <li class="item">
-                    <a class="item-img" href="<%= "/activities/#{a.id}" %>" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
-                      <img data-src="<%= image_path('homepage/sidebar-item01.png') %>" src="" alt=""/>
-                    </a>
-                    <a class="item-link" href="<%= "/activities/#{a.id}" %>">
-                      <%= a.name %>
-                    </a>
-                  </li>
-              <% end %>
-              <li class="item">
-                <a class="item-img" href="<%= competitions_path %>/1" data-src="<%= image_path('homepage/sidebar-item-bk.png') %>">
-                  <img data-src="<%= image_path('homepage/sidebar-item02.jpg') %>" src="" alt=""/>
-                </a>
-                <a class="item-link" href="<%= competitions_path %>/1">
-                  2016机械奥运
-                </a>
-              </li>
-            </ul>
+      <div id="comps">
+        <div class="col-xs-12 title">
+          近期比赛
+        </div>
+        <div class="col-sm-4 col-xs-12">
+          <div class="comp">
+            <img src="" alt="">
+
+            <p>2016机械奥运</p>
           </div>
         </div>
-      </div>
-      <div id="board" class="col-sm-9 col-xs-12">
-        <div class="board-inner">
-          <div class="row">
-            <div class="col-sm-4">
-              <a href="/honors">
-              <div class="board-item" data-src="<%= image_path('homepage/board-bk.png') %>">
-                <div class="sec-t">
-                  个人积分
-                </div>
-                <div class="sec-c">
-                  敬请期待
-                </div>
-              </div>
-              </a>
-            </div>
-            <div class="col-sm-4">
-              <a href="/honors">
-                <div class="board-item" data-src="<%= image_path('homepage/board-bk.png') %>">
-                <div class="sec-t">
-                  学校积分
-                </div>
-                <div class="sec-c">
-                  敬请期待
-                </div>
-              </div>
-              </a>
-            </div>
-            <div class="col-sm-4">
-              <a href="/honors">
-              <div class="board-item" data-src="<%= image_path('homepage/board-bk.png') %>">
-                <div class="sec-t">
-                  老师积分
-                </div>
-                <div class="sec-c">
-                  敬请期待
-                </div>
-              </div>
-              </a>
-            </div>
+        <div class="col-sm-4 col-xs-12">
+          <div class="comp">
+            <img src="" alt="">
+
+            <p>2016机械奥运</p>
+          </div>
+        </div>
+        <div class="col-sm-4 col-xs-12">
+          <div class="comp">
+            <img src="" alt="">
+
+            <p>2016机械奥运</p>
           </div>
         </div>
       </div>

@@ -14,7 +14,11 @@ class Users::SessionsController < Devise::SessionsController
     sign_in(resource_name, resource)
     current_user.update_attribute(:private_token, "#{SecureRandom.uuid.gsub('-', '')}")
     yield resource if block_given?
-    respond_with resource, location: after_sign_in_path_for(resource)
+    if params[:user]['return_url'].present?
+      redirect_to params[:user]['return_url']
+    else
+      respond_with resource, location: after_sign_in_path_for(resource)
+    end
   end
 
 # DELETE /resource/sign_out

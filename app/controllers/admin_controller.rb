@@ -3,8 +3,9 @@ class AdminController < ActionController::Base
 
   def index
     @all_user_num = User.count
-    @review_th_num = UserRole.where(role_id: 1).where('status is NULL').count
-    @review_re_num = CompWorker.where('status is NULL').count
+    @review_th_num = UserRole.where(role_id: 1, status: 0).count
+    @review_fh_num = UserRole.where(role_id: 2, status: 0).count
+    # @review_re_num = CompWorker.where('status is NULL').count
     @review_sc_num = School.where(user_add: 1).where('audit is NULL').count
   end
 
@@ -12,7 +13,6 @@ class AdminController < ActionController::Base
 
   def set_current_admin
     begin
-      # access_token 验证模式
       @current_admin ||= Admin.authenticated_access_token(cookies[:access_token])
     rescue ActiveRecord::RecordNotFound
       nil

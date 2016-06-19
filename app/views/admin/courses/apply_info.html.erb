@@ -1,0 +1,38 @@
+<h1 class="page-header">
+  <%= @course.name %>--报名名单
+</h1>
+
+<% if @apply_info.present? %>
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+      <tr>
+        <th>姓名</th>
+        <th>手机</th>
+        <th>区县</th>
+        <th>学校</th>
+        <th>年级</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @apply_info.each do |c| %>
+          <tr>
+            <td><%= c.username %></td>
+            <td><%= c.mobile %></td>
+            <td><%= c.district_name %></td>
+            <td><%= c.school_name %></td>
+            <td><%= c.grade %></td>
+
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <nav>
+      <%= paginate @apply_info %>
+    </nav>
+<% else %>
+    <div class="alert alert-info">暂时还没有报名学生</div>
+<% end %>
+
+

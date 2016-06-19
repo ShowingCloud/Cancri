@@ -13,6 +13,6 @@
 //= require admin/admin
 //= require admin/chosen.jquery.min
 //= require admin/jquery.nestable.min
-//= require kindeditor
 //= require bootstrap-dialog
 //= require admin/jquery.colorbox-min
+

@@ -1,9 +1,11 @@
 <h1 class="page-header">
   显示<%= t('activerecord.models.organizer') %>
   <small class="pull-right">
+    <a href="<%= new_admin_organizer_path(@organizer) %>" title="新增<%= t('activerecord.models.organizer') %>" class="btn btn-default">
+      <i class="icon-plus icon-only"></i></a>
     <a href="<%= edit_admin_organizer_path(@organizer) %>" title="编辑" class="btn btn-default">
       <i class="icon-edit icon-only"></i></a>
-    <a href="<%= admin_organizers_path %>" title="列表" class="btn btn-default">
+    <a href="<%= admin_organizers_path %>" title="<%= t('activerecord.models.organizer') %>列表" class="btn btn-default">
       <i class="icon-list icon-only"></i></a>
   </small>
 </h1>

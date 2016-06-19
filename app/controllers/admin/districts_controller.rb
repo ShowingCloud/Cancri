@@ -60,7 +60,7 @@ class Admin::DistrictsController < AdminController
   def destroy
     @district.destroy
     respond_to do |format|
-      format.html { redirect_to admin_districts_url, notice: '区县删除成功!' }
+      format.html { redirect_to admin_districts_url, notice: '删除成功!' }
       format.json { head :no_content }
     end
   end

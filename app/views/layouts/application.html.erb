@@ -2,45 +2,49 @@
 <html>
 <head>
   <%= render_page_title %>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <link rel="icon" href="<%= asset_path('icon.png') %>"/>
   <%= csrf_meta_tags %>
-  <%= action_cable_meta_tag %>
+  <link rel="icon" href="<%= asset_path('icon.png') %>"/>
+  <%= javascript_include_tag 'jquery_cookie', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
 
-  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => false %>
 </head>
 
 <body>
-
-<div id="top" data-src="<%= image_path('homepage/top-bk.png') %>">
+<div id="top" data-src="<%= image_path('top.png') %>">
   <div class="container">
     <div class="row">
       <div class="col-xs-12">
         <div class="logo pull-left">
+          <select name="" id="select-area">
+            <option value="1" <%= 'selected' if cookies[:area]=='1' %>>宝山</option>
+            <option value="0">上海</option>
+          </select>
           <a href="/">
-            <img data-src="<%= image_path('homepage/logo.png') %>" src="" alt=""/>
+            <% if cookies[:area]=='1' %>
+                宝山少科站
+            <% else %>
+                <img src="<%= image_path('logo.png') %>" alt=""/>
+            <% end %>
           </a>
         </div>
         <div class="user-info pull-right">
-          <% if user_signed_in? %>
+          <% if current_user %>
               <div class="login-info">
-                <a class="nickname" href="<%= user_preview_path %>"><%= current_user.nickname %></a>
-                <a href="<%= user_notification_path %>">
-                  <i class="glyphicon glyphicon-bell"></i>
-                  <% if current_user.notifications.unread.count > 0 %>
-                      <span class="badge badge-notify-count"><%= current_user.notifications.unread.count %></span>
-                  <% end %>
-                </a>
-                <%= link_to destroy_user_session_path, method: :delete, data: {confirm: '确认退出登录吗?'}, title: '退出登录', class: 'login-out' do %>
-                    <i class="glyphicon glyphicon-off"></i>
-                <% end %>
+                <div class="dropdown">
+                  <button class="btn-robodou" data-toggle="dropdown">
+                    <%= current_user.nickname %> <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-robodou">
+                    <li><a href="<%= user_preview_path %>">个人中心</a></li>
+                    <li><a href="<%= user_notification_path %>">我的消息</a></li>
+                    <li><%= link_to '退出登录', destroy_user_session_path, method: :delete, data: {confirm: '确认退出登录吗?'} %></li>
+                  </ul>
+                </div>
               </div>
           <% else %>
               <div class="un-login">
-                <a class="btn-robodou btn-robodou-login" href="<%= new_user_session_path %>" data-src="<%= image_path('homepage/btn-login-bk.png') %>" data-toggle="modal">登录我的robodou
-                </a>
+                <%= link_to '登录', new_user_session_path, class: 'btn-robodou btn-login-link' %>
+                <%= link_to '注册', new_user_registration_path, class: 'btn-robodou btn-register-link' %>
               </div>
           <% end %>
         </div>
@@ -54,73 +58,48 @@
       <div class="collapse navbar-collapse" id="nav-menu">
         <ul class="nav navbar-nav">
           <li><a href="/">首页</a></li>
-          <li class="news-menu">
-            <a href="<%= news_index_path %>">新闻</a>
-
-            <div class="news-menu-content" data-src="<%= image_path('homepage/news-menu-bk.png') %>">
-              <div class="all-news">
-                <a href="<%= news_index_path %>" class="btn-robodou btn-see-all-news">查看所有新闻</a>
-              </div>
-              <div class="news-tag-list">
-                <div class="item-row">
-                  <div class="item-l">比赛</div>
-                  <div class="item-r">
-                    <a href="<%= news_index_path %>?type=1">报名丨成绩</a>
-                  </div>
-                </div>
-                <div class="item-row">
-                  <div class="item-l">志愿者</div>
-                  <div class="item-r">
-                    <a href="<%= news_index_path %>?type=2">招募</a>
-                  </div>
-                </div>
-                <div class="item-row">
-                  <div class="item-l">活动</div>
-                  <div class="item-r">
-                    <a href="<%= news_index_path %>?type=3">报名</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li><a href="<%= competitions_path %>">比赛</a></li>
-          <li><a href="<%= '/honors' %>">荣誉榜</a></li>
-          <li><a href="<%= activities_path %>">活动</a></li>
-          <li><a href="<%= '/demeanor' %>">选手风采</a></li>
-          <li><a href="<%= '/scenes' %>">我在现场</a></li>
-          <li><a href="<%= volunteers_path %>">志愿者</a></li>
-          <li><a href="<%= '/downloads' %>">下载</a></li>
+          <li><a href="<%= courses_index_path %>">课程</a></li>
+          <li><a class="un-do" href="">比赛</a></li>
+          <li><a class="un-do" href="">荣誉榜</a></li>
+          <li><a class="un-do" href="">活动</a></li>
+          <li><a class="un-do" href="">风采</a></li>
+          <li><a class="un-do" href="">下载</a></li>
         </ul>
       </div>
     </div>
   </div>
 </div>
-<% if flash.present? %>
-    <div id="flash" class="modal fade">
-      <div class="notify-b">
-        <div class="title">
-          通知
-          <i data-dismiss="modal" class="close-flash glyphicon glyphicon-remove-circle"></i>
-        </div>
-        <div class="content">
-          <% flash.each do |f| %>
-              <%= f[1] %>
-          <% end %>
-        </div>
-      </div>
+<div id="bs-pg" data-bk="<%= image_path('bs-pagebk.png') %>"></div>
+
+<div id="flash" class="modal fade">
+  <div class="notify-b">
+    <div class="title">
+      通知
+      <i data-dismiss="modal" class="close-flash glyphicon glyphicon-remove-circle"></i>
     </div>
-<% end %>
-
-
+    <div class="content">
+    </div>
+  </div>
+</div>
 
 
 <%= yield %>
-<%= javascript_include_tag 'application', 'data-turbolinks-track' => false %>
-<% if flash.present? %>
-    <script type="text/javascript">
+
+<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+
+<script type="text/javascript">
+    function alert_r(msg) {
+        $('#flash').find('.content').text(msg);
         $('#flash').modal('show');
-    </script>
-<% end %>
+    }
+    <% if flash.present? %>
+    alert_r(<% flash.each do |f| %>
+            "<%= f[1] %>"
+            <% end %>);
+    <% end %>
+</script>
+
+
 <% if current_user %>
     <script type="text/javascript" charset="utf-8">
 
@@ -178,23 +157,22 @@
                 }
             }
 
-            window.roomid = $('.current-user-room').val();
             MessageBus.start(); // call once at startup
-
             MessageBus.callbackInterval = 500;
             channel = '/channel';
+            window.roomid = "<%= current_user.private_token %>";
             if (window.roomid) {
                 channel = channel + '/' + window.roomid;
             }
             MessageBus.subscribe(channel, function (data) {
+                console.log(data.count);
                 $('.badge-notify-count').text(data.count);
                 notify(data.content);
-                $('#content').val('');
+//          $('#content').val('');
             });
-
-
         })
     </script>
 <% end %>
+
 </body>
 </html>

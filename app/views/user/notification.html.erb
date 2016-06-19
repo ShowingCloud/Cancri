@@ -1,44 +1,44 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
   <div class="container">
     <div class="row">
-      <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
-        <div class="sec-t">
-          <%= render 'user/menu' %>
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
         </div>
-        <div class="sec-c">
-          <div class="content">
-            <div class="message-panel">
-              <% if @notifications.present? %>
-                  <% @notifications.each do |no| %>
-                      <div class="message" data-src="<%= image_path('homepage/message.png') %>">
-                        <div class="msg-time"><%= no.created_at.try(:strftime,'%Y-%m-%d') %> <%= no.read ? '已读' : '未读' %></div>
-                        <div class="msg-inner">
-                          <%= no.content[0..20] %>
-                        </div>
-                        <div class="msg-control">
-                          <a class="btn-robodou btn-msg" href="<%= "/user/notify?id=#{no.id}" %>">查看详情</a>
-                        </div>
-                      </div>
-                  <% end %>
-                  <nav>
-                    <%= paginate @notifications %>
-                  </nav>
-              <% else %>
-                  <p> 暂无消息</p>
-              <% end %>
-            </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @notifications.present? %>
+                <% @notifications.each do |no| %>
+                    <div class="msg-time"><%= no.created_at.try(:strftime, '%Y-%m-%d') %> <%= no.read ? '已读' : '未读' %></div>
+                    <div class="msg-inner">
+                      <%= no.content[0..20] %>
+                    </div>
+                    <div class="msg-control">
+                      <a class="btn-robodou btn-msg" href="<%= "/user/notify?id=#{no.id}" %>">查看详情</a>
+                    </div>
+                <% end %>
+                <nav>
+                  <%= paginate @notifications %>
+                </nav>
+            <% else %>
+                <p> 暂无消息</p>
+            <% end %>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div id="footer">
-    <div class="container">
-      <div class="footer">
-        <a>关于我们</a>
-        <span class="separator"></span>
-        <a>联系我们</a>
       </div>
     </div>
   </div>
 </div>
+<div id="footer">
+  <div class="container">
+    <div class="footer">
+      <a>关于我们</a>
+      <span class="separator"></span>
+      <a>联系我们</a>
+    </div>
+  </div>
+</div>
+</div>
+
+

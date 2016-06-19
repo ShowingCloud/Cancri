@@ -101,6 +101,35 @@ $(function () {
         var audit_status = $('#change-point-list option:selected').val();
         window.location = '/admin/checks/point_list?audit_status=' + audit_status;
     });
+    // 家庭创客审核
+    $('.review-hacker-info-submit').on('click', function () {
+        var status = $(".hacker-apply-status [name='hacker-apply']:checked").val();
+        var id = $(this).attr('data-id');
+
+        if (status) {
+            $.ajax({
+                url: '/admin/checks/review_hacker',
+                type: 'post',
+                data: {
+                    "status": status, "id": id
+                },
+                success: function (data) {
+                    if (data[0]) {
+                        $('#modal-form-' + id).modal('hide');
+                        $("#after-audit-" + id).addClass('hide');
+                        alert(data[1]);
+                    } else {
+                        alert(data[1]);
+                    }
+                }
+            });
+        } else {
+            alert('请选择审核结果');
+        }
+
+        $(".hacker-apply-status [name='hacker-apply']").prop("checked", false);
+    });
+
     // 教师审核
     $(".teacher-apply-status [name='teacher-apply']").on('click', function () {
         var status = $(".teacher-apply-status [name='teacher-apply']:checked").val();

@@ -1,7 +1,13 @@
 class Notification < ApplicationRecord
   belongs_to :user
 
-  # 队长邀请队员 审核结果 拒绝/统一申请 申请加入队伍
+  # 友情提示 0
+  # 队长邀请队员 1
+  # 申请加入队伍 2
+  # 申请退出队伍 3
+  # 拒绝/同意申请 4
+  # 审核结果 5
+  # 比赛通知裁判信息 6
   scope :unread, -> { where(read: false) }
   after_create :realtime_push_to_client
 

@@ -1,0 +1,48 @@
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @apply_info.size>0 %>
+                <% @apply_info.each do |a| %>
+                    <div class="lesson-item" data-id="<%= a.course_id %>">
+                      <div class="title"><%= a.name %></div>
+                      <p>报名时间: <%= a.created_at.strftime('%Y-%m-%d')%></p>
+
+                      <p>上课时间: <%= a.run_time %> </p>
+
+                      <p>上课地点: <%= a.run_address %></p>
+
+                      <div class="btn-row">
+                        <%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.id}", class: 'btn-robodou btn-abort-lesson', data: {confirm: "确认取消报名#{a.name}吗?", method: :post, type: 'script', remote: true} do %>
+                            取消报名
+                        <% end %>
+                      </div>
+                    </div>
+                <% end %>
+            <% else %>
+                您暂时没有报名任何课程。
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+

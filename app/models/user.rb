@@ -2,41 +2,22 @@ class User < ApplicationRecord
   has_one :user_profile, :dependent => :destroy
   has_many :user_roles
   has_many :roles, through: :user_roles
-  has_many :team_user_ships, foreign_key: :user_id
-  has_and_belongs_to_many :teams
-  has_many :invites
-  has_many :access_grants, dependent: :delete_all
   has_many :notifications
-  has_many :comp_workers
-  has_many :event_workers
-  has_many :user_activity_ships
-  has_many :activities, through: :user_activity_ships
-  has_many :consults
-  has_many :user_points
-  accepts_nested_attributes_for :user_profile, allow_destroy: true
-  delegate :username, :gender, to: :user_profile, allow_nil: true
+  has_many :course_user_ships
+  has_many :courses, through: :course_user_ships
   mount_uploader :avatar, AvatarUploader
-
+  accepts_nested_attributes_for :user_profile, allow_destroy: true
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,
-         :timeoutable, :omniauthable, :authentication_keys => [:login]
-  # :confirmable
+         :recoverable, :rememberable, :trackable, :validatable, :confirmable,
+         :timeoutable, :authentication_keys => [:login]
 
   validates :nickname, presence: true, uniqueness: true, length: {in: 2..10}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含中文、数字、字母、下划线'}
-  validates :password, length: {in: 6..30}, format: {with: /\A[\x21-\x7e]+\Z/i, message: '密码只能包含数字、字母、特殊字符'}, allow_nil: true
+  validates :password, length: {in: 6..128}, format: {with: /\A[\x21-\x7e]+\Z/i, message: '密码只能包含数字、字母、特殊字符'}, allow_nil: true
   validates :password, presence: true, on: :create
-  after_create :create_soulmate, :push_notify
+  validates :email, uniqueness: true, allow_nil: true, format: {with: /\A[^@\s]+@[^@\s]+\z/, message: '已被使用'}
 
-  def to_hash
-    user_json = {
-        id: self.id,
-        term: self.email,
-        score: self.sign_in_count
-    }
-    JSON.parse(user_json.to_json)
-  end
 
   def email_changed?
     false
@@ -44,6 +25,10 @@ class User < ApplicationRecord
 
   def email_required?
     false
+  end
+
+  def send_devise_notification(notification, *args)
+    devise_mailer.send(notification, self, *args).deliver_later
   end
 
   attr_accessor :login
@@ -61,22 +46,6 @@ class User < ApplicationRecord
     end
   end
 
-  def self.from_omniauth(auth)
-    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
-      user.provider = auth.provider
-      user.uid = auth.uid
-      user.email = auth.info.email
-      user.password = Devise.friendly_token[0, 20]
-    end
-  end
-
   private
 
-  def create_soulmate
-    Soulmate::Loader.new("user").add self.to_hash
-  end
-
-  def push_notify
-    Notification.create!(user_id: id, content: '您已成功注册豆姆账户，前往个人中心验证邮箱会有更多权限<a href="/user/email">去验证</a>')
-  end
 end

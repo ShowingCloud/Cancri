@@ -10,15 +10,16 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
 //= require jquery_ujs
 //= require bootstrap.min
 //= require bootstrap-dialog
-//= require competitions
+//= require common
+//= require account
+//= require course
+//= require user
 //= require message-bus
-//= require code
 //= require notify
-//= require base
-//= require jquery.qrcode
-//= require qrcode
+//= require home
+//= require admin/bootstrap-datepicker.min
 //= //require turbolinks
+//= //require_tree .
