@@ -160,7 +160,7 @@ ul {
   float: left;
 }
 
-#banner .banner-inner .slider .items .item img{
+#banner .banner-inner .slider .items .item img {
   width: 670px;
 }
 
@@ -236,7 +236,7 @@ ul {
   margin-bottom: 15px;
 }
 
-#sidebar .sidebar-inner .sec-c .items .item .item-img img{
+#sidebar .sidebar-inner .sec-c .items .item .item-img img {
   width: 205px;
 }
 
@@ -617,6 +617,11 @@ ul {
   position: relative;
 }
 
+#user-display .user-display-content img{
+  width: 703px;
+  height: 431px;
+}
+
 #user-display .user-display-title {
   height: 44px;
   line-height: 44px;
@@ -959,7 +964,7 @@ ul {
   right: 20px;
 }
 
-#user-center .sec-c .user-panel .panel-control a{
+#user-center .sec-c .user-panel .panel-control a {
   color: #FFFFFF;
 }
 
@@ -1357,7 +1362,7 @@ ul {
   padding: 4px;
 }
 
-#match-list .sec-c .item img{
+#match-list .sec-c .item img {
   width: 292px;
 }
 
@@ -2206,9 +2211,11 @@ ul {
 .news-menu-content .news-tag-list .item-row .item-r {
   margin-left: 100px;
 }
-.news-menu-content .news-tag-list .item-row .item-r a{
+
+.news-menu-content .news-tag-list .item-row .item-r a {
   color: #88D5EC;
 }
+
 .apply-part {
   display: none;
   color: #88D5EC;
@@ -2428,7 +2435,7 @@ ul {
   text-align: right;
 }
 
-#add-school .bottom .apply-submit{
+#add-school .bottom .apply-submit {
   border: 1px solid #88D5EC;
   background: transparent;
   color: #88D5EC;
@@ -2808,4 +2815,124 @@ ul {
 .notify-b .close-flash {
   float: right;
   cursor: pointer;
+}
+
+.school-part {
+  border: 1px solid #88D5EC;
+  border-radius: 15px;
+  padding: 20px;
+  font-size: 14px;
+  position: relative;
+}
+
+.school-part select {
+  width: 200px;
+  height: 28px;
+  font-size: 14px;
+  color: #88D5EC;
+  background: #376A92;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+}
+
+.school-part label {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.school-part .title {
+  margin-bottom: 20px;
+}
+
+.invite-panel{
+  border:1px solid #88D5EC;
+  padding: 20px;
+  width: 380px;
+  margin: 20px auto;
+}
+
+.invite-panel .confirm-t {
+  font-size: 18px;
+  background: transparent center bottom no-repeat;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.invite-panel .confirm-c {
+
+}
+
+.invite-panel .confirm-c .input-row {
+  margin-bottom: 15px;
+  overflow: hidden;
+  padding: 2px 0;
+  line-height: 20px;
+}
+
+.invite-panel .confirm-c .input-row .input-t {
+  width: 100px;
+  float: left;
+  text-align: right;
+}
+
+.invite-panel .confirm-c .input-row .input-c {
+  margin-left: 120px;
+}
+
+.invite-panel .confirm-c .input-row .input-c .input-b {
+  background: #376A92;
+  height: 20px;
+  padding-left: 4px;
+  border: none;
+  outline: none;
+  width: 140px;
+}
+
+.invite-panel .confirm-c .input-row .input-c .input-b:focus {
+  outline: 1px solid #88D5EC;
+}
+
+.invite-panel .confirm-c .input-row .input-c .radio-b {
+  height: 20px;
+  line-height: 20px;
+  vertical-align: middle;
+  margin-top: -1px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.invite-panel .confirm-c .input-row .input-c select {
+  width: 140px;
+  height: 20px;
+  background: #376A92;
+  border: none;
+  outline: none;
+}
+
+.invite-panel .confirm-b {
+  text-align: center;
+}
+
+.invite-panel .confirm-b .apply-submit {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  padding: 4px 12px;
+  outline: none;
+  background: transparent;
+  border-radius: 5px;
+}
+
+#event-select {
+  height: 54px;
+  width: 387px;
+  margin: 0 auto;
+  background: #376A92;
+  border: none;
+  border-top: 1px solid #8FE1E5;
+  border-radius: 15px;
+  font-size: 24px;
+  color: #8FD0E9;
+  line-height: 54px;
+  display: block;
 }

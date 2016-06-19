@@ -26,7 +26,7 @@ class CompetitionService
     } }
   end
 
-  def self.post_team_scores(ed, schedule_name, kind, th, t1d, t2d, score1, score2, note, device_no, confirm_sign)
+  def self.post_team_scores(ed, schedule_id, kind, th, t1d, t2d, score1, score2, note, device_no, confirm_sign)
     if confirm_sign.present? && device_no.present?
       if kind == 2 # 对抗
         if t2d.blank? || score2.blank?
@@ -34,11 +34,11 @@ class CompetitionService
         elsif score1.length!=1 || (score1.first[1] != '1' && score1.first[1] != '0') || (score2 != '0' && score2 != '1')
           result = [false, '对抗模式下，比分只能为1或0']
         else
-          a_s = Score.where(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, team2_id: t2d, score1: score1.first[1], score2: score2).take
+          a_s = Score.where(event_id: ed, schedule_id: schedule_id, kind: kind, th: th, team1_id: t1d, team2_id: t2d, score1: score1.first[1], score2: score2).take
           if a_s.present?
             result = [false, '该成绩已登记，请检查场次或其他信息']
           else
-            score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, team2_id: t2d, score1: score1.first[1], score2: score2, note: note, device_no: device_no, confirm_sign: confirm_sign)
+            score = Score.create!(event_id: ed, schedule_id: schedule_id, kind: kind, th: th, team1_id: t1d, team2_id: t2d, score1: score1.first[1], score2: score2, note: note, device_no: device_no, confirm_sign: confirm_sign)
             if score.save
               result = [true, '成绩保存成功!']
             else
@@ -50,16 +50,16 @@ class CompetitionService
         if score1.blank?
           result = [false, '请至少输入一项成绩']
         else
-          a_s = Score.where(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d).take
+          a_s = Score.where(event_id: ed, schedule_id: schedule_id, kind: kind, th: th, team1_id: t1d).take
           if a_s.present?
             result = [false, '该成绩已登记，请检查场次或其他信息']
           else
             r=[]
             score1.each_with_index do |index, s|
               if index == 1
-                score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, score_attribute: s[0], score1: s[1], note: note, device_no: device_no, confirm_sign: confirm_sign)
+                score = Score.create!(event_id: ed, schedule_id: schedule_id, kind: kind, th: th, team1_id: t1d, score_attribute: s[0], score1: s[1], note: note, device_no: device_no, confirm_sign: confirm_sign)
               else
-                score = Score.create!(event_id: ed, schedule_name: schedule_name, kind: kind, th: th, team1_id: t1d, score_attribute: s[0], score1: s[1], device_no: device_no, note: note)
+                score = Score.create!(event_id: ed, schedule_id: schedule_id, kind: kind, th: th, team1_id: t1d, score_attribute: s[0], score1: s[1], device_no: device_no, note: note)
               end
               if score.save
                 r = [true]+r
@@ -101,7 +101,7 @@ class CompetitionService
 
   def self.get_teams(ed, group, schedule)
     if schedule.present? && ed.present? && group.present?
-      teams=Team.joins('inner join user_profiles u_p on u_p.user_id = teams.user_id').joins('inner join schools s on s.id = teams.school_id').joins('inner join users u on u.id = teams.user_id').joins("left join scores sc on (teams.id=sc.team1_id and sc.schedule_name=#{schedule}) or (sc.team2_id = teams.id and sc.schedule_name=#{schedule})").where(event_id: ed, group: group).select(:id, :name, :teacher, :teacher_mobile, :identifier, 'u_p.username', 'u.mobile', 's.name as school', 'count(sc.id) as score_num').map { |t| {
+      teams=Team.joins('inner join user_profiles u_p on u_p.user_id = teams.user_id').joins('left join schools s on s.id = teams.school_id').joins('left join users u on u.id = teams.user_id').joins("left join scores sc on (teams.id=sc.team1_id and sc.schedule_id=#{schedule}) or (sc.team2_id = teams.id and sc.schedule_id=#{schedule})").where(event_id: ed, group: group).select(:id, :name, :teacher, :teacher_mobile, :identifier, 'u_p.username', 'u.mobile', 's.name as school', 'count(sc.id) as score_num').map { |t| {
           id: t.id,
           name: t.name,
           username: t.username,

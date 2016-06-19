@@ -21,10 +21,75 @@
             <%= f.hidden_field :leader, value: @add_info.leader %>
             <%= f.hidden_field :team_name, value: @add_info.team_name %>
             <%= f.input :username %>
-            <%= f.input :school %>
-            <%= f.input :gender %>
+            <div>
+              学校信息
+              <div class="form-group">
+                <label>类型</label>
+
+                <div class="input-c">
+                  <select class="form-control" data-select-target="group">
+                    <option value="0">选择类型</option>
+                    <option value="1">小学</option>
+                    <option value="2">初中</option>
+                    <option value="3">高中</option>
+                    <option value="4">大学</option>
+                  </select>
+                  <input type="hidden" name="group"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>区县</label>
+
+                <div class="input-c">
+                  <select class="form-control" data-select-target="district">
+                    <option value="0">选择区县</option>
+                    <% District.all.each do |d| %>
+                        <option value="<%= d.name %>"><%= d.name %></option>
+                    <% end %>
+                  </select>
+                  <input type="hidden" name="district"/>
+                </div>
+              </div>
+              <div class="form-group school-target">
+                <a class="open-school">
+                  <i class="glyphicon glyphicon-plus"></i>
+                  选择学校
+                </a>
+                <br/>
+                <input type="hidden" name="invite_player[school]"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>性别</label>
+              <div>
+                <label>
+                  <input name="invite_player[gender]" type="radio" value="1"/>男
+                </label>
+                <label>
+                  <input name="invite_player[gender]" type="radio" value="2"/>女
+                </label>
+              </div>
+            </div>
             <%= f.input :student_code %>
-            <%= f.input :grade, collection: {一年级: 1, 二年级: 2, 三年级: 3, 四年级: 4, 五年级: 5, 六年级: 6, 七年级: 7, 八年级: 8, 九年级: 9, 高一: 10, 高二: 11, 高三: 12}.map { |key, val| [key, val] } %>
+            <div class="form-group">
+              <label class="string required control-label" for="invite_player_student_code"><abbr title="必填字段">*</abbr> 年级</label>
+                <select class="form-control" data-select-target="invite_player[grade]">
+                  <option value="0">请选择年级</option>
+                  <option value="一">一</option>
+                  <option value="二">二</option>
+                  <option value="三">三</option>
+                  <option value="四">四</option>
+                  <option value="五">五</option>
+                  <option value="六">六</option>
+                  <option value="七">七</option>
+                  <option value="八">八</option>
+                  <option value="九">九</option>
+                  <option value="高一">高一</option>
+                  <option value="高二">高二</option>
+                  <option value="高三">高三</option>
+                </select>
+                <input type="hidden" name="invite_player[grade]" id="invite_player_grade" />
+            </div>
             <%= f.input :nickname %>
             <%= f.input :password %>
             <div class="form-actions">
@@ -43,6 +108,22 @@
         <span class="separator"></span>
         <a>联系我们</a>
       </div>
+    </div>
+  </div>
+</div>
+<div id="school-list" class="modal fade">
+  <div id="add-school">
+    <div class="title" data-src="<%= image_path('homepage/info-t-bk.png') %>">
+      选择学校
+    </div>
+    <div class="school-list">
+      <span class="tips">请选择学校</span>
+      <ul class="items">
+
+      </ul>
+    </div>
+    <div class="bottom">
+      <button data-dismiss="modal" class="btn-robodou apply-submit">取消</button>
     </div>
   </div>
 </div>

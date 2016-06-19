@@ -12,8 +12,9 @@ class CompetitionsController < ApplicationController
 
   def apply_event
     if require_email
-      @competition = Competition.find(params[:cd])
+      @competition = Competition.where(id: params[:cd]).select(:name).take
       @events = Event.where(competition_id: params[:cd], is_father: false).select(:name, :id, :team_max_num)
+      @user_info = UserProfile.joins('left join schools s on s.id = user_profiles.school').where(user_id: current_user.id).select(:student_code, :identity_card, :gender, :birthday, :district, 's.name as school_name', :grade, :bj).take
       #   @teams = Team.includes(:team_user_ships).where(event_id: params[:eid])
       #   @already_apply = TeamUserShip.includes(:team).where(event_id: params[:eid], user_id: current_user.id).take
       #   if @already_apply.present?
@@ -28,7 +29,7 @@ class CompetitionsController < ApplicationController
     if params[:ed].present?
       event = Event.find(params[:ed])
       if event.present?
-        a_p = TeamUserShip.where(event_id: params[:ed], user_id: current_user.id).take
+        a_p = TeamUserShip.where(event_id: params[:ed], user_id: current_user.id, status: true).take
         if a_p.present?
           team_players = Team.find_by_sql("select t.user_id as id,a.team_id,u_p.username,u_p.bj,t.identifier,t.teacher,t.teacher_mobile,u_p.grade as grade,u_p.user_id as user_id,u_p.gender as gender, a.status,t.name as name,s.name as school from team_user_ships a INNER JOIN teams t on t.id = a.team_id inner join user_profiles u_p on u_p.user_id = a.user_id inner join schools s on s.id = u_p.school where a.team_id = #{a_p.team_id}")
           result =[true, team_players, event.group]
@@ -95,7 +96,7 @@ class CompetitionsController < ApplicationController
         user.birthday = birthday
         user.bj = bj
         user.student_code = student_code
-        user.district = district
+        user.district = district.to_i
         user.identity_card = identity_card
         if user.save
           s = true
@@ -105,7 +106,7 @@ class CompetitionsController < ApplicationController
           m = '个人信息更新失败'
         end
       else
-        up = UserProfile.create!(user_id: current_user.id, username: username, gender: gender, school: school, grade: grade, bj: bj, student_code: student_code, district: district, identity_card: identity_card, birthday: birthday)
+        up = UserProfile.create!(user_id: current_user.id, username: username, identity_card: identity_card, birthday: birthday)
         if up.save
           s = true
           m = '个人信息添加成功'
@@ -117,7 +118,7 @@ class CompetitionsController < ApplicationController
 
       if s && join
         if td !=0 && ed !=0
-          result=self.apply_join_team(td, ed)
+          result=self.apply_join_team(td, ed, school, grade)
           status = result[0]
           message = result[1]
         else
@@ -135,12 +136,12 @@ class CompetitionsController < ApplicationController
     render json: [status, message]
   end
 
-  def apply_join_team(td, ed)
+  def apply_join_team(td, ed, school, grade)
     if td.present? && ed.present? && current_user.validate_status=='1'
       if TeamUserShip.where(team_id: td, event_id: ed, user_id: current_user.id).exists?
         [false, '您已经申请过或已是该队队员']
       else
-        t_u = TeamUserShip.create!(event_id: ed, team_id: td, user_id: current_user.id, status: false)
+        t_u = TeamUserShip.create!(event_id: ed, team_id: td, user_id: current_user.id, school_id: school, grade: grade, status: false)
         if t_u.save
           info = Team.joins(:event).where(id: td).where("teams.event_id=events.id").select("teams.name as team_name", "events.name as event_name").first
           notify = Notification.create!(user_id: t_u.user_id, content: current_user.user_profile.username+'申请加入您在比赛项目－'+ info.event_name.to_s + '中创建的队伍－'+info.team_name, t_u_id: t_u.id, team_id: t_u.team_id, message_type: 2, reply_to: t_u.user_id)
@@ -186,7 +187,7 @@ class CompetitionsController < ApplicationController
       return false
     end
     if team_name.present? && district_id !=0 && ed !=0 && sd !=0 && teacher.present? && group != 0
-      already_apply = TeamUserShip.where(user_id: user_id, event_id: ed).exists?
+      already_apply = TeamUserShip.where(user_id: user_id, event_id: ed, status: true).exists?
       has_team_name = Team.where(event_id: ed, name: team_name).take
       if already_apply
         result = [false, '该比赛您已经报名，请不要再次报名!']
@@ -195,7 +196,8 @@ class CompetitionsController < ApplicationController
       else
         team = Team.create!(name: team_name, group: group, district_id: district_id, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: sd, sk_station: skd)
         if team.save
-          team_user_ship = TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed)
+          user_info = current_user.user_profile
+          team_user_ship = TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed, school_id: user_info.school, grade: user_info.grade, status: true)
           if team_user_ship.save
             result = [true, '队伍['+team.name+']创建成功!']
           else

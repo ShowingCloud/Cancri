@@ -9,7 +9,7 @@ class UserController < ApplicationController
   # 修改个人信息
   def profile
     # 获取Profile
-    @user_profile = UserProfile.left_joins(:schools, :district).where(user_id: current_user.id).select(:username, :roles, :gender, :grade, :bj, :teacher_no, :district, :certificate, :address, 'schools.name as school_name',).take ||= current_user.build_user_profile
+    @user_profile = current_user.user_profile ||= current_user.build_user_profile
     @th_role_status = UserRole.where(user_id: current_user.id, role_id: 1).first # 教师
     if request.method == 'POST'
       if params[:user_profile].present?
@@ -44,11 +44,6 @@ class UserController < ApplicationController
         end
         if message=='-'
           message=''
-        end
-        if profile_params[:school].to_i != 0 && profile_params[:grade].present? && profile_params[:gender].to_i !=0 && profile_params[:username].present? && profile_params[:bj].present?
-          current_user.update_attributes(validate_status: 1)
-        else
-          current_user.update_attributes(validate_status: 0)
         end
         @user_profile.username = profile_params[:username]
         @user_profile.autograph = profile_params[:autograph]
@@ -200,7 +195,7 @@ class UserController < ApplicationController
   end
 
   def comp
-    @user_events = TeamUserShip.joins(:event, :team).joins('inner join user_profiles u_p on u_p.user_id = team_user_ships.user_id').joins('inner join schools s on s.id = teams.school_id').joins('inner join competitions comp on comp.id = events.competition_id').where(user_id: current_user.id).select(:user_id, 'events.name as event_name', 'comp.name as comp_name', 's.name as school', 'comp.status', 'u_p.grade', 'u_p.student_code', 'u_p.username', 'teams.identifier', 'teams.teacher', 'teams.teacher_mobile')
+    @user_events = TeamUserShip.joins(:event, :team, :school).joins('inner join user_profiles u_p on u_p.user_id = team_user_ships.user_id').joins('inner join competitions comp on comp.id = events.competition_id').where(user_id: current_user.id, status: true).select(:user_id, :grade, 'events.name as event_name', 'comp.name as comp_name', 'schools.name as school_name', 'comp.status', 'u_p.student_code', 'u_p.username', 'teams.identifier', 'teams.teacher', 'teams.teacher_mobile')
   end
 
   def consult
@@ -288,30 +283,30 @@ class UserController < ApplicationController
   end
 
   def agree_invite_info
-    age = params[:age]
     birthday = params[:birthday]
     username = params[:username]
     school = params[:school].to_i
     grade = params[:grade]
+    bj = params[:bj]
     gender = params[:gender].to_i
     student_code = params[:student_code]
     identity_card = params[:identity_card]
     td = params[:td].to_i
     ed = params[:ed].to_i
     if td!=0 && ed !=0
-      t_u = TeamUserShip.includes(:team).where(event_id: ed, team_id: td, user_id: current_user.id).select('teams.group', :user_id, :status).take
+      t_u = TeamUserShip.where(event_id: ed, team_id: td, user_id: current_user.id).take
       if t_u.status
         status = true
         message = '您已经是该队队员'
       else
-        if username.present? && school!=0 && grade.present? && gender!=0 && age.present? && birthday.present?
+        if username.present? && school!=0 && grade.present? && gender!=0 && birthday.present? && student_code.present? && bj.present?
           user = UserProfile.find_by(user_id: current_user.id)
           if user.present?
             user.username = username
-            user.age = age
             user.birthday = birthday
             user.school = school
             user.grade = grade
+            user.bj = bj
             user.gender = gender
             user.student_code = student_code
             user.identity_card = identity_card
@@ -324,7 +319,7 @@ class UserController < ApplicationController
               message = '个人信息更新失败'
             end
           else
-            up = UserProfile.create!(user_id: t_u.user_id, username: username, age: age, school: school, grade: grade, gender: gender, birthday: birthday, student_code: student_code, identitty_card: identity_card)
+            up = UserProfile.create!(user_id: t_u.user_id, username: username, bj: bj, school: school, grade: grade, gender: gender, birthday: birthday, student_code: student_code, identitty_card: identity_card)
             if up.save
               status = true
               message = '个人信息添加成功'

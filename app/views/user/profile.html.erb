@@ -30,48 +30,101 @@
                         <div class="teacher-part hide">
                           <%= f.input :teacher_no %>
                         </div>
-                        <%= @user_profile.school_name %>
-                        <%= @user_profile.district %>
                         <div class="form-group teacher-part hide">
                           <label for="user_avatar">上传教师证</label>
                           <%= f.file_field :certificate %>
                         </div>
-                        <div class="form-group">
-                          类型
-                          <div class="input-c">
-                            <select data-select-target="group">
-                              <option value="0">选择类型</option>
-                              <option value="1">小学</option>
-                              <option value="2">初中</option>
-                              <option value="3">高中</option>
-                              <option value="4">大学</option>
-                            </select>
-                            <input type="hidden" name="group"/>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          区县
-                          <div class="input-c">
-                            <select data-select-target="district">
-                              <option value="0">选择区县</option>
-                              <% District.all.each do |d| %>
-                                  <option value="<%= d.name %>"><%= d.name %></option>
-                              <% end %>
-                            </select>
-                            <input type="hidden" name="district"/>
-                          </div>
-                        </div>
-                        <div class="form-group school-target">
-                          <a class="open-school">
-                            <i class="glyphicon glyphicon-plus"></i>
-                            选择学校
-                          </a>
-                          <br/>
-                          <a class="add-other-school">没有你的学校？点击添加</a>
-                          <input type="hidden" name="user_profile[school]"/>
-                        </div>
-                        <br/>
 
+                        <div class="form-group">
+                          学校
+                          <div>
+                            <% if @user_profile.school.present? %>
+                                <%= @user_profile.schools.try(:name) %>
+                            <% end %>
+                          </div>
+                        </div>
+                        <% if @user_profile.grade.present? && @user_profile.bj.present? %>
+                            <div class="form-group">
+                              班级
+                              <div>
+                                <%= @user_profile.grade %>年级 <%= @user_profile.bj %>班
+                              </div>
+                            </div>
+                        <% end %>
+                        <div class="school-part">
+                          <div class="title">修改学校相关信息</div>
+                          <div class="form-group">
+                            <label>类型</label>
+
+                            <div class="input-c">
+                              <select data-select-target="group">
+                                <option value="0">选择类型</option>
+                                <option value="1">小学</option>
+                                <option value="2">初中</option>
+                                <option value="3">高中</option>
+                                <option value="4">大学</option>
+                              </select>
+                              <input type="hidden" name="group"/>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label>区县</label>
+
+                            <div class="input-c">
+                              <select data-select-target="district">
+                                <option value="0">选择区县</option>
+                                <% District.all.each do |d| %>
+                                    <option value="<%= d.name %>"><%= d.name %></option>
+                                <% end %>
+                              </select>
+                              <input type="hidden" name="district"/>
+                            </div>
+                          </div>
+                          <div class="form-group school-target">
+                            <a class="open-school">
+                              <i class="glyphicon glyphicon-plus"></i>
+                              选择学校
+                            </a>
+                            <br/>
+                            <a class="add-other-school">没有你的学校？点击添加</a>
+                            <input type="hidden" name="user_profile[school]" value="<%= @user_profile.school %>"/>
+                          </div>
+                          <div class="form-group">
+                            <label>修改年级</label>
+
+                            <div class="input-c">
+                              <select data-select-target="user_profile[grade]">
+                                <option value="0">请选择年级</option>
+                                <option value="一">一</option>
+                                <option value="二">二</option>
+                                <option value="三">三</option>
+                                <option value="四">四</option>
+                                <option value="五">五</option>
+                                <option value="六">六</option>
+                                <option value="七">七</option>
+                                <option value="八">八</option>
+                                <option value="九">九</option>
+                                <option value="高一">高一</option>
+                                <option value="高二">高二</option>
+                                <option value="高三">高三</option>
+                              </select>
+                              <input type="hidden" name="user_profile[grade]" id="user_profile_grade" value="<%= @user_profile.grade %>"/>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label>修改班级</label>
+
+                            <div class="input-c">
+                              <select data-select-target="user_profile[bj]">
+                                <option value="0">请选择班级</option>
+                                <% for n in 1..100 %>
+                                    <option value="<%= n %>"><%= n %></option>
+                                <% end %>
+                              </select>
+                              <input type="hidden" name="user_profile[bj]" id="user_profile_bj" value="<%= @user_profile.bj %>"/>
+                            </div>
+                          </div>
+                        </div>
                         <div class="form-group">
                           <label>性别</label>
 
@@ -83,34 +136,6 @@
                               <input name="user_profile[gender]" type="radio" <%= 'checked' if @user_profile.gender==2 %> value="2"/>女
                             </label>
                           </div>
-                        </div>
-                        <div class="form-group">
-                          <div>年级</div>
-                          <select name="user_profile[grade]" id="user_profile_grade">
-                            <option value="0">请选择年级</option>
-                            <option value="一">一</option>
-                            <option value="二">二</option>
-                            <option value="三">三</option>
-                            <option value="四">四</option>
-                            <option value="五">五</option>
-                            <option value="六">六</option>
-                            <option value="七">七</option>
-                            <option value="八">八</option>
-                            <option value="九">九</option>
-                            <option value="高一">高一</option>
-                            <option value="高二">高二</option>
-                            <option value="高三">高三</option>
-                          </select>
-                        </div>
-                        <div class="form-group">
-                          <div>班级
-                          </div>
-                          <select name="user_profile[bj]" id="user_profile_bj">
-                            <option value="0">请选择班级</option>
-                            <% for n in 1..100 %>
-                                <option value="<%= n %>"><%= n %></option>
-                            <% end %>
-                          </select>
                         </div>
                         <%= f.input :address %>
                       </div>

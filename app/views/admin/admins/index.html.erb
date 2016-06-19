@@ -46,6 +46,7 @@
     <th><%= t('simple_form.labels.defaults.email') %></th>
     <th><%= t('simple_form.labels.defaults.phone') %></th>
     <th><%= t('simple_form.labels.defaults.address') %></th>
+    <th><%= t('simple_form.labels.defaults.current_sign_in_at') %></th>
     <th>操作</th>
   </tr>
   </thead>
@@ -65,6 +66,7 @@
         <td><%= admin.email %></td>
         <td><%= admin.phone %></td>
         <td><%= admin.address %></td>
+        <td><%= admin.current_sign_in_at.try(:strftime, '%Y-%m-%d %H:%M:%S') %></td>
         <td>
           <%= link_to [:admin, admin], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>

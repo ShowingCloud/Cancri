@@ -29,13 +29,14 @@ class Team < ApplicationRecord
         else
           identity = 'G'
       end
-      self.identifier = ('0000000'+(id+128).to_s).each_byte do |c|
+      ('0000000'+(id+128).to_s).each_byte do |c|
         if c != 48
           identity.concat((c.to_i + 16).chr)
         else
-          identity.concat('O')
+          identity.concat('H')
         end
       end
+      self.identifier = identity
       self.save
     end
   end
