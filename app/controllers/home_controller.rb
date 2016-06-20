@@ -6,4 +6,8 @@ class HomeController < ApplicationController
       @area = '上海'
     end
   end
+
+  def error_404
+    render_404
+  end
 end
