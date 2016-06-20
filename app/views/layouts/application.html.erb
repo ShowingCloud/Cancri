@@ -16,8 +16,8 @@
       <div class="col-xs-12">
         <div class="logo pull-left">
           <select id="select-area" style="margin-top: 15px">
-            <option value="0" <%= 'selected' if cookies[:area]=='0' %>>宝山</option>
-            <option value="1" <%= 'selected' if cookies[:area]=='1' %>>上海</option>
+            <option>上海</option>
+            <option value="1" <%= 'selected' if cookies[:area] %>>宝山</option>
           </select>
           <a href="/">
             <% if cookies[:area]=='1' %>
