@@ -19,7 +19,7 @@
 
           <p>招募人数：<%= @course.num %></p>
 
-          <p class="already_num">已报名人数：<%= @course.already_num %></p>
+          <p class="already_num">已报名人数：<%= @course.apply_count %></p>
 
           <input type="hidden" id="apply-course" value="<%= @course.id %>">
           <% if @has_apply %>

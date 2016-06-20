@@ -9,6 +9,17 @@ class AdminController < ActionController::Base
     @review_sc_num = School.where(user_add: 1).where('audit is NULL').count
   end
 
+  rescue_from ActiveRecord::RecordNotFound do |exception|
+    render_optional_error(404)
+  end
+
+  def render_optional_error(status_code)
+    status = status_code.to_s
+    fname = %w(404 403 422 500).include?(status) ? status : 'unknown'
+    render template: "/errors/#{fname}", format: [:html],
+           handler: [:erb], status: status, layout: 'admin_boot'
+  end
+
   protected
 
   def set_current_admin

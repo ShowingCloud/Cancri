@@ -288,27 +288,27 @@ class UserController < ApplicationController
   def comp
   end
 
-  # def consult
-  #   if request.method == 'POST'
-  #     content = params[:consult][:content]
-  #     if content.present? && content.length < 151 && content.length > 5
-  #       consult = Consult.create(user_id: current_user.id, content: content)
-  #       if consult.save
-  #         flash[:success]='调戏成功'
-  #         redirect_to user_consult_path
-  #       else
-  #         flash[:error]='提交失败'
-  #       end
-  #     else
-  #       @consult = Consult.new(content: params[:consult][:content])
-  #       flash[:error]='请填写6-150位字符的反馈内容'
-  #     end
-  #   end
-  #   unless @consult.present?
-  #     @consult = current_user.consults.build
-  #   end
-  #   @consults = Consult.where(user_id: current_user.id).all.order('id asc')
-  # end
+  def consult
+    if request.method == 'POST'
+      content = params[:consult][:content]
+      if content.present? && content.length < 151 && content.length > 5
+        consult = Consult.create(user_id: current_user.id, content: content)
+        if consult.save
+          flash[:success]='调戏成功'
+          redirect_to user_consult_path
+        else
+          flash[:error]='提交失败'
+        end
+      else
+        @consult = Consult.new(content: params[:consult][:content])
+        flash[:error]='请填写6-150位字符的反馈内容'
+      end
+    end
+    unless @consult.present?
+      @consult = current_user.consults.build
+    end
+    @consults = Consult.where(user_id: current_user.id).all.order('id asc')
+  end
 
   # def point
   #   @user_points = UserPoint.joins(:prize).where(user_id: current_user.id).select(:id, :is_audit, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize')

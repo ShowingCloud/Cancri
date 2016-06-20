@@ -10,9 +10,9 @@ class CoursesController < ApplicationController
   end
 
   def show
-    course = Course.left_joins(:course_user_ships).where(id: params[:id]).select(:id, :name, :target, :desc, :num, :start_time, :end_time, :apply_start_time, :apply_end_time, :run_time, :run_address, :district_id, 'course_user_ships.id as course_id', 'count(course_user_ships.id) as already_num').take
+    course = Course.find(params[:id])
     if cookies[:area] && course.district_id !=9
-      course = nil
+      render_optional_error(404)
     end
     if current_user.present?
       @has_apply = CourseUserShip.where(user_id: current_user.id, course_id: params[:id]).exists?
