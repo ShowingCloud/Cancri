@@ -12,7 +12,7 @@ class CoursesController < ApplicationController
   def show
     course = Course.find(params[:id])
     if cookies[:area] && course.district_id !=9
-      render_404
+      render_optional_error(404)
     end
     if current_user.present?
       @has_apply = CourseUserShip.where(user_id: current_user.id, course_id: params[:id]).exists?

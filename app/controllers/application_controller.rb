@@ -23,18 +23,14 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
-    render_404
+    render_optional_error(404)
   end
 
-  def render_404
-    render_optional_error_file(404)
-  end
-
-  def render_optional_error_file(status_code)
+  def render_optional_error(status_code)
     status = status_code.to_s
     fname = %w(404 403 422 500).include?(status) ? status : 'unknown'
     render template: "/errors/#{fname}", format: [:html],
-           handler: [:erb], status: status, layout: 'application'
+           handler: [:erb], status: status, layout: request.fullpath.to_s.index('/admin') ? 'admin_boot' : 'application'
   end
 
   private

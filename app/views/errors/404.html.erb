@@ -85,7 +85,7 @@
   <p>
     <a href="javascript:history.go(-1);">
       &#9666; 返回上一页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    将在<span id="total-second">20</span>秒后自动跳转<a href="/">豆姆首页</a>,请稍候...
+    将在<span id="total-second">20</span>秒后自动跳转<a href="<%= request.fullpath.to_s.index('admin/') ? '/admin' : '/' %>">首页</a>,请稍候...
   </p>
 </div>
 <script language="javascript" type="text/javascript">
@@ -100,7 +100,7 @@
   setInterval("redirect()", 1000);  //每1秒钟调用redirect()方法一次
   function redirect() {
     if (second < 0) {
-      location.href = '/';
+      location.href = '<%= request.fullpath.to_s.index('admin/') ? '/admin' : '/' %>';
     } else {
       if (navigator.appName.indexOf("Explorer") > -1) {
         document.getElementById('total-second').innerText = second--;
