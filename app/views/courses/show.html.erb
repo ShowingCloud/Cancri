@@ -6,6 +6,8 @@
           <%= @course.name %>
         </div>
         <div class="content">
+          <p><%= @course.desc %></p>
+
           <p>对象：<%= @course.target %></p>
 
           <p class="already_time">报名时间：<%= @course.apply_start_time.strftime('%Y-%m-%d') %>

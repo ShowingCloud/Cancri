@@ -121,9 +121,14 @@ $(function () {
 
     lazyload.init();
     fix_height.init('#main');
+
+    $(window).on('resize',function(){
+        fix_height.init('#main');
+    });
+
     $('select[data-target]').off('change').on('change', function () {
         var _self = $(this);
-        $(_self.attr('data-target')).val(_self.val())
+        $(_self.attr('data-target')).val(_self.val());
     });
 
     $('select#user_profile_grade').off('change').on('change', function () {
