@@ -63,6 +63,26 @@ $(function () {
         })
     }
 
+    if ($('#district-select').length > 0) {
+        $('#district-select').off('change').on('change', function () {
+            var _self = $(this);
+            var space = _self.parents('form');
+            var selected_school = _self.parents('form').find('.school-hidden-input').val();
+            if (typeof selected_school == 'string' && selected_school.length > 0) {
+                alert('由于您更换了区县，请重新选择学校！');
+                space.find('.selected-school').remove();
+                space.find('.school-hidden-input').val(null);
+                space.find('.choice-school').text('选择学校');
+            }
+            $('#school-group').val(0);
+            $('.school-list').empty();
+            if (typeof _self.attr('data-target-special') != 'undefined') {
+                $(_self.attr('data-target-special')).val(_self.val());
+            }
+        });
+    }
+
+
     if ($('#user_profile_birthday').length > 0) {
         $('#user_profile_birthday').datepicker({
             format: 'yyyy-mm-dd'
@@ -107,7 +127,7 @@ $(function () {
                 success: function (result) {
                     if (result[0]) {
                         alert(result[1]);
-                        window.location.reload();
+                        //window.location.reload();
                     } else {
                         alert(result[1]);
                     }
@@ -122,7 +142,7 @@ $(function () {
     lazyload.init();
     fix_height.init('#main');
 
-    $(window).on('resize',function(){
+    $(window).on('resize', function () {
         fix_height.init('#main');
     });
 
@@ -174,45 +194,69 @@ $(function () {
 
     function school_handle(_target, dis, cb) {
         var _modals = $('#school-modal');
-        _modals.find('#selected-dis').val(dis);
+        var d = _modals.find('#selected-dis');
+        var g = _modals.find('#school-group');
+        d.val(dis);
         _modals.modal('show');
-        _modals.find('#school-group').off('change').on('change', function (event) {
+        g.off('change').on('change', function (event) {
             event.preventDefault();
-            var _dis = _modals.find('#selected-dis').val();
-            var _group = $(this).val();
-            var option = {
-                url: '/user/get_school',
-                type: 'get',
-                dataType: 'json',
-                data: {district_id: _dis, school_type: _group},
-                success: function (result) {
-                    var _cb = cb;
-                    if (result.length > 0) {
-                        $('.school-list').empty();
-                        for (var i = 0; i < result.length; i++) {
-                            var bean = $('<div class="item school-bean" data-id="' + result[i].id + '">' + result[i].name + '</div>');
-                            $('.school-list').append(bean);
-                        }
-                        $('.school-bean').off('click').on('click', function (event) {
-                            event.preventDefault();
-                            var _self = $(this);
-                            var text = _self.text();
-                            var sid = _self.attr('data-id');
-                            $('#school-modal').modal('hide');
-                            cb(text, sid);
-                        });
-                    } else {
-                        alert('未找到合适条件的学校');
-                    }
-                },
-                complete: function () {
+            var dis = _modals.find('#selected-dis').val();
+            var group = $(this).val();
+            if (group != 0) {
+                get_school(dis, group, cb);
+            } else {
+                $('.school-list').empty();
+            }
+        });
+        d.off('change').on('change', function (event) {
+            event.preventDefault();
+            var dis = $(this).val();
+            var group = g.val();
+            if (group != 0) {
+                get_school(dis, group, cb);
+            } else {
+                $('.school-list').empty();
+            }
+            $('#district-select').val(dis);
+        })
+    }
 
-                },
-                error: function (error) {
-                    alert(error.responseText);
+    function get_school(dis, group, get_school_callback) {
+        var option = {
+            url: '/user/get_school',
+            type: 'get',
+            dataType: 'json',
+            data: {district_id: dis, school_type: group},
+            success: function (result) {
+                if (result.length > 0) {
+                    get_school_success(result, get_school_callback);
+                } else {
+                    alert('未找到合适条件的学校');
                 }
-            };
-            ajax_handle(option)
+            },
+            complete: function () {
+
+            },
+            error: function (error) {
+                alert(error.responseText);
+            }
+        };
+        ajax_handle(option);
+    }
+
+    function get_school_success(result, get_school_success_callback) {
+        $('.school-list').empty();
+        for (var i = 0; i < result.length; i++) {
+            var bean = $('<div class="item school-bean" data-id="' + result[i].id + '">' + result[i].name + '</div>');
+            $('.school-list').append(bean);
+        }
+        $('.school-bean').off('click').on('click', function (event) {
+            event.preventDefault();
+            var _self = $(this);
+            var text = _self.text();
+            var sid = _self.attr('data-id');
+            $('#school-modal').modal('hide');
+            get_school_success_callback(text, sid);
         });
     }
 

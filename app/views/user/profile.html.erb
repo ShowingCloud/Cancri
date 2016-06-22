@@ -63,13 +63,13 @@
                   </fieldset>
                   <div class="form-group">
                     <label class="control-label" for="user_profile_district_id">区县</label>
-                    <select id="district-select" class="string optional form-control" data-target="#user_profile_district_id">
+                    <select id="district-select" class="string optional form-control" data-target-special="#user_profile_district_id">
                       <option>请选择区县</option>
                       <% District.all.each do |d| %>
                           <option value="<%= d.id %>" <%= 'selected="selected"' if @user_profile.district_id.to_i == d.id %>><%= d.name %></option>
                       <% end %>
                     </select>
-                    <input type="hidden" id="user_profile_district_id" name="user_profile[district_id]" value="<%= @user_profile.district_id %>"/>
+                    <input class="dis-hidden-input" type="hidden" id="user_profile_district_id" name="user_profile[district_id]" value="<%= @user_profile.district_id %>"/>
                   </div>
                   <div class="form-group">
                     <label class="control-label" for="user_profile_school_id">学校</label>
@@ -81,7 +81,7 @@
                       <% else %>
                           <button class="choice-school btn-robodou">选择学校</button>
                       <% end %>
-                      <input id="user_profile_school_id" type="hidden" name="user_profile[school_id]" value="<%= @user_profile.school.try(:id) %>"/>
+                      <input id="user_profile_school_id" class="school-hidden-input" type="hidden" name="user_profile[school_id]" value="<%= @user_profile.school.try(:id) %>"/>
                     </div>
                   </div>
                   <div class="form-group">
@@ -139,7 +139,7 @@
     <div class="content">
       <div class="screening">
         <label for="selected-dis">区县</label>
-        <select name="district" id="selected-dis" disabled>
+        <select name="district" id="selected-dis">
           <option>请选择区县</option>
           <% District.all.each do |d| %>
               <option value="<%= d.id %>"><%= d.name %></option>
