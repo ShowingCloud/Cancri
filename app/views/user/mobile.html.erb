@@ -26,7 +26,7 @@
                         </div>
                         <div class="form-group input-group">
                           <input id="user_add_mobile" class="string  optional form-control" type="text" placeholder="请输入要添加的手机" name="user[mobile_info]" value="<%= current_user.mobile_info %>">
-                          <span class="input-group-addon btn btn-default" data-key="user_add_mobile" data-type="ADD_MOBILE" id="btn_send_mobile_code">发送验证码</span>
+                          <span class="input-group-addon btn-robodou-fix" data-key="user_add_mobile" data-type="ADD_MOBILE" id="btn_send_mobile_code">发送验证码</span>
                         </div>
                         <div class="">
                           <input id="email_code" class="string email required form-control" placeholder="请输入手机收到的验证码" type="text" name="user[email_code]" value="<%= current_user.email_code %>">
@@ -34,7 +34,7 @@
                         <br>
 
                         <div class="form-actions">
-                          <%= f.submit class: 'btn btn-primary btn-block', value: '添加手机', 'data-disable-with' => '添加手机' %>
+                          <%= f.submit class: 'btn-robodou btn-block', value: '添加手机', 'data-disable-with' => '添加手机' %>
                         </div>
                       </div>
                     </div>

@@ -900,7 +900,7 @@ select {
   width: 50%;
 }
 
-.icon-arrow-left,.icon-arrow-right{
+.icon-arrow-left, .icon-arrow-right {
   position: relative;
   top: 1px;
   display: inline-block;
@@ -916,6 +916,15 @@ select {
   content: "\e251";
 }
 
-.icon-arrow-right:before{
+.icon-arrow-right:before {
   content: "\e250";
+}
+
+.btn-robodou-fix {
+  border-color: #6699cc;
+  background: #6699cc;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: none;
+  cursor: pointer;
 }

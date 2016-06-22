@@ -127,7 +127,7 @@ $(function () {
                 success: function (result) {
                     if (result[0]) {
                         alert(result[1]);
-                        //window.location.reload();
+                        window.location.reload();
                     } else {
                         alert(result[1]);
                     }
@@ -189,6 +189,37 @@ $(function () {
 
     if ($('.error-notice').length > 0) {
         alert_r($('.error-notice').text());
+    }
+
+    if ($('.btn-abort-lesson').length > 0) {
+        $('.btn-abort-lesson').off('click').on('click', function (event) {
+            event.preventDefault();
+            var _self = $(this);
+            var option = {
+                url: _self.attr('href'),
+                type: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    if (data[0]) {
+                        alert(data[1]);
+                        if (_self.parents('.sub-content').find('.lesson-item').length == 1) {
+                            _self.parents('.sub-content').text('您暂时没有报名任何课程。');
+                        }
+                        _self.parents('.lesson-item').remove();
+
+                    } else {
+                        alert(data[1])
+                    }
+                },
+                complete: function () {
+
+                },
+                error: function () {
+                    alert('ajax error');
+                }
+            };
+            ajax_handle(option);
+        });
     }
 
 
