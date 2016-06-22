@@ -140,23 +140,23 @@ class UserController < ApplicationController
             c_u = CourseUserShip.find(identifier)
             if c_u.present? && (c_u.user_id == current_user.id)
               if c_u.destroy
-                @result = [true, '取消成功', type, identifier]
+                result = [true, '取消成功', type, identifier]
               else
-                @result = [false, '取消失败', type]
+                result = [false, '取消失败', type]
               end
             else
-              @result = no_rule
+              result = no_rule
             end
           else
-            @result = no_rule
+            result = no_rule
         end
       else
-        @result = no_rule
+        result = no_rule
       end
+    else
+      result = [false, '非法请求']
     end
-    respond_to do |format|
-      format.js
-    end
+    render json: result
   end
 
   def check_email_exists
