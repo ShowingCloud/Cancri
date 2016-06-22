@@ -1,5 +1,8 @@
-# source 'https://rubygems.org'
-source 'https://gems.ruby-china.org'
+if ENV['USE_OFFICE_SOURCE']
+  source 'https://rubygems.org'
+else
+  source 'https://ruby.taobao.org'
+end
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -43,6 +46,7 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'roo'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -57,4 +61,4 @@ gem 'message_bus'
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'kaminari', github: 'amatsuda/kaminari'
-# gem 'rails_kindeditor'
+gem 'rails_kindeditor', github: 'javyliu/rails_kindeditor'

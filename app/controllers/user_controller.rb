@@ -291,8 +291,8 @@ class UserController < ApplicationController
   def consult
     if request.method == 'POST'
       content = params[:consult][:content]
-      if content.present? && content.length < 151 && content.length > 5
-        consult = Consult.create(user_id: current_user.id, content: content)
+      if content.present? && content.length < 256 && content.length > 5
+        consult = Consult.create!(user_id: current_user.id, content: content)
         if consult.save
           flash[:success]='调戏成功'
           redirect_to user_consult_path
@@ -301,7 +301,7 @@ class UserController < ApplicationController
         end
       else
         @consult = Consult.new(content: params[:consult][:content])
-        flash[:error]='请填写6-150位字符的反馈内容'
+        flash[:error]='请填写6-255位字符的反馈内容'
       end
     end
     unless @consult.present?

@@ -26,6 +26,10 @@ Rails.application.routes.draw do
   post 'courses/cancel' => 'courses#cancel_apply'
   resources :courses
   resources :notifications
+  namespace :kindeditor do
+    post '/upload' => 'assets#create'
+    get '/filemanager' => 'assets#list'
+  end
 
   # -----------------------------------------------------------
   # Admin

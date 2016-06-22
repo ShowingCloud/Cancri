@@ -15,4 +15,5 @@
 //= require admin/jquery.nestable.min
 //= require bootstrap-dialog
 //= require admin/jquery.colorbox-min
+//= require kindeditor
 

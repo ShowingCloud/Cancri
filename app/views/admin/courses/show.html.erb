@@ -52,7 +52,7 @@
     </li>
     <li class="list-group-item">
       <span class="text-primary"><%= t('simple_form.labels.defaults.desc') %>:</span>
-      <%= @course.desc %>
+      <%= @course.desc.html_safe %>
     </li>
 
   </ul>

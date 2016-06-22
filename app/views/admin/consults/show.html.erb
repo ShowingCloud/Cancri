@@ -1,0 +1,86 @@
+<h1 class="page-header">
+  与<%= @user_consults.first.nickname %>的消息纪录
+  <small class="pull-right">
+    <a href="<%= "#{admin_consults_path}?field=status&keyword=1" %>" class="btn btn-default" title="已回复">
+      已回复</a>
+    <a href="<%= admin_consults_path %>" class="btn btn-default" title="未回复">
+      未回复</a>
+  </small>
+</h1>
+
+
+
+<% if notice %>
+    <div class="alert alert-success"><%= notice %>
+      <button class="close" data-dismiss="alert">
+        <i class="icon-remove"></i>
+      </button>
+    </div>
+<% end %>
+<style>
+  .chat_content_group.self > .chat_content {
+    text-align: left;
+  }
+
+  .chat_content_group.self > .chat_content {
+    background: rgba(0, 0, 0, 0) linear-gradient(#fff, #e1e1e1) repeat scroll 0 0;
+  }
+
+  .chat_content_group.buddy {
+    text-align: left;
+  }
+
+  .chat_content {
+    background: rgba(0, 0, 0, 0) linear-gradient(#cf9, #9c3) repeat scroll 0 0;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px #000;
+    display: inline-block;
+    line-height: 1.4;
+    max-width: 50%;
+    min-height: 16px;
+    padding: 10px 15px;
+    word-break: break-all;
+  }
+
+  .chat_container {
+    background: #a8b6b9 none repeat scroll 0 0;
+    min-height: 100%;
+    width: 100%;
+  }
+
+  .chat_container {
+    background: rgba(0, 0, 0, 0.5) none repeat scroll 0 0 !important;
+    min-height: 100%;
+    width: 100%;
+  }
+
+  .panel_body {
+    background: #ededed none repeat scroll 0 0;
+    min-height: 100%;
+    position: relative;
+    width: 100%;
+  }
+
+  .panel_body {
+    min-height: 100%;
+    position: relative;
+    width: 100%;
+  }
+
+</style>
+<div>
+
+  <% @user_consults.each_with_index do |c, index| %>
+      <div class="panel_body chat_container" style="width:800px;padding:0 5px; <%= 'padding-top:10px' if index==0 %>">
+
+        <div class=" chat_content_group <%= c.admin_reply ? 'self text-right' : 'buddy text-left' %> ">
+          <span><%= c.nickname if !c.admin_reply %></span>
+
+          <p class="chat_content"><%= c.content %></p> <span><%= '小豆' if c.admin_reply %></span>
+        </div>
+      </div>
+  <% end %>
+</div>
+<nav>
+  <%= paginate @user_consults %>
+</nav>
