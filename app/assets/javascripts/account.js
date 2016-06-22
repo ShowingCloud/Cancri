@@ -22,6 +22,7 @@ $(function () {
         if (mobile_number === '' || mobile_number.length !== 11 || isNaN(mobile_number)) {
             alert('手机号码格式不正确');
             mobile.focus();
+            refresh_captcha();
             return;
         } else {
 
@@ -43,9 +44,13 @@ $(function () {
                                 "type": self.attr('data-type')
                             },
                             success: function (data) {
+                                if(!data[0]){
+                                    refresh_captcha();
+                                }
                                 return alert(data[1]);
                             },
                             error: function (data) {
+                                refresh_captcha();
                                 return alert(data[1]);
                             },
                             complete: function () {
