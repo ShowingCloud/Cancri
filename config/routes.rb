@@ -26,6 +26,10 @@ Rails.application.routes.draw do
   post 'courses/cancel' => 'courses#cancel_apply'
   resources :courses
   resources :notifications
+  namespace :kindeditor do
+    post '/upload' => 'assets#create'
+    get '/filemanager' => 'assets#list'
+  end
 
   # -----------------------------------------------------------
   # Admin
@@ -109,6 +113,9 @@ Rails.application.routes.draw do
     resources :videos
     resources :consults
   end
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 
   get 'user' => redirect('/user/preview')
 

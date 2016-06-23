@@ -11,13 +11,20 @@ class Admin::AccountsController < AdminController
   end
 
   def create
-    if verify_rucaptcha? params[:_rucaptcha]
+    require 'geetest_sdk'
+
+    challenge = params[:geetest_challenge] || ''
+    validate = params[:geetest_validate] || ''
+    sec_code = params[:geetest_seccode] || ''
+
+    sdk = GeetestSDK.new(Settings.geetest_key)
+    if sdk.validate(challenge, validate, sec_code)
       emp = Admin.find_by(job_number: params[:job_number])
       cookies[:job_number] = params[:job_number]
       if emp.blank?
         flash[:error] = '工号不存在'
         render action: 'new'
-      elsif not emp.auth_permissions(['admin', 'super_admin', 'teacher', 'audit', 'score', 'super_editor' 'editor'])
+      elsif not emp.auth_permissions(['admin', 'super_admin', 'teacher', 'audit', 'score', 'super_editor', 'editor'])
         flash[:error] = '此账号没有权限登录'
         render action: 'new'
       else

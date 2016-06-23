@@ -37,7 +37,7 @@
 
                         <div class="input-group form-group mobile_info optional">
                           <input id="user-reset_mobile" class="string optional form-control" type="text" placeholder="请输入要添加的手机" name="mobile_info" value="<%= current_user.mobile_info %>">
-                          <span class="input-group-addon btn btn-default" data-key="user-reset" data-type="RESET_MOBILE" id="btn_send_mobile_code">发送验证码</span>
+                          <span class="input-group-addon btn-robodou-fix" data-key="user-reset" data-type="RESET_MOBILE" id="btn_send_mobile_code">发送验证码</span>
                         </div>
                         <div class="form-inputs">
                           <input id="email_code" class="string required form-control" placeholder="请输入手机收到的验证码" type="text" name="email_code" value="<%= current_user.email_code %>">
@@ -51,7 +51,7 @@
 
 
                         <div class="form-actions">
-                          <%= f.submit class: 'btn btn-primary btn-block', value: '提交', 'data-disable-with' => '提交' %>
+                          <%= f.submit class: 'btn-robodou btn-block', value: '提交', 'data-disable-with' => '提交' %>
                         </div>
                       </div>
                     </div>

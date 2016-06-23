@@ -18,7 +18,7 @@
 
                         <div class="input-group form-group email_info optional">
                           <input id="user-email" class="email-value string optional form-control" type="text" placeholder="请输入要更换的邮箱" name="email_info" value="<%= current_user.email_info %>">
-                          <span class="input-group-addon btn btn-default user-add-email" id="basic-addon2">发送验证码</span>
+                          <span class="input-group-addon btn-robodou-fix user-add-email" id="basic-addon2">发送验证码</span>
                         </div>
                         <div class="form-inputs">
                           <input id="email_code" class="string required form-control" placeholder="请输入邮箱收到的验证码" type="text" name="email_code" value="<%= current_user.email_code %>">
@@ -53,7 +53,7 @@
                         </div>
 
                         <div class="form-actions">
-                          <%= f.submit class: 'btn btn-primary btn-block', value: '提交', 'data-disable-with' => '提交' %>
+                          <%= f.submit class: 'btn-robodou btn-block', value: '提交', 'data-disable-with' => '提交' %>
                         </div>
                       </div>
                     </div>

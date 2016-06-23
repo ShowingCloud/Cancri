@@ -6,6 +6,8 @@
           <%= @course.name %>
         </div>
         <div class="content">
+          <p><%= @course.desc %></p>
+
           <p>对象：<%= @course.target %></p>
 
           <p class="already_time">报名时间：<%= @course.apply_start_time.strftime('%Y-%m-%d') %>
@@ -51,8 +53,8 @@
                       <% end %>
                     </select>
                   </div>
-                  <input type="hidden" id="user-info-district" value="<%= @user_info.district_id %>">
-                  <input type="hidden" id="user-info-school" value="<%= @user_info.school_id %>">
+                  <input type="hidden" id="user-info-district" class="dis-hidden-input" value="<%= @user_info.district_id %>">
+                  <input type="hidden" id="user-info-school" class="school-hidden-input" value="<%= @user_info.school_id %>">
 
                   <div class="input-row">
                     <label for="user-info-school" class="control-label"><i class="glyphicon glyphicon-education"></i>

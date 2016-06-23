@@ -1,6 +1,6 @@
-<% @action_preview_array = Array['email', 'reset_email', 'mobile', 'preview', 'profile', 'passwd', 'reset_mobile'] %>
-<% @action_notify_array = Array['notification', 'notify_show'] %>
-<% @action_apply_array = Array['apply'] %>
+<% @action_preview_array = ['email', 'reset_email', 'mobile', 'preview', 'profile', 'passwd', 'reset_mobile'] %>
+<% @action_notify_array = ['notification', 'notify_show'] %>
+<% @action_apply_array = ['apply'] %>
 
 
 <div class="sidebar">
@@ -45,7 +45,7 @@
         我的积分
       </div>
     </a>
-    <a href="">
+    <a href="<%= user_consult_path %>">
       <div class="sidebar-item">
         <i class="glyphicon glyphicon-comment"></i>
         调戏小豆
