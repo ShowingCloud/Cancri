@@ -22,25 +22,27 @@
             <label for="password" class="sr-only">密 码</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="请输入您的密码" required="">
           </div>
-
           <div class="form-group">
-            <div class="row">
-              <div class="col-xs-12">
-                <div class="row">
-                  <div class="col-xs-7">
-                    <%= rucaptcha_input_tag(class: 'form-control', placeholder: '请输入验证码') %>
-                  </div>
-                  <div class="col-xs-5">
-                    <p id="captcha-plus" class="pull-left">
-                      <a class="refresh-captcha" href="#">
-                        <%= rucaptcha_image_tag(alt: 'rucaptcha') %>
-                      </a>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <script type="text/javascript" src="http://api.geetest.com/get.php?gt=a40fd3b0d712165c5d13e6f747e948d4"></script>
           </div>
+          <!--<div class="form-group">-->
+          <!--<div class="row">-->
+          <!--<div class="col-xs-12">-->
+          <!--<div class="row">-->
+          <!--<div class="col-xs-7">-->
+          <!--<%= rucaptcha_input_tag(class: 'form-control', placeholder: '请输入验证码') %>-->
+          <!--</div>-->
+          <!--<div class="col-xs-5">-->
+          <!--<p id="captcha-plus" class="pull-left">-->
+          <!--<a class="refresh-captcha" href="#">-->
+          <!--<%= rucaptcha_image_tag(alt: 'rucaptcha') %>-->
+          <!--</a>-->
+          <!--</p>-->
+          <!--</div>-->
+          <!--</div>-->
+          <!--</div>-->
+          <!--</div>-->
+          <!--</div>-->
 
           <div class="form-group">
             <button class="btn btn-success btn-lg btn-block" type="submit">立即登录</button>

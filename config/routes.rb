@@ -114,6 +114,9 @@ Rails.application.routes.draw do
     resources :consults
   end
 
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+
   get 'user' => redirect('/user/preview')
 
   match 'user/preview' => 'user#preview', as: 'user_preview', via: [:get, :post]
