@@ -6,7 +6,7 @@
           <%= @course.name %>
         </div>
         <div class="content">
-          <p><%= @course.desc %></p>
+          <p>课程描述:<%= @course.desc.html_safe %></p>
 
           <p>对象：<%= @course.target %></p>
 
