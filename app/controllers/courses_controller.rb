@@ -36,22 +36,26 @@ class CoursesController < ApplicationController
     grade = params[:grade]
     cd = params[:cd]
     if username.present? && district_id.present? && school_id.present? && grade.present? && cd.present?
-      has_apply= CourseUserShip.where(user_id: current_user.id, course_id: cd).exists?
-      if has_apply
-        result=[false, '您已经报名该比赛']
+      if require_mobile
+        has_apply= CourseUserShip.where(user_id: current_user.id, course_id: cd).exists?
+        if has_apply
+          result=[false, '您已经报名该比赛']
+        else
+          u_r = UserProfile.where(user_id: current_user.id).take
+          if u_r.present?
+            u_r.update_attributes(username: username, grade: grade, district_id: district_id, school_id: school_id)
+          else
+            UserProfile.create!(user_id: current_user.id, username: username, grade: grade, district_id: district_id, school_id: school_id)
+          end
+          c_u = CourseUserShip.create!(user_id: current_user.id, course_id: cd, school_id: school_id, grade: grade)
+          if c_u.save
+            result = [true, '报名成功']
+          else
+            result = [false, '报名失败']
+          end
+        end
       else
-        u_r = UserProfile.where(user_id: current_user.id).take
-        if u_r.present?
-          u_r.update_attributes(username: username, grade: grade, district_id: district_id, school_id: school_id)
-        else
-          UserProfile.create!(user_id: current_user.id, username: username, grade: grade, district_id: district_id, school_id: school_id)
-        end
-        c_u = CourseUserShip.create!(user_id: current_user.id, course_id: cd, school_id: school_id, grade: grade)
-        if c_u.save
-          result = [true, '报名成功']
-        else
-          result = [false, '报名失败']
-        end
+        result = [false, '请先在个人中心添加手机']
       end
     else
       result = [false, '信息不完整']

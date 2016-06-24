@@ -31,6 +31,10 @@
       <%= @course.district.name %>
     </li>
     <li class="list-group-item">
+      <span class="text-primary show-span-width">所属老师:</span>
+      <%= @course.user.user_profile.username %>
+    </li>
+    <li class="list-group-item">
       <span class="text-primary show-span-width">人数:</span>
       <%= @course.num %>
     </li>
