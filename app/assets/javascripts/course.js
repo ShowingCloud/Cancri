@@ -21,3 +21,7 @@ $('#user-apply-course').on('click', function () {
         }
     })
 });
+$('.alert-add-mobile').on('click', function () {
+    alert('请先在个人中心添加手机');
+    window.location = '/user/mobile';
+});

@@ -35,6 +35,7 @@
           <% else %>
               <%= f.input :name %>
           <% end %>
+          <%= f.input :user_id, label: '所属老师', collection: UserRole.joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').where(role_id: 1, status: 1).pluck('u_p.user_id', 'u_p.username').map { |t| [t[1], t[0]] } %>
           <%= f.input :target %>
           <%= f.input :num, label: '接纳人数' %>
           <%= f.input :district_id, collection: District.all %>

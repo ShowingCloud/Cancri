@@ -1,14 +1,16 @@
 class Course < ApplicationRecord
   belongs_to :district
   has_many :course_user_ships
+  belongs_to :user
   has_many :users, through: :course_user_ships
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
   validates :target, presence: true, format: {with: /\A[\u4e00-\u9fa5]+\Z/i, message: '请用汉字描述'}
   validates :num, presence: true, format: {with: /\A[1-9]\d+\Z/i, message: '只能为整数'}
   validates :run_time, presence: true
   validates :run_address, presence: true
   validates :status, presence: true
   validates :district_id, presence: true
+  validates :user_id, presence: true
   after_validation :validate_datetime
   STATUS = {
       待审核: 0,

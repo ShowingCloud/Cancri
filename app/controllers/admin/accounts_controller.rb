@@ -18,9 +18,11 @@ class Admin::AccountsController < AdminController
     sec_code = params[:geetest_seccode] || ''
 
     sdk = GeetestSDK.new(Settings.geetest_key)
+    if params[:job_number].present?
+      cookies[:job_number] = params[:job_number]
+    end
     if sdk.validate(challenge, validate, sec_code)
       emp = Admin.find_by(job_number: params[:job_number])
-      cookies[:job_number] = params[:job_number]
       if emp.blank?
         flash[:error] = '工号不存在'
         render action: 'new'
@@ -33,6 +35,7 @@ class Admin::AccountsController < AdminController
           flash[:notice] = message
           sing_in(emp)
           redirect_to '/admin/'
+          cookies.delete :job_number
         else
           flash[:error] = message
           render action: 'new'
