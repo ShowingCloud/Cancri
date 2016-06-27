@@ -24,3 +24,7 @@
     height: 32px;
     right: 18px
 }
+
+.login-dialog .modal-dialog {
+    width: 400px;
+}

@@ -277,4 +277,4 @@ zh-CN:
   status:
      status0: '待审核'
      status1: '通过'
-     status2: '不通过'
+     status2: '未通过'

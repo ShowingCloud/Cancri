@@ -141,6 +141,9 @@ Rails.application.routes.draw do
   match '/user/apply' => 'user#apply', as: 'user_apply', via: [:get]
   match '/user/cancel_apply' => 'user#cancel_apply', as: 'user_cancel_apply', via: [:post, :get]
   get '/user/get_school' => 'user#get_school', as: 'user_get_school'
+  match '/user/programs' => 'user#programs', as: 'user_programs', via: [:get]
+  match '/user/programs/:id' => 'user#program', via: [:get]
+  post 'user/course_score' => 'user#course_score', as: 'user_course_score'
   # mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
 end

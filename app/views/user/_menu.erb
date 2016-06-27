@@ -1,6 +1,6 @@
 <% @action_preview_array = ['email', 'reset_email', 'mobile', 'preview', 'profile', 'passwd', 'reset_mobile'] %>
 <% @action_notify_array = ['notification', 'notify_show'] %>
-<% @action_apply_array = ['apply'] %>
+<% @action_apply_array = ['apply', 'programs'] %>
 
 
 <div class="sidebar">
@@ -21,10 +21,10 @@
         个人信息
       </div>
     </a>
-    <a href="<%= user_apply_path %>">
+    <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>">
       <div class="sidebar-item <%= 'active' if @action_apply_array.include?(action_name) %>">
         <i class="glyphicon glyphicon-flag"></i>
-        报名信息
+        <%= has_teacher_role ? '项目管理' : '报名信息' %>
       </div>
     </a>
     <a href="">

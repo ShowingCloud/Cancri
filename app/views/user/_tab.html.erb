@@ -36,7 +36,7 @@
       </a>
   <% end %>
   <% if @action_apply_array.include?(action_name) %>
-      <a href="<%= user_apply_path %>">
+      <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>">
         <div class="sub-menu-item active">
           课程
         </div>
