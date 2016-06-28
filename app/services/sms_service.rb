@@ -79,7 +79,7 @@ class SMSService
       status = true
     else
       status = FALSE
-      status = send_code_for_add_mobile(code) if type == TYPE_CODE_ADD_MOBILE
+      status = send_code_for_add_mobile(code) if (type == TYPE_CODE_ADD_MOBILE || type == TYPE_CODE_RESET_MOBILE)
       status = send_code_for_register(code) if type == TYPE_CODE_REGISTER
       status = send_code_for_reset_password(code) if type == TYPE_CODE_RESET_PASSWORD
     end
