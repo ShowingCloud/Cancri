@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  helper_method :has_teacher_role
+  helper_method :has_teacher_role, :is_teacher
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
@@ -37,6 +37,13 @@ class ApplicationController < ActionController::Base
   def has_teacher_role
     return false if current_user.blank?
     @has_th_role ||= UserRole.where(user_id: current_user.id, role_id: 1, status: 1).exists?
+  end
+
+  def is_teacher
+    if has_teacher_role
+    else
+      render_optional_error(403)
+    end
   end
 
   private

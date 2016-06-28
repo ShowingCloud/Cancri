@@ -1,5 +1,6 @@
 class UserController < ApplicationController
   before_action :authenticate_user!
+  before_action :is_teacher, only: [:programs, :program, :program_se, :create_program, :course_score]
 
   # 个人信息概览
   def preview
@@ -130,7 +131,7 @@ class UserController < ApplicationController
   end
 
   def programs
-    @courses = Course.where(user_id: current_user.id).page(params[:page]).per(8)
+    @courses = Course.where(user_id: current_user.id).order('id desc').page(params[:page]).per(8)
   end
 
   def program
@@ -140,6 +141,26 @@ class UserController < ApplicationController
     else
       render_optional_error(404)
     end
+  end
+
+  def create_program
+    @course = Course.new
+    if request.method == 'POST'
+      params_program
+    end
+  end
+
+  def program_se
+    course = Course.find(params[:id])
+    if course && course.user_id == current_user.id
+      @course = course
+    else
+      render_optional_error(403)
+    end
+    if request.method == 'POST'
+      params_program
+    end
+
   end
 
   def course_score
@@ -499,6 +520,32 @@ class UserController < ApplicationController
     sms = SMSService.new(params[:mobile])
     data = sms.send_code('ADD_MOBILE', request.ip)
     render json: data
+  end
+
+  private
+
+  def params_program
+    course_params = params.require(:course).permit(:name, :num, :target, :run_address, :run_time, :desc, :apply_start_time, :apply_end_time, :start_time, :end_time, :district_id)
+    @course.name = course_params[:name]
+    @course.num = course_params[:num]
+    @course.district_id = course_params[:district_id]
+    @course.run_address = course_params[:run_address]
+    @course.run_time = course_params[:run_time]
+    @course.apply_start_time = course_params[:apply_start_time]
+    @course.apply_end_time = course_params[:apply_end_time]
+    @course.target = course_params[:target]
+    @course.user_id = current_user.id
+    @course.desc = course_params[:desc]
+    @course.start_time = course_params[:start_time]
+    @course.end_time = course_params[:end_time]
+    if action_name == 'program_se'
+      @course.status = 0
+    end
+
+    if @course.save
+      flash[:success] = '操作成功'
+      redirect_to user_programs_path
+    end
   end
 
 end

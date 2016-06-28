@@ -24,13 +24,16 @@ class Course < ApplicationRecord
         errors[:apply_start_time] << '报名结束时间不能早于报名开始时间'
       end
       if start_time < apply_end_time
-        errors[:start_time] << '比赛开始时间不能早于报名结束时间'
+        errors[:start_time] << '课程开始时间不能早于报名结束时间'
       end
       if start_time > end_time
         errors[:start_time] << '课程结束时间不能早于课程开始时间'
       end
+      if apply_end_time < Time.now
+        errors[:start_time] << '课程报名结束时间不能早于现在'
+      end
     else
-      errors[:start_time] << '课程报名起始时间和课程起始时间为必填项'
+      errors[:start_time] << '课程报名起始时间和课程开课起始时间为必填项'
     end
   end
 end
