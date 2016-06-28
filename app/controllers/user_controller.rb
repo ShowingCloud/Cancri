@@ -129,6 +129,43 @@ class UserController < ApplicationController
     @apply_info = apply
   end
 
+  def programs
+    @courses = Course.where(user_id: current_user.id).page(params[:page]).per(8)
+  end
+
+  def program
+    course = Course.find(params[:id])
+    if course && course.user_id == current_user.id
+      @apply_info = CourseUserShip.joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').joins('left join districts d on u_p.district_id = d.id').select(:id, :grade, :score, 'courses.name as course_name', 'courses.user_id', 'u_p.username', 'd.name as district_name', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
+    else
+      render_optional_error(404)
+    end
+  end
+
+  def course_score
+    cud = params[:cud]
+    score = params[:score].to_s
+    if request.method == 'POST'
+      if cud.present? && score.present?
+        course = CourseUserShip.left_joins(:course).where(id: cud).select(:id, :score, 'courses.user_id').first
+        if course.user_id == current_user.id
+          if CourseUserShip.find(cud).update_attributes!(score: score)
+            result = [true, '打分成功']
+          else
+            result = [false, '打分失败']
+          end
+        else
+          result = [false, '非法操作']
+        end
+      else
+        result = [false, '参数不完整']
+      end
+    else
+      result = [false, '非法请求']
+    end
+    render json: result
+  end
+
   def cancel_apply
     if request.method == 'POST'
       type = params[:t].to_i

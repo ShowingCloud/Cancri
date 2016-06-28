@@ -1,0 +1,78 @@
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+
+            <% if @apply_info.present? %>
+                <h4 class="text-center"><%= @apply_info[0].course_name %>--学生信息</h4>
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>姓名</th>
+                    <th>手机</th>
+                    <th>区县</th>
+                    <th>学校</th>
+                    <th>年级</th>
+                    <th>成绩</th>
+
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <% @apply_info.each do |c| %>
+                      <tr>
+                        <td><%= c.username %></td>
+                        <td><%= c.mobile %></td>
+                        <td><%= c.district_name %></td>
+                        <td><%= c.school_name %></td>
+                        <td><%= c.grade %></td>
+                        <td>
+                          <% if c.end_time > Time.now %>
+                              课程未结束
+                          <% elsif (Time.now-c.end_time) > 3.days %>
+                              <%= c.score %>
+                          <% else %>
+                              <% if c.score.present? %>
+                                  <label class="btn btn-xs btn-info update-course-score" id="<%= c.id %>" data-id="<%= c.id %>" data-name="<%= c.username %>" title="更改成绩"><%= c.score %></label>
+                              <% else %>
+                                  <label class="btn btn-xs btn-default create-course-score" data-id="<%= c.id %>" data-name="<%= c.username %>" title="打分">打分</label>
+                              <% end %>
+                          <% end %>
+                        </td>
+                        <td>
+                        </td>
+                      </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+
+                <nav>
+                  <%= paginate @apply_info %>
+                </nav>
+            <% else %>
+                <div class="alert alert-info">暂时还没有报名学生</div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,62 @@
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <button class="btn btn-sm btn-info pull-right">创建课程</button>
+            <br><br>
+            <% if @courses %>
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>课程名</th>
+                    <th>开展时间</th>
+                    <th>创建时间</th>
+                    <th>状态</th>
+                    <th>查看</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <% @courses.each do |c| %>
+                      <tr>
+                        <td><%= c.name %> </td>
+                        <td><%= c.start_time.strftime('%Y-%m-%d') %><%= " -- #{c.end_time.strftime('%Y-%m-%d')}" if c.end_time.present? %> </td>
+                        <td><%= c.created_at.strftime('%Y-%m-%d') %></td>
+                        <td><%= t('status.status'+c.status.to_s) %></td>
+                        <td><a href="<%= "#{user_programs_path}/#{c.id}" %>" class="label label-primary" title="查看详情">
+                          查看</a></td>
+                      </tr>
+
+                  <% end %>
+                  </tbody>
+                </table>
+                <nav>
+                  <%= paginate @courses %>
+                </nav>
+            <% else %>
+                您暂时没有所属课程。
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
