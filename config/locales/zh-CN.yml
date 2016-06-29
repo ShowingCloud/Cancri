@@ -95,6 +95,8 @@ zh-CN:
       month: 月
       second: 秒
       year: 年
+
+  ## translation missing: zh-CN.errors.messages.custom
   errors:
     format: ! '%{attribute}%{message}'
     messages:
@@ -130,6 +132,7 @@ zh-CN:
         one: 长度非法（必须为一个字符）
         other: 长度非法（必须为 %{count} 个字符）
       other_than: 长度非法（不可为 %{count} 个字符
+      extension_white_list_error: 文件格式不允许
     template:
       body: 如下字段出现错误：
       header:
