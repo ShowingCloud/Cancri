@@ -592,20 +592,20 @@ div.separator {
   border-color: #6699cc;
 }
 
-.user-center .lesson-result {
+.user-center {
 
 }
 
-.user-center .lesson-result .result-table {
+.user-center .result-table {
   width: 100%;
 }
 
-.user-center .lesson-result .result-table th {
+.user-center .result-table th {
   border-bottom: 1px solid #FFFFFF;
   padding: 15px 10px;
 }
 
-.user-center .lesson-result .result-table td {
+.user-center .result-table td {
   padding: 10px;
 }
 
@@ -927,4 +927,21 @@ select {
   text-decoration: none;
   text-shadow: none;
   cursor: pointer;
+}
+
+.alert-danger-robodou {
+  border: 1px solid #a94442;
+  box-shadow: none;
+  color: #a94442;
+  text-shadow: none;
+}
+
+.user-center .close {
+  float: right;
+  font-size: inherit;
+  font-weight: normal;
+  line-height: inherit;
+  color: inherit;
+  text-shadow: none;
+  opacity: 1;
 }
