@@ -24,6 +24,7 @@
           <p class="already_num">已报名人数：<%= @course.apply_count %></p>
 
           <input type="hidden" id="apply-course" value="<%= @course.id %>">
+          <div class="text-center">
           <% if @has_apply %>
               <span class="label label-info">您已报名</span>
           <% else %>
@@ -37,8 +38,12 @@
                   <% end %>
               <% end %>
           <% end %>
+          </div>
           <% if current_user.present? %>
               <div class="apply">
+                <div class="title">
+                  请填写报名信息
+                </div>
                 <form>
                   <div class="input-row">
                     <label for="user-info-username" class=""><i class="glyphicon glyphicon-user"></i> 姓名:</label>
@@ -57,14 +62,18 @@
                   <input type="hidden" id="user-info-school" class="school-hidden-input" value="<%= @user_info.school_id %>">
 
                   <div class="input-row">
+                    <div class="left">
                     <label for="user-info-school" class="control-label"><i class="glyphicon glyphicon-education"></i>
                       学校:</label>
+                    </div>
+                    <div class="right">
                     <% if @user_info.school_id %>
                         <button class="choice-school btn-robodou">更改学校</button>
                         <span class="selected-school"><%= @user_info.school_name %></span>
                     <% else %>
                         <button class="choice-school btn-robodou">选择学校</button>
                     <% end %>
+                    </div>
                   </div>
                   <div class="input-row">
                     <label for="user-info-grade" class="control-label"><i class="glyphicon glyphicon-registration-mark"></i>
@@ -87,6 +96,7 @@
                   </div>
                   <div class="button-row">
                     <button class="btn-robodou apply-lesson">确认报名</button>
+                    <button class="btn-robodou apply-cancel">取消</button>
                   </div>
                 </form>
               </div>

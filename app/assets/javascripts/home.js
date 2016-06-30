@@ -48,6 +48,13 @@ $(function () {
         });
     }
 
+    if ($('.apply-cancel').length > 0) {
+        $('.apply-cancel').off('click').on('click',function(){
+            event.preventDefault();
+            $('.apply').removeClass('active');
+        })
+    }
+
     if ($('.choice-school').length > 0) {
         $('.choice-school').off('click').on('click', function (event) {
             event.preventDefault();
@@ -133,9 +140,31 @@ $(function () {
                     }
                 }
             };
-
             ajax_handle(option);
         });
+    }
+
+    if ($('#register-email').length > 0) {
+        $('#register-email').on('blur', function () {
+            var $this = $(this);
+            var em = $this.val();
+            var reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/i;
+            if (reg.test(em)) {
+                var option = {
+                    url: '/accounts/register_email_exists',
+                    type: 'post',
+                    data: {email: em},
+                    success: function (result) {
+                        if (result) {
+                            alert('该邮箱已被注册，请更换邮箱！');
+                        }
+                    }
+                };
+                ajax_handle(option)
+            } else {
+                alert('请填写正确的邮箱');
+            }
+        })
     }
 
 
