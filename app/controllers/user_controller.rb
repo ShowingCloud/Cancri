@@ -217,17 +217,17 @@ class UserController < ApplicationController
     render json: result
   end
 
-  def check_email_exists
-    render json: require_email
-  end
-
-  def check_mobile_exists
-    render json: require_mobile
-  end
-
-  def check_email_and_mobile
-    render json: require_email_and_mobile
-  end
+  # def check_email_exists
+  #   render json: require_email
+  # end
+  #
+  # def check_mobile_exists
+  #   render json: require_mobile
+  # end
+  #
+  # def check_email_and_mobile
+  #   render json: require_email_and_mobile
+  # end
 
   def email
     if params[:return_uri].present?
