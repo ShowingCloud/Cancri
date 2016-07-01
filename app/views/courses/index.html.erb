@@ -8,7 +8,7 @@
             </div>
             <div class="lesson-list">
               <% @courses.each do |c| %>
-                  <div class="lesson-item">
+                  <div class="lesson-item" data-course-id="<%= c.id %>">
                     <div class="title">
                       <%= c.name %>
                     </div>

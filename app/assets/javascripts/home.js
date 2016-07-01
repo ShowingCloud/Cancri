@@ -49,7 +49,7 @@ $(function () {
     }
 
     if ($('.apply-cancel').length > 0) {
-        $('.apply-cancel').off('click').on('click',function(){
+        $('.apply-cancel').off('click').on('click', function () {
             event.preventDefault();
             $('.apply').removeClass('active');
         })
@@ -173,6 +173,16 @@ $(function () {
 
     $(window).on('resize', function () {
         fix_height.init('#main');
+    });
+
+    $('.lesson-item').on('click', function () {
+        var $this = $(this);
+        $this.toggleClass('selected');
+        console.log($this.hasClass('selected'));
+        var id = $this.attr('data-course-id');
+        var name = $this.find('.title').text();
+        $.cookie({course:{}})
+
     });
 
     $('select[data-target]').off('change').on('change', function () {
