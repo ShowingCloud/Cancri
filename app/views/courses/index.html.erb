@@ -10,14 +10,22 @@
               <% @courses.each do |c| %>
                   <div class="lesson-item">
                     <div class="title">
-                      <%= c.name %>
-                    </div>
-                    <p>招募人数：<%= c.num %> </p>
+                      <%= c[:name] %>
 
-                    <p>剩余名额：<%= c.num-c.apply_count %></p>
-                    <a href="<%= "/courses/#{c.id}" %>" class="pull-right btn-robodou show-lesson">查看详情</a>
+                    </div>
+                    <p>有没有报名：<%= c[:has_apply] %></p>
+
+                    <p>报名结束时间：<%= c[:apply_end_time] %></p>
+
+                    <p>招募人数：<%= c[:num] %> </p>
+
+                    <p>剩余名额：<%= c[:num]-c[:apply_count] %></p>
+                    <a href="<%= "/courses/#{c[:id]}" %>" class="pull-right btn-robodou show-lesson">查看详情</a>
                   </div>
               <% end %>
+              <nav>
+                <%= paginate @course_array %>
+              </nav>
             </div>
         <% else %>
             <h3>暂无课程信息</h3>
