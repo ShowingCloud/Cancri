@@ -1,5 +1,5 @@
 class CoursesController < ApplicationController
-  # before_action :authenticate_user!, only: [:apply, :apply_show]
+  before_action :authenticate_user!, only: [:apply, :apply_show]
 
   def index
     course=Course.where(status: 1)
@@ -67,7 +67,7 @@ class CoursesController < ApplicationController
       district_id = params[:district]
       school_id = params[:school]
       grade = params[:grade]
-      cds = params[:cds]
+      cds = params[:cds].to_unsafe_h
       message = ''
       if username.present? && district_id.present? && school_id.present? && grade.present? && cds.present? && cds.is_a?(Hash)
         if require_mobile

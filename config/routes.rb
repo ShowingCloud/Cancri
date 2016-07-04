@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     end
   end
   get 'courses/index'
+  get 'courses/apply_show' => 'courses#apply_show'
   post 'courses/apply' => 'courses#apply'
   post 'courses/cancel' => 'courses#cancel_apply'
   resources :courses
