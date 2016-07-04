@@ -248,6 +248,28 @@ a:hover {
   overflow: hidden;
 }
 
+.lesson-item.selected {
+  border-color: #6699cc;
+}
+
+.lesson-item.selected:after{
+  content: '\e013';
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 18px;
+  color: #6699cc;
+  font-weight: bold;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  border: 1px solid #6699cc;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  display: block;
+}
+
 .lesson-item:last-child {
   margin-bottom: 0;
 }
@@ -319,7 +341,7 @@ a:hover {
   border-radius: 15px;
 }
 
-.apply form{
+.apply form {
   padding: 10px 50px;
 }
 
@@ -332,16 +354,16 @@ a:hover {
   line-height: 24px;
 }
 
-.apply .input-row .left{
+.apply .input-row .left {
   float: left;
   width: 65px;
 }
 
-.apply .input-row .right{
+.apply .input-row .right {
   margin-left: 65px;
 }
 
-.apply .selected-school{
+.apply .selected-school {
   display: block;
 }
 
@@ -968,4 +990,64 @@ select {
   color: inherit;
   text-shadow: none;
   opacity: 1;
+}
+
+.user-center .consults {
+  border: 1px solid rgba(0, 0, 0, 0.7);
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  height: 450px;
+  position: relative;
+}
+
+.user-center .win-panel {
+  height: 340px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.user-center .consults .consult {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #fff;
+  overflow: hidden;
+  padding-bottom: 10px;
+}
+
+.user-center .consults .consult .time {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.user-center .consults .consult .time strong {
+  color: #93e0f7;
+}
+
+.user-center .consults .consult .left {
+  float: left;
+}
+
+.user-center .consults .consult .left .time {
+  float: left;
+}
+
+.user-center .consults .consult .right {
+  float: right;
+  text-align: right;
+}
+
+.user-center .consults .consult .right .time {
+  float: right;
+}
+
+.user-center .consult .talk {
+  display: inline-block;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: #f5f5f5;
+  padding: 8px 12px;
+  color: #444;
+  word-break: break-all;
+  clear: both;
 }
