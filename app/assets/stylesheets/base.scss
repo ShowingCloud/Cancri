@@ -252,7 +252,7 @@ a:hover {
   border-color: #6699cc;
 }
 
-.lesson-item.selected:after{
+.lesson-item.selected:after {
   content: '\e013';
   position: absolute;
   right: 10px;
@@ -1050,4 +1050,105 @@ select {
   color: #444;
   word-break: break-all;
   clear: both;
+}
+
+.apply-show {
+  border: 1px solid #fff;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 15px;
+}
+
+.apply-show .apply-lessons {
+  margin: 0 auto;
+  padding: 20px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.apply-show .apply-lessons .title {
+  font-size: 14px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #fff;
+}
+
+.apply-show .apply-lessons .content {
+  padding: 20px;
+}
+
+.apply-show .lesson-control {
+  font-size: 14px;
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid #6699cc;
+  border-radius: 5px;
+  margin: 0 20px;
+}
+
+.apply-show .lesson-control .remove-lesson {
+  cursor: pointer;
+  color: #6699cc;
+  margin-left: 8px;
+}
+
+.apply-show .apply-info {
+  margin: 0 auto;
+  padding: 20px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.apply-show .apply-info .title {
+  font-size: 14px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #fff;
+}
+
+.apply-show .apply-info .input-box {
+  width: 400px;
+  margin: 30px auto;
+  font-size: 14px;
+}
+
+.apply-show .apply-info .input-box .input-robodou {
+  width: 100%;
+}
+
+.apply-show .apply-info .input-box select {
+  width: 100%;
+}
+
+.apply-show .apply-info .input-box .input-row {
+  margin-bottom: 10px;
+}
+
+.apply-show .apply-info .input-box .input-row .left {
+  width: 100px;
+  float: left;
+  padding-right: 20px;
+  text-align: right;
+}
+
+.apply-show .apply-info .input-box .input-row .right {
+  margin-left: 100px;
+  text-align: left;
+}
+
+.apply-show .apply-action {
+  margin-bottom: 20px;
+  text-align: right;
+  padding: 20px;
+}
+
+.btn-big {
+  font-size: 18px;
+  padding: 18px 40px;
+}
+
+.btn-confirm-apply {
+  border-radius: 0;
+  background: #6699cc;
+  color: #fff;
 }

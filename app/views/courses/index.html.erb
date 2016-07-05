@@ -4,22 +4,32 @@
       <div class="lesson">
         <% if @courses.size>0 %>
             <div class="lesson-screening">
-
+              <div class="pull-right">
+                <a href="/courses/apply_show" id="go-apply" class="btn-robodou btn-apply-show">去报名</a>
+              </div>
             </div>
             <div class="lesson-list">
               <% @courses.each do |c| %>
-                  <div class="lesson-item" data-course-id="<%= c.id %>">
+                  <div class="lesson-item <%= 'disable' if c[:has_apply] %> <%= 'overtime' if c[:apply_end_time]<Time.now %>" data-course-id="<%= c[:id] %>">
                     <div class="title">
                       <%= c[:name] %>
 
                     </div>
-                    <p>有没有报名：<%= c[:has_apply] %></p>
 
-                    <p>报名结束时间：<%= c[:apply_end_time] %></p>
+                    <p>报名结束时间：<%= c[:apply_end_time].try(:strftime, '%Y-%m-%d') %></p>
 
                     <p>招募人数：<%= c[:num] %> </p>
 
                     <p>剩余名额：<%= c[:num]-c[:apply_count] %></p>
+
+                    <% if c[:has_apply] %>
+                        <p>您已报名</p>
+                    <% end %>
+
+                    <% if c[:apply_end_time]<Time.now %>
+                        <p>报名结束</p>
+                    <% end %>
+
                     <a href="<%= "/courses/#{c[:id]}" %>" class="pull-right btn-robodou show-lesson">查看详情</a>
                   </div>
               <% end %>
