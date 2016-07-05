@@ -79,16 +79,25 @@ class CoursesController < ApplicationController
               UserProfile.create!(user_id: current_user.id, username: username, grade: grade, district_id: district_id, school_id: school_id)
             end
             cds.each do |cd|
-              has_apply= CourseUserShip.where(user_id: current_user.id, course_id: cd[0]).exists?
-              if has_apply
-                message += cd[1].to_s+':已经报名过，无需再次报名;'
-              else
-                c_u = CourseUserShip.create!(user_id: current_user.id, course_id: cd[0], school_id: school_id, grade: grade)
-                if c_u.save
-                  message += cd[1].to_s+':报名成功;'
+              course = Course.where(id: cd[0]).take
+              if course.present?
+                if course.apply_end_time > Time.now
+                  has_apply= CourseUserShip.where(user_id: current_user.id, course_id: cd[0]).exists?
+                  if has_apply
+                    message += cd[1].to_s+':已经报名过，无需再次报名;'
+                  else
+                    c_u = CourseUserShip.create!(user_id: current_user.id, course_id: cd[0], school_id: school_id, grade: grade)
+                    if c_u.save
+                      message += cd[1].to_s+':报名成功;'
+                    else
+                      message += cd[1].to_s+':报名失败;'
+                    end
+                  end
                 else
-                  message += cd[1].to_s+':报名失败;'
+                  message += cd[1].to_s+':已过报名时间,不能报名'
                 end
+              else
+                message += cd[1].to_s+':不存在该课程'
               end
             end
             result = [true, message]

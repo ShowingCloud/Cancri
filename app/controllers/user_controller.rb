@@ -154,12 +154,17 @@ class UserController < ApplicationController
     course = Course.find(params[:id])
     if course && course.user_id == current_user.id
       @course = course
+      # @course_score_attr = @course.course_score_attributes ||= @course.course_score_attributes.build
     else
       render_optional_error(403)
     end
     if request.method == 'POST'
       params_program
     end
+
+  end
+
+  def course_attrs
 
   end
 
@@ -525,7 +530,7 @@ class UserController < ApplicationController
   private
 
   def params_program
-    course_params = params.require(:course).permit(:name, :num, :target, :run_address, :run_time, :desc, :apply_start_time, :apply_end_time, :start_time, :end_time, :district_id)
+    course_params = params.require(:course).permit(:name, :num, :target, :run_address, :run_time, :desc, :apply_start_time, :apply_end_time, :course_ware, :start_time, :end_time, :district_id)
     @course.name = course_params[:name]
     @course.num = course_params[:num]
     @course.district_id = course_params[:district_id]
@@ -538,13 +543,23 @@ class UserController < ApplicationController
     @course.desc = course_params[:desc]
     @course.start_time = course_params[:start_time]
     @course.end_time = course_params[:end_time]
+    result=[]
     if action_name == 'program_se'
-      @course.status = 0
+      # @course.status = 0
+      if course_params[:course_ware].present?
+        c_f=CourseFile.create!(course_ware: course_params[:course_ware], course_id: @course.id)
+        if c_f.save
+          result =[true, '课件上传成功']
+        else
+          result =[false, '课件上传失败']
+        end
+      end
     end
 
     if @course.save
-      flash[:success] = '操作成功'
-      redirect_to user_programs_path
+
+      flash[:success] = result[0] ? '操作成功!' : '--课件上传失败'
+      redirect_to user_program_se_path
     end
   end
 

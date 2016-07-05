@@ -261,6 +261,7 @@ zh-CN:
       photo: '图片'
       consult: '用户反馈'
       course: '课程'
+      course_score_attribute: '评分标准'
   views:
     pagination:
         first: "首页"

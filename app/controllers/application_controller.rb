@@ -40,8 +40,7 @@ class ApplicationController < ActionController::Base
   end
 
   def is_teacher
-    if has_teacher_role
-    else
+    unless has_teacher_role
       render_optional_error(403)
     end
   end
