@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :course_user_ships
   has_many :courses, through: :course_user_ships
   has_many :consults
+  has_many :course_user_scores
   mount_uploader :avatar, AvatarUploader
   accepts_nested_attributes_for :user_profile, allow_destroy: true
   # Include default devise modules. Others available are:
