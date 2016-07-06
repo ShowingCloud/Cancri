@@ -24,20 +24,21 @@
           <p class="already_num">已报名人数：<%= @course.apply_count %></p>
 
           <input type="hidden" id="apply-course" value="<%= @course.id %>">
+
           <div class="text-center">
-          <% if @has_apply %>
-              <span class="label label-info">您已报名</span>
-          <% else %>
-              <% if @course.apply_end_time < Time.now %>
-                  <span class="label label-warning">报名结束</span>
-              <% else %>
-                  <% if current_user %>
-                      <button type="button" class="btn-robodou <%= current_user.mobile.present? ? 'go-apply' : 'alert-add-mobile' %>">我要报名</button>
-                  <% else %>
-                      <a class="btn-robodou" href="<%= "/account/sign_in?return_url=#{url_encode(request.fullpath)}" %>">我要报名</a>
-                  <% end %>
-              <% end %>
-          <% end %>
+            <% if @has_apply %>
+                <span class="label label-info">您已报名</span>
+            <% else %>
+                <% if @course.apply_end_time < Time.now %>
+                    <span class="label label-warning">报名结束</span>
+                <% else %>
+                    <% if current_user %>
+                        <button type="button" class="btn-robodou <%= current_user.mobile.present? ? 'go-apply' : 'alert-add-mobile' %>">我要报名</button>
+                    <% else %>
+                        <a class="btn-robodou" href="<%= "/account/sign_in?return_url=#{url_encode(request.fullpath)}" %>">我要报名</a>
+                    <% end %>
+                <% end %>
+            <% end %>
           </div>
           <% if current_user.present? %>
               <div class="apply">
@@ -52,7 +53,7 @@
                   <div class="input-row">
                     <label for="user-info-district" class=""><i class="glyphicon glyphicon-globe"></i> 区县:</label>
                     <select id="district-select" class="">
-                      <option>请选择区县</option>
+                      <option value="0">请选择区县</option>
                       <% District.all.each do |d| %>
                           <option value="<%= d.id %>" <%= 'selected="selected"' if @user_info.district_id == d.id %>><%= d.name %></option>
                       <% end %>
@@ -63,16 +64,19 @@
 
                   <div class="input-row">
                     <div class="left">
-                    <label for="user-info-school" class="control-label"><i class="glyphicon glyphicon-education"></i>
-                      学校:</label>
+                      <label for="user-info-school" class="control-label"><i class="glyphicon glyphicon-education"></i>
+                        学校:</label>
                     </div>
                     <div class="right">
-                    <% if @user_info.school_id %>
-                        <button class="choice-school btn-robodou">更改学校</button>
-                        <span class="selected-school"><%= @user_info.school_name %></span>
-                    <% else %>
-                        <button class="choice-school btn-robodou">选择学校</button>
-                    <% end %>
+                      <div class="little-panels school-panel">
+                        <% if @user_info.school_id %>
+                            <button class="choice-school btn-robodou">更改学校</button>
+                            <span class="selected-school"><%= @user_info.school_name %></span>
+                        <% else %>
+                            <button class="choice-school btn-robodou">选择学校</button>
+                        <% end %>
+                      </div>
+                      <span class="special-tips">注意！幼儿园学生请<a class="add-school ">点击这里</a>填写学校</span>
                     </div>
                   </div>
                   <div class="input-row">
@@ -129,17 +133,23 @@
               <option value="<%= d.id %>"><%= d.name %></option>
           <% end %>
         </select>
-        <label for="school-group">类型</label>
-        <select name="group" id="school-group">
-          <option value="0">请选择类型</option>
-          <option value="1">小学</option>
-          <option value="2">初中</option>
-          <option value="3">高中</option>
-          <option value="4">大学</option>
-        </select>
       </div>
       <div class="school-list">
       </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="add-school">
+  <div class="school-modal-inner">
+    <div class="title">
+      添加学校
+    </div>
+    <div class="content">
+      <label for="add-school-input">学校名称：</label>
+      <input id="add-school-input" class="input-robodou" placeholder="请填写学校全称！" type="text"/>
+    </div>
+    <div class="bottom">
+      <button class="btn-robodou btn-add-school">确定添加</button>
     </div>
   </div>
 </div>
