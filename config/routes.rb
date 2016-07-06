@@ -150,7 +150,7 @@ Rails.application.routes.draw do
   post 'user/course_score' => 'user#course_score', as: 'user_course_score'
   match 'user/create_program' => 'user#create_program', as: 'user_create_program', via: [:get, :post]
   match 'user/program_se/:id' => 'user#program_se', as: 'user_program_se', via: [:get, :post]
-  match 'user/course_attrs/:id' => 'user#course_attrs', as: 'user_course_attrs', via: [:get, :post]
+  match 'user/course_ware/:id' => 'user#course_ware', as: 'user_course_ware', via: [:get, :post]
   # mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
 end

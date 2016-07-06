@@ -1,0 +1,62 @@
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content custom-help-error">
+            <h3><%= @course.name %></h3>
+
+
+            <div class="course-score-attrs-list">
+              <% if @course.course_score_attributes.present? %>
+                  <% @course.course_score_attributes.each do |cs| %>
+                      <%= cs.name %>--<%= cs.score_per %>
+                      <br>
+                  <% end %>
+              <% end %>
+            </div>
+            <%= link_to '新增评分标准', "#{new_course_score_attr_path}?cd=#{@course.id}", remote: true %>
+            <hr>
+
+
+            <% if @course_files.present? %>
+                <% @course_files.each do |cf| %>
+                    <%= cf.course_ware %>
+                    <br>
+                <% end %>
+            <% end %>
+
+            <%= simple_form_for(@course_file, html: {}, url: user_course_ware_path, method: :post) do |f| %>
+
+                <div class="form-group">
+                  <br>
+                  <%= f.file_field :course_ware %>
+                  <p>格式:ppt doc docx xls xlsx zip rar htm html txt gz bz2</p>
+                  <%= f.hidden_field :course_id, value: @course_file.course_id %>
+                </div>
+                <div class="form-actions">
+                  <%= f.submit class: 'btn btn-info', value: '上传', 'data-disable-with' => '上传' %>
+                </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
