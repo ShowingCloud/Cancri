@@ -15,27 +15,37 @@
             <div class="course-score-attrs-list">
               <% if @course.course_score_attributes.present? %>
                   <% @course.course_score_attributes.each do |cs| %>
-                      <%= cs.name %>--<%= cs.score_per %>
-                      <br>
+                      <div class="label label-primary">
+                        <span>类型：<%= cs.name %></span>
+                        <span>分数：<%= cs.score_per %></span>
+                      </div>
                   <% end %>
               <% end %>
             </div>
-            <%= link_to '新增评分标准', "#{new_course_score_attr_path}?cd=#{@course.id}", remote: true %>
+            <%= link_to '新增评分标准', "#{new_course_score_attr_path}?cd=#{@course.id}", remote: true, class: 'btn-robodou' %>
             <hr>
 
 
             <% if @course_files.present? %>
-                <% @course_files.each do |cf| %>
-                    <%= cf.course_ware %>
-                    <br>
+                <h3>已添加的课件</h3>
+                <% @course_files.each_with_index do |cf, i| %>
+                    <a href="<%= cf.course_ware %>">
+                      课件<%= i+1 %>
+                    </a>
                 <% end %>
+                <hr/>
             <% end %>
 
             <%= simple_form_for(@course_file, html: {}, url: user_course_ware_path, method: :post) do |f| %>
+                <h3 class="title">
+                  添加新的课件
+                </h3>
 
                 <div class="form-group">
-                  <br>
-                  <%= f.file_field :course_ware %>
+                  <%= f.file_field :course_ware, class: 'hide' %>
+
+                  <label class="btn-robodou" for="course_file_course_ware">请选择文件</label>
+
                   <p>格式:ppt doc docx xls xlsx zip rar htm html txt gz bz2</p>
                   <%= f.hidden_field :course_id, value: @course_file.course_id %>
                 </div>

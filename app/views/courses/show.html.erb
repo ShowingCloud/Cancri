@@ -10,6 +10,16 @@
 
           <p>对象：<%= @course.target %></p>
 
+          <p>下载课件：
+            <% if @course.course_files.present? %>
+                <% @course.course_files.each_with_index do |cf, i| %>
+                    <a href="<%= cf.course_ware %>">
+                      下载课件<%= i+1 %>
+                    </a>
+                <% end %>
+            <% end %>
+          </p>
+
           <p class="already_time">报名时间：<%= @course.apply_start_time.strftime('%Y-%m-%d') %>
             -- <%= @course.apply_end_time.strftime('%Y-%m-%d') %></p>
 

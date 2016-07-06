@@ -1169,3 +1169,21 @@ select {
 .special-tips a {
   cursor: pointer;
 }
+
+.course-score-attrs-list {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 10px;
+  padding: 10px 0;
+}
+
+.course-score-attrs-list .label {
+  cursor: pointer;
+  margin: 0 15px 0 0;
+}
+
+#new_course_file .btn-robodou{
+  padding: 3px 10px;
+  display: inline-block;
+  cursor: pointer;
+}
