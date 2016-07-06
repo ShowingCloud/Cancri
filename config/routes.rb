@@ -83,7 +83,7 @@ Rails.application.routes.draw do
     post '/checks/review_teacher' => 'checks#review_teacher'
     post '/checks/review_hacker' => 'checks#review_hacker'
     # post '/checks/review_referee' => 'checks#review_referee'
-    # post '/checks/review_school' => 'checks#review_school'
+    post '/checks/review_school' => 'checks#review_school'
     #
     resources :competition_schedules do
       collection do

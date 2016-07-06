@@ -11,7 +11,7 @@
       <tr>
         <th>名称</th>
         <th>区县</th>
-        <th>类别</th>
+        <!--<th>类别</th>-->
         <th>添加者</th>
         <th>操作</th>
       </tr>
@@ -22,17 +22,6 @@
           <tr>
             <td><%= s.name %></td>
             <td><%= s.try(:district_name) %></td>
-            <td>
-              <% case s.school_type.to_i %>
-              <% when 1 then %>
-                  小学
-              <% when 2 then %>
-                  初中
-              <% when 3 then %>
-                  高中
-              <% else %>
-                  大学
-              <% end %></td>
             <td><%= s.username %></td>
             <td>
               <a href="#modal-form" role="button" data-toggle="modal" data-id="<%= s.id %>" class="btn btn-xs btn-warning review-user-add-school">
