@@ -117,7 +117,7 @@ class Admin::ChecksController < AdminController
   end
 
   def schools
-    @schools = School.joins('left join user_profiles u_p on u_p.user_id=schools.user_id').where(status: 0, audit: nil).select(:id, :name, :school_type, :district_id, 'u_p.username').page(params[:page]).per(params[:per])
+    @schools = School.joins(:district).joins('left join user_profiles u_p on u_p.user_id=schools.user_id').where(status: 0, audit: nil).select(:id, :name, :school_type, 'districts.name as district_name', 'u_p.username').page(params[:page]).per(params[:per])
   end
 
   def school_list
