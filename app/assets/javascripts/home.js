@@ -270,12 +270,29 @@ $(function () {
             }
         });
 
+        if ($('.add-school').length > 0) {
+            $('.add-school').off('click').on('click', function () {
+                var dis = $('#district-select').val();
+                console.log(dis);
+                if (typeof dis != 'string' || dis.length < 1 || dis == '0' || dis == 0) {
+                    alert('请选择区县！');
+                } else {
+                    $('#add-school').modal('show');
+                }
+            })
+        }
+
         if ($('.btn-add-school').length > 0) {
             $('.btn-add-school').off('click').on('click', function (event) {
                 event.preventDefault();
                 var _self = $(this);
                 var space = _self.parents('.school-modal-inner');
                 var dis = $('#district-select').val();
+
+                if (typeof dis != 'string' || dis.length < 1) {
+                    alert('请选择区县！');
+                    return;
+                }
                 var name = space.find('#add-school-input').val();
                 if (typeof name != 'string' || name.length < 1) {
                     alert('请填写学校全称！');

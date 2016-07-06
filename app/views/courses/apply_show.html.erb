@@ -30,7 +30,7 @@
                 </div>
                 <div class="right">
                   <select id="district-select" class="">
-                    <option>请选择区县</option>
+                    <option value="0">请选择区县</option>
                     <% District.all.each do |d| %>
                         <option value="<%= d.id %>" <%= 'selected="selected"' if @user_info.district_id == d.id %>><%= d.name %></option>
                     <% end %>
@@ -50,7 +50,7 @@
                         <button class="choice-school btn-robodou">选择学校</button>
                     <% end %>
                   </div>
-                  <span class="special-tips">注意！幼儿园学生请<a data-toggle="modal" data-target="#add-school" class="add-school ">点击这里</a>填写学校</span>
+                  <span class="special-tips">注意！幼儿园学生请<a class="add-school ">点击这里</a>填写学校</span>
                 </div>
               </div>
               <div class="input-row">

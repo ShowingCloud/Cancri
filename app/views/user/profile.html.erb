@@ -64,7 +64,7 @@
                   <div class="form-group">
                     <label class="control-label" for="user_profile_district_id">区县</label>
                     <select id="district-select" class="string optional form-control" data-target-special="#user_profile_district_id">
-                      <option>请选择区县</option>
+                      <option value="0">请选择区县</option>
                       <% District.all.each do |d| %>
                           <option value="<%= d.id %>" <%= 'selected="selected"' if @user_profile.district_id.to_i == d.id %>><%= d.name %></option>
                       <% end %>
