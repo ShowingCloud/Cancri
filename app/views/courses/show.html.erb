@@ -42,10 +42,12 @@
                 <% if @course.apply_end_time < Time.now %>
                     <span class="label label-warning">报名结束</span>
                 <% else %>
-                    <% if current_user %>
-                        <button type="button" class="btn-robodou <%= current_user.mobile.present? ? 'go-apply' : 'alert-add-mobile' %>">我要报名</button>
-                    <% else %>
-                        <a class="btn-robodou" href="<%= "/account/sign_in?return_url=#{url_encode(request.fullpath)}" %>">我要报名</a>
+                    <% unless has_teacher_role %>
+                        <% if current_user %>
+                            <button type="button" class="btn-robodou <%= current_user.mobile.present? ? 'go-apply' : 'alert-add-mobile' %>">我要报名</button>
+                        <% else %>
+                            <a class="btn-robodou" href="<%= "/account/sign_in?return_url=#{url_encode(request.fullpath)}" %>">我要报名</a>
+                        <% end %>
                     <% end %>
                 <% end %>
             <% end %>
