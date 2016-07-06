@@ -42,7 +42,7 @@
                               <% if c.score.present? %>
                                   <label class="btn btn-xs btn-info update-course-score" id="<%= c.id %>" data-id="<%= c.id %>" data-name="<%= c.username %>" title="更改成绩"><%= c.score %></label>
                               <% else %>
-                                  <label class="btn btn-xs btn-default create-course-score" data-id="<%= c.id %>" data-name="<%= c.username %>" title="打分">打分</label>
+                                  <label class="btn btn-xs btn-default create-course-score" id="<%= c.id %>" data-id="<%= c.id %>" data-name="<%= c.username %>" title="打分">打分</label>
                               <% end %>
                           <% end %>
                         </td>
