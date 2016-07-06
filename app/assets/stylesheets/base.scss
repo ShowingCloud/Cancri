@@ -248,6 +248,28 @@ a:hover {
   overflow: hidden;
 }
 
+.lesson-item.selected {
+  border-color: #6699cc;
+}
+
+.lesson-item.selected:after {
+  content: '\e013';
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 18px;
+  color: #6699cc;
+  font-weight: bold;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  border: 1px solid #6699cc;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  display: block;
+}
+
 .lesson-item:last-child {
   margin-bottom: 0;
 }
@@ -294,28 +316,55 @@ a:hover {
   overflow: hidden;
 }
 
+.lesson-show .content .text-center {
+  margin: 10px auto;
+  font-size: 16px;
+}
+
+.lesson-show .content .text-center .btn-robodou {
+  padding: 3px 20px;
+}
+
 .apply {
   width: 400px;
   margin: 0 auto;
-  transition: all .3s;
   overflow: hidden;
+  transition: all .3s;
   color: #fff;
-  font-size: 12px;
-  position: absolute;
-  top: 0;
-  right: -400px;
-  border-left: 1px solid #fff;
+  font-size: 14px;
   padding: 20px;
+  position: absolute;
+  left: 246px;
+  bottom: -350px;
+  background: rgba(0, 0, 0, .7);
+  border: 1px solid #fff;
+  border-radius: 15px;
+}
+
+.apply form {
+  padding: 10px 50px;
 }
 
 .apply.active {
-  right: 0;
+  bottom: 0;
 }
 
 .apply .input-row {
-  height: 24px;
   margin-bottom: 15px;
   line-height: 24px;
+}
+
+.apply .input-row .left {
+  float: left;
+  width: 65px;
+}
+
+.apply .input-row .right {
+  margin-left: 65px;
+}
+
+.apply .selected-school {
+  display: block;
 }
 
 .apply input[type="text"] {
@@ -334,11 +383,8 @@ a:hover {
 }
 
 .apply .button-row {
-  text-align: left;
-}
-
-.apply .apply-lesson {
-  padding: 4px 20px;
+  text-align: right;
+  padding-right: 30px;
 }
 
 .apply select {
@@ -592,20 +638,20 @@ div.separator {
   border-color: #6699cc;
 }
 
-.user-center .lesson-result {
+.user-center {
 
 }
 
-.user-center .lesson-result .result-table {
+.user-center .result-table {
   width: 100%;
 }
 
-.user-center .lesson-result .result-table th {
+.user-center .result-table th {
   border-bottom: 1px solid #FFFFFF;
   padding: 15px 10px;
 }
 
-.user-center .lesson-result .result-table td {
+.user-center .result-table td {
   padding: 10px;
 }
 
@@ -927,4 +973,182 @@ select {
   text-decoration: none;
   text-shadow: none;
   cursor: pointer;
+}
+
+.alert-danger-robodou {
+  border: 1px solid #a94442;
+  box-shadow: none;
+  color: #a94442;
+  text-shadow: none;
+}
+
+.user-center .close {
+  float: right;
+  font-size: inherit;
+  font-weight: normal;
+  line-height: inherit;
+  color: inherit;
+  text-shadow: none;
+  opacity: 1;
+}
+
+.user-center .consults {
+  border: 1px solid rgba(0, 0, 0, 0.7);
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  height: 450px;
+  position: relative;
+}
+
+.user-center .win-panel {
+  height: 340px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.user-center .consults .consult {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #fff;
+  overflow: hidden;
+  padding-bottom: 10px;
+}
+
+.user-center .consults .consult .time {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.user-center .consults .consult .time strong {
+  color: #93e0f7;
+}
+
+.user-center .consults .consult .left {
+  float: left;
+}
+
+.user-center .consults .consult .left .time {
+  float: left;
+}
+
+.user-center .consults .consult .right {
+  float: right;
+  text-align: right;
+}
+
+.user-center .consults .consult .right .time {
+  float: right;
+}
+
+.user-center .consult .talk {
+  display: inline-block;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: #f5f5f5;
+  padding: 8px 12px;
+  color: #444;
+  word-break: break-all;
+  clear: both;
+}
+
+.apply-show {
+  border: 1px solid #fff;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 15px;
+}
+
+.apply-show .apply-lessons {
+  margin: 0 auto;
+  padding: 20px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.apply-show .apply-lessons .title {
+  font-size: 14px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #fff;
+}
+
+.apply-show .apply-lessons .content {
+  padding: 20px;
+}
+
+.apply-show .lesson-control {
+  font-size: 14px;
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid #6699cc;
+  border-radius: 5px;
+  margin: 0 20px;
+}
+
+.apply-show .lesson-control .remove-lesson {
+  cursor: pointer;
+  color: #6699cc;
+  margin-left: 8px;
+}
+
+.apply-show .apply-info {
+  margin: 0 auto;
+  padding: 20px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.apply-show .apply-info .title {
+  font-size: 14px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #fff;
+}
+
+.apply-show .apply-info .input-box {
+  width: 400px;
+  margin: 30px auto;
+  font-size: 14px;
+}
+
+.apply-show .apply-info .input-box .input-robodou {
+  width: 100%;
+}
+
+.apply-show .apply-info .input-box select {
+  width: 100%;
+}
+
+.apply-show .apply-info .input-box .input-row {
+  margin-bottom: 10px;
+}
+
+.apply-show .apply-info .input-box .input-row .left {
+  width: 100px;
+  float: left;
+  padding-right: 20px;
+  text-align: right;
+}
+
+.apply-show .apply-info .input-box .input-row .right {
+  margin-left: 100px;
+  text-align: left;
+}
+
+.apply-show .apply-action {
+  margin-bottom: 20px;
+  text-align: right;
+  padding: 20px;
+}
+
+.btn-big {
+  font-size: 18px;
+  padding: 18px 40px;
+}
+
+.btn-confirm-apply {
+  border-radius: 0;
+  background: #6699cc;
+  color: #fff;
 }

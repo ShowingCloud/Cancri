@@ -3,7 +3,11 @@ $('.update-course-score,.create-course-score').on('click', function () {
 
     var username = $(this).attr('data-name');
     var cud = $(this).attr('data-id');
-    var score = document.getElementById(cud).innerHTML;
+    var score = '';
+    if ($(this).hasClass('update-course-score')) {
+        score = document.getElementById(cud).innerHTML;
+    }
+
 
     // 更改成绩窗口
     BootstrapDialog.show({

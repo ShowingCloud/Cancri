@@ -88,7 +88,7 @@
 <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
 <script type="text/javascript">
-    function alert_r(msg) {
+    function alert_r(msg, cb) {
         $('#flash').find('.content').text(msg);
         $('#flash').modal('show');
     }

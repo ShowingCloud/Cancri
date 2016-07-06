@@ -56,7 +56,9 @@
     </li>
     <li class="list-group-item">
       <span class="text-primary"><%= t('simple_form.labels.defaults.desc') %>:</span>
-      <%= @course.desc.html_safe %>
+      <% if @course.desc.present? %>
+          <%= @course.desc.html_safe %>
+      <% end %>
     </li>
 
   </ul>

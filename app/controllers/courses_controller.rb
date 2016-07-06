@@ -1,12 +1,32 @@
 class CoursesController < ApplicationController
-  before_action :require_user, only: [:apply]
+  before_action :authenticate_user!, only: [:apply, :apply_show]
 
   def index
     course=Course.where(status: 1)
     if cookies[:area]
       course = course.where(district_id: 9)
     end
-    @courses = course.select(:id, :name, :num, :apply_count).page(params[:page]).per(params[:per])
+    @course_array = course.select(:id, :name, :num, :apply_count, :apply_end_time).page(params[:page]).per(params[:per])
+    if current_user.present?
+      @courses = @course_array.map { |c| {
+          id: c.id,
+          name: c.name,
+          num: c.num,
+          apply_end_time: c.apply_end_time,
+          apply_count: c.apply_count,
+          has_apply: c.course_user_ships.where(user_id: current_user.id).exists?
+      } }
+    else
+      @courses = @course_array.map { |c| {
+          id: c.id,
+          name: c.name,
+          num: c.num,
+          apply_end_time: c.apply_end_time,
+          apply_count: c.apply_count,
+          has_apply: false
+      } }
+    end
+
   end
 
   def show
@@ -29,36 +49,69 @@ class CoursesController < ApplicationController
     end
   end
 
+  def apply_show
+    if current_user.present?
+      user_info = UserProfile.where(user_id: current_user.id).left_joins(:school, :district).select(:grade, :username, :district_id, :school_id, 'districts.name as district_name', 'schools.name as school_name')
+      if user_info.present?
+        user_info = user_info.to_a.first
+      else
+        user_info = current_user.build_user_profile
+      end
+      @user_info = user_info
+    end
+  end
+
   def apply
-    username = params[:username]
-    district_id = params[:district]
-    school_id = params[:school]
-    grade = params[:grade]
-    cd = params[:cd]
-    if username.present? && district_id.present? && school_id.present? && grade.present? && cd.present?
-      if require_mobile
-        has_apply= CourseUserShip.where(user_id: current_user.id, course_id: cd).exists?
-        if has_apply
-          result=[false, '您已经报名该比赛']
+    if request.method =='POST'
+      username = params[:username]
+      district_id = params[:district]
+      school_id = params[:school]
+      grade = params[:grade]
+      cds = params[:cds].to_unsafe_h
+      message = ''
+      if username.present? && district_id.present? && school_id.present? && grade.present? && cds.present? && cds.is_a?(Hash)
+        if require_mobile
+          if cds.length < 4
+            u_r = UserProfile.where(user_id: current_user.id).take
+            if u_r.present?
+              u_r.update_attributes(username: username, grade: grade, district_id: district_id, school_id: school_id)
+            else
+              UserProfile.create!(user_id: current_user.id, username: username, grade: grade, district_id: district_id, school_id: school_id)
+            end
+            cds.each do |cd|
+              course = Course.where(id: cd[0]).take
+              if course.present?
+                if course.apply_end_time > Time.now
+                  has_apply= CourseUserShip.where(user_id: current_user.id, course_id: cd[0]).exists?
+                  if has_apply
+                    message += cd[1].to_s+':已经报名过，无需再次报名;'
+                  else
+                    c_u = CourseUserShip.create!(user_id: current_user.id, course_id: cd[0], school_id: school_id, grade: grade)
+                    if c_u.save
+                      message += cd[1].to_s+':报名成功;'
+                    else
+                      message += cd[1].to_s+':报名失败;'
+                    end
+                  end
+                else
+                  message += cd[1].to_s+':已过报名时间,不能报名'
+                end
+              else
+                message += cd[1].to_s+':不存在该课程'
+              end
+            end
+            result = [true, message]
+          else
+            result = [false, '一次操作最多选择三个课程']
+          end
         else
-          u_r = UserProfile.where(user_id: current_user.id).take
-          if u_r.present?
-            u_r.update_attributes(username: username, grade: grade, district_id: district_id, school_id: school_id)
-          else
-            UserProfile.create!(user_id: current_user.id, username: username, grade: grade, district_id: district_id, school_id: school_id)
-          end
-          c_u = CourseUserShip.create!(user_id: current_user.id, course_id: cd, school_id: school_id, grade: grade)
-          if c_u.save
-            result = [true, '报名成功']
-          else
-            result = [false, '报名失败']
-          end
+          result = [false, '请先在个人中心添加手机']
         end
       else
-        result = [false, '请先在个人中心添加手机']
+        result = [false, '信息不完整']
       end
     else
-      result = [false, '信息不完整']
+      result = [false, '不规范请求']
     end
     render json: result
   end

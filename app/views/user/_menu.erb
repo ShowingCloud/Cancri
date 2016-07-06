@@ -1,6 +1,6 @@
 <% @action_preview_array = ['email', 'reset_email', 'mobile', 'preview', 'profile', 'passwd', 'reset_mobile'] %>
 <% @action_notify_array = ['notification', 'notify_show'] %>
-<% @action_apply_array = ['apply', 'programs'] %>
+<% @action_apply_array = ['apply', 'programs', 'program','create_program', 'program_se'] %>
 
 
 <div class="sidebar">
@@ -46,7 +46,7 @@
       </div>
     </a>
     <a href="<%= user_consult_path %>">
-      <div class="sidebar-item">
+      <div class="sidebar-item <%= 'active' if action_name=='consult' %>">
         <i class="glyphicon glyphicon-comment"></i>
         调戏小豆
       </div>
@@ -80,6 +80,7 @@
         </div>
       </div>
       <input type="hidden" name="authenticity_token"/>
+
       <div class="form-b">
         <button type="submit" class="btn-robodou btn-submit-avatar">提交</button>
       </div>

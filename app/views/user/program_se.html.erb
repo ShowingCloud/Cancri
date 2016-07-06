@@ -1,0 +1,145 @@
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content custom-help-error">
+            <%= simple_form_for(@course, html: {}, url: user_program_se_path, method: :post) do |f| %>
+                <div class="row">
+                  <div class="col-xs-9">
+                    <% if @course.errors.any? %>
+                        <div id="error_explanation">
+                          <% @course.errors[:apply_start_time].each do |msg| %>
+                              <div class="alert alert-danger"><%= msg %>
+                                <button class="close" data-dismiss="alert">
+                                  <i class="glyphicon glyphicon-remove"></i>
+                                </button>
+                              </div>
+                          <% end %>
+                          <% @course.errors[:start_time].each do |msg| %>
+                              <div class="alert alert-danger"><%= msg %>
+                                <button class="close" data-dismiss="alert">
+                                  <i class="glyphicon glyphicon-remove"></i>
+                                </button>
+                              </div>
+                          <% end %>
+                          <% @course.errors[:end_time].each do |msg| %>
+                              <div class="alert alert-danger"><%= msg %>
+                                <button class="close" data-dismiss="alert">
+                                  <i class="glyphicon glyphicon-remove"></i>
+                                </button>
+                              </div>
+                          <% end %>
+                        </div>
+                    <% end %>
+                    <%= f.input :name %>
+                    <%= f.input :target %>
+                    <%= f.input :district_id, collection: District.all %>
+                    <%= f.input :num, label: '接纳人数' %>
+                    <%= f.input :run_address %>
+                    <%= f.input :run_time, label: '每天上课时间', placeholder: '例: 9:30 - 10:30' %>
+
+                    <div class="course-score-attrs-list">
+                      <% if @course.course_score_attributes.present? %>
+                          <% @course.course_score_attributes.each do |cs| %>
+                              <%= cs.name %>--<%= cs.score_per %>
+                              <br>
+                          <% end %>
+                      <% end %>
+                    </div>
+                    <%= link_to '新增评分标准', "#{new_course_score_attr_path}?cd=#{@course.id}", remote: true %>
+
+                    <div class="course-file-list">
+                      <% if @course.course_files.present? %>
+                          <% @course.course_files.each do |cf| %>
+                              <%= cf.course_ware %>
+                              <br>
+                          <% end %>
+                      <% end %>
+                      <div class="form-group">
+                        <%= f.file_field :course_ware %>
+
+                      </div>
+                    </div>
+                    <%= link_to '新增课件', "#{new_course_file_path}?cd=#{@course.id}", remote: true %>
+                    <!-- select date start-->
+                    <div class="row">
+                      <div class="form-group datetime optional col-md-6 required">
+                        <label class="datetime optional control-label">
+                          <abbr title="必填字段">*</abbr>
+                          报名开始时间</label>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <input value="<%= @course.apply_start_time.try(:strftime, '%Y-%m-%d') %>" name="course[apply_start_time]" data-type="select-date" class="datetime require form-control" data-date-format="yyyy-mm-dd">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group datetime require col-md-6">
+                        <label class="datetime optional control-label">
+                          <abbr title="必填字段">*</abbr>
+                          报名结束时间
+                        </label>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <input value="<%= @course.apply_end_time.try(:strftime, '%Y-%m-%d') %>" name="course[apply_end_time]" data-type="select-date" class="datetime require form-control" data-date-format="yyyy-mm-dd">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group datetime require col-md-6">
+                        <label class="datetime optional control-label">
+                          <abbr title="必填字段">*</abbr>
+                          课程开始日期</label>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <input value="<%= @course.start_time.try(:strftime, '%Y-%m-%d') %>" name="course[start_time]" data-type="select-date" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group datetime require col-md-6">
+                        <label class="datetime optional control-label">
+                          <abbr title="必填字段">*</abbr>
+                          课程结束日期</label>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <input value="<%= @course.end_time.try(:strftime, '%Y-%m-%d') %>" name="course[end_time]" data-type="select-date" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- select date end-->
+                    <label class="select required control-label" for="courses_desc">描述:</label> (请点击最右边的全屏显示按钮)
+                    <%= f.kindeditor :desc, :window_onload => true, :owner_id => @course.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
+                    <br>
+
+                    <div class="form-actions">
+                      <%= f.submit class: 'btn btn-info btn-block', value: '提交', 'data-disable-with' => '提交' %>
+                    </div>
+                  </div>
+                </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+

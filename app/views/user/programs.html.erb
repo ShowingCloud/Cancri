@@ -9,7 +9,7 @@
         <div class="user-main">
           <%= render 'user/tab' %>
           <div class="sub-content">
-            <button class="btn btn-sm btn-info pull-right">创建课程</button>
+            <a href="<%= user_create_program_path %>" class="btn btn-sm btn-info pull-right">创建课程</a>
             <br><br>
             <% if @courses %>
                 <table class="table">
@@ -19,19 +19,27 @@
                     <th>开展时间</th>
                     <th>创建时间</th>
                     <th>状态</th>
-                    <th>查看</th>
+                    <th>操作</th>
                   </tr>
                   </thead>
 
                   <tbody>
                   <% @courses.each do |c| %>
                       <tr>
-                        <td><%= c.name %> </td>
+                        <td><%= c.name %></td>
                         <td><%= c.start_time.strftime('%Y-%m-%d') %><%= " -- #{c.end_time.strftime('%Y-%m-%d')}" if c.end_time.present? %> </td>
                         <td><%= c.created_at.strftime('%Y-%m-%d') %></td>
                         <td><%= t('status.status'+c.status.to_s) %></td>
-                        <td><a href="<%= "#{user_programs_path}/#{c.id}" %>" class="label label-primary" title="查看详情">
-                          查看</a></td>
+                        <td>
+                          <% if c.status==1 %>
+                              <a href="<%= "#{user_programs_path}/#{c.id}" %>" class="label label-primary" title="学生名单">
+                                <i class="glyphicon glyphicon-th-list"></i></a>
+                          <% end %>
+                          <% if c.status != 1 %>
+                              <a href="<%= "/user/program_se/#{c.id}" %>" class="label label-warning" title="查看编辑">
+                                <i class="glyphicon glyphicon-edit"></i></a>
+                          <% end %>
+                        </td>
                       </tr>
 
                   <% end %>

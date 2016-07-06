@@ -5,6 +5,8 @@
 :queues:
   - [phoenix_job,7]
   - [default, 3]
+  - [mailer, 5]
+  - [mailers, 5]
 
 staging:
   :concurrency: 5

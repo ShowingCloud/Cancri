@@ -15,11 +15,12 @@
 //= require bootstrap-dialog
 //= require common
 //= require account
-//= require course
 //= require user
 //= require message-bus
 //= require notify
 //= require home
 //= require admin/bootstrap-datepicker.min
+//= require course
+//= require kindeditor
 //= //require turbolinks
 //= //require_tree .
