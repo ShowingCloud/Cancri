@@ -138,10 +138,15 @@ class UserController < ApplicationController
     course = Course.find(params[:id])
     if course && course.user_id == current_user.id
       @apply_info = CourseUserShip.joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').joins('left join districts d on u_p.district_id = d.id').select(:id, :grade, :score, 'courses.name as course_name', 'courses.user_id', 'u_p.username', 'd.name as district_name', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
+      # @course_score_attrs = CourseScoreAttribute.where(course_id: params[:id]).select(:id, :course_id, :name)
     else
       render_optional_error(404)
     end
   end
+
+  # def get_user_course_score
+  #   @user_course_scores = CourseUserScore.where(course_id: params[:cd], user_id: params[:ud])
+  # end
 
   def create_program
     @course = Course.new
@@ -576,7 +581,11 @@ class UserController < ApplicationController
 
     if @course.save
       flash[:success] = '操作成功!'
-      redirect_to user_program_se_path
+      if action_name == 'program_se'
+        redirect_to user_program_se_path
+      else
+        redirect_to user_programs_path
+      end
     else
       flash[:notice] = '操作失败!'
     end
