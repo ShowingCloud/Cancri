@@ -41,6 +41,12 @@ $(function () {
             }
         };
 
+        if($('#course_file_course_ware').length>0){
+            $('#course_file_course_ware').off('change').on('change',function(){
+                $('[for="course_file_course_ware"]').text('已选择文件').addClass('active');
+            })
+        }
+
         if ($('.go-apply').length > 0) {
             $('.go-apply').off('click').on('click', function (event) {
                 event.preventDefault();
