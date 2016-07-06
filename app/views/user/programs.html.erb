@@ -31,6 +31,8 @@
                         <td><%= c.created_at.strftime('%Y-%m-%d') %></td>
                         <td><%= t('status.status'+c.status.to_s) %></td>
                         <td>
+                          <a href="<%= "/user/course_ware/#{c.id}" %>" class="label label-primary" title="属性添加">
+                            <i class="glyphicon glyphicon-plus"></i></a>
                           <% if c.status==1 %>
                               <a href="<%= "#{user_programs_path}/#{c.id}" %>" class="label label-primary" title="学生名单">
                                 <i class="glyphicon glyphicon-th-list"></i></a>

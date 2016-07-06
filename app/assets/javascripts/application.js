@@ -22,5 +22,6 @@
 //= require admin/bootstrap-datepicker.min
 //= require course
 //= require kindeditor
+//= require admin/bootbox.min
 //= //require turbolinks
 //= //require_tree .

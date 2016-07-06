@@ -2,7 +2,7 @@ class CoursesController < ApplicationController
   before_action :authenticate_user!, only: [:apply, :apply_show]
 
   def index
-    course=Course.where(status: 1)
+    course=Course.where(status: 1).order('created_at desc')
     if cookies[:area]
       course = course.where(district_id: 9)
     end

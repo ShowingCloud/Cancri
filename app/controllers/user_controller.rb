@@ -138,10 +138,15 @@ class UserController < ApplicationController
     course = Course.find(params[:id])
     if course && course.user_id == current_user.id
       @apply_info = CourseUserShip.joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').joins('left join districts d on u_p.district_id = d.id').select(:id, :grade, :score, 'courses.name as course_name', 'courses.user_id', 'u_p.username', 'd.name as district_name', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
+      # @course_score_attrs = CourseScoreAttribute.where(course_id: params[:id]).select(:id, :course_id, :name)
     else
       render_optional_error(404)
     end
   end
+
+  # def get_user_course_score
+  #   @user_course_scores = CourseUserScore.where(course_id: params[:cd], user_id: params[:ud])
+  # end
 
   def create_program
     @course = Course.new
@@ -164,8 +169,26 @@ class UserController < ApplicationController
 
   end
 
-  def course_attrs
-
+  def course_ware
+    @course = Course.find(params[:id])
+    if request.method=='POST'
+      if @course.user_id == current_user.id
+        cf_params=params.require(:course_file).permit(:course_ware, :course_id)
+        @course_file = CourseFile.new(cf_params)
+        if @course_file.save
+          flash[:success]='课件上传成功!'
+          redirect_to "/user/course_ware/#{params[:course_file][:course_id]}"
+        else
+          @course_file.course_id = params[:course_file][:course_id]
+          flash[:success]='课件上传失败,请留意文件格式!'
+        end
+      else
+        render_optional_error(403)
+      end
+    else
+      @course_files = @course.course_files
+      @course_file = CourseFile.new(course_id: @course.id)
+    end
   end
 
   def course_score
@@ -448,18 +471,18 @@ class UserController < ApplicationController
   end
 
   def get_school
-    school_type = params[:school_type]
+    # school_type = params[:school_type]
     district_id = params[:district_id]
-    schools = School.where(status: 1, school_type: school_type, district_id: district_id).select(:id, :name)
+    schools = School.where(status: 1, district_id: district_id).select(:id, :name)
     render json: schools
   end
 
   def add_school
     name = params[:school]
     district = params[:district]
-    type = params[:type].to_i
-    if name.present? && district.present? && type !=0
-      school = School.where(name: name, district_id: district, school_type: type).take
+    # type = params[:type].to_i
+    if name.present? && district.present?
+      school = School.where(name: name, district_id: district).take
       if school.present?
         result=[false, '该学校已存在或已被添加(待审核)']
       else
@@ -467,7 +490,7 @@ class UserController < ApplicationController
         if has_add.present?
           result= [false, '您已经添加过一所待审核学校，在审核前不能再次添加']
         else
-          add_s = School.create!(name: name, district_id: district, school_type: type, user_id: current_user.id, user_add: true, status: false)
+          add_s = School.create!(name: name, district_id: district, user_id: current_user.id, user_add: true, status: false)
           if add_s.save
             result=[true, '添加成功,该学校仅为您显示，审核通过后才能选择该学校', add_s.id]
           else
@@ -530,7 +553,7 @@ class UserController < ApplicationController
   private
 
   def params_program
-    course_params = params.require(:course).permit(:name, :num, :target, :run_address, :run_time, :desc, :apply_start_time, :apply_end_time, :course_ware, :start_time, :end_time, :district_id)
+    course_params = params.require(:course).permit(:name, :num, :target, :run_address, :run_time, :desc, :apply_start_time, :apply_end_time, :start_time, :end_time, :district_id)
     @course.name = course_params[:name]
     @course.num = course_params[:num]
     @course.district_id = course_params[:district_id]
@@ -543,23 +566,28 @@ class UserController < ApplicationController
     @course.desc = course_params[:desc]
     @course.start_time = course_params[:start_time]
     @course.end_time = course_params[:end_time]
-    result=[]
-    if action_name == 'program_se'
-      # @course.status = 0
-      if course_params[:course_ware].present?
-        c_f=CourseFile.create!(course_ware: course_params[:course_ware], course_id: @course.id)
-        if c_f.save
-          result =[true, '课件上传成功']
-        else
-          result =[false, '课件上传失败']
-        end
-      end
-    end
+    # result=[]
+    # if action_name == 'program_se'
+    # @course.status = 0
+    # if course_params[:course_ware].present?
+    #   c_f=CourseFile.create!(course_ware: course_params[:course_ware], course_id: @course.id)
+    #   if c_f.save
+    #     result =[true, '课件上传成功']
+    #   else
+    #     result =[false, '课件上传失败']
+    #   end
+    # end
+    # end
 
     if @course.save
-
-      flash[:success] = result[0] ? '操作成功!' : '--课件上传失败'
-      redirect_to user_program_se_path
+      flash[:success] = '操作成功!'
+      if action_name == 'program_se'
+        redirect_to user_program_se_path
+      else
+        redirect_to user_programs_path
+      end
+    else
+      flash[:notice] = '操作失败!'
     end
   end
 

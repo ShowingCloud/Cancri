@@ -44,29 +44,6 @@
                     <%= f.input :run_address %>
                     <%= f.input :run_time, label: '每天上课时间', placeholder: '例: 9:30 - 10:30' %>
 
-                    <div class="course-score-attrs-list">
-                      <% if @course.course_score_attributes.present? %>
-                          <% @course.course_score_attributes.each do |cs| %>
-                              <%= cs.name %>--<%= cs.score_per %>
-                              <br>
-                          <% end %>
-                      <% end %>
-                    </div>
-                    <%= link_to '新增评分标准', "#{new_course_score_attr_path}?cd=#{@course.id}", remote: true %>
-
-                    <div class="course-file-list">
-                      <% if @course.course_files.present? %>
-                          <% @course.course_files.each do |cf| %>
-                              <%= cf.course_ware %>
-                              <br>
-                          <% end %>
-                      <% end %>
-                      <div class="form-group">
-                        <%= f.file_field :course_ware %>
-
-                      </div>
-                    </div>
-                    <%= link_to '新增课件', "#{new_course_file_path}?cd=#{@course.id}", remote: true %>
                     <!-- select date start-->
                     <div class="row">
                       <div class="form-group datetime optional col-md-6 required">

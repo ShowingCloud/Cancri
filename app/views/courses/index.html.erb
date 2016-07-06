@@ -4,9 +4,11 @@
       <div class="lesson">
         <% if @courses.size>0 %>
             <div class="lesson-screening">
-              <div class="pull-right">
-                <a href="/courses/apply_show" id="go-apply" class="btn-robodou btn-apply-show">去报名</a>
-              </div>
+              <% unless has_teacher_role %>
+                  <div class="pull-right">
+                    <a href="/courses/apply_show" id="go-apply" class="btn-robodou btn-apply-show">去报名</a>
+                  </div>
+              <% end %>
             </div>
             <div class="lesson-list">
               <% @courses.each do |c| %>

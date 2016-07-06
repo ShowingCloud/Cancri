@@ -342,7 +342,7 @@ a:hover {
 }
 
 .apply form {
-  padding: 10px 50px;
+  padding: 10px 40px;
 }
 
 .apply.active {
@@ -800,6 +800,14 @@ div.separator {
   border-style: solid;
 }
 
+.school-modal-inner .content {
+  padding: 10px 0;
+}
+
+.school-modal-inner .bottom {
+  padding: 10px 0;
+}
+
 .notify-b {
   background: #445d79;
   width: 240px;
@@ -1151,4 +1159,31 @@ select {
   border-radius: 0;
   background: #6699cc;
   color: #fff;
+}
+
+.special-tips {
+  font-size: 12px;
+  color: #6699cc;
+}
+
+.special-tips a {
+  cursor: pointer;
+}
+
+.course-score-attrs-list {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 10px;
+  padding: 10px 0;
+}
+
+.course-score-attrs-list .label {
+  cursor: pointer;
+  margin: 0 15px 0 0;
+}
+
+#new_course_file .btn-robodou{
+  padding: 3px 10px;
+  display: inline-block;
+  cursor: pointer;
 }

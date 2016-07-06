@@ -3,7 +3,7 @@ class FileUploader < CarrierWave::Uploader::Base
   storage :file
 
   def store_dir
-    "uploads/#{model.class.to_s.underscore}_#{mounted_as}/#{model.id}"
+    "uploads/#{model.class.to_s.underscore}_#{mounted_as}"
   end
 
   def extension_white_list
