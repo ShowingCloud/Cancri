@@ -466,9 +466,9 @@ class UserController < ApplicationController
   end
 
   def get_school
-    school_type = params[:school_type]
+    # school_type = params[:school_type]
     district_id = params[:district_id]
-    schools = School.where(status: 1, school_type: school_type, district_id: district_id).select(:id, :name)
+    schools = School.where(status: 1, district_id: district_id).select(:id, :name)
     render json: schools
   end
 
