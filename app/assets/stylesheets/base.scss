@@ -270,8 +270,24 @@ a:hover {
   display: block;
 }
 
-.lesson-item.selected:after{
+.lesson-item.selected:after {
   content: '\e013';
+}
+
+.lesson-item.disable:after {
+  content: '\e014';
+}
+
+.lesson-item.disable.selected:after {
+  content: '\e014';
+}
+
+.lesson-item.overtime.selected:after {
+  content: '\e014';
+}
+
+.lesson-item.overtime:after {
+  content: '\e014';
 }
 
 .lesson-item:last-child {
@@ -1186,7 +1202,7 @@ select {
   margin: 0 15px 0 0;
 }
 
-#new_course_file .btn-robodou{
+#new_course_file .btn-robodou {
   padding: 3px 10px;
   display: inline-block;
   cursor: pointer;
