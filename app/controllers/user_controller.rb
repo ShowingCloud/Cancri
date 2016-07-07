@@ -138,15 +138,15 @@ class UserController < ApplicationController
     course = Course.find(params[:id])
     if course && course.user_id == current_user.id
       @apply_info = CourseUserShip.joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').joins('left join districts d on u_p.district_id = d.id').select(:id, :grade, :score, 'courses.name as course_name', 'courses.user_id', 'u_p.username', 'd.name as district_name', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
-      # @course_score_attrs = CourseScoreAttribute.where(course_id: params[:id]).select(:id, :course_id, :name)
+      @course_score_attrs = CourseScoreAttribute.where(course_id: params[:id]).select(:id, :course_id, :name).to_a
     else
       render_optional_error(404)
     end
   end
 
-  # def get_user_course_score
-  #   @user_course_scores = CourseUserScore.where(course_id: params[:cd], user_id: params[:ud])
-  # end
+  def get_user_course_score
+    @user_course_scores = CourseUserScore.where(course_id: params[:cd], user_id: params[:ud])
+  end
 
   def create_program
     @course = Course.new
@@ -566,18 +566,6 @@ class UserController < ApplicationController
     @course.desc = course_params[:desc]
     @course.start_time = course_params[:start_time]
     @course.end_time = course_params[:end_time]
-    # result=[]
-    # if action_name == 'program_se'
-    # @course.status = 0
-    # if course_params[:course_ware].present?
-    #   c_f=CourseFile.create!(course_ware: course_params[:course_ware], course_id: @course.id)
-    #   if c_f.save
-    #     result =[true, '课件上传成功']
-    #   else
-    #     result =[false, '课件上传失败']
-    #   end
-    # end
-    # end
 
     if @course.save
       flash[:success] = '操作成功!'
