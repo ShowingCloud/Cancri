@@ -171,7 +171,7 @@ $(function () {
         }
 
         if ($('.btn-confirm-apply').length > 0) {
-            $('.btn-confirm-apply').on('click', function () {
+            $('.btn-confirm-apply').on('click', function (event) {
                 event.preventDefault();
                 var form = $('#apply-lesson-form');
                 var username = form.find('#user-info-username').val();
