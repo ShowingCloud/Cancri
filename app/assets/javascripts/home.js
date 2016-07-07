@@ -31,6 +31,14 @@ $(function () {
             }
         };
 
+        var clear_cookie = {
+            init: function () {
+                if ($('.apply-show').length < 1) {
+                    $.cookie('lesson-selected', null, {path: '/'})
+                }
+            }
+        };
+
         var fix_height = {
             init: function (selector) {
                 var max = document.body.clientHeight;
@@ -41,8 +49,8 @@ $(function () {
             }
         };
 
-        if($('#course_file_course_ware').length>0){
-            $('#course_file_course_ware').off('change').on('change',function(){
+        if ($('#course_file_course_ware').length > 0) {
+            $('#course_file_course_ware').off('change').on('change', function () {
                 $('[for="course_file_course_ware"]').text('已选择文件').addClass('active');
             })
         }
@@ -252,6 +260,7 @@ $(function () {
 
         lazyload.init();
         fix_height.init('#main');
+        clear_cookie.init();
 
         $(window).on('resize', function () {
             fix_height.init('#main');
