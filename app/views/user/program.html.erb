@@ -28,6 +28,16 @@
                   <tbody>
                   <% @apply_info.each do |c| %>
                       <tr>
+                        <% if 1==2 %>
+                            <td>
+                              <% if c.end_time < Time.now %>
+                                  <% c.course_user_scores.each do |s| %>
+                                      <%= c.try(:score) %>
+                                  <% end %>
+                              <% end %>
+                            </td>
+                        <% end %>
+
                         <td><%= c.username %></td>
                         <td><%= c.mobile %></td>
                         <td><%= c.district_name %></td>
