@@ -20,6 +20,7 @@
                     <th>区县</th>
                     <th>学校</th>
                     <th>年级</th>
+                    <th>属性</th>
                     <th>成绩</th>
 
                   </tr>
@@ -28,21 +29,24 @@
                   <tbody>
                   <% @apply_info.each do |c| %>
                       <tr>
-                        <% if 1==2 %>
-                            <td>
-                              <% if c.end_time < Time.now %>
-                                  <% c.course_user_scores.each do |s| %>
-                                      <%= c.try(:score) %>
-                                  <% end %>
-                              <% end %>
-                            </td>
-                        <% end %>
 
                         <td><%= c.username %></td>
                         <td><%= c.mobile %></td>
                         <td><%= c.district_name %></td>
                         <td><%= c.school_name %></td>
                         <td><%= c.grade %></td>
+                        <td>
+                          <% if @course_score_attrs.length > 0 %>
+                              <% @course_score_attrs.each do |csa| %>
+                                  <%= csa.name %>:
+                                  <% c.course_user_scores.each do |s| %>
+                                      <%= s.try(:score) if (s.course_sa_id == csa.id) %>
+                                  <% end %>
+                              <% end %>
+                          <% else %>
+                              仅总分
+                          <% end %>
+                        </td>
                         <td>
                           <% if c.end_time > Time.now %>
                               课程未结束

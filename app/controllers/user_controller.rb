@@ -137,8 +137,8 @@ class UserController < ApplicationController
   def program
     course = Course.find(params[:id])
     if course && course.user_id == current_user.id
-      @apply_info = CourseUserShip.includes(:course_user_scores).joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').joins('left join districts d on u_p.district_id = d.id').select(:id, :grade, :score, 'courses.name as course_name', 'courses.user_id', 'u_p.username', 'd.name as district_name', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
-      @course_score_attrs = CourseScoreAttribute.where(course_id: params[:id]).select(:id, :course_id, :name).to_a
+      @apply_info = CourseUserShip.includes(:course_user_scores).joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').joins('left join districts d on u_p.district_id = d.id').select(:id, :user_id, :course_id, :grade, :score, 'courses.name as course_name', 'u_p.username', 'd.name as district_name', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
+      @course_score_attrs = CourseScoreAttribute.where(course_id: params[:id]).select(:id, :course_id, :name, :score).to_a
     else
       render_optional_error(404)
     end
@@ -159,7 +159,6 @@ class UserController < ApplicationController
     course = Course.find(params[:id])
     if course && course.user_id == current_user.id
       @course = course
-      # @course_score_attr = @course.course_score_attributes ||= @course.course_score_attributes.build
     else
       render_optional_error(403)
     end
@@ -192,6 +191,65 @@ class UserController < ApplicationController
   end
 
   def course_score
+    only_last_score = params[:only_last_score].to_i
+    course_id = params[:cd].to_i
+    course_ud = params[:course_ud].to_i
+    last_score = params[:last_score] ## 1 station
+    score_attrs = params[:score_attrs] ## 0
+    course = Course.find(course_id)
+    course_score_attrs = course.course_score_attributes.pluck(:id)
+    if course_id != 0 && course_ud !=0 && only_last_score.present?
+      if course.user_id == current_user.id
+        if (Time.now > (course.end_time + 5.days)) || (Time.now < course.end_time)
+          result = [false, '现在不是登记成绩时间']
+        else
+          if only_last_score==1
+            course.score = last_score
+            if course.save
+              result = [true, '操作成功']
+            else
+              result = [false, '操作失败']
+            end
+          elsif only_last_score==0 && score_attrs.is_a?(Hash) && (course_score_attrs & score_attrs.keys == course_score_attrs)
+            status = []
+            sum_score = 0
+            score_attrs.each do |s|
+              sum_score += s[1].to_i
+              score = CourseUserScore.where(course_sa_id: s[0].to_i, course_user_ship_id: course_ud).take
+              if score.present?
+                score.score = s[1]
+                status << score.save
+              else
+                status << CourseUserScore.create(course_sa_id: s[0].to_i, course_user_ship_id: course_ud, score: s[1])
+              end
+            end
+            if status.uniq == [true]
+              course.score = sum_score
+              if course.save
+                result = [true, '操作成功']
+              else
+                result = [false, '操作失败']
+              end
+            else
+              CourseUserScore.delete.where(course_user_ship_id: course_ud)
+              course.score = nil
+              course.save
+              result = [false, '操作失败,请重新输入成绩']
+            end
+          else
+            result = [false, '参数不规范']
+          end
+        end
+      else
+        render_optional_error(403)
+      end
+    else
+      result = [false, '参数不完整或不规范']
+    end
+    render json: result
+  end
+
+  def course_score1
     cud = params[:cud]
     score = params[:score].to_s
     if request.method == 'POST'
