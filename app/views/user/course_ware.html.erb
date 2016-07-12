@@ -16,7 +16,7 @@
               <% if @course.course_score_attributes.present? %>
                   <% @course.course_score_attributes.each do |cs| %>
                       <div class="label label-primary">
-                        <span>类型：<%= cs.name %></span>
+                        <span>类型：<%= cs.name %>&nbsp;&nbsp;&nbsp;</span>
                         <span>分数：<%= cs.score_per %></span>
                       </div>
                   <% end %>

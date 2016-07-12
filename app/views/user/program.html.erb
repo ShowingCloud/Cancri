@@ -9,7 +9,6 @@
         <div class="user-main">
           <%= render 'user/tab' %>
           <div class="sub-content">
-
             <% if @apply_info.present? %>
                 <h4 class="text-center"><%= @apply_info[0].course_name %>--学生信息</h4>
                 <table class="result-table">
@@ -20,16 +19,13 @@
                     <th>区县</th>
                     <th>学校</th>
                     <th>年级</th>
-                    <th>属性</th>
+                    <th>评分详情</th>
                     <th>成绩</th>
-
                   </tr>
                   </thead>
-
                   <tbody>
                   <% @apply_info.each do |c| %>
                       <tr>
-
                         <td><%= c.username %></td>
                         <td><%= c.mobile %></td>
                         <td><%= c.district_name %></td>
@@ -38,10 +34,12 @@
                         <td>
                           <% if @course_score_attrs.length > 0 %>
                               <% @course_score_attrs.each do |csa| %>
-                                  <%= csa.name %>:
-                                  <% c.course_user_scores.each do |s| %>
-                                      <%= s.try(:score) if (s.course_sa_id == csa.id) %>
-                                  <% end %>
+                                  <div class="course-attr" data-id="<%= csa.id %>" data-max="<%= csa.score_per %>">
+                                    <%= csa.name %>
+                                    <% c.course_user_scores.each do |s| %>
+                                        <%= s.try(:score) if (s.course_sa_id == csa.id) %>
+                                    <% end %>
+                                  </div>
                               <% end %>
                           <% else %>
                               仅总分
@@ -59,8 +57,6 @@
                                   <label class="btn btn-xs btn-default create-course-score" id="<%= c.id %>" data-id="<%= c.id %>" data-name="<%= c.username %>" title="打分">打分</label>
                               <% end %>
                           <% end %>
-                        </td>
-                        <td>
                         </td>
                       </tr>
                   <% end %>
