@@ -191,49 +191,53 @@ class UserController < ApplicationController
   end
 
   def course_score
-    only_last_score = params[:only_last_score].to_i
-    course_id = params[:cd].to_i
     course_ud = params[:course_ud].to_i
-    last_score = params[:last_score] ## 1 station
-    score_attrs = params[:score_attrs] ## 0
-    course = Course.find(course_id)
-    course_score_attrs = course.course_score_attributes.pluck(:id)
-    if course_id != 0 && course_ud !=0 && only_last_score.present?
+    last_score = params[:last_score]
+    score_attrs = params[:score_attrs]
+    unless last_score.present?
+      score_attrs = score_attrs.try(:to_unsafe_h)
+    end
+
+    if course_ud !=0 && (last_score.present? || score_attrs.present?)
+      course_user = CourseUserShip.find(course_ud)
+      course = course_user.course
       if course.user_id == current_user.id
+        course_score_attrs = course.course_score_attributes.pluck(:id)
         if (Time.now > (course.end_time + 5.days)) || (Time.now < course.end_time)
           result = [false, '现在不是登记成绩时间']
         else
-          if only_last_score==1
-            course.score = last_score
-            if course.save
+
+          if course_score_attrs.length==0 && last_score.present?
+            course_user.score = last_score
+            if course_user.save
               result = [true, '操作成功']
             else
               result = [false, '操作失败']
             end
-          elsif only_last_score==0 && score_attrs.is_a?(Hash) && (course_score_attrs & score_attrs.keys == course_score_attrs)
+          elsif course_score_attrs.length!=0 && score_attrs.is_a?(Hash) && (course_score_attrs & score_attrs.keys.map { |x| x.to_i } == course_score_attrs)
             status = []
             sum_score = 0
             score_attrs.each do |s|
               sum_score += s[1].to_i
-              score = CourseUserScore.where(course_sa_id: s[0].to_i, course_user_ship_id: course_ud).take
+              score = CourseUserScore.where(course_sa_id: s[0], course_user_ship_id: course_ud).take
               if score.present?
                 score.score = s[1]
                 status << score.save
               else
-                status << CourseUserScore.create(course_sa_id: s[0].to_i, course_user_ship_id: course_ud, score: s[1])
+                status << CourseUserScore.create(course_sa_id: s[0], course_user_ship_id: course_ud, score: s[1]).save
               end
             end
             if status.uniq == [true]
-              course.score = sum_score
-              if course.save
+              course_user.score = sum_score
+              if course_user.save
                 result = [true, '操作成功']
               else
                 result = [false, '操作失败']
               end
             else
-              CourseUserScore.delete.where(course_user_ship_id: course_ud)
-              course.score = nil
-              course.save
+              CourseUserScore.where(course_user_ship_id: course_ud).delete_all
+              course_user.score = nil
+              course_user.save
               result = [false, '操作失败,请重新输入成绩']
             end
           else

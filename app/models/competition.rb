@@ -1,4 +1,5 @@
 class Competition < ApplicationRecord
+  has_many :events
 
   validates :name, presence: true, length: {maximum: 50}, uniqueness: true
   validates :host_year, presence: true, length: {is: 4}, numericality: true

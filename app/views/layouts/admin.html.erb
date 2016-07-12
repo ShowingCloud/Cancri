@@ -194,6 +194,12 @@
             <span class="menu-text"> 课程 </span>
           </a>
         </li>
+        <li class="<%= params[:controller] == 'admin/competitions' ? 'active' : '' %>">
+          <a href="<%= admin_competitions_path %>">
+            <i class="icon-beaker"></i>
+            <span class="menu-text"> 比赛 </span>
+          </a>
+        </li>
         <li class="<%= params[:controller] == 'admin/consults' ? 'active' : '' %>">
           <a href="<%= admin_consults_path %>">
             <i class="icon-comments"></i>
@@ -218,12 +224,6 @@
               <a href="<%= admin_news_index_path %>">
                 <i class="icon-comment-alt"></i>
                 <span class="menu-text"> 新闻 </span>
-              </a>
-            </li>
-            <li class="<%= params[:controller] == 'admin/competitions' ? 'active' : '' %>">
-              <a href="<%= admin_competitions_path %>">
-                <i class="icon-beaker"></i>
-                <span class="menu-text"> 比赛 </span>
               </a>
             </li>
             <li class="<%= params[:controller] == 'admin/events' ? 'active' : '' %>">
