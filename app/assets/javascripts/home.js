@@ -117,8 +117,17 @@ $(function () {
                     alert_r('请先选择课程！');
                 }
             }
-        )
-        ;
+        );
+
+        $('#score').on('click', function (event) {
+            event.preventDefault();
+            var length = $('course-attr').length;
+            if (length > 1) {
+                few_attr();
+            } else {
+                single();
+            }
+        });
 
         if ($('#user_profile_birthday').length > 0) {
             $('#user_profile_birthday').datepicker({
@@ -506,6 +515,36 @@ $(function () {
                 get_school_success_callback(text, sid);
             });
         }
+
+        function few_attr() {
+            $('#set-score').modal('show');
+            $.each($('course-attr'), function (k, v) {
+                var templete = '' +
+                    '<div id="' + id + '" class="widget widget-default" data-type="widget" data-widget-type="' + href + '">' +
+                    '<div class="widget-box">' +
+                    '<div class="widget-title">' +
+                    '<b>' + name + '</b>' +
+                    '<div class="widget-control-pad">' +
+                    '<div title="Reload" class="widget-control-btn widget-reload">' +
+                    '<i class="icon i-lighting"></i>' +
+                    '</div>' +
+                    '<div title="Close" class="widget-control-btn widget-close">' +
+                    '<i class="icon i-wrong"></i>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="widget-content">' +
+                    'Loading...' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+                $('#page').append(templete);
+                if (cb) {
+                    cb($('#' + id));
+                }
+            })
+        }
+
 
 
         function ajax_handle(option) {
