@@ -147,6 +147,17 @@
       </div>
       <!-- end -->
 
+      <div class="form-group">
+        <label for="exampleInputFile">时间安排</label>
+        <%= f.file_field :time_schedule %>
+        <p class="help-block">格式：pdf</p>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputFile">详细规则</label>
+        <%= f.file_field :detail_rule %>
+        <p class="help-block">格式：pdf</p>
+      </div>
+
     </div>
     <div class="form-actions">
       <button data-control="formFormat" type="submit" class="btn btn-primary">

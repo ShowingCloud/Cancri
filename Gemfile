@@ -62,5 +62,6 @@ gem 'carrierwave'
 gem 'mini_magick'
 gem 'kaminari', github: 'amatsuda/kaminari'
 gem 'rails_kindeditor', github: 'javyliu/rails_kindeditor'
+gem 'carrierwave-video'
 gem 'sidekiq'
 gem 'sinatra', git: 'https://github.com/sinatra/sinatra.git', require: false
