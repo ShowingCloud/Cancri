@@ -119,14 +119,55 @@ $(function () {
             }
         );
 
-        $('#score').on('click', function (event) {
+        $('.open-course-score').off('click').on('click', function (event) {
             event.preventDefault();
-            var length = $('course-attr').length;
-            if (length > 1) {
-                few_attr();
-            } else {
-                single();
+
+            var _self = $(this);
+
+            var space = _self.parents('tr');
+
+            var list = space.find('.course-score-attrs-list');
+
+            if (list.length > 0) {
+                var attrs = list.find('.course-attr');
+                var total = 0;
+                $.each(attrs, function (k, v) {
+                    var score = $(v).find('.label').text();
+                    $('#course-score').find('input[data-id="' + $(v).attr('data-id') + '"]').val(score);
+                    if (!isNaN(score) && score != '') {
+                        score = parseInt(score);
+                        total += score;
+                    }
+                });
+                $('#course-score').find('.total').text(total);
             }
+            $('#course-score').modal('show');
+            $('#course-score').find('.attr-input').on('blur', function () {
+                var total = 0;
+                $.each($('#course-score').find('.attr-input'), function (k, v) {
+                    var score = $(v).val();
+                    if (!isNaN(score) && score != '') {
+                        score = parseInt(score);
+                        total += score;
+                    }
+                });
+                $('#course-score').find('.total').text(total);
+            });
+
+            $('#course-score').find('.btn-submit-course').off('click').on('click', function () {
+                var inputs = $('#course-score').find('.attr-input');
+                var score_attrs = {};
+                $.each(inputs, function (k, v) {
+                    score_attrs[$(v).attr('data-id')] = $(v).val();
+                });
+
+                var option = {
+                    url: '/user/course_score',
+                    dataType: 'json',
+                    type: 'post',
+                    data: {}
+                }
+            });
         });
 
         if ($('#user_profile_birthday').length > 0) {
@@ -515,36 +556,6 @@ $(function () {
                 get_school_success_callback(text, sid);
             });
         }
-
-        function few_attr() {
-            $('#set-score').modal('show');
-            $.each($('course-attr'), function (k, v) {
-                var templete = '' +
-                    '<div id="' + id + '" class="widget widget-default" data-type="widget" data-widget-type="' + href + '">' +
-                    '<div class="widget-box">' +
-                    '<div class="widget-title">' +
-                    '<b>' + name + '</b>' +
-                    '<div class="widget-control-pad">' +
-                    '<div title="Reload" class="widget-control-btn widget-reload">' +
-                    '<i class="icon i-lighting"></i>' +
-                    '</div>' +
-                    '<div title="Close" class="widget-control-btn widget-close">' +
-                    '<i class="icon i-wrong"></i>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="widget-content">' +
-                    'Loading...' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>';
-                $('#page').append(templete);
-                if (cb) {
-                    cb($('#' + id));
-                }
-            })
-        }
-
 
 
         function ajax_handle(option) {

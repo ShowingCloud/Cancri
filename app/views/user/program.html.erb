@@ -33,14 +33,16 @@
                         <td><%= c.grade %></td>
                         <td>
                           <% if @course_score_attrs.length > 0 %>
-                              <% @course_score_attrs.each do |csa| %>
-                                  <div class="course-attr" data-id="<%= csa.id %>" data-max="<%= csa.score_per %>">
-                                    <%= csa.name %>
-                                    <% c.course_user_scores.each do |s| %>
-                                        <%= s.try(:score) if (s.course_sa_id == csa.id) %>
-                                    <% end %>
-                                  </div>
-                              <% end %>
+                              <div class="course-score-attrs-list">
+                                <% @course_score_attrs.each do |csa| %>
+                                    <div class="course-attr" data-id="<%= csa.id %>" data-max="<%= csa.score_per %>">
+                                      <%= csa.name %>：
+                                      <% c.course_user_scores.each do |s| %>
+                                          <span class="label label-success"><%= s.try(:score) if (s.course_sa_id == csa.id) %></span>
+                                      <% end %>
+                                    </div>
+                                <% end %>
+                              </div>
                           <% else %>
                               仅总分
                           <% end %>
@@ -52,9 +54,9 @@
                               <%= c.score.present? ? c.score : '未打分' %>
                           <% else %>
                               <% if c.score.present? %>
-                                  <label class="btn btn-xs btn-info update-course-score" id="<%= c.id %>" data-id="<%= c.id %>" data-name="<%= c.username %>" title="更改成绩"><%= c.score %></label>
+                                  <label class="btn btn-xs btn-info open-course-score" id="<%= c.id %>" data-id="<%= c.id %>" data-name="<%= c.username %>" data-type="update" title="更改成绩"><%= c.score %></label>
                               <% else %>
-                                  <label class="btn btn-xs btn-default create-course-score" id="<%= c.id %>" data-id="<%= c.id %>" data-name="<%= c.username %>" title="打分">打分</label>
+                                  <label class="btn btn-xs btn-default open-course-score" id="<%= c.id %>" data-id="<%= c.id %>" data-name="<%= c.username %>" title="打分">打分</label>
                               <% end %>
                           <% end %>
                         </td>
@@ -84,5 +86,51 @@
     </div>
   </div>
 </div>
-
+<div id="course-score" class="course-score-add-panel modal fade">
+  <div class="score-inner">
+    <div class="title">
+      学生打分
+    </div>
+    <div class="content">
+      <div class="score-list">
+        <% if @course_score_attrs.length > 0 %>
+            <% @course_score_attrs.each do |csa| %>
+                <div class="item">
+                  <div class="left">
+                    <%= csa.name %>
+                  </div>
+                  <div class="right">
+                    <input data-id="<%= csa.id %>" data-max="<%= csa.score_per %>" name="" type="text" class="attr-input"
+                           value=""/>
+                  </div>
+                </div>
+            <% end %>
+            <div class="item">
+              <div class="left">
+                总分：
+              </div>
+              <div class="right">
+                <span class="total"></span>
+              </div>
+            </div>
+        <% else %>
+            <div class="item">
+              <div class="left">
+                总分：
+              </div>
+              <div class="right">
+                <input data-type="total" type="text" value=""/>
+              </div>
+            </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="score-control">
+        <button class="btn-robodou btn-submit-course">提交</button>
+        <button data-dismiss="modal" class="btn-robodou btn-dismiss">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
 

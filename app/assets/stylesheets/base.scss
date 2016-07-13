@@ -307,7 +307,7 @@ a:hover {
   border-color: #6699cc;
 }
 
-.lesson-item.disable:hover,.lesson-item.overtime:hover{
+.lesson-item.disable:hover, .lesson-item.overtime:hover {
   border-color: transparent;
 }
 
@@ -1220,3 +1220,64 @@ select {
   display: inline-block;
   cursor: pointer;
 }
+
+#course-score {
+
+}
+
+#course-score .score-inner {
+  width: 400px;
+  margin: 80px auto 0;
+  border: 1px solid #ffffff;
+  transition: all .3s;
+  border-radius: 15px;
+  background: #445d79;
+  padding: 20px;
+  color: #fff;
+}
+
+#course-score.in .score-inner {
+  margin: 120px auto 0;
+}
+
+#course-score .score-inner .title {
+  padding: 10px 0;
+  border-bottom: 1px solid #fff;
+}
+
+#course-score .score-inner .content {
+  padding: 10px 0;
+  .item {
+    overflow: hidden;
+    margin-bottom: 4px;
+    .left {
+      float: left;
+      width: 160px;
+      text-align: right;
+      padding-right: 20px;
+    }
+    .right {
+      float: left;
+      width: 160px;
+      input{
+        width: 100px;
+        background: #6699cc;
+        border: none;
+        outline: none;
+        padding-left: .5em;
+        &:focus{
+          outline: 1px solid #fff;
+        }
+      }
+    }
+  }
+}
+
+#course-score .score-inner .bottom {
+  border-top: 1px solid #fff;
+  padding: 10px 0;
+  .score-control{
+    text-align: right;
+  }
+}
+
