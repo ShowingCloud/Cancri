@@ -14,6 +14,12 @@
           <% @competition.errors[:end_time].each do |msg| %>
               <div class="alert alert-danger"><%= msg %></div>
           <% end %>
+          <% @competition.errors[:time_schedule].each do |msg| %>
+              <div class="alert alert-danger"><%= msg %></div>
+          <% end %>
+          <% @competition.errors[:detail_rule].each do |msg| %>
+              <div class="alert alert-danger"><%= msg %></div>
+          <% end %>
         </div>
     <% end %>
 

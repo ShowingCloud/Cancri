@@ -1,0 +1,32 @@
+<h1 class="page-header">
+  显示<%= t('activerecord.models.demeanor') %>
+  <small class="pull-right">
+    <a href="<%= "#{new_admin_video_path}?cod=#{@video.competition_id}" %>" title="新建<%= t('activerecord.models.demeanor') %>" class="btn btn-default">
+      <i class="icon-plus icon-only"></i></a>
+    <a href="<%= edit_admin_video_path(@video) %>" title="编辑" class="btn btn-default">
+      <i class="icon-edit icon-only"></i></a>
+    <a href="<%= "#{admin_videos_path}?cod=#{@video.competition_id}" %>" title="列表" class="btn btn-default">
+      <i class="icon-list icon-only"></i></a>
+  </small>
+</h1>
+
+<% if notice %>
+    <div class="alert alert-success"><%= notice %>
+      <button class="close" data-dismiss="alert">
+        <i class="icon-remove"></i>
+      </button>
+    </div>
+<% end %>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <%= t('activerecord.models.demeanor') %>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.competition_id') %>:</h4>
+
+      <%= @video.competition.name %>
+    </li>
+
+  </ul>
+</div>

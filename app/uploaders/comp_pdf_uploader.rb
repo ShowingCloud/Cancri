@@ -1,6 +1,7 @@
 class CompPdfUploader < CarrierWave::Uploader::Base
+  # CarrierWave::SanitizedFile.sanitize_regexp = /[^[:word:]\.\-\+_]/
 
-# Choose what kind of storage to use for this uploader:
+  # Choose what kind of storage to use for this uploader:
   storage :file
   # storage :fog
 
