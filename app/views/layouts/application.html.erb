@@ -62,7 +62,7 @@
           <li><a class="un-do" href="">比赛</a></li>
           <li><a class="un-do" href="">荣誉榜</a></li>
           <li><a class="un-do" href="">活动</a></li>
-          <li><a class="" href="/demeanor">风采</a></li>
+          <li><a class="un-do" href="">风采</a></li>
           <li><a class="un-do" href="">下载</a></li>
         </ul>
       </div>
@@ -82,95 +82,110 @@
   </div>
 </div>
 
+<div class="remodal" data-remodal-id="modal"
+     data-remodal-options="hashTracking: false, closeOnOutsideClick: false">
+
+  <button data-remodal-action="close" class="remodal-close"></button>
+  <div class="content">
+  </div>
+  <br>
+  <button data-remodal-action="cancel" class="remodal-cancel">确定</button>
+</div>
+
 
 <%= yield %>
 
 <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
 <script type="text/javascript">
-  function alert_r(msg, cb) {
-    $('#flash').find('.content').text(msg);
-    $('#flash').modal('show');
-  }
-  <% if flash.present? %>
-  alert_r(<% flash.each do |f| %>
-      "<%= f[1] %>"
-      <% end %>);
-  <% end %>
+    function alert_r(msg, cb) {
+        $('.remodal').find('.content').text(msg);
+        $('.remodal').remodal().open();
+        $(document).on('closed', '.remodal', function () {
+            if(cb){
+                cb();
+            }
+        });
+    }
+    <% if flash.present? %>
+    alert_r(<% flash.each do |f| %>
+            "<%= f[1] %>"
+            <% end %>);
+    <% end %>
 </script>
 
 
 <% if current_user %>
     <script type="text/javascript" charset="utf-8">
 
-      $(function () {
-        function notify(title, content) {
-          if (!title && !content) {
-            title = "桌面提醒";
-            content = "您看到此条信息桌面提醒设置成功";
-          }
-          var iconUrl = "/assets/icon.png";
-          if (window.webkitNotifications) {
-            //chrome老版本
-            if (window.webkitNotifications.checkPermission() == 0) {
-              var notif = window.webkitNotifications.createNotification(iconUrl, title, content);
-              notif.display = function () {
-              };
-              notif.onerror = function () {
-              };
-              notif.onclose = function () {
-              };
-              notif.onclick = function () {
-                this.cancel();
-              };
-              notif.replaceId = 'Meteoric';
-              notif.show();
-            } else {
-              window.webkitNotifications.requestPermission($jy.notify);
-            }
-          }
-          else if ("Notification" in window) {
-            // 判断是否有权限
-            if (Notification.permission === "granted") {
-              var notification = new Notification(title, {
-                "icon": iconUrl,
-                "body": content
-              });
-            }
-            //如果没权限，则请求权限
-            else if (Notification.permission !== 'denied') {
-              Notification.requestPermission(function (permission) {
-                // Whatever the user answers, we make sure we store the
-                // information
-                if (!('permission' in Notification)) {
-                  Notification.permission = permission;
+        $(function () {
+            function notify(title, content) {
+                if (!title && !content) {
+                    title = "桌面提醒";
+                    content = "您看到此条信息桌面提醒设置成功";
                 }
-                //如果接受请求
-                if (permission === "granted") {
-                  var notification = new Notification(title, {
-                    "icon": iconUrl,
-                    "body": content
-                  });
+                var iconUrl = "/assets/icon.png";
+                if (window.webkitNotifications) {
+                    //chrome老版本
+                    if (window.webkitNotifications.checkPermission() == 0) {
+                        var notif = window.webkitNotifications.createNotification(iconUrl, title, content);
+                        notif.display = function () {
+                        };
+                        notif.onerror = function () {
+                        };
+                        notif.onclose = function () {
+                        };
+                        notif.onclick = function () {
+                            this.cancel();
+                        };
+                        notif.replaceId = 'Meteoric';
+                        notif.show();
+                    } else {
+                        window.webkitNotifications.requestPermission($jy.notify);
+                    }
                 }
-              });
+                else if ("Notification" in window) {
+                    // 判断是否有权限
+                    if (Notification.permission === "granted") {
+                        var notification = new Notification(title, {
+                            "icon": iconUrl,
+                            "body": content
+                        });
+                    }
+                    //如果没权限，则请求权限
+                    else if (Notification.permission !== 'denied') {
+                        Notification.requestPermission(function (permission) {
+                            // Whatever the user answers, we make sure we store the
+                            // information
+                            if (!('permission' in Notification)) {
+                                Notification.permission = permission;
+                            }
+                            //如果接受请求
+                            if (permission === "granted") {
+                                var notification = new Notification(title, {
+                                    "icon": iconUrl,
+                                    "body": content
+                                });
+                            }
+                        });
+                    }
+                }
             }
-          }
-        }
 
-        MessageBus.start(); // call once at startup
-        MessageBus.callbackInterval = 500;
-        channel = '/channel';
-        window.roomid = "<%= current_user.private_token %>";
-        if (window.roomid) {
-          channel = channel + '/' + window.roomid;
-        }
-        MessageBus.subscribe(channel, function (data) {
-          console.log(data.count);
-          $('.badge-notify-count').text(data.count);
-          notify(data.content);
+            MessageBus.start(); // call once at startup
+            MessageBus.callbackInterval = 500;
+            channel = '/channel';
+            window.roomid = "<%= current_user.private_token %>";
+            if (window.roomid) {
+                channel = channel + '/' + window.roomid;
+            }
+            MessageBus.subscribe(channel, function (data) {
+                console.log(data.count);
+                $('.badge-notify-count').text(data.count);
+                notify(data.content);
 //          $('#content').val('');
-        });
-      })
+            });
+        })
     </script>
 <% end %>
 
