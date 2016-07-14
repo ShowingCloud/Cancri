@@ -38,7 +38,7 @@
                                     <div class="course-attr" data-id="<%= csa.id %>" data-max="<%= csa.score_per %>">
                                       <%= csa.name %>：
                                       <% c.course_user_scores.each do |s| %>
-                                          <span class="label label-success"><%= s.try(:score) if (s.course_sa_id == csa.id) %></span>
+                                          <span class="text-primary"><%= s.try(:score) if (s.course_sa_id == csa.id) %></span>
                                       <% end %>
                                     </div>
                                 <% end %>
@@ -119,7 +119,7 @@
                 总分：
               </div>
               <div class="right">
-                <input data-type="total" type="text" value=""/>
+                <input data-type="total" data-id="last_score" data-max="100" class="attr-input" type="text" value=""/>
               </div>
             </div>
         <% end %>
