@@ -62,7 +62,7 @@ class CoursesController < ApplicationController
   end
 
   def apply
-    if request.method =='POST'
+    if request.method =='POST' && !has_teacher_role
       username = params[:username]
       district_id = params[:district]
       school_id = params[:school]

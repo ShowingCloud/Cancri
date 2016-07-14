@@ -1,0 +1,36 @@
+<div class="panel panel-info">
+  <div class="panel-heading"><%= t('activerecord.models.demeanor') %></div>
+  <div class="panel-body">
+    <%= simple_form_for([:admin, @photo]) do |f| %>
+        <%= f.error_notification %>
+        <% if @photo.errors.any? %>
+            <div id="error_explanation">
+              <% @photo.errors[:image].each do |msg| %>
+                  <div class="alert alert-danger"><%= msg %></div>
+              <% end %>
+            </div>
+        <% end %>
+
+        <div class="form-inputs">
+          <%= f.hidden_field :competition_id, value: params[:cod].present? ? params[:cod] : @photo.competition_id %>
+          <% if params[:action]=='edit' %>
+              <%= f.input :status, label: '是否显示' %>
+              <%= image_tag(@photo.image_url(:middle)) %>
+              <div class="form-group">
+                <%= f.file_field :image %>
+
+              </div>
+          <% else %>
+              <%= f.file_field :image, multiple: true %>
+              <p class="help-block">格式: jpg jpeg gif png</p>
+          <% end %>
+          <%= f.hidden_field :image_cache %>
+        </div>
+
+        <div class="form-actions">
+          <%= f.button :submit, class: 'btn btn-primary' %>
+        </div>
+    <% end %>
+  </div>
+</div>
+

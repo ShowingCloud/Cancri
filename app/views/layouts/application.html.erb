@@ -82,6 +82,16 @@
   </div>
 </div>
 
+<div class="remodal" data-remodal-id="modal"
+     data-remodal-options="hashTracking: false, closeOnOutsideClick: false">
+
+  <button data-remodal-action="close" class="remodal-close"></button>
+  <div class="content">
+  </div>
+  <br>
+  <button data-remodal-action="cancel" class="remodal-cancel">确定</button>
+</div>
+
 
 <%= yield %>
 
@@ -89,8 +99,13 @@
 
 <script type="text/javascript">
     function alert_r(msg, cb) {
-        $('#flash').find('.content').text(msg);
-        $('#flash').modal('show');
+        $('.remodal').find('.content').text(msg);
+        $('.remodal').remodal().open();
+        $(document).on('closed', '.remodal', function () {
+            if(cb){
+                cb();
+            }
+        });
     }
     <% if flash.present? %>
     alert_r(<% flash.each do |f| %>

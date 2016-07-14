@@ -31,6 +31,14 @@ $(function () {
             }
         };
 
+        var clear_cookie = {
+            init: function () {
+                if ($('.apply-show').length < 1) {
+                    $.cookie('lesson-selected', null, {path: '/'})
+                }
+            }
+        };
+
         var fix_height = {
             init: function (selector) {
                 var max = document.body.clientHeight;
@@ -41,8 +49,8 @@ $(function () {
             }
         };
 
-        if($('#course_file_course_ware').length>0){
-            $('#course_file_course_ware').off('change').on('change',function(){
+        if ($('#course_file_course_ware').length > 0) {
+            $('#course_file_course_ware').off('change').on('change', function () {
                 $('[for="course_file_course_ware"]').text('已选择文件').addClass('active');
             })
         }
@@ -109,8 +117,87 @@ $(function () {
                     alert_r('请先选择课程！');
                 }
             }
-        )
-        ;
+        );
+
+        $('.open-course-score').off('click').on('click', function (event) {
+            event.preventDefault();
+            var _self = $(this);
+            var space = _self.parents('tr');
+            var list = space.find('.course-score-attrs-list');
+            var ship_id = _self.attr('data-id');
+            if (list.length > 0) {
+                var attrs = list.find('.course-attr');
+                var total = 0;
+                $.each(attrs, function (k, v) {
+                    var score = $(v).find('span').text();
+                    $('#course-score').find('input[data-id="' + $(v).attr('data-id') + '"]').val(score);
+                    if (!isNaN(score) && score != '') {
+                        score = parseInt(score);
+                        total += score;
+                    }
+                });
+                $('#course-score').find('.total').text(total);
+            }
+            $('#course-score').modal('show');
+
+            $('#course-score').find('.attr-input').on('keyup', function () {
+                var total = 0;
+                $.each($('#course-score').find('.attr-input'), function (k, v) {
+                    var score = $(v).val();
+                    if (!isNaN(score) && score != '') {
+                        score = parseInt(score);
+                        var max = parseInt($(v).attr('data-max'));
+                        if (score >= max) {
+                            score = max;
+                            $(v).val(score);
+                        }
+                        total += score;
+                    }
+                });
+                $('#course-score').find('.total').text(total);
+            });
+
+            $('#course-score').find('.btn-submit-course').off('click').on('click', {id: ship_id}, function (event) {
+                event.preventDefault();
+
+                var inputs = $('#course-score').find('.attr-input');
+                var score_attrs = {};
+                $.each(inputs, function (k, v) {
+                    if (!isNaN($(v).val())) {
+                        score_attrs[$(v).attr('data-id')] = $(v).val();
+                    }
+                });
+
+                var data = {
+                    course_ud: event.data.id
+                };
+
+                if (score_attrs['last_score']) {
+
+                    data.last_score = score_attrs['last_score'];
+                } else {
+                    data.score_attrs = score_attrs;
+                }
+
+                var option = {
+                    url: '/user/course_score',
+                    dataType: 'json',
+                    type: 'post',
+                    data: data,
+                    success: function (result) {
+                        if (result[0]) {
+                            alert_r(result[1], function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            alert_r(result[1]);
+                        }
+                    }
+                };
+
+                ajax_handle(option);
+            });
+        });
 
         if ($('#user_profile_birthday').length > 0) {
             $('#user_profile_birthday').datepicker({
@@ -125,24 +212,24 @@ $(function () {
                 var username = form.find('#user-info-username').val();
                 var t = /[\u4e00-\u9fa5]{2,}/i;
                 if (!t.test(username)) {
-                    alert('请填写正确的姓名！');
+                    alert_r('请填写正确的姓名！');
                     return;
                 }
                 var district = form.find('#district-select').val();
                 if (district == 0 || !district) {
-                    alert('请选择区县！');
+                    alert_r('请选择区县！');
                     return;
                 }
 
                 var school = form.find('#user-info-school').val();
                 if (!school) {
-                    alert('请选择学校');
+                    alert_r('请选择学校');
                     return;
                 }
 
                 var grade = form.find('#user-info-grade').val();
                 if (grade == 0 || !grade) {
-                    alert('请选择年级');
+                    alert_r('请选择年级');
                     return;
                 }
 
@@ -159,10 +246,11 @@ $(function () {
                     dataType: 'json',
                     success: function (result) {
                         if (result[0]) {
-                            alert(result[1]);
-                            window.location.reload();
+                            alert_r(result[1],function(){
+                                window.location.reload();
+                            });
                         } else {
-                            alert(result[1]);
+                            alert_r(result[1]);
                         }
                     }
                 };
@@ -171,30 +259,30 @@ $(function () {
         }
 
         if ($('.btn-confirm-apply').length > 0) {
-            $('.btn-confirm-apply').on('click', function () {
+            $('.btn-confirm-apply').on('click', function (event) {
                 event.preventDefault();
                 var form = $('#apply-lesson-form');
                 var username = form.find('#user-info-username').val();
                 var t = /[\u4e00-\u9fa5]{2,}/i;
                 if (!t.test(username)) {
-                    alert('请填写正确的姓名！');
+                    alert_r('请填写正确的姓名！');
                     return;
                 }
                 var district = form.find('#district-select').val();
                 if (district == 0 || !district) {
-                    alert('请选择区县！');
+                    alert_r('请选择区县！');
                     return;
                 }
 
                 var school = form.find('#user-info-school').val();
                 if (!school) {
-                    alert('请选择学校');
+                    alert_r('请选择学校');
                     return;
                 }
 
                 var grade = form.find('#user-info-grade').val();
                 if (grade == 0 || !grade) {
-                    alert('请选择年级');
+                    alert_r('请选择年级');
                     return;
                 }
 
@@ -206,8 +294,6 @@ $(function () {
                     cds[cd] = name;
                 }
 
-                console.log(cds);
-
                 var option = {
                     url: '/courses/apply',
                     type: 'post',
@@ -215,11 +301,12 @@ $(function () {
                     dataType: 'json',
                     success: function (result) {
                         if (result[0]) {
-                            alert(result[1]);
-                            $.cookie('lesson-selected', null, {path: '/'});
-                            window.location.href = '/user/apply';
+                            alert_r(result[1],function(){
+                                $.cookie('lesson-selected', null, {path: '/'});
+                                window.location.href = '/user/apply';
+                            });
                         } else {
-                            alert(result[1]);
+                            alert_r(result[1]);
                         }
                     }
                 };
@@ -239,19 +326,20 @@ $(function () {
                         data: {email: em},
                         success: function (result) {
                             if (result) {
-                                alert('该邮箱已被注册，请更换邮箱！');
+                                alert_r('该邮箱已被注册，请更换邮箱！');
                             }
                         }
                     };
                     ajax_handle(option)
                 } else {
-                    alert('请填写正确的邮箱');
+                    alert_r('请填写正确的邮箱');
                 }
             })
         }
 
         lazyload.init();
         fix_height.init('#main');
+        clear_cookie.init();
 
         $(window).on('resize', function () {
             fix_height.init('#main');
@@ -281,7 +369,7 @@ $(function () {
                 var dis = $('#district-select').val();
                 console.log(dis);
                 if (typeof dis != 'string' || dis.length < 1 || dis == '0' || dis == 0) {
-                    alert('请选择区县！');
+                    alert_r('请选择区县！');
                 } else {
                     $('#add-school').modal('show');
                 }
@@ -296,12 +384,12 @@ $(function () {
                 var dis = $('#district-select').val();
 
                 if (typeof dis != 'string' || dis.length < 1) {
-                    alert('请选择区县！');
+                    alert_r('请选择区县！');
                     return;
                 }
                 var name = space.find('#add-school-input').val();
                 if (typeof name != 'string' || name.length < 1) {
-                    alert('请填写学校全称！');
+                    alert_r('请填写学校全称！');
                     return;
                 }
                 if (confirm('是否确认添加' + name + '学校?\n一旦添加学校则无法再次添加学校！\n必须等待管理员审核通过才可以继续添加！请慎重填写')) {
@@ -319,7 +407,7 @@ $(function () {
                                 $('#user-info-school').val(data[2]);
                                 $('#add-school').modal('hide');
                             } else {
-                                alert(data[1])
+                                alert_r(data[1])
                             }
                         }
                     };
@@ -422,21 +510,20 @@ $(function () {
                     dataType: 'json',
                     success: function (data) {
                         if (data[0]) {
-                            alert(data[1]);
+                            alert_r(data[1]);
                             if (_self.parents('.sub-content').find('.lesson-item').length == 1) {
                                 _self.parents('.sub-content').text('您暂时没有报名任何课程。');
                             }
                             _self.parents('.lesson-item').remove();
-
                         } else {
-                            alert(data[1])
+                            alert_r(data[1])
                         }
                     },
                     complete: function () {
 
                     },
                     error: function () {
-                        alert('ajax error');
+                        alert_r('ajax error');
                     }
                 };
                 ajax_handle(option);
@@ -468,7 +555,7 @@ $(function () {
                     if (result.length > 0) {
                         get_school_success(result, get_school_callback);
                     } else {
-                        alert('未找到合适条件的学校');
+                        alert_r('未找到合适条件的学校');
                         $('.school-list').empty();
                     }
                 },
@@ -476,7 +563,7 @@ $(function () {
 
                 },
                 error: function (error) {
-                    alert(error.responseText);
+                    alert_r(error.responseText);
                 }
             };
             ajax_handle(option);

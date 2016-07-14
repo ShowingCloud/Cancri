@@ -21,6 +21,8 @@ Rails.application.routes.draw do
       post :register_nickname_exists
     end
   end
+  get '/demeanor' => 'demeanor#index'
+  get '/demeanor/:id' => 'demeanor#show'
   get 'courses/index'
   get 'courses/apply_show' => 'courses#apply_show'
   post 'courses/apply' => 'courses#apply'
@@ -113,7 +115,7 @@ Rails.application.routes.draw do
     resources :news_types
     resources :volunteers
     resources :score_attributes
-    resources :photos
+    resources :photos #, only: [:new, :create, :index,:show]
     resources :videos
     resources :consults
   end

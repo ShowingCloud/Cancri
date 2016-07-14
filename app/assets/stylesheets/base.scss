@@ -225,6 +225,7 @@ a:hover {
 
 .lesson .lesson-screening {
   padding: 20px 0;
+  overflow: hidden;
 }
 
 .lesson .lesson-screening select {
@@ -252,8 +253,8 @@ a:hover {
   border-color: #6699cc;
 }
 
-.lesson-item.selected:after {
-  content: '\e013';
+.lesson-item:after {
+  content: '';
   position: absolute;
   right: 10px;
   top: 10px;
@@ -270,12 +271,44 @@ a:hover {
   display: block;
 }
 
+.lesson-item.selected:after {
+  content: '\e013';
+}
+
+.lesson-item.disable:after {
+  content: '\e014';
+  color: #aaa;
+  border-color: #aaa;
+}
+
+.lesson-item.disable.selected:after {
+  content: '\e014';
+  color: #aaa;
+  border-color: #aaa;
+}
+
+.lesson-item.overtime.selected:after {
+  content: '\e014';
+  color: #aaa;
+  border-color: #aaa;
+}
+
+.lesson-item.overtime:after {
+  content: '\e014';
+  color: #aaa;
+  border-color: #aaa;
+}
+
 .lesson-item:last-child {
   margin-bottom: 0;
 }
 
 .lesson-item:hover {
   border-color: #6699cc;
+}
+
+.lesson-item.disable:hover, .lesson-item.overtime:hover {
+  border-color: transparent;
 }
 
 .lesson-item .title {
@@ -1013,6 +1046,7 @@ select {
   height: 340px;
   overflow-x: hidden;
   overflow-y: auto;
+  padding: 0 10px;
 }
 
 .user-center .consults .consult {
@@ -1182,8 +1216,69 @@ select {
   margin: 0 15px 0 0;
 }
 
-#new_course_file .btn-robodou{
+#new_course_file .btn-robodou {
   padding: 3px 10px;
   display: inline-block;
   cursor: pointer;
 }
+
+#course-score {
+
+}
+
+#course-score .score-inner {
+  width: 400px;
+  margin: 80px auto 0;
+  border: 1px solid #ffffff;
+  transition: all .3s;
+  border-radius: 15px;
+  background: #445d79;
+  padding: 20px;
+  color: #fff;
+}
+
+#course-score.in .score-inner {
+  margin: 120px auto 0;
+}
+
+#course-score .score-inner .title {
+  padding: 10px 0;
+  border-bottom: 1px solid #fff;
+}
+
+#course-score .score-inner .content {
+  padding: 10px 0;
+  .item {
+    overflow: hidden;
+    margin-bottom: 4px;
+    .left {
+      float: left;
+      width: 160px;
+      text-align: right;
+      padding-right: 20px;
+    }
+    .right {
+      float: left;
+      width: 160px;
+      input{
+        width: 100px;
+        background: #6699cc;
+        border: none;
+        outline: none;
+        padding-left: .5em;
+        &:focus{
+          outline: 1px solid #fff;
+        }
+      }
+    }
+  }
+}
+
+#course-score .score-inner .bottom {
+  border-top: 1px solid #fff;
+  padding: 10px 0;
+  .score-control{
+    text-align: right;
+  }
+}
+

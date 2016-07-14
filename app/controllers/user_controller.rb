@@ -137,16 +137,16 @@ class UserController < ApplicationController
   def program
     course = Course.find(params[:id])
     if course && course.user_id == current_user.id
-      @apply_info = CourseUserShip.joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').joins('left join districts d on u_p.district_id = d.id').select(:id, :grade, :score, 'courses.name as course_name', 'courses.user_id', 'u_p.username', 'd.name as district_name', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
-      # @course_score_attrs = CourseScoreAttribute.where(course_id: params[:id]).select(:id, :course_id, :name)
+      @apply_info = CourseUserShip.includes(:course_user_scores).joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').joins('left join districts d on u_p.district_id = d.id').select(:id, :user_id, :course_id, :grade, :score, 'courses.name as course_name', 'u_p.username', 'd.name as district_name', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
+      @course_score_attrs = CourseScoreAttribute.where(course_id: params[:id]).select(:id, :course_id, :name, :score_per).to_a
     else
       render_optional_error(404)
     end
   end
 
-  # def get_user_course_score
-  #   @user_course_scores = CourseUserScore.where(course_id: params[:cd], user_id: params[:ud])
-  # end
+  def get_user_course_score
+    @user_course_scores = CourseUserScore.where(course_id: params[:cd], user_id: params[:ud])
+  end
 
   def create_program
     @course = Course.new
@@ -159,7 +159,6 @@ class UserController < ApplicationController
     course = Course.find(params[:id])
     if course && course.user_id == current_user.id
       @course = course
-      # @course_score_attr = @course.course_score_attributes ||= @course.course_score_attributes.build
     else
       render_optional_error(403)
     end
@@ -192,6 +191,69 @@ class UserController < ApplicationController
   end
 
   def course_score
+    course_ud = params[:course_ud].to_i
+    last_score = params[:last_score]
+    score_attrs = params[:score_attrs]
+    unless last_score.present?
+      score_attrs = score_attrs.try(:to_unsafe_h)
+    end
+
+    if course_ud !=0 && (last_score.present? || score_attrs.present?)
+      course_user = CourseUserShip.find(course_ud)
+      course = course_user.course
+      if course.user_id == current_user.id
+        course_score_attrs = course.course_score_attributes.pluck(:id)
+        if (Time.now > (course.end_time + 5.days)) || (Time.now < course.end_time)
+          result = [false, '现在不是登记成绩时间']
+        else
+
+          if course_score_attrs.length==0 && last_score.present?
+            course_user.score = last_score
+            if course_user.save
+              result = [true, '操作成功']
+            else
+              result = [false, '操作失败']
+            end
+          elsif course_score_attrs.length!=0 && score_attrs.is_a?(Hash) && (course_score_attrs & score_attrs.keys.map { |x| x.to_i } == course_score_attrs)
+            status = []
+            sum_score = 0
+            score_attrs.each do |s|
+              sum_score += s[1].to_i
+              score = CourseUserScore.where(course_sa_id: s[0], course_user_ship_id: course_ud).take
+              if score.present?
+                score.score = s[1]
+                status << score.save
+              else
+                status << CourseUserScore.create(course_sa_id: s[0], course_user_ship_id: course_ud, score: s[1]).save
+              end
+            end
+            if status.uniq == [true]
+              course_user.score = sum_score
+              if course_user.save
+                result = [true, '操作成功']
+              else
+                result = [false, '操作失败']
+              end
+            else
+              CourseUserScore.where(course_user_ship_id: course_ud).delete_all
+              course_user.score = nil
+              course_user.save
+              result = [false, '操作失败,请重新输入成绩']
+            end
+          else
+            result = [false, '参数不规范']
+          end
+        end
+      else
+        render_optional_error(403)
+      end
+    else
+      result = [false, '参数不完整或不规范']
+    end
+    render json: result
+  end
+
+  def course_score1
     cud = params[:cud]
     score = params[:score].to_s
     if request.method == 'POST'
@@ -566,18 +628,6 @@ class UserController < ApplicationController
     @course.desc = course_params[:desc]
     @course.start_time = course_params[:start_time]
     @course.end_time = course_params[:end_time]
-    # result=[]
-    # if action_name == 'program_se'
-    # @course.status = 0
-    # if course_params[:course_ware].present?
-    #   c_f=CourseFile.create!(course_ware: course_params[:course_ware], course_id: @course.id)
-    #   if c_f.save
-    #     result =[true, '课件上传成功']
-    #   else
-    #     result =[false, '课件上传失败']
-    #   end
-    # end
-    # end
 
     if @course.save
       flash[:success] = '操作成功!'

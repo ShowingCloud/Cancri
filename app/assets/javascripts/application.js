@@ -23,5 +23,6 @@
 //= require course
 //= require kindeditor
 //= require admin/bootbox.min
+//= require remodal
 //= //require turbolinks
 //= //require_tree .
