@@ -65,3 +65,4 @@ gem 'rails_kindeditor', github: 'javyliu/rails_kindeditor'
 gem 'carrierwave-video'
 gem 'sidekiq'
 gem 'sinatra', git: 'https://github.com/sinatra/sinatra.git', require: false
+gem 'jquery-fileupload-rails'
