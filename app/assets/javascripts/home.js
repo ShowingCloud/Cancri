@@ -246,7 +246,7 @@ $(function () {
                     dataType: 'json',
                     success: function (result) {
                         if (result[0]) {
-                            alert_r(result[1],function(){
+                            alert_r(result[1], function () {
                                 window.location.reload();
                             });
                         } else {
@@ -301,7 +301,7 @@ $(function () {
                     dataType: 'json',
                     success: function (result) {
                         if (result[0]) {
-                            alert_r(result[1],function(){
+                            alert_r(result[1], function () {
                                 $.cookie('lesson-selected', null, {path: '/'});
                                 window.location.href = '/user/apply';
                             });
@@ -374,6 +374,16 @@ $(function () {
                     $('#add-school').modal('show');
                 }
             })
+        }
+
+        if ($('#demeanor-photo').length > 0) {
+            var thumb = $('#demeanor-photo').find('.thumb-box');
+            thumb.off('click').on('click', function (event) {
+                event.preventDefault();
+                var src = thumb.attr('src');
+                $('#inner-img').find('.inner-img').attr('src',src);
+                $('#inner-img').modal('show');
+            });
         }
 
         if ($('.btn-add-school').length > 0) {
