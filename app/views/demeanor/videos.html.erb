@@ -1,0 +1,9 @@
+<div class="container">
+  <a href="/demeanor">图片</a>
+  <% @videos.each do |p| %>
+      <%= video_tag(p.video_url) %>
+  <% end %>
+  <nav>
+    <%= paginate @videos %>
+  </nav>
+</div>

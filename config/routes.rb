@@ -2,10 +2,10 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
   devise_for :users, path: 'account', controllers: {
-      sessions: 'users/sessions', registrations: 'users/registrations',
-      confirmations: 'users/confirmations',
-      passwords: 'users/passwords'
-  } #, path_names: {sign_in: 'login'}
+                       sessions: 'users/sessions', registrations: 'users/registrations',
+                       confirmations: 'users/confirmations',
+                       passwords: 'users/passwords'
+                   } #, path_names: {sign_in: 'login'}
   mount RuCaptcha::Engine => '/rucaptcha'
   resources :accounts, only: [:new, :create, :destroy] do
     collection do
@@ -22,6 +22,8 @@ Rails.application.routes.draw do
     end
   end
   get '/demeanor' => 'demeanor#index'
+  get '/demeanor/videos' => 'demeanor#videos'
+  get '/demeanor/get_comps_via_year' => 'demeanor#get_comps_via_year'
   get '/demeanor/:id' => 'demeanor#show'
   get 'courses/index'
   get 'courses/apply_show' => 'courses#apply_show'

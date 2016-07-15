@@ -1,3 +1,9 @@
 <div class="container">
-  index
+  <a href="/demeanor/videos">视频</a>
+  <% @photos.each do |p| %>
+      <%= image_tag(p.image_url) %>
+  <% end %>
+  <nav>
+    <%= paginate @photos %>
+  </nav>
 </div>

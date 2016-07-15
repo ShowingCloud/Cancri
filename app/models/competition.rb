@@ -10,8 +10,9 @@ class Competition < ApplicationRecord
   mount_uploader :time_schedule, CompPdfUploader
   mount_uploader :detail_rule, CompPdfUploader
   STATUS = {
-      接受报名: 0,
-      报名截止: 1,
-      比赛结束: 2,
+      不显示:0,
+      接受报名: 1,
+      报名截止: 2,
+      比赛结束: 3,
   }
 end
