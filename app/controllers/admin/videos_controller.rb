@@ -34,10 +34,10 @@ class Admin::VideosController < AdminController
       if @video.save
 
         format.html { redirect_to "/admin/videos?cod=#{@video.competition_id}", notice: '上传成功' }
-        format.json { render action: 'show', status: :created, location: @video }
+        format.js
       else
         format.html { render action: 'new' }
-        format.json { render json: @video.errors, status: :unprocessable_entity }
+        format.js
       end
     end
 

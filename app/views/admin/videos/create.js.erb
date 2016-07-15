@@ -1,0 +1,5 @@
+<% if @video.new_record? %>
+alert("上传失败: <%= j @video.errors.full_messages.join(', ').html_safe %>");
+<% else %>
+$("#paintings").append("<%= j render(@video) %>");
+<% end %>
