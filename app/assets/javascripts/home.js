@@ -246,7 +246,7 @@ $(function () {
                     dataType: 'json',
                     success: function (result) {
                         if (result[0]) {
-                            alert_r(result[1],function(){
+                            alert_r(result[1], function () {
                                 window.location.reload();
                             });
                         } else {
@@ -301,7 +301,7 @@ $(function () {
                     dataType: 'json',
                     success: function (result) {
                         if (result[0]) {
-                            alert_r(result[1],function(){
+                            alert_r(result[1], function () {
                                 $.cookie('lesson-selected', null, {path: '/'});
                                 window.location.href = '/user/apply';
                             });
@@ -345,7 +345,6 @@ $(function () {
             fix_height.init('#main');
         });
 
-
         $('.lesson').find('.lesson-item').on('click', function () {
             var $this = $(this);
             if (!$this.hasClass('overtime') && !$this.hasClass('disable')) {
@@ -373,6 +372,28 @@ $(function () {
                 } else {
                     $('#add-school').modal('show');
                 }
+            })
+        }
+
+        if ($('#demeanor-photo').length > 0) {
+            var thumb = $('#demeanor-photo').find('.thumb');
+            thumb.on('click', function (event) {
+                event.preventDefault();
+                var src = $(this).attr('src');
+                console.log(src);
+                $('#thumb-win').find('.inner-img').attr('src', src);
+                $('#thumb-win').modal('show');
+            });
+        }
+        if ($('#demeanor-video').length > 0) {
+            var video = $('#demeanor-video').find('.video-tag');
+            video.on('click', function (event) {
+                event.preventDefault();
+                var src = $(this).attr('data-video');
+                $('#video-win').find('.audio-main').attr('src',src);
+                $('#video-win').modal('show').off('hide.bs.modal').on('hide.bs.modal',function(){
+                    $('#video-win').find('.audio-main').attr('src','');
+                });
             })
         }
 
