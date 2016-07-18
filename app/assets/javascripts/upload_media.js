@@ -3,7 +3,7 @@ $(function () {
         dataType: "script",
         add: function (e, data) {
             var file, types, progress_bar_id;
-            types = /(\.|\/)(gif|jpe?g|png|mp4)$/i; // regex
+            types = /(\.|\/)(avi|mp4)$/i; // regex
             file = data.files[0];
             progress_bar_id = new Date() / 1;
             if (types.test(file.type) || types.test(file.name)) {
