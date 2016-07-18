@@ -345,7 +345,6 @@ $(function () {
             fix_height.init('#main');
         });
 
-
         $('.lesson').find('.lesson-item').on('click', function () {
             var $this = $(this);
             if (!$this.hasClass('overtime') && !$this.hasClass('disable')) {
@@ -377,13 +376,25 @@ $(function () {
         }
 
         if ($('#demeanor-photo').length > 0) {
-            var thumb = $('#demeanor-photo').find('.thumb-box');
-            thumb.off('click').on('click', function (event) {
+            var thumb = $('#demeanor-photo').find('.thumb');
+            thumb.on('click', function (event) {
                 event.preventDefault();
-                var src = thumb.attr('src');
-                $('#inner-img').find('.inner-img').attr('src',src);
-                $('#inner-img').modal('show');
+                var src = $(this).attr('src');
+                console.log(src);
+                $('#thumb-win').find('.inner-img').attr('src', src);
+                $('#thumb-win').modal('show');
             });
+        }
+        if ($('#demeanor-video').length > 0) {
+            var video = $('#demeanor-video').find('.video-tag');
+            video.on('click', function (event) {
+                event.preventDefault();
+                var src = $(this).attr('data-video');
+                $('#video-win').find('.audio-main').attr('src',src);
+                $('#video-win').modal('show').off('hide.bs.modal').on('hide.bs.modal',function(){
+                    $('#video-win').find('.audio-main').attr('src','');
+                });
+            })
         }
 
         if ($('.btn-add-school').length > 0) {
