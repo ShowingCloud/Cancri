@@ -2,10 +2,7 @@
     <%= f.error_notification %>
     <% if @competition.errors.any? %>
         <div id="error_explanation">
-          <% @competition.errors[:organizer_units].each do |msg| %>
-              <div class="alert alert-danger"><%= msg %></div>
-          <% end %>
-          <% @competition.errors[:apply_start_time].each do |msg| %>
+          <% @competition.errors[:apply_end_time].each do |msg| %>
               <div class="alert alert-danger"><%= msg %></div>
           <% end %>
           <% @competition.errors[:start_time].each do |msg| %>
@@ -24,69 +21,16 @@
     <% end %>
 
     <div class="form-inputs">
-      <%= f.input :name %>
-      <%= f.input :host_year, collection: 2016..2017 %>
+      <%= f.input :name, maxlength: 60 %>
+      <%= f.input :host_year, collection: 2016..2017, prompt: '请选择举办年份' %>
+      <%= f.input :aim %>
+      <%= f.input :organizing_committee, placeholder: '例如: 上海市委;豆姆科技  (多个以分号隔开)' %>
+      <%= f.input :date_schedule, placeholder: '例如: xxx:xxx;xxx:xxx  (多个以分号隔开)' %>
+      <%= f.input :apply_require %>
+      <%= f.input :apply_method %>
+      <%= f.input :reward_method %>
       <%= f.input :description %>
-      <label class="control-label">指导单位</label>
 
-      <div class="well">
-        <% organizers = @competition.guide_units.try(:split, ',')
-           Organizer.where(category: 1).select(:id, :name).each do |org| %>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" name="competition[guide_units][]" value="<%= org.name %>" <%= organizers.try(:include?, org.name.to_s) ? 'checked' : '' %>> <%= org.name %>
-              </label>
-            </div>
-        <% end %>
-      </div>
-      <label class="control-label">主办单位</label>
-
-      <div class="well">
-        <% organizers = @competition.organizer_units.try(:split, ',')
-           Organizer.where(category: 1).select(:id, :name).each do |org| %>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" name="competition[organizer_units][]" value="<%= org.name %>" <%= organizers.try(:include?, org.name.to_s) ? 'checked' : '' %>> <%= org.name %>
-              </label>
-            </div>
-        <% end %>
-      </div>
-      <label class="control-label">协办单位</label>
-
-      <div class="well">
-        <% organizers = @competition.help_units.try(:split, ',')
-           Organizer.where(category: 1).select(:id, :name).each do |org| %>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" name="competition[help_units][]" value="<%= org.name %>" <%= organizers.try(:include?, org.name.to_s) ? 'checked' : '' %>> <%= org.name %>
-              </label>
-            </div>
-        <% end %>
-      </div>
-      <label class="control-label">赞助单位</label>
-
-      <div class="well">
-        <% organizers = @competition.support_units.try(:split, ',')
-           Organizer.where(category: 2).select(:id, :name).each do |org| %>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" name="competition[support_units][]" value="<%= org.name %>" <%= organizers.try(:include?, org.name.to_s) ? 'checked' : '' %>> <%= org.name %>
-              </label>
-            </div>
-        <% end %>
-      </div>
-      <label class="control-label">承办单位</label>
-
-      <div class="well">
-        <% organizers = @competition.undertake_units.try(:split, ',')
-           Organizer.where(category: 3).select(:id, :name).each do |org| %>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" name="competition[undertake_units][]" value="<%= org.name %>" <%= organizers.try(:include?, org.name.to_s) ? 'checked' : '' %>> <%= org.name %>
-              </label>
-            </div>
-        <% end %>
-      </div>
       <%= f.input :status, collection: Competition::STATUS, prompt: 1 %>
       <!-- start -->
       <div class="row">
@@ -120,6 +64,39 @@
           </div>
           <input data-date-merge-result type="hidden" name="competition[apply_end_time]" value="<%= @competition.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
         </div>
+
+        <div class="form-group datetime optional col-md-6 required" data-date-merge>
+          <label class="datetime optional control-label">学校审核结束时间</label>
+
+          <div class="row">
+            <div class="col-md-6">
+              <span>日期</span>
+              <input data-date-merge-date value="<%= @competition.school_audit_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+            </div>
+            <div class="col-md-6 bootstrap-timepicker">
+              <span>时间</span>
+              <input data-date-merge-time value="<%= @competition.school_audit_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
+            </div>
+          </div>
+          <input data-date-merge-result type="hidden" name="competition[school_audit_time]" value="<%= @competition.school_audit_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+        </div>
+        <div class="form-group datetime optional col-md-6" data-date-merge>
+          <label class="datetime optional control-label">区县审核结束时间</label>
+
+          <div class="row">
+            <div class="col-md-6">
+              <span>日期</span>
+              <input data-date-merge-date value="<%= @competition.district_audit_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+            </div>
+            <div class="col-md-6 bootstrap-timepicker">
+              <span>时间</span>
+              <input data-date-merge-time value="<%= @competition.district_audit_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
+            </div>
+          </div>
+          <input data-date-merge-result type="hidden" name="competition[district_audit_time]" value="<%= @competition.district_audit_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+        </div>
+
+
         <div class="form-group datetime optional col-md-6" data-date-merge>
           <label class="datetime optional control-label">比赛开始时间</label>
 
@@ -153,11 +130,19 @@
       </div>
       <!-- end -->
 
+
+      <% if @competition.time_schedule.present? %>
+          <a href="<%= @competition.time_schedule %>" target="_blank">查看时间安排</a>
+      <% end %>
+
       <div class="form-group">
         <label for="exampleInputFile">时间安排</label>
         <%= f.file_field :time_schedule %>
         <p class="help-block">格式：pdf</p>
       </div>
+      <% if @competition.detail_rule.present? %>
+          <a href="<%= @competition.detail_rule %>" target="_blank">查看详细规则</a>
+      <% end %>
       <div class="form-group">
         <label for="exampleInputFile">详细规则</label>
         <%= f.file_field :detail_rule %>

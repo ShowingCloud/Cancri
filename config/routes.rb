@@ -2,10 +2,10 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
   devise_for :users, path: 'account', controllers: {
-                       sessions: 'users/sessions', registrations: 'users/registrations',
-                       confirmations: 'users/confirmations',
-                       passwords: 'users/passwords'
-                   } #, path_names: {sign_in: 'login'}
+      sessions: 'users/sessions', registrations: 'users/registrations',
+      confirmations: 'users/confirmations',
+      passwords: 'users/passwords'
+  } #, path_names: {sign_in: 'login'}
   mount RuCaptcha::Engine => '/rucaptcha'
   resources :accounts, only: [:new, :create, :destroy] do
     collection do
@@ -30,6 +30,12 @@ Rails.application.routes.draw do
   post 'courses/apply' => 'courses#apply'
   post 'courses/cancel' => 'courses#cancel_apply'
   resources :courses
+  resources :competitions, only: [:index, :show] do
+    collection do
+      get :apply_event
+      post :already_apply
+    end
+  end
   resources :notifications
   namespace :kindeditor do
     post '/upload' => 'assets#create'

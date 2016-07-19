@@ -1,0 +1,14 @@
+<div class="container">
+  <% if @competition.present? %>
+
+      <div class="text-center">
+        <h3><%= @competition.name %></h3>
+        <select id="event-select" data-select-target="now-event">
+          <option value="0">请选择项目</option>
+          <% @events.each do |e| %>
+              <option class="event-option" data-max-num="<%= e.team_max_num %>" data-name="<%= e.name %>" data-val="<%= e.id %>" value="<%= e.id %>"><%= e.name %></option>
+          <% end %>
+        </select>
+      </div>
+  <% end %>
+</div>

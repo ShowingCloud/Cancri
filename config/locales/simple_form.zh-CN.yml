@@ -81,6 +81,12 @@ zh-CN:
         target: '对象'
         district_id: '区县'
         run_address: '上课地点'
+        aim: '宗旨'
+        organizing_committee: '组委会'
+        date_schedule: '日程安排'
+        apply_require: '参赛要求'
+        reward_method: '奖励方法'
+        apply_method: '参赛方法'
 
     "yes": '是'
     "no": '否'

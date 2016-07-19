@@ -1,0 +1,11 @@
+<div class="container">
+  <%= @competition.name %>
+
+
+  <div class="">
+    <%= link_to "#{apply_event_competitions_path}?cd=#{@competition.id}", class: '' do %>
+        报 名
+    <% end %>
+  </div>
+</div>
+
