@@ -38,11 +38,9 @@
   <tr>
     <th>ID</th>
     <th>赛事名称</th>
-    <th>赛事描述</th>
-    <th>主办方</th>
     <th>赛事状态</th>
-    <th>开始时间</th>
-    <th>结束时间</th>
+    <th>报名时间</th>
+    <th>审核时间</th>
     <th>操作</th>
   </tr>
   </thead>
@@ -52,11 +50,12 @@
       <tr>
         <td><%= comp.id %></td>
         <td><%= comp.name %></td>
-        <td><%= comp.description %></td>
-        <td><%= comp.organizer_units %></td>
         <td><%= t('status.status'+comp.status.to_s) %></td>
-        <td><%= comp.start_time.try(:strftime, '%Y-%m-%d %H:%M') %></td>
-        <td><%= comp.end_time.try(:strftime, '%Y-%m-%d %H:%M') %></td>
+        <td><%= comp.apply_start_time.try(:strftime, '%Y-%m-%d') %>
+          -- <%= comp.apply_end_time.try(:strftime, '%Y-%m-%d') %></td>
+        <td><%= comp.school_audit_time.try(:strftime, '%Y-%m-%d') %>
+          -- <%= comp.district_audit_time.try(:strftime, '%Y-%m-%d') %></td>
+
         <td>
           <%= link_to [:admin, comp], title: '查看', class: 'btn btn-xs btn-success' do %>
               <i class="icon-eye-open icon-only"></i>

@@ -81,11 +81,11 @@
           <%= link_to [:admin, event], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash bigger-120"></i>
           <% end %>
-          <% unless event.is_father %>
-              <%= link_to edit_admin_event_schedule_path(event), title: '赛程', class: 'btn btn-xs btn-info' do %>
-                  <i class="icon-edit icon-filter"></i>
-              <% end %>
-          <% end %>
+          <!--<% unless event.is_father %>-->
+              <!--<%= link_to edit_admin_event_schedule_path(event), title: '赛程', class: 'btn btn-xs btn-info' do %>-->
+                  <!--<i class="icon-edit icon-filter"></i>-->
+              <!--<% end %>-->
+          <!--<% end %>-->
         </td>
       </tr>
   <% end %>

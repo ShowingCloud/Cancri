@@ -21,10 +21,6 @@ class CompPdfUploader < CarrierWave::Uploader::Base
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
   def filename
-    if mounted_as.to_s == 'time_schedule'
-      'time_schedule.pdf' if original_filename
-    else
-      'detail_rule.pdf' if original_filename
-    end
+    'comp_attr.pdf' if original_filename
   end
 end

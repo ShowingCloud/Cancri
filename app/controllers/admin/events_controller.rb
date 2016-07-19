@@ -14,23 +14,23 @@ class Admin::EventsController < AdminController
       @events = Event.includes(:parent_event, :competition).all.page(params[:page]).per(params[:per])
     end
 
-      # respond_to do |format|
-      #   format.html
-      #   format.xls {
-      #     data = Event.all.select(:id, :name, :is_father, :parent_id, :competition_id, :group, :team_min_num, :team_max_num).map { |x| {
-      #         name: x.name,
-      #         is_father: x.is_father,
-      #         parent_id: x.parent_id,
-      #         competition_id: x.competition_id,
-      #         group: x.group,
-      #         team_min_num: x.team_min_num,
-      #         team_max_num: x.team_max_num,
-      #     } }
-      #     filename = "Event-Export-#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
-      #     send_data(data.to_xls, :type => "text/xls;charset=utf-8,header=present", :filename => filename)
-      #
-      #   }
-      # end
+    # respond_to do |format|
+    #   format.html
+    #   format.xls {
+    #     data = Event.all.select(:id, :name, :is_father, :parent_id, :competition_id, :group, :team_min_num, :team_max_num).map { |x| {
+    #         name: x.name,
+    #         is_father: x.is_father,
+    #         parent_id: x.parent_id,
+    #         competition_id: x.competition_id,
+    #         group: x.group,
+    #         team_min_num: x.team_min_num,
+    #         team_max_num: x.team_max_num,
+    #     } }
+    #     filename = "Event-Export-#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+    #     send_data(data.to_xls, :type => "text/xls;charset=utf-8,header=present", :filename => filename)
+    #
+    #   }
+    # end
 
 
   end
@@ -158,10 +158,15 @@ class Admin::EventsController < AdminController
   # DELETE /admin/events/1
   # DELETE /admin/events/1.json
   def destroy
-    @event.destroy
-    respond_to do |format|
-      format.html { redirect_to admin_events_url, notice: '比赛项目删除成功' }
-      format.json { head :no_content }
+    if @event.is_father && Event.where(parent_id: @event.id).exists?
+      flash[:notice]='该组名不能删除(目前还包含项目)'
+      redirect_back(fallback_location: admin_events_path)
+    else
+      @event.destroy
+      respond_to do |format|
+        format.html { redirect_to admin_events_url, notice: '比赛项目删除成功' }
+        format.json { head :no_content }
+      end
     end
   end
 
