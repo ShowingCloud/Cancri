@@ -280,6 +280,6 @@ zh-CN:
           more_pages:
             display_entries: "Displaying %{entry_name} <b>%{first}&nbsp;-&nbsp;%{last}</b> of <b>%{total}</b> in total"
   status:
-     status0: '待审核'
-     status1: '通过'
-     status2: '未通过'
+     status0: '待显示'
+     status1: '显示'
+     status2: '比赛结束'

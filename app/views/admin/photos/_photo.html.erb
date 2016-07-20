@@ -1,0 +1,22 @@
+  <li>
+    <a class="cboxElement"  href="<%= @photo.image_url %>" title="<%= URI.decode(@photo.image.to_s.split("/#{@photo.id}/")[1].to_s) %>" data-rel="colorbox">
+      <%= image_tag(@photo.image_url(:middle), size: '200x200') %>
+      <% if @photo.status %>
+          <div class="tags" style="top:-2px">
+                    <span class="label-holder">
+                        <span class="label label-warning arrowed-in">显示</span>
+                    </span>
+          </div>
+      <% end %>
+    </a>
+
+    <div class="tools tools-bottom">
+
+      <%= link_to "#{edit_admin_photo_path(@photo)}?cod=#{@photo.competition_id}", title: '编辑' do %>
+          <i class="icon-pencil"></i>
+      <% end %>
+      <%= link_to "/admin/photos/#{@photo.id}?cod=#{@photo.competition_id}", method: :delete, data: {confirm: '确认删除吗?'}, title: '删除' do %>
+          <i class="icon-remove red"></i>
+      <% end %>
+    </div>
+  </li>

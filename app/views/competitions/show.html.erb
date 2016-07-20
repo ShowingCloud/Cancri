@@ -1,0 +1,11 @@
+<div class="container text-center">
+  <%= @competition.name %>
+
+  <p>。。。。。。。详情。。。。。。</p>
+  <div class="">
+    <%= link_to "/competitions/#{@competition.id}/events" do %>项目列表
+    <% end %>
+
+  </div>
+</div>
+

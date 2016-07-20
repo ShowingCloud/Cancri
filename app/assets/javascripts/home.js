@@ -246,7 +246,7 @@ $(function () {
                     dataType: 'json',
                     success: function (result) {
                         if (result[0]) {
-                            alert_r(result[1],function(){
+                            alert_r(result[1], function () {
                                 window.location.reload();
                             });
                         } else {
@@ -301,7 +301,7 @@ $(function () {
                     dataType: 'json',
                     success: function (result) {
                         if (result[0]) {
-                            alert_r(result[1],function(){
+                            alert_r(result[1], function () {
                                 $.cookie('lesson-selected', null, {path: '/'});
                                 window.location.href = '/user/apply';
                             });
@@ -345,7 +345,6 @@ $(function () {
             fix_height.init('#main');
         });
 
-
         $('.lesson').find('.lesson-item').on('click', function () {
             var $this = $(this);
             if (!$this.hasClass('overtime') && !$this.hasClass('disable')) {
@@ -373,6 +372,40 @@ $(function () {
                 } else {
                     $('#add-school').modal('show');
                 }
+            })
+        }
+
+        if ($('#demeanor-photo').length > 0) {
+            var thumb = $('#demeanor-photo').find('.thumb');
+            thumb.on('click', function (event) {
+                event.preventDefault();
+                var height = this.naturalHeight;
+                var width = this.naturalWidth;
+                for (var i = 1; i < 10; i += 0.01) {
+                    if (height <= 550 && width <= 1000) {
+                        var src = $(this).attr('src');
+                        var win = $('#thumb-win');
+                        var img = win.find('.inner-img');
+                        img.height(height);
+                        img.width(width);
+                        lazyload.loading(img, src);
+                        win.modal('show');
+                        break;
+                    }
+                    height = height * (1.0 / i);
+                    width = width * (1.0 / i);
+                }
+            });
+        }
+        if ($('#demeanor-video').length > 0) {
+            var video = $('#demeanor-video').find('.video-tag');
+            video.on('click', function (event) {
+                event.preventDefault();
+                var src = $(this).attr('data-video');
+                $('#video-win').find('.audio-main').attr('src', src);
+                $('#video-win').modal('show').off('hide.bs.modal').on('hide.bs.modal', function () {
+                    $('#video-win').find('.audio-main').attr('src', '');
+                });
             })
         }
 

@@ -1,0 +1,17 @@
+<div class="container">
+  <div class="text-center">
+    <% @events.each do |e| %>
+        <p> <%= e.name %>
+          <% if e.end_apply_time > Time.now %>
+              <%= link_to "#{apply_event_competitions_path}?ed=#{e.id}", class: '' do %>
+                  报 名
+              <% end %>
+          <% end %>
+        </p>
+    <% end %>
+    <nav>
+      <%= paginate @events %>
+    </nav>
+  </div>
+
+</div>

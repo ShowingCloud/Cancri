@@ -1,0 +1,32 @@
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="demeanor-video">
+    <div class="top">
+      <a href="/demeanor">图片</a>
+    </div>
+    <div class="middle">
+      <% @videos.each do |p| %>
+          <div class="video-box">
+            <div class="video-tag" data-video="<%= p.video_url %>">
+              <div class="video-icon">
+                <i class="glyphicon glyphicon-play-circle"></i>
+              </div>
+            </div>
+          </div>
+      <% end %>
+    </div>
+    <div class="bottom">
+      <nav>
+        <%= paginate @videos %>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<div id="video-win" class="video-win modal fade" >
+  <div class="inner-video">
+    <div class="off" data-dismiss="modal">
+      <i class="glyphicon glyphicon-remove-circle"></i>
+    </div>
+    <video class="audio-main" src="" controls="controls" preload="auto" ></video>
+  </div>
+</div>

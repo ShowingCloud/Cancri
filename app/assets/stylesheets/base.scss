@@ -1260,13 +1260,13 @@ select {
     .right {
       float: left;
       width: 160px;
-      input{
+      input {
         width: 100px;
         background: #6699cc;
         border: none;
         outline: none;
         padding-left: .5em;
-        &:focus{
+        &:focus {
           outline: 1px solid #fff;
         }
       }
@@ -1277,8 +1277,117 @@ select {
 #course-score .score-inner .bottom {
   border-top: 1px solid #fff;
   padding: 10px 0;
-  .score-control{
+  .score-control {
     text-align: right;
   }
 }
 
+#demeanor-photo {
+  .top {
+    padding: 20px 0;
+  }
+  .middle {
+    .thumb-box {
+      width: 25%;
+      float: left;
+      margin: 0;
+      overflow: hidden;
+      height: 230px;
+      padding: 15px;
+      .image-border {
+        border: 1px solid #ffffff;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        overflow: hidden;
+        cursor: pointer;
+        .thumb {
+          width: 255px;
+        }
+      }
+    }
+  }
+}
+
+#thumb-win {
+  text-align: center;
+  .inner {
+    margin: 30px auto;
+    text-align: center;
+    display: inline-block;
+    position: relative;
+    .off {
+      color: #fff;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .inner-img {
+      display: inline-block;
+    }
+  }
+}
+
+#demeanor-video {
+  .top {
+    padding: 20px 0;
+  }
+  .middle {
+    .video-box {
+      width: 25%;
+      float: left;
+      margin: 0;
+      overflow: hidden;
+      height: 230px;
+      padding: 15px;
+      .video-tag {
+        border: 1px solid #ffffff;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        overflow: hidden;
+        cursor: pointer;
+        background: rgba(0, 0, 0, .3);
+        .video-icon {
+          font-size: 54px;
+          color: #fff;
+          text-align: center;
+          margin-top: 64px;
+        }
+      }
+    }
+  }
+}
+
+#video-win {
+  text-align: center;
+  .inner-video {
+    margin-top: 50px;
+    display: inline-block;
+    position: relative;
+    .off {
+      color: #fff;
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .audio-main {
+    }
+  }
+}
+
+#user-notification {
+  .sub-content {
+    padding: 20px;
+    .msg-box {
+      padding: 20px;
+      border: 1px solid #fff;
+      border-radius: 15px;
+      margin-bottom: 10px;
+    }
+  }
+}

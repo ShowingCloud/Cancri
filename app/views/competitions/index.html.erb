@@ -1,0 +1,7 @@
+<div class="container">
+  <% @competitions.each do |c| %>
+      <h3>
+        <a href="<%= competition_path(c) %>"><%= c.name %></a>
+      </h3>
+  <% end %>
+</div>

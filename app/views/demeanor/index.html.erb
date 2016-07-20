@@ -1,3 +1,30 @@
-<div class="container">
-  index
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="demeanor-photo">
+    <div class="top">
+      <a href="/demeanor/videos">视频</a>
+    </div>
+    <div class="middle">
+      <% @photos.each do |p| %>
+          <div class="thumb-box">
+            <div class="image-border">
+              <%= image_tag(p.image_url, class: 'thumb') %>
+            </div>
+          </div>
+      <% end %>
+    </div>
+    <div class="bottom">
+      <nav>
+        <%= paginate @photos %>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<div id="thumb-win" class="modal fade">
+  <div class="inner">
+    <div class="off" data-dismiss="modal">
+      <i class="glyphicon glyphicon-remove"></i>
+    </div>
+    <img class="inner-img" src="" alt=""/>
+  </div>
 </div>

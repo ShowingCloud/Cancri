@@ -1,5 +1,7 @@
 class VideoUploader < CarrierWave::Uploader::Base
-  include CarrierWave::Video
+  CarrierWave::SanitizedFile.sanitize_regexp = /[^[:word:]\.\-\+_]/
+  # include CarrierWave::Video
+  include CarrierWave::MiniMagick
 
   # process encode_video: [:mp4, resolution: '640x360']
   # version :mp4 do

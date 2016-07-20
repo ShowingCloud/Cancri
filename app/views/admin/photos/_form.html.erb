@@ -27,9 +27,11 @@
           <%= f.hidden_field :image_cache %>
         </div>
 
-        <div class="form-actions">
-          <%= f.button :submit, class: 'btn btn-primary' %>
-        </div>
+        <% if action_name=='edit' %>
+            <div class="form-actions">
+              <%= f.button :submit, class: 'btn btn-primary' %>
+            </div>
+        <% end %>
     <% end %>
   </div>
 </div>
