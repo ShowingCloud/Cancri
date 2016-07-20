@@ -1,0 +1,5 @@
+<% if @photo.new_record? %>
+alert("上传失败: <%= j @photo.errors.full_messages.join(', ').html_safe %>");
+<% else %>
+$(".ace-thumbnails").append("<%= j render(@photo) %>");
+<% end %>

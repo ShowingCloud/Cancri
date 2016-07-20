@@ -33,7 +33,6 @@
     <%= f.error_notification %>
 
     <div class="form-inputs">
-      <%= f.label :video, "Upload videos:" %><br><br>
       <%= f.input :status %>
       <%= f.hidden_field :competition_id, value: params[:cod].present? ? params[:cod] : @video.competition_id %>
       <%= f.file_field :video, multiple: true, name: "video[video]" %>
