@@ -357,7 +357,8 @@ class UserController < ApplicationController
         current_user.mobile = params[:user][:mobile_info]
         if current_user.save
           flash[:success] = '手机添加成功'
-          redirect_to user_preview_path
+          redirect_to session[:redirect_to].present? ? session[:redirect_to] : user_preview_path
+          session[:redirect_to] = nil
         else
           flash[:error] = '手机添加失败'
         end
@@ -561,7 +562,7 @@ class UserController < ApplicationController
         end
       end
     else
-      result = [false, '请将学校名称、类型、所属区县填写完整']
+      result = [false, '请将学校名称、所属区县填写完整']
     end
     render json: result
   end
