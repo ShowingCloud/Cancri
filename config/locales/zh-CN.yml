@@ -283,3 +283,11 @@ zh-CN:
      status0: '待显示'
      status1: '显示'
      status2: '比赛结束'
+  team:
+     status0: '报名中'
+     status1: '审核'
+     status2: '待审核'
+     status3: '学校审核未通过,修改后可继续报名'
+     status4: '区县审核未通过'
+  attributes:
+     teacher_mobile: '教师手机'
