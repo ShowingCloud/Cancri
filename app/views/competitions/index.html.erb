@@ -1,7 +1,23 @@
-<div class="container">
-  <% @competitions.each do |c| %>
-      <h3>
-        <a href="<%= competition_path(c) %>"><%= c.name %></a>
-      </h3>
-  <% end %>
+<div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="comp-list">
+    <div class="top">
+      比赛列表
+    </div>
+    <div class="middle">
+      <% @competitions.each do |c| %>
+          <div class="comp-item">
+            <a href="<%= competition_path(c) %>">
+              <div class="item-box">
+                <img src="" alt=""/>
+                <div class="shade">
+                  <p><%= c.name %></p>
+                </div>
+              </div>
+            </a>
+          </div>
+      <% end %>
+    </div>
+    <div class="bottom">
+    </div>
+  </div>
 </div>
