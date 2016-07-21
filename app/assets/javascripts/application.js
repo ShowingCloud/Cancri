@@ -24,5 +24,6 @@
 //= require kindeditor
 //= require admin/bootbox.min
 //= require remodal
+//= require competition
 //= //require turbolinks
 //= //require_tree .

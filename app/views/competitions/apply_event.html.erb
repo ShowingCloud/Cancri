@@ -4,148 +4,161 @@
       <div class="text-center">
         <h3><%= @event.comp_name %></h3>
         <h4><%= @event.name %></h4>
-        <% if @has_apply %>
-            您已报名
-        <% else %>
-            <button type="button" class="btn btn-primary" id="confirm-apply-button" data-toggle="modal" data-target="#update-user-info">
-              报名
-            </button>
-
-            <div id="update-user-info" class="modal fade" tabindex="-1" role="dialog">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">请确认或添加报名信息</h4>
-                  </div>
-                  <br>
-                  <div class="form-horizontal">
-                    <div class="form-group">
-                      <label for="username" class="col-sm-2 control-label">姓名</label>
-                      <div class="col-sm-9">
-                        <input type="text" class="form-control" id="username" value="<%= @user_info.username %>" placeholder="姓名">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="gender" class="col-sm-2 control-label">性别</label>
-                      <div class="col-sm-9">
-                        <input type="text" class="form-control" id="gender" value="<%= @user_info.gender %>">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="gender" class="col-sm-2 control-label">手机号</label>
-                      <div class="col-sm-9">
-                        <%= current_user.mobile %>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="birthday" class="col-sm-2 control-label">生日</label>
-                      <div class="col-sm-9">
-                        <input type="text" class="form-control datetime" id="birthday" value="<%= @user_info.birthday %>" data-type="select-date" data-date-format="yyyy-mm-dd">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="district" class="col-sm-2 control-label">区县</label>
-                      <div class="col-sm-9">
-                        <%= @user_info.try(:district_name) %>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="district_id" class="col-sm-2 control-label">区县ID</label>
-                      <div class="col-sm-9">
-                        <input type="text" class="form-control" id="district_id" value="<%= @user_info.district_id %>">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="school_name" class="col-sm-2 control-label">学校</label>
-                      <div class="col-sm-9">
-                        <%= @user_info.try(:school_name) %>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="school_id" class="col-sm-2 control-label">学校ID</label>
-                      <div class="col-sm-9">
-                        <input type="text" class="form-control" id="school_id" value="<%= @user_info.school_id %>">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="grade" class="col-sm-2 control-label">年级</label>
-                      <div class="col-sm-9">
-                        <input type="text" class="form-control" id="grade" value="<%= @user_info.grade %>">
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="identity_card" class="col-sm-2 control-label">身份证</label>
-                      <div class="col-sm-9">
-                        <input type="text" class="form-control" id="identity_card" value="<%= @user_info.identity_card %>">
-
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="student_code" class="col-sm-2 control-label">学籍号</label>
-                      <div class="col-sm-9">
-                        <input type="text" class="form-control" id="student_code" value="<%= @user_info.student_code %>">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-sm-offset-2 col-sm-9">
-                        <button class="btn btn-info btn-block update-user-info-submit">提交</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div id="leader_create_team" class="hide">
-              <h3>请填写队伍信息</h3>
-              <div class="form-horizontal  col-sm-offset-3">
-
-                <div class="form-group">
-                  <label for="team-name" class="col-sm-2 control-label">队伍名</label>
-                  <div class="col-sm-4">
-                    <input type="text" class="form-control" id="team-name" value="" placeholder="请输入2-4位的队伍名">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="team-group" class="col-sm-2 control-label">组别</label>
-                  <div class="col-sm-4">
-                    <select id="team-group" class="form-control">
-                      <option value="">请选择组别</option>
-                      <% @event.group.split(',').each do |g| %>
-                          <option value="<%= g %>"><%= t('group.group'+g.to_s) %></option>
-                      <% end %>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="team-teacher" class="col-sm-2 control-label">指导教师</label>
-                  <div class="col-sm-4">
-                    <input type="text" class="form-control" id="team-teacher" value="<%= %>">
-                  </div>
-                </div>
-                <input type="hidden" value="<%= @event.id %>" id="event-identify"/>
-                <div class="form-group">
-                  <label for="team-teacher-mobile" class="col-sm-2 control-label">老师手机</label>
-                  <div class="col-sm-4">
-                    <input type="text" class="form-control" id="team-teacher-mobile" value="<%= %>">
-                  </div>
-                </div>
-
-
-
-                <div class="form-group">
-                  <div class="col-sm-offset-2 col-sm-4">
-                    <button class="btn btn-info btn-block leader-create-team-submit">提交</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-        <% end %>
-
+        <p><label class="label label-info">您已报名该项目</label></p>
+        <p>报名状态:<%= t('team.status'+ @team_players.first.team_status.to_s) %></p>
+        <p>指导老师:<%= @team_players.first.teacher %></p>
+        <p>老师手机:<%= @team_players.first.teacher_mobile %></p>
       </div>
+
+      <% if @has_apply %>
+
+          <table class="table table-bordered">
+            <thead>
+            <tr>
+              <th>姓名</th>
+              <th>学校</th>
+              <th>年级</th>
+              <th>角色</th>
+              <th>操作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <% @team_players.each do |p| %>
+                <tr>
+                  <td><%= p.username %></td>
+                  <td><%= p.school_name %></td>
+                  <td><%= p.grade %></td>
+                  <td><%= p.leader_user_id==current_user.id ? '队长' : '队员' %></td>
+                  <td></td>
+                </tr>
+            <% end %>
+            </tbody>
+          </table>
+
+
+      <% else %>
+          <% unless has_teacher_role %>
+              <button type="button" class="btn btn-primary" id="confirm-apply-button" data-toggle="modal" data-target="#update-user-info">
+                创建队伍
+              </button>
+
+              <div id="update-user-info" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title">请确认或添加报名信息</h4>
+                    </div>
+                    <br>
+                    <div class="form-horizontal">
+                      <div class="form-group">
+                        <label for="username" class="col-sm-2 control-label">姓名</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="username" value="<%= @user_info.username %>" placeholder="姓名">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="gender" class="col-sm-2 control-label">性别</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="gender" value="<%= @user_info.gender %>">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="gender" class="col-sm-2 control-label">手机号</label>
+                        <div class="col-sm-9">
+                          <%= current_user.mobile %>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="birthday" class="col-sm-2 control-label">生日</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control datetime" id="birthday" value="<%= @user_info.birthday %>" data-type="select-date" data-date-format="yyyy-mm-dd">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="district" class="col-sm-2 control-label">区县</label>
+                        <div class="col-sm-9">
+                          <%= @user_info.try(:district_name) %>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="district_id" class="col-sm-2 control-label">区县ID</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="district_id" value="<%= @user_info.district_id %>">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="school_name" class="col-sm-2 control-label">学校</label>
+                        <div class="col-sm-9">
+                          <%= @user_info.try(:school_name) %>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="school_id" class="col-sm-2 control-label">学校ID</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="school_id" value="<%= @user_info.school_id %>">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="grade" class="col-sm-2 control-label">年级</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="grade" value="<%= @user_info.grade %>">
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="identity_card" class="col-sm-2 control-label">身份证</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="identity_card" value="<%= @user_info.identity_card %>">
+
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="student_code" class="col-sm-2 control-label">学籍号</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="student_code" value="<%= @user_info.student_code %>">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="team-group" class="col-sm-2 control-label">队伍组别</label>
+                        <div class="col-sm-9">
+                          <select id="team-group" class="form-control">
+                            <option value="">请选择组别</option>
+                            <% @event.group.split(',').each do |g| %>
+                                <option value="<%= g %>"><%= t('group.group'+g.to_s) %></option>
+                            <% end %>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="team-teacher" class="col-sm-2 control-label">指导教师</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="team-teacher" value="<%= %>">
+                        </div>
+                      </div>
+                      <input type="hidden" value="<%= @event.id %>" id="event-identify"/>
+                      <div class="form-group">
+                        <label for="team-teacher-mobile" class="col-sm-2 control-label">老师手机</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="team-teacher-mobile" value="<%= %>">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-9">
+                          <button class="btn btn-info btn-block update-user-info-submit">提交</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          <% end %>
+
+
+      <% end %>
+
   <% end %>
 </div>
