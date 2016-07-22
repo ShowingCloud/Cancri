@@ -34,7 +34,7 @@ $(function () {
         var clear_cookie = {
             init: function () {
                 if ($('.apply-show').length < 1) {
-                    $.cookie('lesson-selected', null, {path: '/'})
+                    $.cookie('lesson-selected', null, {path: '/'});
                 }
             }
         };
@@ -48,6 +48,14 @@ $(function () {
                 }
             }
         };
+
+        if ($('#comp-show').length > 0) {
+            var space = $('#comp-show');
+            var fold = space.find('.fold-head');
+            fold.on('click', function () {
+                $(this).siblings('.fold-body').toggleClass('active');
+            });
+        }
 
         if ($('#course_file_course_ware').length > 0) {
             $('#course_file_course_ware').off('change').on('change', function () {
@@ -81,7 +89,7 @@ $(function () {
                     _self.parents('form').find('#user-info-school').val(id);
                     _self.parents('form').find('#user_profile_school_id').val(id);
                 });
-            })
+            });
         }
 
         if ($('#district-select').length > 0) {

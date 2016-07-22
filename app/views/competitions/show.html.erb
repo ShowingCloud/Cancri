@@ -1,11 +1,119 @@
-<div class="container text-center">
-  <%= @competition.name %>
+<div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container text-center" id="comp-show">
+    <div class="top">
+      <%= @competition.name %>
+    </div>
+    <div class="middle">
+      <div class="download-area">
+        <div class="title">
+          资料下载
+        </div>
+        <a target="_blank" href="<%= @competition.time_schedule %>">
+          <div class="download-item">
+            <div class="icon">
+              <i class="glyphicon glyphicon-cloud-download"></i>
+            </div>
+            <div class="item-name">比赛时间安排</div>
+          </div>
+        </a>
+        <a target="_blank" href="<%= @competition.time_schedule %>">
+          <div class="download-item">
+            <div class="icon">
+              <i class="glyphicon glyphicon-cloud-download"></i>
+            </div>
+            <div class="item-name">比赛详细规则</div>
+          </div>
+        </a>
+      </div>
+      <div class="section">
+        <div class="section-title">
+          活动信息
+        </div>
+        <div class="section-content">
+          <div class="section-fold">
+            <div class="fold-head">
+              比赛宗旨
+              <span class="caret"></span>
+            </div>
+            <div class="fold-body">
+              <p>........................................................</p>
+            </div>
+          </div>
+          <div class="section-fold even">
+            <div class="fold-head">
+              大赛组委会
+              <span class="caret"></span>
+            </div>
+            <div class="fold-body">
+              <p>......</p>
 
-  <p>。。。。。。。详情。。。。。。</p>
-  <div class="">
-    <%= link_to "/competitions/#{@competition.id}/events" do %>项目列表
-    <% end %>
+              <p>....</p>
 
+              <p>.....</p>
+            </div>
+          </div>
+          <div class="section-fold">
+            <div class="fold-head">
+              日程安排
+              <span class="caret"></span>
+            </div>
+            <div class="fold-body">
+              <p>......</p>
+
+              <p>....</p>
+
+              <p>.....</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title">
+          比赛信息
+        </div>
+        <div class="section-content">
+          <div class="section-fold">
+            <div class="fold-head">
+              比赛宗旨
+              <span class="caret"></span>
+            </div>
+            <div class="fold-body">
+              <p>........................................................</p>
+            </div>
+          </div>
+          <div class="section-fold even">
+            <div class="fold-head">
+              大赛组委会
+              <span class="caret"></span>
+            </div>
+            <div class="fold-body">
+              <p>......</p>
+
+              <p>....</p>
+
+              <p>.....</p>
+            </div>
+          </div>
+          <div class="section-fold">
+            <div class="fold-head">
+              日程安排
+              <span class="caret"></span>
+            </div>
+            <div class="fold-body">
+              <p>......</p>
+
+              <p>....</p>
+
+              <p>.....</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <%= link_to "/competitions/#{@competition.id}/events" do %>
+          去报名
+      <% end %>
+    </div>
   </div>
 </div>
-
