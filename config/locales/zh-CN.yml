@@ -291,3 +291,4 @@ zh-CN:
      status4: '区县审核未通过'
   attributes:
      teacher_mobile: '教师手机'
+     group: '组别'
