@@ -4,13 +4,13 @@
       <div class="text-center">
         <h3><%= @event.comp_name %></h3>
         <h4><%= @event.name %></h4>
-        <p><label class="label label-info">您已报名该项目</label></p>
-        <p>报名状态:<%= t('team.status'+ @team_players.first.team_status.to_s) %></p>
-        <p>指导老师:<%= @team_players.first.teacher %></p>
-        <p>老师手机:<%= @team_players.first.teacher_mobile %></p>
       </div>
 
       <% if @has_apply %>
+          <p><label class="label label-info">您已报名该项目</label></p>
+          <p>报名状态:<%= t('team.status'+ @team_players.first.team_status.to_s) %></p>
+          <p>指导老师:<%= @team_players.first.teacher %></p>
+          <p>老师手机:<%= @team_players.first.teacher_mobile %></p>
 
           <table class="table table-bordered">
             <thead>
