@@ -36,11 +36,45 @@ $(function () {
                     alert(data[1]);
                     window.location.reload();
                 } else {
-                    alert(1);
+                    alert(data[1]);
                 }
             }
         });
     });
+
+    // 搜索队伍
+    $('#search-team').on('click', function () {
+        var team = $('.search-team-input').val();
+        var ed = $('#event-identify').val();
+        var reg = /[A-Z]+/i;
+        if (reg.test(team)) {
+            $.ajax({
+                url: '/competitions/search_team',
+                dataType: 'json',
+                type: 'get',
+                data: {ed: ed, team: team},
+                success: function (data) {
+                    if (data[0]) {
+                        if (data[1].length == 0) {
+                            alert('未查询到相关队伍');
+                        } else {
+                            console.log(data);
+                            var result = data[1];
+                            $.each(result, function (k, v) {
+
+                            });
+                        }
+                    } else {
+                        alert(data[1]);
+                    }
+                }
+            });
+
+        } else {
+            alert('请输入字母');
+        }
+    });
+
 
 });
 

@@ -1,5 +1,5 @@
 class TeamUserShip < ApplicationRecord
-  belongs_to :team
+  belongs_to :team, counter_cache: :players
   belongs_to :user
   belongs_to :event
   belongs_to :school

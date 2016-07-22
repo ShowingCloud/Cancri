@@ -36,6 +36,7 @@ Rails.application.routes.draw do
       post :already_apply
       post :update_user_info
       post :leader_create_team
+      get :search_team
     end
   end
   get '/competitions/:id/events', to: 'competitions#events'

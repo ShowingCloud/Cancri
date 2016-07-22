@@ -5,7 +5,7 @@
         <h3><%= @event.comp_name %></h3>
         <h4><%= @event.name %></h4>
       </div>
-
+      <input type="hidden" value="<%= @event.id %>" id="event-identify"/>
       <% if @has_apply %>
           <p><label class="label label-info">您已报名该项目</label></p>
           <p>报名状态:<%= t('team.status'+ @team_players.first.team_status.to_s) %></p>
@@ -42,6 +42,8 @@
               <button type="button" class="btn btn-primary" id="confirm-apply-button" data-toggle="modal" data-target="#update-user-info">
                 创建队伍
               </button>
+              <input type="text" class="search-team-input" value=""/>
+              <button id="search-team">搜索已有队伍</button>
 
               <div id="update-user-info" class="modal fade" tabindex="-1" role="dialog">
                 <div class="modal-dialog">
@@ -139,7 +141,7 @@
                           <input type="text" class="form-control" id="team-teacher" value="<%= %>">
                         </div>
                       </div>
-                      <input type="hidden" value="<%= @event.id %>" id="event-identify"/>
+
                       <div class="form-group">
                         <label for="team-teacher-mobile" class="col-sm-2 control-label">老师手机</label>
                         <div class="col-sm-9">
@@ -154,6 +156,12 @@
                     </div>
                   </div>
                 </div>
+              </div>
+
+
+              <!-- 搜索队伍 -->
+              <div class="search-team-result">
+
               </div>
           <% end %>
 
