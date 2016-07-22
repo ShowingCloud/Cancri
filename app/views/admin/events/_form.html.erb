@@ -22,7 +22,7 @@
 
         <div class="form-inputs">
           <%= f.input :name %>
-          <%= f.input :competition_id, collection: Competition.where(status: 0) %>
+          <%= f.input :competition_id, collection: Competition.where(status: 1) %>
           <%= f.input :parent_id, collection: Event.where(status: 1, is_father: true), label: '所属项目' %>
           <%= f.input :is_father, label: '是否包含子项目' %>
           <%= f.input :description %>
