@@ -588,7 +588,7 @@ $(function () {
 
         function get_school(dis, get_school_callback) {
             var option = {
-                url: '/user/get_school',
+                url: '/user/get_schools',
                 type: 'get',
                 dataType: 'json',
                 data: {district_id: dis},
