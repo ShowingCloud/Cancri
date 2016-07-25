@@ -202,12 +202,12 @@ class CompetitionsController < ApplicationController
     td = params[:td]
     team_info = Event.joins(:teams, :competition).where('teams.id=?', td).select(:name, :team_max_num, 'teams.user_id', 'teams.status', 'competitions.apply_end_time').take
     if team_info.present? && (team_info.status ==0) && (team_info.user_id == current_user.id) && (team_info.apply_end_time > Time.now)
-      players = TeamUserShip.where(team_id: td).pluck(:id).count; false
+      players = TeamUserShip.where(team_id: td).pluck(:id); false
       if Team.find(td).destroy
         result = [true, '解散成功']
-        if (team_info.team_max_num > 1) && (players>1)
+        if (team_info.team_max_num > 1) && (players.length>1)
           players.drop(current_user.id).each do |u|
-            Notification.create(user_id: u, message_type: 0, content: '比赛项目--'+team_info.name+'中,您参加的队伍已被队长解散')
+            Notification.create(user_id: u, message_type: 0, content: '在比赛项目--'+team_info.name+'中,您参加的队伍已被队长解散')
           end
         end
       else
