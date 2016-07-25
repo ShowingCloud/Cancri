@@ -76,11 +76,17 @@
               </div>
       <% else %>
           <% unless has_teacher_role %>
-              <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#update-user-info">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#update-user-info">
                 创建队伍
               </button>
-              <input type="text" class="search-team-input" value=""/>
-              <button id="search-team">搜索已有队伍</button>
+              <% if @event.team_max_num >1 %>
+                  <input type="text" class="search-team-input" value=""/>
+                  <button id="search-team">搜索已有队伍</button>
+                  <!-- 搜索队伍 -->
+                  <div class="search-team-result">
+
+                  </div>
+              <% end %>
 
               <div id="update-user-info" class="modal fade" tabindex="-1" role="dialog">
                 <div class="modal-dialog">
@@ -119,7 +125,7 @@
                       <div class="form-group">
                         <label for="district" class="col-sm-2 control-label">区县</label>
                         <div class="col-sm-9">
-                          <%= @user_info.try(:district_name) %>
+                          <%= @user_info.try(:district_name) %> <button>选择</button>
                         </div>
                       </div>
                       <div class="form-group">
@@ -131,7 +137,7 @@
                       <div class="form-group">
                         <label for="school_name" class="col-sm-2 control-label">学校</label>
                         <div class="col-sm-9">
-                          <%= @user_info.try(:school_name) %>
+                          <%= @user_info.try(:school_name) %> <button>选择</button>
                         </div>
                       </div>
                       <div class="form-group">
@@ -196,10 +202,6 @@
               </div>
 
 
-              <!-- 搜索队伍 -->
-              <div class="search-team-result">
-
-              </div>
           <% end %>
 
 
