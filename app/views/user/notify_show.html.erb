@@ -13,8 +13,57 @@
                 <% unless @notification.read %>
                     <% @notification.update_attributes(read: 1) %>
                 <% end %>
-                <% if @notification.message_type == 0 %>
-                    <%= @notification.content %>
+                <%= @notification.content %>
+                <!-- 队长邀请队员 -->
+                <% if @notification.message_type == 1 %>
+                    <% if @t_u.present? %>
+                        <% if @t_u.t_u_status==1 %>
+                            <label class="label">您已经是该队成员</label>
+                        <% elsif @t_u.team_status !=0 %>
+                            <label class="label">队伍已提交审核,无法操作</label>
+                        <% elsif @t_u.apply_end_time < Time.now %>
+                            <label class="label">已过报名时间</label>
+                        <% elsif @t_u.apply_end_time > Time.now && @t_u.team_status == 0 %>
+
+
+                            <button type="button" class="btn btn-primary">
+                              接受邀请
+                            </button>
+                            <input type="hidden" name="td" value="<%= @notification.team_id %>"/>
+                            <input type="hidden" name="ed" value="<%= @t_u.id %>"/>
+
+
+                        <% end %>
+
+                    <% else %>
+                        <label class="label">消息已失效</label>
+                    <% end %>
+                <% end %>
+                <!-- 申请加入队伍 -->
+                <% if @notification.message_type == 2 %>
+                    <% if @t_u.present? %>
+                        <% if @t_u.t_u_status==1 %>
+                            <label class="label">已是该队队员</label>
+                        <% elsif @t_u.team_status !=0 %>
+                            <label class="label">队伍已提交审核,无法操作</label>
+                        <% elsif @t_u.apply_end_time < Time.now %>
+                            <label class="label">已过报名时间</label>
+                        <% elsif @t_u.apply_end_time > Time.now && @t_u.team_status == 0 %>
+
+                            <%= link_to "#{leader_deal_player_apply_competitions_path}?tud=#{@t_u.t_u_id.to_s}&nd=#{params[:id]}", data: {confirm: '确认同意加入吗?', method: :post}, title: '同意加入', class: 'btn btn-xs btn-primary' do %>
+                                同意加入
+                            <% end %>
+                            <%= link_to "#{leader_deal_player_apply_competitions_path}?tud=#{@t_u.t_u_id.to_s}&nd=#{params[:id]}&reject=1", data: {confirm: '确认拒绝加入吗?', method: :post}, title: '拒绝加入', class: 'btn btn-xs btn-danger' do %>
+                                拒绝加入
+                            <% end %>
+
+
+                        <% end %>
+
+                    <% else %>
+                        <label class="label">消息已失效</label>
+                    <% end %>
+
                 <% end %>
             <% else %>
                 <div class="alert alert-info">

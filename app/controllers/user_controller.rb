@@ -485,10 +485,43 @@ class UserController < ApplicationController
   end
 
   def notify_show
-    @notification = current_user.notifications.where(id: params[:id]).take
+    @notification = current_user.notifications.find(params[:id])
 
     if @notification.present?
+      ## 队长邀请队员
+      if @notification.message_type==1 && @notification.team_id.present?
+        @t_u = Event.left_joins(:team_user_ships, :teams, :competition).where('team_user_ships.team_id = ?', @notification.team_id).where('team_user_ships.user_id = ?', @notification.user_id).select(:id, 'team_user_ships.status as t_u_status', 'teams.status as team_status', 'team_user_ships.id as t_u_id', 'competitions.apply_end_time').take
+        if @t_u.present? && (@t_u.apply_end_time>Time.now) && (@t_u.team_status == 0) && (@t_u.t_u_status==0)
+          user_info = UserProfile.left_joins(:school, :district).where(user_id: @notification.user_id).select('user_profiles.*', 'schools.name as school_name', 'districts.name as district_name').take; false
+          @user_info = user_info ||= current_user.build_user_profile
+        end
+      end
 
+      ## 申请加入队伍
+      if @notification.message_type==2 && @notification.team_id.present? && @notification.reply_to.present? && @notification.t_u_id.present?
+        @t_u = Event.left_joins(:team_user_ships, :teams, :competition).where('team_user_ships.team_id = ?', @notification.team_id).where('team_user_ships.user_id = ?', @notification.reply_to).select(:id, 'team_user_ships.status as t_u_status', 'teams.status as team_status', 'team_user_ships.id as t_u_id', 'competitions.apply_end_time').take
+        # if @t_u.present?
+        #   if @t_u.status
+        #     @has_agree = true # 已同意
+        #   else
+        #     if !TeamUserShip.exists?(@t_u.id.to_i)
+        #       @has_agree = 2 # 已拒绝
+        #     else
+        #       @has_agree = false # 未处理
+        #     end
+        #   end
+        # end
+      end
+
+      ## 申请退出比赛
+      if @notification.message_type==3 && @notification.team_id.present? && @notification.reply_to.present?
+        @t_u = TeamUserShip.joins(:event).where(team_id: @notification.team_id, user_id: @notification.reply_to).select(:id, :status, 'events.apply_end_time', :event_id).take
+        if @t_u.present?
+          @has_agree = false # 未处理或已拒绝退出
+        else
+          @has_agree = true # 已同意
+        end
+      end
     end
   end
 
@@ -533,8 +566,7 @@ class UserController < ApplicationController
     redirect_to user_profile_path
   end
 
-  def get_school
-    # school_type = params[:school_type]
+  def get_schools
     district_id = params[:district_id]
     schools = School.where(status: 1, district_id: district_id).select(:id, :name, :teacher_role)
     render json: schools
@@ -565,6 +597,10 @@ class UserController < ApplicationController
       result = [false, '请将学校名称、所属区县填写完整']
     end
     render json: result
+  end
+
+  def get_districts
+    render json: District.select(:id, :name, :city)
   end
 
   #修改密码方法

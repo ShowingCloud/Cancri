@@ -18,7 +18,7 @@ class UserProfile < ApplicationRecord
 
   def validate_data
     if username.present? && /\A[\u4e00-\u9fa5]{2,10}\Z/.match(username)== nil
-      errors[:username] << '姓名为2-10位中文'
+      errors[:username] << '只能包含2-10位中文'
     end
 
     if (grade.present? && ([grade.to_i] & [10, 11, 12]).present?) && (/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(identity_card) == nil)

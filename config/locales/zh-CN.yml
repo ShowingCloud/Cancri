@@ -290,5 +290,8 @@ zh-CN:
      status3: '学校审核未通过,修改后可继续报名'
      status4: '区县审核未通过'
   attributes:
+     username: '姓名'
+     teacher: '教师姓名'
      teacher_mobile: '教师手机'
      group: '组别'
+     grade: '年级:'

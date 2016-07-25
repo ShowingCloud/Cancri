@@ -37,6 +37,12 @@ Rails.application.routes.draw do
       post :update_user_info
       post :leader_create_team
       get :search_team
+      get :search_user
+      post :leader_invite_player
+      post :leader_delete_team
+      post :leader_delete_player
+      post :player_agree_leader_invite
+      post :leader_deal_player_apply
     end
   end
   get '/competitions/:id/events', to: 'competitions#events'
@@ -158,7 +164,8 @@ Rails.application.routes.draw do
   match '/user/add_school' => 'user#add_school', as: 'user_add_school', via: [:post]
   match '/user/apply' => 'user#apply', as: 'user_apply', via: [:get]
   match '/user/cancel_apply' => 'user#cancel_apply', as: 'user_cancel_apply', via: [:post, :get]
-  get '/user/get_school' => 'user#get_school', as: 'user_get_school'
+  get '/user/get_schools' => 'user#get_schools', as: 'user_get_schools'
+  get '/user/get_districts' => 'user#get_districts', as: 'user_get_districts'
   match '/user/programs' => 'user#programs', as: 'user_programs', via: [:get]
   match '/user/programs/:id' => 'user#program', via: [:get]
   post 'user/course_score' => 'user#course_score', as: 'user_course_score'
