@@ -153,11 +153,12 @@ class CompetitionsController < ApplicationController
     event_id = params[:ed]
     team_identify = params[:team]
     if event_id.present? && team_identify.present?
-      @team = TeamUserShip.left_joins(:team, :school, :event).joins('left join user_profiles up on up.user_id = team_user_ships.user_id').where(' teams.identifier = ?', team_identify).where('teams.event_id=?', event_id).select('schools.name as school_name', 'events.team_max_num', 'teams.identifier', 'teams.players', 'teams.teacher', 'teams.teacher_mobile', 'teams.user_id as leader_id', 'team_user_ships.user_id', 'up.username', 'team_user_ships.grade').take
-      render json: [true, @team]
+      team = Team.joins(:events, :school).joins('left join user_profiles up on up.user_id = teams.user_id').where(event_id: event_id, identifier: team_identify).select(:id, :status, :identifier, :players, :teacher, :teacher_mobile, 'events.team_max_num', 'schools.name as school_name', 'up.username')
+      result = [true, team]
     else
-      render json: [false, ['参数不完整']]
+      result = [false, '参数不完整']
     end
+    render json: result
   end
 
   def search_user
