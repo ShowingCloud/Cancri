@@ -1,9 +1,10 @@
 $(function () {
-    $('.update-user-info-submit').on('click', function () {
+    $('.update-user-info-submit').on('click', function (event) {
+        event.preventDefault();
         var username = $('#username').val();
         var gender = $('#gender').val();
-        var district_id = $('#district_id').val();
-        var school_id = $('#school_id').val();
+        var district_id = $('#user-info-district').val();
+        var school_id = $('#user-info-school').val();
         var birthday = $('#birthday').val();
         var identity_card = $('#identity_card').val();
         var grade = $('#grade').val();
@@ -42,6 +43,21 @@ $(function () {
         });
     });
 
+
+    //创建队伍
+    $('#step-for-new').on('click',function(event){
+        event.preventDefault();
+        $('#step-for-update').removeClass('hide');
+        $(this).parents('.first-step').addClass('hide');
+    });
+
+    //加入队伍
+    $('#step-for-join').on('click',function(event){
+        event.preventDefault();
+        $('#step-for-search').removeClass('hide');
+        $(this).parents('.first-step').addClass('hide');
+    });
+
     // 搜索队伍
     $('#search-team').on('click', function () {
         var team = $('.search-team-input').val();
@@ -69,7 +85,6 @@ $(function () {
                     alert(1);
                 }
             });
-
         } else {
             alert('请输入字母');
         }
