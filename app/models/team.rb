@@ -2,6 +2,7 @@ class Team < ApplicationRecord
   belongs_to :user
   belongs_to :event
   belongs_to :district
+  belongs_to :school
   has_many :team_user_ships, :dependent => :destroy
   has_many :users, through: :team_user_ship
   # has_many :invites

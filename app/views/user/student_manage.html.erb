@@ -1,0 +1,55 @@
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="user-notification">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @students.present? %>
+                <table class="table">
+                  <thead>
+                  <th>姓名</th>
+                  <th>性别</th>
+                  <th>区县</th>
+                  <th>学校</th>
+                  <th>学籍号</th>
+                  <th>操作</th>
+                  </thead>
+                  <tbody>
+                  <% @students.each do |s| %>
+                      <tr>
+                        <td><%= s.username %></td>
+                        <td><%= s.gender %></td>
+                        <td><%= s.district_name %></td>
+                        <td><%= s.school_name %></td>
+                        <td><%= s.student_code %></td>
+                        <td>查看详情</td>
+                      </tr>
+                  <% end %>
+
+                  </tbody>
+                </table>
+
+            <% else %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="footer">
+        <a>关于我们</a>
+        <span class="separator"></span>
+        <a>联系我们</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+

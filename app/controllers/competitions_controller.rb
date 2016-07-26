@@ -61,7 +61,7 @@ class CompetitionsController < ApplicationController
         result = [false, '不规范请求']
       else
         user_profile = current_user.user_profile ||= current_user.build_user_profile
-        if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
+        if user_profile.update_attributes!(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
           event = Team.joins(:event).joins('left join competitions c on events.competition_id = c.id').where('teams.id=?', td).select('c.apply_end_time', 'events.team_max_num', :players, :identifier, 'events.id as event_id', 'teams.user_id', 'events.name as event_name').take
           if event.present? && (event.apply_end_time > Time.now) && (event.team_max_num > 1) && (event.team_max_num > event.players)
             already_apply = TeamUserShip.where(user_id: user_id, event_id: event.event_id).exists?
@@ -117,7 +117,7 @@ class CompetitionsController < ApplicationController
         result = [false, ' 不规范请求 ']
       else
         user = current_user.user_profile ||= current_user.build_user_profile
-        if user.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
+        if user.update_attributes!(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
           event = Event.joins(:competition).where(id: ed).select(' competitions.apply_end_time ').take
           if event.present? && event.apply_end_time > Time.now
             already_apply = TeamUserShip.where(user_id: user_id, event_id: ed, status: true).exists?
@@ -318,6 +318,31 @@ class CompetitionsController < ApplicationController
         flash[:error] = '不规范请求'
       end
     end
+  end
+
+  def school_refuse_teams
+
+    if params[:tds].present? && params[:tds].is_a?(Array)
+      team_ids = params[:tds].map { |t| t.to_i }
+      teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
+      if teacher_info.present? && teacher_info.role_type == 3 && teacher_info.school_id.present?
+        all_team_ids = Team.where(school_id: teacher_info.school_id, status: [2, 21]).pluck(:id); false
+        if (all_team_ids & team_ids) == team_ids
+          if Team.where(id: team_ids).update_all(status: 20) == team_ids.length
+            result = [true, '拒绝成功']
+          else
+            result = [false, '拒绝失败']
+          end
+        else
+          result = [false, '不规范操作']
+        end
+      else
+        result = [false, '没有权限']
+      end
+    else
+      result = [false, '参数不规范']
+    end
+    render json: result
   end
 
 
