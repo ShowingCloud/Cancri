@@ -153,7 +153,7 @@ class CompetitionsController < ApplicationController
     event_id = params[:ed]
     team_identify = params[:team]
     if event_id.present? && team_identify.present?
-      team = Team.joins(:event).left_joins(:school).joins('left join user_profiles up on up.user_id = teams.user_id').where(event_id: event_id, identifier: team_identify).select(:id, :status, :identifier, :players, :teacher, :teacher_mobile, 'events.team_max_num', 'schools.name as school_name', 'up.username')
+      team = Team.joins(:event).joins('left join schools on teams.school_id = schools.id').joins('left join user_profiles up on up.user_id = teams.user_id').where(event_id: event_id, identifier: team_identify).select(:id, :status, :identifier, :players, :teacher, :teacher_mobile, 'events.team_max_num', 'schools.name as school_name', 'up.username')
       result = [true, team]
     else
       result = [false, '参数不完整']
