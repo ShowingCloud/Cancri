@@ -44,7 +44,11 @@ Rails.application.routes.draw do
       post :leader_delete_player
       post :player_agree_leader_invite
       post :leader_deal_player_apply
+      post :leader_submit_team
+      post :school_submit_team
+      post :district_submit_team
       post :school_refuse_teams
+      post :district_refuse_teams
     end
   end
   get '/competitions/:id/events', to: 'competitions#events'
@@ -144,6 +148,8 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   get 'user' => redirect('/user/preview')
+  get '/:id', to: 'user#index'
+  get '/:id/courses', to: 'user#courses'
 
   match 'user/preview' => 'user#preview', as: 'user_preview', via: [:get, :post]
   get 'user/preview/:id' => 'user#preview'

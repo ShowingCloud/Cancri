@@ -325,12 +325,105 @@ class CompetitionsController < ApplicationController
       team_ids = params[:tds].map { |t| t.to_i }
       teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
       if teacher_info.present? && teacher_info.role_type == 3 && teacher_info.school_id.present?
-        all_team_ids = Team.where(school_id: teacher_info.school_id, status: [2, 21]).pluck(:id); false
+        all_team_ids = Team.where(school_id: teacher_info.school_id, status: 2).pluck(:id); false
         if (all_team_ids & team_ids) == team_ids
-          if Team.where(id: team_ids).update_all(status: 20) == team_ids.length
+          if Team.where(id: team_ids).update_all(status: -2) == team_ids.length
             result = [true, '拒绝成功']
           else
             result = [false, '有部分队伍拒绝失败']
+          end
+        else
+          result = [false, '不规范操作']
+        end
+      else
+        result = [false, '没有权限']
+      end
+    else
+      result = [false, '参数不规范']
+    end
+    render json: result
+  end
+
+  def district_refuse_teams
+    if params[:tds].present? && params[:tds].is_a?(Array)
+      team_ids = params[:tds].map { |t| t.to_i }
+      teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
+      if teacher_info.present? && teacher_info.role_type == 2 && teacher_info.district_id.present?
+        all_team_ids = Team.where(district_id: teacher_info.district_id, status: 3).pluck(:id); false
+        if (all_team_ids & team_ids) == team_ids
+          if Team.where(id: team_ids).update_all(status: -3) == team_ids.length
+            result = [true, '拒绝成功']
+          else
+            result = [false, '有部分队伍拒绝失败']
+          end
+        else
+          result = [false, '不规范操作']
+        end
+      else
+        result = [false, '没有权限']
+      end
+    else
+      result = [false, '参数不规范']
+    end
+    render json: result
+  end
+
+
+  def leader_submit_team
+    team_id = params[:td]
+    if team_id.present?
+      team = Team.joins(:events).joins('left join competitions c on c.id = events.competition_id').where('teams.id=?', team_id).select('teams.*', 'c.apply_end_time').take
+      if team.present? && (team.apply_end_time > Time.now) && (team.status ==0) && (team.user_id == current_user.id)
+        team.status == 2
+        if team.save
+          result = [true, '提交成功,审核结果将会在消息中告知您']
+        else
+          result = [false, '提交失败']
+        end
+      else
+        result = [false, '不规范操作或已过报名时间']
+      end
+    else
+      result = [false, '参数不完整']
+    end
+    render json: result
+  end
+
+  def school_submit_team
+    if params[:tds].present? && params[:tds].is_a?(Array)
+      team_ids = params[:tds].map { |t| t.to_i }
+      teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
+      if teacher_info.present? && teacher_info.role_type == 3 && teacher_info.school_id.present?
+        all_team_ids = Team.where(school_id: teacher_info.school_id, status: [2, -2]).pluck(:id); false
+        if (all_team_ids & team_ids) == team_ids
+          if Team.where(id: team_ids).update_all(status: 3) == team_ids.length
+            result = [true, '提交成功']
+          else
+            result = [false, '有部分未提交成功']
+          end
+        else
+          result = [false, '不规范操作']
+        end
+      else
+        result = [false, '没有权限']
+      end
+    else
+      result = [false, '参数不规范']
+    end
+    render json: result
+  end
+
+  def district_submit_team
+    if params[:tds].present? && params[:tds].is_a?(Array)
+      team_ids = params[:tds].map { |t| t.to_i }
+      teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
+      if teacher_info.present? && teacher_info.role_type == 2 && teacher_info.district_id.present?
+        all_team_ids = Team.where(district_id: teacher_info.district_id, status: [3, -3]).pluck(:id); false
+        if (all_team_ids & team_ids) == team_ids
+          if Team.where(id: team_ids).update_all(status: 1) == team_ids.length
+            result = [true, '提交成功']
+          else
+            result = [false, '有部分未提交成功']
           end
         else
           result = [false, '不规范操作']

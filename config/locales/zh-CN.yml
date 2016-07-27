@@ -287,10 +287,9 @@ zh-CN:
      status0: '报名中'
      status1: '报名成功'
      status2: '待学校审核'
-     status3: '待区县审核'
-     status20: '学校审核未通过'
-     status21: '学校审核通过'
-     status30: '区县审核未通过'
+     status-2: '学校审核未通过'
+     status3: '学校审核通过,待区县审核'
+     status-3: '区县审核未通过'
   attributes:
      username: '姓名'
      teacher: '教师姓名'

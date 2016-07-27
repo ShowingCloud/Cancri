@@ -1,6 +1,16 @@
 class UserController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_user, only: [:index, :courses]
   before_action :is_teacher, only: [:programs, :program, :program_se, :create_program, :course_score]
+
+
+  def index
+    @competitions = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where(user_id: @user.id).select('up.username', 'up.grade', 'up.bj', 'up.student_code', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.last_score').page(params[:page]).per(params[:per])
+  end
+
+  def courses
+    @courses = CourseUserShip.joins(:course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where(user_id: @user.id).select(:score, 'up.username', 'up.grade', 'up.bj', 'up.student_code', 'courses.name', 'courses.end_time').page(params[:page]).per(params[:per])
+  end
 
   # 个人信息概览
   def preview
@@ -267,9 +277,9 @@ class UserController < ApplicationController
           end
         end
 
-        @students = UserProfile.left_joins(:district, :school).where(district_id: teacher_info.district_id).select(:username, :grade, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name').page(params[:page]).per(params[:per])
+        @students = UserProfile.left_joins(:district, :school, :user).where(district_id: teacher_info.district_id).select(:username, :grade, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name', 'users.nickname').page(params[:page]).per(params[:per])
       elsif teacher_info.role_type == 3 && teacher_info.school_id.present?
-        @students = UserProfile.left_joins(:district, :school).where(school_id: teacher_info.school_id).select(:username, :grade, :bj, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name').page(params[:page]).per(params[:per])
+        @students = UserProfile.left_joins(:district, :school, :user).where(school_id: teacher_info.school_id).select(:username, :grade, :bj, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name', 'users.nickname').page(params[:page]).per(params[:per])
       end
     else
       render_optional_error(403)
@@ -281,11 +291,11 @@ class UserController < ApplicationController
     if teacher_info.present?
 
       if teacher_info.role_type == 2 && teacher_info.district_id.present?
-        @students = UserProfile.left_joins(:district, :school).where(district_id: teacher_info.district_id).select(:username, :grade, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name').page(params[:page]).per(params[:per])
+        @students = UserProfile.left_joins(:district, :school, :user).where(district_id: teacher_info.district_id).select(:username, :grade, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name', 'users.nickname').page(params[:page]).per(params[:per])
       elsif teacher_info.role_type == 3 && teacher_info.school_id.present?
         @competitions = Competition.where(status: 1).select(:id, :name)
         if params[:ed].present?
-          @students = TeamUserShip.joins(:event, :team).joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').where('teams.status=?', 2).where('teams.school_id=?', teacher_info.school_id).where('teams.event_id = ?', params[:ed]).select(:grade, :user_id, 'teams.user_id as leader_user_id', 'teams.identifier', 'events.name as event_name', 'u_p.username', 'u_p.gender').page(params[:page]).per(params[:per])
+          @students = TeamUserShip.joins(:event, :team, :user).joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').where('teams.status=?', 2).where('teams.school_id=?', teacher_info.school_id).where('teams.event_id = ?', params[:ed]).select(:grade, :user_id, 'teams.user_id as leader_user_id', 'teams.identifier', 'events.name as event_name', 'u_p.username', 'u_p.gender', 'users.nickname').page(params[:page]).per(params[:per])
         end
       end
     else
@@ -322,18 +332,6 @@ class UserController < ApplicationController
     end
     render json: result
   end
-
-  # def check_email_exists
-  #   render json: require_email
-  # end
-  #
-  # def check_mobile_exists
-  #   render json: require_mobile
-  # end
-  #
-  # def check_email_and_mobile
-  #   render json: require_email_and_mobile
-  # end
 
   def email
     if params[:return_uri].present?
@@ -659,6 +657,16 @@ class UserController < ApplicationController
   end
 
   private
+
+  def set_user
+    unless params[:id].present? && params[:id] =~ /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/
+      render_optional_error(404)
+    end
+    @user = User.find_by_nickname(params[:id])
+    unless @user
+      render_optional_error(404)
+    end
+  end
 
   def params_program
     course_params = params.require(:course).permit(:name, :num, :target, :run_address, :run_time, :desc, :apply_start_time, :apply_end_time, :start_time, :end_time, :district_id)

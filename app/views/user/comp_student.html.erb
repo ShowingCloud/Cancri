@@ -43,7 +43,7 @@
                         <td><%= (s.gender.present? && s.gender==1) ? '男' : '女' %></td>
                         <td><%= s.grade %></td>
                         <td>
-                          <a href="<%= "/user/profile/#{s.user_id.to_s}" %>">查看详情</a> &nbsp;&nbsp;&nbsp;&nbsp;
+                          <a href="<%= "/#{s.nickname}" %>">查看详情</a> &nbsp;&nbsp;&nbsp;&nbsp;
                           <% if s.leader_user_id == s.user_id %>
                               <button class="btn btn-xs btn-info">拒绝参加</button>
                           <% end %>
