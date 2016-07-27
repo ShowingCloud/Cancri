@@ -68,7 +68,7 @@ class CompetitionsController < ApplicationController
             if already_apply.present?
               result = [false, '该比赛您已报名或等待队长审核']
             else
-              t_u = TeamUserShip.create(team_id: td, user_id: user_id, event_id: event.event_id, district_id: district_id, school_id: school_id, grade: grade, status: true)
+              t_u = TeamUserShip.create(team_id: td, user_id: user_id, event_id: event.event_id, district_id: district_id, school_id: school_id, grade: grade, status: false)
               if t_u.save
                 notify = Notification.create(user_id: event.user_id, content: username+' 申请加入您在比赛项目－'+ event.event_name.to_s + '中创建的队伍－'+ event.identifier, t_u_id: t_u.id, team_id: td, message_type: 2, reply_to: user_id)
                 if notify.save
