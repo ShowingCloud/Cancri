@@ -24,15 +24,107 @@
                         <% elsif @t_u.apply_end_time < Time.now %>
                             <label class="label">已过报名时间</label>
                         <% elsif @t_u.apply_end_time > Time.now && @t_u.team_status == 0 %>
-
-
-                            <button type="button" class="btn btn-primary">
+                            <button type="button" class="btn btn-primary btn-accept-invite">
                               接受邀请
                             </button>
-                            <input type="hidden" name="td" value="<%= @notification.team_id %>"/>
-                            <input type="hidden" name="ed" value="<%= @t_u.id %>"/>
+                            <input type="hidden" name="td" id="team-id" value="<%= @notification.team_id %>"/>
+                            <input type="hidden" name="ed" id="event-id" value="<%= @t_u.id %>"/>
+                            <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
+                            <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
+                            <input type="hidden" id="gender" value="<%= @user_info.gender %>"/>
 
+                            <div class="invite-box">
+                              <div id="accept-invite" class="accept-invite hide">
+                                <div class="step-head">加入队伍</div>
+                                <div class="form-horizontal">
+                                  <form>
+                                    <div class="form-group">
+                                      <label for="username" class="col-sm-2 control-label">姓名</label>
 
+                                      <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="username-join" value="<%= @user_info.username %>" placeholder="姓名">
+                                      </div>
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="gender" class="col-sm-2 control-label">性别</label>
+
+                                      <div class="col-sm-9">
+                                        <label class="gender-label"><input type="radio" name="user_profile[gender]" value="1" <%= 'checked="checked"' if @user_info.gender.to_i == 1 %>/>男</label>
+                                        <label class="gender-label"><input type="radio" name="user_profile[gender]" value="2" <%= 'checked="checked"' if @user_info.gender.to_i == 2 %>/>女</label>
+                                      </div>
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="gender" class="col-sm-2 control-label">手机号</label>
+
+                                      <div class="col-sm-9 special-row">
+
+                                        <%= current_user.mobile %>
+                                      </div>
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="birthday" class="col-sm-2 control-label">生日</label>
+
+                                      <div class="col-sm-9">
+                                        <input type="text" class="form-control datetime" id="birthday-join" value="<%= @user_info.birthday %>" data-type="select-date" data-date-format="yyyy-mm-dd">
+                                      </div>
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="school_name" class="col-sm-2 control-label">学校</label>
+
+                                      <div class="col-sm-9 special-row school-field">
+                                        <% if @user_info.school_id.present? %>
+                                            <span class="change-school school-tag"><%= @user_info.school_name %> </span>
+                                        <% else %>
+                                            <button class="new-school btn-robodou">选择学校</button>
+                                        <% end %>
+                                        <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
+                                        <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
+                                      </div>
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="grade" class="col-sm-2 control-label">年级</label>
+
+                                      <div class="col-sm-9">
+                                        <select id="grade-join" class="form-control">
+                                          <option value="0">请选择年级</option>
+                                          <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
+                                          <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
+                                          <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
+                                          <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
+                                          <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
+                                          <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
+                                          <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
+                                          <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
+                                          <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
+                                          <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
+                                          <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
+                                          <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="identity_card" class="col-sm-2 control-label">身份证</label>
+
+                                      <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="identity_card-join" value="<%= @user_info.identity_card %>">
+                                      </div>
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="student_code" class="col-sm-2 control-label">学籍号</label>
+
+                                      <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="student_code-join" value="<%= @user_info.student_code %>">
+                                      </div>
+                                    </div>
+                                    <div class="form-group">
+                                      <div class="col-sm-offset-2 col-sm-9">
+                                        <button class="btn btn-info btn-block accept-invite-submit">提交</button>
+                                      </div>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
                         <% end %>
 
                     <% else %>
@@ -85,5 +177,22 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="school-modal">
+  <div class="school-modal-inner">
+    <div class="title">
+      选择学校
+    </div>
+    <div class="content">
+      <div class="screening">
+        <label for="selected-dis">区县</label>
+        <select name="district" id="district-select">
+          <option value="0">请选择区县</option>
 
+        </select>
+      </div>
+      <div class="school-list">
+      </div>
+    </div>
+  </div>
+</div>
 

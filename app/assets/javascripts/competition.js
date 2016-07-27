@@ -1,9 +1,4 @@
 $(function () {
-    $('.gender-label').find('input[type="radio"]').on('click', function (event) {
-        if ($(this).prop('checked') == true) {
-            $('#gender').val($(this).val());
-        }
-    });
 
     $('.update-user-info-submit').on('click', function (event) {
         event.preventDefault();
@@ -40,15 +35,15 @@ $(function () {
             success: function (data) {
                 if (data[0]) {
                     $('#update-user-info').modal('hide');
-                    alert(data[1]);
-                    window.location.reload();
+                    alert_r(data[1], function () {
+                        window.location.reload();
+                    });
                 } else {
-                    alert(data[1]);
+                    alert_r(data[1]);
                 }
             }
         });
     });
-
 
 
     //创建队伍
@@ -65,10 +60,10 @@ $(function () {
         $(this).parents('.first-step').addClass('hide');
     });
 
-    $('.join-team-submit').on('click',function(event){
+    $('.join-team-submit').on('click', function (event) {
         event.preventDefault();
         var username = $('#username-join').val();
-        var gender = $('#gender-join').val();
+        var gender = $('#gender').val();
         var district_id = $('#district-id').val();
         var school_id = $('#school-id').val();
         var birthday = $('#birthday-join').val();
@@ -89,15 +84,16 @@ $(function () {
                 "identity_card": identity_card,
                 "grade": grade,
                 "student_code": student_code,
-                "td":td
+                "td": td
             },
             success: function (data) {
                 if (data[0]) {
                     $('#update-user-info').modal('hide');
-                    alert(data[1]);
-                    window.location.reload();
+                    alert_r(data[1], function () {
+                        window.location.reload();
+                    });
                 } else {
-                    alert(data[1]);
+                    alert_r(data[1]);
                 }
             }
         });
@@ -158,7 +154,7 @@ $(function () {
                             space.find('.accept').remove();
                             var id = $(this).attr('data-id');
                             $('#step-for-search').addClass('hide');
-                            $('#step-for-join-team').removeClass('hide').append('<input type="hidden" id="join-team-id" value="'+id+'">');
+                            $('#step-for-join-team').removeClass('hide').append('<input type="hidden" id="join-team-id" value="' + id + '">');
 
                         });
                     } else {
@@ -185,7 +181,7 @@ $(function () {
                 success: function (data) {
                     if (data[0]) {
                         if (data[1].length == 0) {
-                            alert('未查询到相关用户');
+                            alert_r('未查询到相关用户');
                         } else {
                             var result = data[1];
                             $('.table-player-show').removeClass('hide');
@@ -204,15 +200,15 @@ $(function () {
                             });
                         }
                     } else {
-                        alert(data[1]);
+                        alert_r(data[1]);
                     }
                 },
                 error: function (data) {
-                    alert(data["status"])
+                    alert_r(data["status"])
                 }
             });
         } else {
-            alert('请输入前两个名字')
+            alert_r('请输入前两个名字')
         }
     });
 
@@ -229,7 +225,7 @@ function invite_player(user_id) {
             data: {td: team_id, ud: user_id},
             success: function (data) {
                 if (data[0]) {
-                    alert(data[1]);
+                    alert_r(data[1]);
                     $('.table-player-show').addClass('hide');
                     var team_players_info = $('#team-players-info').find('tbody');
                     var tr_info = $('<tr id="team-player-' + user_id + '"><td>' + data[2] + '</td><td>' + data[3] + '</td>' +
@@ -237,7 +233,7 @@ function invite_player(user_id) {
                     '<td>队员(待确认)</td><td><button class="btn btn-xs btn-info" onclick="leader_delete_player(' + user_id + ')">清退</button></td></tr>');
                     team_players_info.append(tr_info);
                 } else {
-                    alert(data[1]);
+                    alert_r(data[1]);
                 }
             }
         });
@@ -254,10 +250,10 @@ function leader_delete_team(team_id) {
             data: {td: team_id},
             success: function (data) {
                 if (data[0]) {
-                    alert(data[1]);
+                    alert_r(data[1]);
                     window.location.reload();
                 } else {
-                    alert(data[1]);
+                    alert_r(data[1]);
                 }
             }
         })
@@ -277,10 +273,10 @@ function leader_delete_player(ud) {
             data: {td: team_id, ud: ud},
             success: function (data) {
                 if (data[0]) {
-                    alert(data[1]);
+                    alert_r(data[1]);
                     $("#team-player-" + ud).addClass('hide');
                 } else {
-                    alert(data[1]);
+                    alert_r(data[1]);
                 }
             }
         })
