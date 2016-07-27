@@ -92,7 +92,7 @@ $(function () {
             });
         }
 
-        $('.change-school').on('click', function (event) {
+        $('.school-tag').on('click', function (event) {
             event.preventDefault();
             school_handle();
         });
@@ -435,6 +435,53 @@ $(function () {
             });
         }
 
+        $('.gender-label').find('input[type="radio"]').on('click', function (event) {
+            if ($(this).prop('checked') == true) {
+                $('#gender').val($(this).val());
+            }
+        });
+
+        $('.accept-invite-submit').on('click', function (event) {
+            event.preventDefault();
+            var username = $('#username-join').val();
+            var gender = $('#gender').val();
+            var district_id = $('#district-id').val();
+            var school_id = $('#school-id').val();
+            var birthday = $('#birthday-join').val();
+            var identity_card = $('#identity_card-join').val();
+            var grade = $('#grade-join').val();
+            var student_code = $('#student_code-join').val();
+            var td = $('#team-id').val();
+            var ed = $('#event-id').val();
+
+            $.ajax({
+                url: '/competitions/player_agree_leader_invite',
+                type: 'post',
+                data: {
+                    "username": username,
+                    "gender": gender,
+                    "district": district_id,
+                    "school": school_id,
+                    "birthday": birthday,
+                    "identity_card": identity_card,
+                    "grade": grade,
+                    "student_code": student_code,
+                    "td": td,
+                    "ed": ed
+                },
+                success: function (data) {
+                    if (data[0]) {
+                        $('#update-user-info').modal('hide');
+                        alert_r(data[1],function(){
+                            window.location.reload();
+                        });
+                    } else {
+                        alert_r(data[1]);
+                    }
+                }
+            });
+        });
+
         if ($('[data-lesson-cookie="true"]').length > 0) {
             var cookie = $.cookie('lesson-selected');
             if (cookie != undefined && cookie != '[]' && cookie != null) {
@@ -549,6 +596,10 @@ $(function () {
             });
         }
 
+        $('.btn-accept-invite').on('click', function () {
+            $('#accept-invite').removeClass('hide');
+        });
+
         function school_handle(dis) {
             var _modals = $('#school-modal');
             _modals.modal('show');
@@ -616,6 +667,10 @@ $(function () {
                     tag.text(text);
                 } else {
                     $('.school-field').empty().append('<span class="change-school school-tag">' + text + '</span>');
+                    $('.school-tag').off('click').on('click', function (event) {
+                        event.preventDefault();
+                        school_handle();
+                    })
                 }
                 $('#school-modal').modal('hide');
                 $('.school-list').empty();
@@ -642,5 +697,4 @@ $(function () {
             $.ajax(option);
         }
     }
-)
-;
+);

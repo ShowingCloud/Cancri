@@ -11,29 +11,25 @@
           <div class="sub-content">
             <% if @students.present? %>
                 <table class="table">
-                  <thead>
+                  <tr>
                   <th>姓名</th>
                   <th>性别</th>
                   <th>区县</th>
                   <th>学校</th>
                   <th>学籍号</th>
                   <th>操作</th>
-                  </thead>
-                  <tbody>
+                  </tr>
                   <% @students.each do |s| %>
                       <tr>
                         <td><%= s.username %></td>
-                        <td><%= s.gender %></td>
                         <td><%= s.district_name %></td>
+                        <td><%= s.gender %></td>
                         <td><%= s.school_name %></td>
                         <td><%= s.student_code %></td>
                         <td><a href="<%= "/#{s.nickname}" %>">查看详情</a></td>
                       </tr>
                   <% end %>
-
-                  </tbody>
                 </table>
-
             <% else %>
             <% end %>
           </div>

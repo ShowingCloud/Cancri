@@ -590,6 +590,7 @@ a:hover {
   border-radius: 15px;
   padding: 20px;
   background: #445d79;
+  overflow: hidden;
 }
 
 .user-center .user-main .sub-content .sub-header {
@@ -1638,22 +1639,86 @@ select {
 }
 
 #step-for-search {
-  .search-part{
+  .search-part {
     border: 1px solid #fff;
     border-radius: 15px;
     padding: 20px;
-    .team-info{
+    .team-info {
       border: 1px solid #fff;
       width: 100%;
       margin: 20px auto;
-      td{
+      td {
         border: 1px solid #fff;
         text-align: center;
         padding: 10px;
       }
     }
   }
-  .search-team-result{
+  .search-team-result {
     color: #444;
   }
+}
+
+#team-info {
+  width: 800px;
+  margin: 40px auto;
+  border: 1px solid #fff;
+  padding: 20px;
+  font-size: 12px;
+  border-radius: 15px;
+  text-align: center;
+  .control-label {
+    font-size: 18px;
+  }
+  .info-row {
+    margin-bottom: 10px;
+    font-size: 14px;
+    .invite-panel {
+      padding: 20px;
+      text-align: center;
+      th {
+        text-align: center;
+      }
+    }
+    .search-player-input {
+
+    }
+    .left {
+      width: 360px;
+      float: left;
+      text-align: right;
+    }
+    .right {
+      margin-left: 360px;
+      padding: 0 20px;
+      text-align: left;
+    }
+  }
+}
+
+#accept-invite {
+  width: 560px;
+  border: 1px solid #fff;
+  padding: 20px;
+  font-size: 12px;
+  color: #fff;
+  border-radius: 15px;
+  background: #445d79;
+  float: left;
+  .step-head {
+    font-size: 18px;
+    padding: 10px 0;
+    border-bottom: 1px solid #fff;
+  }
+  .form-horizontal {
+    padding: 10px 0;
+    .special-row {
+      padding-top: 7px;
+    }
+  }
+}
+
+.invite-box{
+  width: 560px;
+  margin: 20px auto;
 }

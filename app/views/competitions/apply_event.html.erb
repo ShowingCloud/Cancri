@@ -5,79 +5,94 @@
           <h3><%= @event.comp_name %>-<%= @event.name %></h3>
         </div>
         <input type="hidden" value="<%= @event.id %>" id="event-identify"/>
+
         <% if @has_apply[0] %>
             <div id="team-info">
-              <p><label class="label label-info"><%= @has_apply[1] ? '您已报名该项目' : '等待确认加入该队' %></label>
+              <div class="info-row">
+                <label class="label label-info control-label"><%= @has_apply[1] ? '您已报名该项目' : '等待确认加入该队' %></label>
+              </div>
+              <div class="info-row">
+                <div class="left">队伍编号:</div>
+                <div class="right"><%= @team_players.first.identifier %></div>
+              </div>
+              <div class="info-row">
+                <div class="left">报名状态:</div>
+                <div class="right"><%= t('team.status'+ @team_players.first.team_status.to_s) %></div>
+              </div>
+              <div class="info-row">
+                <div class="left">指导老师:</div>
+                <div class="right"><%= @team_players.first.teacher %></div>
+              </div>
+              <div class="info-row">
+                <div class="left">老师手机:</div>
+                <div class="right"><%= @team_players.first.teacher_mobile %></div>
+              </div>
+              <input type="hidden" id="team-identify" value="<%= @team_players.first.team_id %>"/>
+
+              <div class="info-row">
                 <% if (@event.team_max_num >1) && (@team_players.first.players < @event.team_max_num) && (current_user.id == @team_players.first.leader_user_id) %>
-                    邀请队友
-                    <input type="text" class="search-player-input" value=""/>
-                    <button id="search-player" class="btn btn-sm ">搜索队员</button>
-                    <table class="table table-player-show hide">
-                      <thead>
-                      <tr>
-                        <th>用户名</th>
-                        <th>姓名</th>
-                        <th>学校</th>
-                        <th>年级</th>
-                        <th>操作</th>
-                      </tr>
-                      </thead>
-                      <tbody>
+                    <div class="invite-panel">
+                      <p>邀请队友</p>
+                      <input type="text" class="search-player-input input-robodou" value=""/>
+                      <button id="search-player" class="btn btn-sm ">搜索队员</button>
+                      <table class="table table-player-show hide">
+                        <thead>
+                        <tr>
+                          <th>用户名</th>
+                          <th>姓名</th>
+                          <th>学校</th>
+                          <th>年级</th>
+                          <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
 
-                      </tbody>
-                    </table>
+                        </tbody>
+                      </table>
+                    </div>
                 <% end %>
-                </p>
-
-                <p>队伍代码:<%= @team_players.first.identifier %></p>
-
-                <p>报名状态:<%= t('team.status'+ @team_players.first.team_status.to_s) %></p>
-
-                <p>指导老师:<%= @team_players.first.teacher %></p>
-
-                <p>老师手机:<%= @team_players.first.teacher_mobile %></p>
-                <input type="hidden" id="team-identify" value="<%= @team_players.first.team_id %>"/>
-
-                <table id="team-players-info" class="table table-bordered">
-                  <thead>
-                  <tr>
-                    <th>用户名</th>
-                    <th>姓名</th>
-                    <th>学校</th>
-                    <th>年级</th>
-                    <th>角色</th>
-                    <% if current_user.id == @team_players.first.leader_user_id %>
-                        <th>操作</th>
-                    <% end %>
-                  </tr>
-                  </thead>
-
-                  <tbody>
-                  <% @team_players.each do |p| %>
-                      <tr id="<%= "team-player-#{p.user_id}" %>">
-                        <td><%= p.nickname %></td>
-                        <td><%= p.username %></td>
-                        <td><%= p.school_name %></td>
-                        <td><%= p.grade %></td>
-                        <td><%= p.leader_user_id == p.user_id ? '队长' : '队员' %><%= p.player_status==1 ? nil : '--待确认' %></td>
-                        <% if current_user.id == @team_players.first.leader_user_id %>
-                            <td>
-                              <% if p.leader_user_id == p.user_id && current_user.id == p.leader_user_id %>
-                                  <button class="btn btn-xs btn-danger" onclick="leader_delete_team(<%= p.team_id %>)">解散队伍</button>
-                              <% elsif current_user.id == p.leader_user_id %>
-                                  <button class="btn btn-xs btn-info" onclick="leader_delete_player(<%= p.user_id %>)">清退</button>
-                              <% end %>
-                            </td>
-                        <% end %>
-                      </tr>
-
+              </div>
+              <table id="team-players-info" class="table table-bordered">
+                <thead>
+                <tr>
+                  <th>用户名</th>
+                  <th>姓名</th>
+                  <th>学校</th>
+                  <th>年级</th>
+                  <th>角色</th>
+                  <% if current_user.id == @team_players.first.leader_user_id %>
+                      <th>操作</th>
                   <% end %>
-                  </tbody>
-                </table>
-
-                </div>
+                </tr>
+                </thead>
+                <tbody>
+                <% @team_players.each do |p| %>
+                    <tr id="<%= "team-player-#{p.user_id}" %>">
+                      <td><%= p.nickname %></td>
+                      <td><%= p.username %></td>
+                      <td><%= p.school_name %></td>
+                      <td><%= p.grade %></td>
+                      <td><%= p.leader_user_id == p.user_id ? '队长' : '队员' %><%= p.player_status==1 ? nil : '--待确认' %></td>
+                      <% if current_user.id == @team_players.first.leader_user_id %>
+                          <td>
+                            <% if p.leader_user_id == p.user_id && current_user.id == p.leader_user_id %>
+                                <button class="btn btn-xs btn-danger" onclick="leader_delete_team(<%= p.team_id %>)">解散队伍</button>
+                            <% elsif current_user.id == p.leader_user_id %>
+                                <button class="btn btn-xs btn-info" onclick="leader_delete_player(<%= p.user_id %>)">清退</button>
+                            <% end %>
+                          </td>
+                      <% end %>
+                    </tr>
+                <% end %>
+                </tbody>
+              </table>
+            </div>
         <% else %>
             <% unless has_teacher_role %>
+                <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
+                <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
+                <input type="hidden" id="gender" value="<%= @user_info.gender.to_i %>"/>
+
                 <div class="first-step">
                   <div id="step-for-new" class="box">
                     <div class="msg">创建队伍</div>
@@ -112,7 +127,6 @@
                         <div class="col-sm-9">
                           <label class="gender-label"><input type="radio" name="user_profile[gender]" value="1" <%= 'checked="checked"' if @user_info.gender.to_i == 1 %>/>男</label>
                           <label class="gender-label"><input type="radio" name="user_profile[gender]" value="2" <%= 'checked="checked"' if @user_info.gender.to_i == 2 %>/>女</label>
-                          <input type="hidden" id="gender" value="<%= @user_info.gender.to_i %>"/>
                         </div>
                       </div>
                       <div class="form-group">
@@ -137,10 +151,8 @@
                           <% if @user_info.school_id.present? %>
                               <span class="change-school school-tag"><%= @user_info.school_name %> </span>
                           <% else %>
-                              <button class="new-school btn-robodou">选择学校</button>
+                              <button class="new-school btn-robodou school-tag">选择学校</button>
                           <% end %>
-                          <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
-                          <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
                         </div>
                       </div>
                       <div class="form-group">
@@ -243,7 +255,6 @@
                         <div class="col-sm-9">
                           <label class="gender-label"><input type="radio" name="user_profile[gender]" value="1" <%= 'checked="checked"' if @user_info.gender.to_i == 1 %>/>男</label>
                           <label class="gender-label"><input type="radio" name="user_profile[gender]" value="2" <%= 'checked="checked"' if @user_info.gender.to_i == 2 %>/>女</label>
-                          <input type="hidden" id="gender-join" value="<%= @user_info.gender.to_i %>"/>
                         </div>
                       </div>
                       <div class="form-group">
