@@ -139,11 +139,8 @@
     <div class="content">
       <div class="screening">
         <label for="selected-dis">区县</label>
-        <select name="district" id="selected-dis">
-          <option>请选择区县</option>
-          <% District.all.each do |d| %>
-              <option value="<%= d.id %>"><%= d.name %></option>
-          <% end %>
+        <select name="district" id="district-select">
+
         </select>
       </div>
       <div class="school-list">

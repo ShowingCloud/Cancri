@@ -61,27 +61,18 @@
                     </div>
                     <%= f.input :desc, as: :text %>
                   </fieldset>
-                  <div class="form-group">
-                    <label class="control-label" for="user_profile_district_id">区县</label>
-                    <select id="district-select" class="string optional form-control" data-target-special="#user_profile_district_id">
-                      <option value="0">请选择区县</option>
-                      <% District.all.each do |d| %>
-                          <option value="<%= d.id %>" <%= 'selected="selected"' if @user_profile.district_id.to_i == d.id %>><%= d.name %></option>
-                      <% end %>
-                    </select>
-                    <input class="dis-hidden-input" type="hidden" id="user_profile_district_id" name="user_profile[district_id]" value="<%= @user_profile.district_id %>"/>
-                  </div>
+
                   <div class="form-group">
                     <label class="control-label" for="user_profile_school_id">学校</label>
 
-                    <div class="form-control no-border">
-                      <% if @user_profile.school.try(:name).present? %>
-                          <button class="choice-school btn-robodou">更改学校</button>
-                          <span class="selected-school"><%= @user_profile.school.name %></span>
+                    <div class="school-field">
+                      <% if @user_profile.school.try(:id) %>
+                          <span class="change-school school-tag"><%= @user_profile.school.try(:name) %> </span>
                       <% else %>
-                          <button class="choice-school btn-robodou">选择学校</button>
+                          <button class="new-school btn-robodou">选择学校</button>
                       <% end %>
-                      <input id="user_profile_school_id" class="school-hidden-input" type="hidden" name="user_profile[school_id]" value="<%= @user_profile.school.try(:id) %>"/>
+                      <input id="school-id" class="school-hidden-input" type="hidden" name="user_profile[school_id]" value="<%= @user_profile.school.try(:id) %>"/>
+                      <input id="district-id" type="hidden" name="user_profile[district_id]" value="<%= @user_profile.district_id %>"/>
                     </div>
                   </div>
                   <div class="form-group">
@@ -113,7 +104,7 @@
                   <%= f.input :address %>
                 </div>
                 <div class="form-actions">
-                  <%= f.submit class: 'btn-robodou', value: '更新详细信息', 'data-disable-with': '更新详细信息'%>
+                  <%= f.submit class: 'btn-robodou', value: '更新详细信息', 'data-disable-with' => '更新详细信息' %>
                 </div>
             <% end %>
           </div>
@@ -139,11 +130,8 @@
     <div class="content">
       <div class="screening">
         <label for="selected-dis">区县</label>
-        <select name="district" id="selected-dis">
-          <option>请选择区县</option>
-          <% District.all.each do |d| %>
-              <option value="<%= d.id %>"><%= d.name %></option>
-          <% end %>
+        <select name="district" id="district-select">
+
         </select>
       </div>
       <div class="school-list">

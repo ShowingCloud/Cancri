@@ -110,13 +110,16 @@
                         <label for="gender" class="col-sm-2 control-label">性别</label>
 
                         <div class="col-sm-9">
-                          <input type="text" class="form-control" id="gender" value="<%= @user_info.gender %>">
+                          <label class="gender-label"><input type="radio" name="user_profile[gender]" value="1" <%= 'checked="checked"' if @user_info.gender.to_i == 1 %>/>男</label>
+                          <label class="gender-label"><input type="radio" name="user_profile[gender]" value="2" <%= 'checked="checked"' if @user_info.gender.to_i == 2 %>/>女</label>
+                          <input type="hidden" id="gender" value="<%= @user_info.gender.to_i %>"/>
                         </div>
                       </div>
                       <div class="form-group">
                         <label for="gender" class="col-sm-2 control-label">手机号</label>
 
-                        <div class="col-sm-9">
+                        <div class="col-sm-9 special-row">
+
                           <%= current_user.mobile %>
                         </div>
                       </div>
@@ -128,22 +131,37 @@
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="district" class="col-sm-2 control-label">区县</label>
+                        <label for="school_name" class="col-sm-2 control-label">学校</label>
 
-                        <div class="col-sm-9">
-                          <%= @user_info.try(:district_name) %>
+                        <div class="col-sm-9 special-row school-field">
+                          <% if @user_info.school_id.present? %>
+                              <span class="change-school school-tag"><%= @user_info.school_name %> </span>
+                          <% else %>
+                              <button class="new-school btn-robodou">选择学校</button>
+                          <% end %>
+                          <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
+                          <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="school_name" class="col-sm-2 control-label">学校</label>
+                        <label for="grade" class="col-sm-2 control-label">年级</label>
 
                         <div class="col-sm-9">
-                          <% if @user_info.school_id %>
-                              <button class="choice-school btn-robodou">更改学校</button>
-                              <span class="selected-school"><%= @user_info.school_name %></span>
-                          <% else %>
-                              <button class="choice-school btn-robodou">选择学校</button>
-                          <% end %>
+                          <select id="grade" class="form-control">
+                            <option value="0">请选择年级</option>
+                            <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
+                            <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
+                            <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
+                            <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
+                            <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
+                            <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
+                            <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
+                            <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
+                            <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
+                            <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
+                            <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
+                            <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
+                          </select>
                         </div>
                       </div>
                       <div class="form-group">
@@ -181,6 +199,7 @@
                       </div>
                       <div class="form-group">
                         <label for="team-teacher-mobile" class="col-sm-2 control-label">老师手机</label>
+
                         <div class="col-sm-9">
                           <input type="text" class="form-control" id="team-teacher-mobile" value="<%= %>">
                         </div>
@@ -199,9 +218,103 @@
                   </div>
                   <div class="search-part">
                     <!-- 搜索队伍 -->
-                    <div class="search-team-result">
-                      <input type="text" class="search-team-input"/>
+                    <div class="search-team-result input-group">
+                      <input type="text" class="search-team-input form-control" placeholder="请输入队伍编号"/>
+                      <span class="input-group-btn">
+                      <button class="btn btn-primary btn-search-team ">搜索队伍</button>
+                      </span>
                     </div>
+                  </div>
+                </div>
+                <div id="step-for-join-team" class="step-part hide">
+                  <div class="step-head">加入队伍</div>
+                  <div class="form-horizontal">
+                    <form>
+                      <div class="form-group">
+                        <label for="username" class="col-sm-2 control-label">姓名</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="username-join" value="<%= @user_info.username %>" placeholder="姓名">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="gender" class="col-sm-2 control-label">性别</label>
+
+                        <div class="col-sm-9">
+                          <label class="gender-label"><input type="radio" name="user_profile[gender]" value="1" <%= 'checked="checked"' if @user_info.gender.to_i == 1 %>/>男</label>
+                          <label class="gender-label"><input type="radio" name="user_profile[gender]" value="2" <%= 'checked="checked"' if @user_info.gender.to_i == 2 %>/>女</label>
+                          <input type="hidden" id="gender-join" value="<%= @user_info.gender.to_i %>"/>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="gender" class="col-sm-2 control-label">手机号</label>
+
+                        <div class="col-sm-9 special-row">
+
+                          <%= current_user.mobile %>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="birthday" class="col-sm-2 control-label">生日</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control datetime" id="birthday-join" value="<%= @user_info.birthday %>" data-type="select-date" data-date-format="yyyy-mm-dd">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="school_name" class="col-sm-2 control-label">学校</label>
+
+                        <div class="col-sm-9 special-row school-field">
+                          <% if @user_info.school_id.present? %>
+                              <span class="change-school school-tag"><%= @user_info.school_name %> </span>
+                          <% else %>
+                              <button class="new-school btn-robodou">选择学校</button>
+                          <% end %>
+                          <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
+                          <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="grade" class="col-sm-2 control-label">年级</label>
+
+                        <div class="col-sm-9">
+                          <select id="grade-join" class="form-control">
+                            <option value="0">请选择年级</option>
+                            <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
+                            <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
+                            <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
+                            <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
+                            <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
+                            <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
+                            <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
+                            <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
+                            <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
+                            <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
+                            <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
+                            <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="identity_card" class="col-sm-2 control-label">身份证</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="identity_card-join" value="<%= @user_info.identity_card %>">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="student_code" class="col-sm-2 control-label">学籍号</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="student_code-join" value="<%= @user_info.student_code %>">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-9">
+                          <button class="btn btn-info btn-block join-team-submit">提交</button>
+                        </div>
+                      </div>
+                    </form>
                   </div>
                 </div>
             <% end %>
@@ -217,11 +330,9 @@
     <div class="content">
       <div class="screening">
         <label for="selected-dis">区县</label>
-        <select name="district" id="selected-dis">
+        <select name="district" id="district-select">
           <option value="0">请选择区县</option>
-          <% District.all.each do |d| %>
-              <option value="<%= d.id %>"><%= d.name %></option>
-          <% end %>
+
         </select>
       </div>
       <div class="school-list">
