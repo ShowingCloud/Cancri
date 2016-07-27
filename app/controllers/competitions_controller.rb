@@ -260,8 +260,7 @@ class CompetitionsController < ApplicationController
             if t_u.status == 1
               result = [false, '该比赛您已经报名，请不要再次报名!']
             else
-              t_u.status == 1
-              if t_u.save
+              if t_u.update_attributes!(status: 1, school_id: school_id, district_id: district_id, grade: grade)
                 result = [true, '操作成功,您已成为该队队员']
                 Notification.create(user_id: event.leader_user_id, message_type: 0, content: username+'同意了您的邀请,加入了您在比赛项目:'+event.name+'中创建的队伍--'+event.identifier)
               else
