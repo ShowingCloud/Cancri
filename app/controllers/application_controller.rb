@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  helper_method :has_teacher_role, :is_teacher
+  helper_method :has_teacher_role, :is_teacher, :check_teacher_role
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
@@ -32,6 +32,14 @@ class ApplicationController < ActionController::Base
     fname = %w(404 403 422 500).include?(status) ? status : 'unknown'
     render template: "/errors/#{fname}", format: [:html],
            handler: [:erb], status: status, layout: request.fullpath.to_s.index('/admin') ? 'admin_boot' : 'application'
+  end
+
+  def check_teacher_role(ud)
+    if ud.to_i !=0
+      UserRole.where(role_id: 1, user_id: ud).exists?
+    else
+      false
+    end
   end
 
   def has_teacher_role

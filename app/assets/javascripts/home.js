@@ -34,7 +34,7 @@ $(function () {
         var clear_cookie = {
             init: function () {
                 if ($('.apply-show').length < 1) {
-                    $.cookie('lesson-selected', null, {path: '/'})
+                    $.cookie('lesson-selected', null, {path: '/'});
                 }
             }
         };
@@ -48,6 +48,14 @@ $(function () {
                 }
             }
         };
+
+        if ($('#comp-show').length > 0) {
+            var space = $('#comp-show');
+            var fold = space.find('.fold-head');
+            fold.on('click', function () {
+                $(this).siblings('.fold-body').toggleClass('active');
+            });
+        }
 
         if ($('#course_file_course_ware').length > 0) {
             $('#course_file_course_ware').off('change').on('change', function () {
@@ -81,27 +89,19 @@ $(function () {
                     _self.parents('form').find('#user-info-school').val(id);
                     _self.parents('form').find('#user_profile_school_id').val(id);
                 });
-            })
-        }
-
-        if ($('#district-select').length > 0) {
-            $('#district-select').off('change').on('change', function () {
-                var _self = $(this);
-                var space = _self.parents('form');
-                var selected_school = _self.parents('form').find('.school-hidden-input').val();
-                if (typeof selected_school == 'string' && selected_school.length > 0) {
-                    alert('由于您更换了区县，请重新选择学校！');
-                    space.find('.selected-school').remove();
-                    space.find('.school-hidden-input').val(null);
-                    space.find('.choice-school').text('选择学校');
-                }
-                $('#school-group').val(0);
-                $('.school-list').empty();
-                if (typeof _self.attr('data-target-special') != 'undefined') {
-                    $(_self.attr('data-target-special')).val(_self.val());
-                }
             });
         }
+
+        $('.school-tag').on('click', function (event) {
+            event.preventDefault();
+            school_handle();
+        });
+
+        $('.new-school').on('click', function (event) {
+            event.preventDefault();
+            school_handle();
+        });
+
 
         $('#go-apply').on('click', function (event) {
                 event.preventDefault();
@@ -215,30 +215,21 @@ $(function () {
                     alert_r('请填写正确的姓名！');
                     return;
                 }
-                var district = form.find('#district-select').val();
-                if (district == 0 || !district) {
-                    alert_r('请选择区县！');
-                    return;
-                }
-
-                var school = form.find('#user-info-school').val();
+                var school = form.find('#school-id').val();
+                var district = form.find('#district-id').val();
                 if (!school) {
                     alert_r('请选择学校');
                     return;
                 }
-
                 var grade = form.find('#user-info-grade').val();
                 if (grade == 0 || !grade) {
                     alert_r('请选择年级');
                     return;
                 }
-
                 var cd = $('#lesson-id').attr('data-id');
                 var name = $('#lesson-id').text().trim();
-
                 var cds = {};
                 cds[cd] = name;
-
                 var option = {
                     url: '/courses/apply',
                     type: 'post',
@@ -268,13 +259,8 @@ $(function () {
                     alert_r('请填写正确的姓名！');
                     return;
                 }
-                var district = form.find('#district-select').val();
-                if (district == 0 || !district) {
-                    alert_r('请选择区县！');
-                    return;
-                }
-
-                var school = form.find('#user-info-school').val();
+                var school = form.find('#school-id').val();
+                var district = form.find('#district-id').val();
                 if (!school) {
                     alert_r('请选择学校');
                     return;
@@ -449,6 +435,53 @@ $(function () {
             });
         }
 
+        $('.gender-label').find('input[type="radio"]').on('click', function (event) {
+            if ($(this).prop('checked') == true) {
+                $('#gender').val($(this).val());
+            }
+        });
+
+        $('.accept-invite-submit').on('click', function (event) {
+            event.preventDefault();
+            var username = $('#username-join').val();
+            var gender = $('#gender').val();
+            var district_id = $('#district-id').val();
+            var school_id = $('#school-id').val();
+            var birthday = $('#birthday-join').val();
+            var identity_card = $('#identity_card-join').val();
+            var grade = $('#grade-join').val();
+            var student_code = $('#student_code-join').val();
+            var td = $('#team-id').val();
+            var ed = $('#event-id').val();
+
+            $.ajax({
+                url: '/competitions/player_agree_leader_invite',
+                type: 'post',
+                data: {
+                    "username": username,
+                    "gender": gender,
+                    "district": district_id,
+                    "school": school_id,
+                    "birthday": birthday,
+                    "identity_card": identity_card,
+                    "grade": grade,
+                    "student_code": student_code,
+                    "td": td,
+                    "ed": ed
+                },
+                success: function (data) {
+                    if (data[0]) {
+                        $('#update-user-info').modal('hide');
+                        alert_r(data[1],function(){
+                            window.location.reload();
+                        });
+                    } else {
+                        alert_r(data[1]);
+                    }
+                }
+            });
+        });
+
         if ($('[data-lesson-cookie="true"]').length > 0) {
             var cookie = $.cookie('lesson-selected');
             if (cookie != undefined && cookie != '[]' && cookie != null) {
@@ -563,30 +596,41 @@ $(function () {
             });
         }
 
+        $('.btn-accept-invite').on('click', function () {
+            $('#accept-invite').removeClass('hide');
+        });
 
-        function school_handle(_target, dis, cb) {
+        function school_handle(dis) {
             var _modals = $('#school-modal');
-            var d = _modals.find('#selected-dis');
-            d.val(dis);
             _modals.modal('show');
-            d.off('change').on('change', function (event) {
-                event.preventDefault();
-                var dis = $(this).val();
-                $('#district-select').val(dis);
-                get_school(dis, cb);
-            });
-            get_school(dis, cb);
+            get_district();
         }
 
-        function get_school(dis, get_school_callback) {
+        function get_district() {
             var option = {
-                url: '/user/get_school',
+                url: '/user/get_districts',
+                type: 'get',
+                success: function (result) {
+                    if (result.length > 0) {
+                        get_district_success(result);
+                    } else {
+                        alert_r('区县载入出错');
+                        $('#district-select').empty();
+                    }
+                }
+            };
+            ajax_handle(option);
+        }
+
+        function get_school(dis) {
+            var option = {
+                url: '/user/get_schools',
                 type: 'get',
                 dataType: 'json',
                 data: {district_id: dis},
                 success: function (result) {
                     if (result.length > 0) {
-                        get_school_success(result, get_school_callback);
+                        get_school_success(result, dis);
                     } else {
                         alert_r('未找到合适条件的学校');
                         $('.school-list').empty();
@@ -602,19 +646,49 @@ $(function () {
             ajax_handle(option);
         }
 
-        function get_school_success(result, get_school_success_callback) {
-            $('.school-list').empty();
+        function get_school_success(result, dis) {
+            var s = $('.school-list');
+            s.empty();
             for (var i = 0; i < result.length; i++) {
                 var bean = $('<div class="item school-bean" data-id="' + result[i].id + '">' + result[i].name + '</div>');
-                $('.school-list').append(bean);
+                s.append(bean);
             }
-            $('.school-bean').off('click').on('click', function (event) {
+            $('.school-bean').on('click', {dis: dis}, function (event) {
                 event.preventDefault();
+                var data = event.data;
                 var _self = $(this);
                 var text = _self.text();
                 var sid = _self.attr('data-id');
+                var dis = data.dis;
+                $('#district-id').val(dis);
+                $('#school-id').val(sid);
+                var tag = $('.school-field').find('.school-tag');
+                if (tag.length > 0) {
+                    tag.text(text);
+                } else {
+                    $('.school-field').empty().append('<span class="change-school school-tag">' + text + '</span>');
+                    $('.school-tag').off('click').on('click', function (event) {
+                        event.preventDefault();
+                        school_handle();
+                    })
+                }
                 $('#school-modal').modal('hide');
-                get_school_success_callback(text, sid);
+                $('.school-list').empty();
+            });
+        }
+
+        function get_district_success(result) {
+            var s = $('#district-select');
+            s.empty();
+            s.append('<option value="0">请选择区县</option>');
+            for (var i = 0; i < result.length; i++) {
+                var option = $('<option value="' + result[i].id + '">' + result[i].name + '</option>');
+                s.append(option);
+            }
+            s.on('change', function (event) {
+                event.preventDefault();
+                var dis = $(this).val();
+                get_school(dis);
             });
         }
 
@@ -623,5 +697,4 @@ $(function () {
             $.ajax(option);
         }
     }
-)
-;
+);

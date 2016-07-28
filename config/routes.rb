@@ -36,6 +36,19 @@ Rails.application.routes.draw do
       post :already_apply
       post :update_user_info
       post :leader_create_team
+      get :search_team
+      get :search_user
+      post :apply_join_team
+      post :leader_invite_player
+      post :leader_delete_team
+      post :leader_delete_player
+      post :player_agree_leader_invite
+      post :leader_deal_player_apply
+      post :leader_submit_team
+      post :school_submit_team
+      post :district_submit_team
+      post :school_refuse_teams
+      post :district_refuse_teams
     end
   end
   get '/competitions/:id/events', to: 'competitions#events'
@@ -46,7 +59,7 @@ Rails.application.routes.draw do
   end
   resources :course_score_attrs
   resources :course_files
-  # get '/test'=>'test#index'
+  get '/test' => 'test#index'
 
   # -----------------------------------------------------------
   # Admin
@@ -135,8 +148,11 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   get 'user' => redirect('/user/preview')
+  get '/:id', to: 'user#index'
+  get '/:id/courses', to: 'user#courses'
 
   match 'user/preview' => 'user#preview', as: 'user_preview', via: [:get, :post]
+  get 'user/preview/:id' => 'user#preview'
   match 'user/profile' => 'user#profile', as: 'user_profile', via: [:get, :post]
   match 'user/family_hacker' => 'user#family_hacker', as: 'user_family_hacker', via: [:get, :post]
   match 'user/update_avatar' => 'user#update_avatar', as: 'user_update_avatar', via: [:post]
@@ -157,13 +173,18 @@ Rails.application.routes.draw do
   match '/user/add_school' => 'user#add_school', as: 'user_add_school', via: [:post]
   match '/user/apply' => 'user#apply', as: 'user_apply', via: [:get]
   match '/user/cancel_apply' => 'user#cancel_apply', as: 'user_cancel_apply', via: [:post, :get]
-  get '/user/get_school' => 'user#get_school', as: 'user_get_school'
+  get '/user/get_schools' => 'user#get_schools', as: 'user_get_schools'
+  get '/user/get_districts' => 'user#get_districts', as: 'user_get_districts'
+  get '/user/get_events' => 'user#get_events', as: 'user_get_events'
+  get '/user/get_competitions' => 'user#get_competitions', as: 'user_get_competitions'
   match '/user/programs' => 'user#programs', as: 'user_programs', via: [:get]
   match '/user/programs/:id' => 'user#program', via: [:get]
   post 'user/course_score' => 'user#course_score', as: 'user_course_score'
   match 'user/create_program' => 'user#create_program', as: 'user_create_program', via: [:get, :post]
   match 'user/program_se/:id' => 'user#program_se', as: 'user_program_se', via: [:get, :post]
   match 'user/course_ware/:id' => 'user#course_ware', as: 'user_course_ware', via: [:get, :post]
+  get 'user/student_manage' => 'user#student_manage', as: 'user_student_manage'
+  get 'user/comp_student' => 'user#comp_student', as: 'user_comp_student'
   # mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
 end

@@ -283,3 +283,16 @@ zh-CN:
      status0: '待显示'
      status1: '显示'
      status2: '比赛结束'
+  team:
+     status0: '报名中'
+     status1: '报名成功'
+     status2: '待学校审核'
+     status-2: '学校审核未通过'
+     status3: '学校审核通过,待区县审核'
+     status-3: '区县审核未通过'
+  attributes:
+     username: '姓名'
+     teacher: '教师姓名'
+     teacher_mobile: '教师手机'
+     group: '组别'
+     grade: '年级:'

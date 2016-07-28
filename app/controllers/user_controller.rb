@@ -1,6 +1,16 @@
 class UserController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_user, only: [:index, :courses]
   before_action :is_teacher, only: [:programs, :program, :program_se, :create_program, :course_score]
+
+
+  def index
+    @competitions = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where(user_id: @user.id).select('up.username', 'up.grade', 'up.bj', 'up.student_code', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.last_score').page(params[:page]).per(params[:per])
+  end
+
+  def courses
+    @courses = CourseUserShip.joins(:course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where(user_id: @user.id).select(:score, 'up.username', 'up.grade', 'up.bj', 'up.student_code', 'courses.name', 'courses.end_time').page(params[:page]).per(params[:per])
+  end
 
   # 个人信息概览
   def preview
@@ -34,12 +44,12 @@ class UserController < ApplicationController
         end
         message = ''
         if profile_params[:roles].present? && profile_params[:roles].include?('教师')
-          unless profile_params[:teacher_no].present? && profile_params[:certificate].present? && profile_params[:school_id].present? && profile_params[:username].present? && [1, 2].include?(profile_params[:gender].to_i)
-            flash[:error] = '选择教师身份时，请填写姓名、性别、学校、教师编号、和上传教师证件'
+          unless profile_params[:teacher_no].present? && profile_params[:certificate].present? && profile_params[:school_id].present? && profile_params[:district_id].present? && profile_params[:username].present? && [1, 2].include?(profile_params[:gender].to_i)
+            flash[:error] = '选择教师身份时，请填写姓名、性别、学校(区县)、教师编号、和上传教师证件'
             return false
           end
           unless UserRole.where(user_id: current_user.id, role_id: 1).exists?
-            th_role = UserRole.create!(user_id: current_user.id, role_id: 1, status: 0) # 教师
+            th_role = UserRole.create(user_id: current_user.id, role_id: 1, status: 0, school_id: profile_params[:school_id], district_id: profile_params[:district_id]) # 教师
             if th_role.save
               message = '您的老师身份已提交审核，审核通过后会在［消息］中告知您！'
             else
@@ -253,28 +263,50 @@ class UserController < ApplicationController
     render json: result
   end
 
-  def course_score1
-    cud = params[:cud]
-    score = params[:score].to_s
-    if request.method == 'POST'
-      if cud.present? && score.present?
-        course = CourseUserShip.left_joins(:course).where(id: cud).select(:id, :score, 'courses.user_id').first
-        if course.user_id == current_user.id
-          if CourseUserShip.find(cud).update_attributes!(score: score)
-            result = [true, '打分成功']
-          else
-            result = [false, '打分失败']
-          end
-        else
-          result = [false, '非法操作']
+  def student_manage
+    @teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
+    if @teacher_info.present?
+      students = UserProfile.left_joins(:district, :school, :user).where.not(user_id: current_user.id).select(:username, :grade, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name', 'users.nickname'); false
+      if @teacher_info.role_type == 2
+        students = students.where(district_id: @teacher_info.district_id)
+      elsif @teacher_info.role_type == 3
+        students = students.where(school_id: @teacher_info.school_id)
+      end
+      @students = students.page(params[:page]).per(params[:per])
+    else
+      render_optional_error(403)
+    end
+  end
+
+  def comp_student
+    comp_id = params[:com]
+    ed = params[:ed]
+    school_id = params[:s]
+    @teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
+    if @teacher_info.present?
+      if comp_id.present?
+        @competition = Competition.find(comp_id)
+        students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select(:grade, :user_id, 'teams.user_id as leader_user_id', 'teams.identifier', 'events.name as event_name', 'u_p.username', 'u_p.gender', 'users.nickname'); false
+
+        if @teacher_info.role_type == 2
+          students = students.where('teams.status=?', 3).where('teams.district_id=?', @teacher_info.district_id)
+        elsif @teacher_info.role_type == 3
+          students = students.where('teams.status=?', 2).where('teams.school_id=?', @teacher_info.school_id)
         end
-      else
-        result = [false, '参数不完整']
+        if ed.present?
+          students = students.where('teams.event_id = ?', ed)
+        else
+          students = students.where('c.id = ?', comp_id)
+        end
+        if school_id.present? && (School.where(district_id: @teacher_info.district_id, status: 1).pluck(:id) & [school_id.to_i]).count>0
+          students = students.where('teams.school_id = ?', school_id)
+        end
+        @students = students.page(params[:page]).per(params[:per])
+
       end
     else
-      result = [false, '非法请求']
+      render_optional_error(403)
     end
-    render json: result
   end
 
   def cancel_apply
@@ -306,18 +338,6 @@ class UserController < ApplicationController
     end
     render json: result
   end
-
-  # def check_email_exists
-  #   render json: require_email
-  # end
-  #
-  # def check_mobile_exists
-  #   render json: require_mobile
-  # end
-  #
-  # def check_email_and_mobile
-  #   render json: require_email_and_mobile
-  # end
 
   def email
     if params[:return_uri].present?
@@ -485,10 +505,32 @@ class UserController < ApplicationController
   end
 
   def notify_show
-    @notification = current_user.notifications.where(id: params[:id]).take
+    @notification = current_user.notifications.find(params[:id])
 
     if @notification.present?
+      ## 队长邀请队员
+      if @notification.message_type==1 && @notification.team_id.present?
+        @t_u = Event.left_joins(:team_user_ships, :teams, :competition).where('team_user_ships.team_id = ?', @notification.team_id).where('team_user_ships.user_id = ?', @notification.user_id).select(:id, 'team_user_ships.status as t_u_status', 'teams.status as team_status', 'team_user_ships.id as t_u_id', 'competitions.apply_end_time').take
+        if @t_u.present? && (@t_u.apply_end_time>Time.now) && (@t_u.team_status == 0) && (@t_u.t_u_status==0)
+          user_info = UserProfile.left_joins(:school, :district).where(user_id: @notification.user_id).select('user_profiles.*', 'schools.name as school_name', 'districts.name as district_name').take; false
+          @user_info = user_info ||= current_user.build_user_profile
+        end
+      end
 
+      ## 申请加入队伍
+      if @notification.message_type==2 && @notification.team_id.present? && @notification.reply_to.present? && @notification.t_u_id.present?
+        @t_u = Event.left_joins(:team_user_ships, :teams, :competition).where('team_user_ships.team_id = ?', @notification.team_id).where('team_user_ships.user_id = ?', @notification.reply_to).select(:id, 'team_user_ships.status as t_u_status', 'teams.status as team_status', 'team_user_ships.id as t_u_id', 'competitions.apply_end_time').take
+      end
+
+      ## 申请退出比赛
+      if @notification.message_type==3 && @notification.team_id.present? && @notification.reply_to.present?
+        @t_u = TeamUserShip.joins(:event).where(team_id: @notification.team_id, user_id: @notification.reply_to).select(:id, :status, 'events.apply_end_time', :event_id).take
+        if @t_u.present?
+          @has_agree = false # 未处理或已拒绝退出
+        else
+          @has_agree = true # 已同意
+        end
+      end
     end
   end
 
@@ -533,10 +575,9 @@ class UserController < ApplicationController
     redirect_to user_profile_path
   end
 
-  def get_school
-    # school_type = params[:school_type]
+  def get_schools
     district_id = params[:district_id]
-    schools = School.where(status: 1, district_id: district_id).select(:id, :name)
+    schools = School.where(status: 1, district_id: district_id).select(:id, :name, :teacher_role)
     render json: schools
   end
 
@@ -565,6 +606,23 @@ class UserController < ApplicationController
       result = [false, '请将学校名称、所属区县填写完整']
     end
     render json: result
+  end
+
+  def get_districts
+    render json: District.select(:id, :name, :city)
+  end
+
+  def get_competitions
+    status = params[:status] ## option only 1/2
+    result = Competition.where.not(status: 0).select(:id, :name, :apply_end_time, :school_audit_time, :district_audit_time)
+    if status.present? && ([1, 2] & [status.to_i]).count > 0
+      result = result.where(status: status)
+    end
+    render json: result
+  end
+
+  def get_events
+    render json: Event.where(status: 1, is_father: 0, competition_id: params[:cd]).select(:id, :name)
   end
 
   #修改密码方法
@@ -614,6 +672,16 @@ class UserController < ApplicationController
   end
 
   private
+
+  def set_user
+    unless params[:id].present? && params[:id] =~ /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/
+      render_optional_error(404)
+    end
+    @user = User.find_by_nickname(params[:id])
+    unless @user
+      render_optional_error(404)
+    end
+  end
 
   def params_program
     course_params = params.require(:course).permit(:name, :num, :target, :run_address, :run_time, :desc, :apply_start_time, :apply_end_time, :start_time, :end_time, :district_id)

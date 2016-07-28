@@ -1,6 +1,7 @@
 <% @action_preview_array = ['email', 'reset_email', 'mobile', 'preview', 'profile', 'passwd', 'reset_mobile'] %>
 <% @action_notify_array = ['notification', 'notify_show'] %>
-<% @action_apply_array = ['apply', 'programs', 'program','create_program', 'program_se'] %>
+<% @action_apply_array = ['apply', 'programs', 'program', 'create_program', 'program_se'] %>
+<% @action_student_manage = ['student_manage', 'comp_student'] %>
 
 
 <div class="sidebar">
@@ -27,10 +28,11 @@
         <%= has_teacher_role ? '项目管理' : '报名信息' %>
       </div>
     </a>
-    <a href="">
+    <a href="<%= has_teacher_role ? user_student_manage_path : "#" %>">
       <div class="sidebar-item">
         <i class="glyphicon glyphicon-cog"></i>
-        个人管理
+        <%= has_teacher_role ? '学生管理' : '个人管理' %>
+
       </div>
     </a>
     <a href="<%= user_notification_path %>">
