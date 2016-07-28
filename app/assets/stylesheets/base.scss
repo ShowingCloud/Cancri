@@ -1638,6 +1638,13 @@ select {
   }
 }
 
+.district-tag{
+  cursor: pointer;
+  display: inline-block;
+  padding: 0 8px;
+  color: #6699cc;
+}
+
 #step-for-search {
   .search-part {
     border: 1px solid #fff;
