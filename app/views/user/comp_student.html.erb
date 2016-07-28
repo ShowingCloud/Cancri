@@ -11,7 +11,8 @@
           <div class="sub-content">
             <select id="select-competition">
               <option value="">请选择比赛</option>
-              <% @competitions.each do |comp| %>
+
+              <% Competition.where(status: 1).select(:id, :name).each do |comp| %>
                   <option value="<%= comp.id %>"><%= comp.name %></option>
               <% end %>
             </select>
@@ -19,6 +20,17 @@
               <option value="">请选择项目</option>
 
             </select>
+            <% if @teacher_info.present? %>
+                <% if @teacher_info.role_type == 2 %>
+                    区县老师--district_id: <%= @teacher_info.district_id %>
+                <% end %>
+            <% end %>
+            <% if @competition.present? %>
+                <p><%= @competition.name %></p>
+                <p> 报名截止: <%= @competition.apply_end_time.strftime('%Y-%m-%d %H:%M') %></p>
+                <p>学校截至: <%= @competition.school_audit_time.strftime('%Y-%m-%d %H:%M') %></p>
+                <p> 区县截止: <%= @competition.district_audit_time.strftime('%Y-%m-%d %H:%M') %></p>
+            <% end %>
 
             <% if @students.present? %>
                 <table class="table">

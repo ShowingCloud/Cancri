@@ -44,12 +44,12 @@ class UserController < ApplicationController
         end
         message = ''
         if profile_params[:roles].present? && profile_params[:roles].include?('教师')
-          unless profile_params[:teacher_no].present? && profile_params[:certificate].present? && profile_params[:school_id].present? && profile_params[:username].present? && [1, 2].include?(profile_params[:gender].to_i)
-            flash[:error] = '选择教师身份时，请填写姓名、性别、学校、教师编号、和上传教师证件'
+          unless profile_params[:teacher_no].present? && profile_params[:certificate].present? && profile_params[:school_id].present? && profile_params[:district_id].present? && profile_params[:username].present? && [1, 2].include?(profile_params[:gender].to_i)
+            flash[:error] = '选择教师身份时，请填写姓名、性别、学校(区县)、教师编号、和上传教师证件'
             return false
           end
           unless UserRole.where(user_id: current_user.id, role_id: 1).exists?
-            th_role = UserRole.create!(user_id: current_user.id, role_id: 1, status: 0) # 教师
+            th_role = UserRole.create(user_id: current_user.id, role_id: 1, status: 0, school_id: profile_params[:school_id], district_id: profile_params[:district_id]) # 教师
             if th_role.save
               message = '您的老师身份已提交审核，审核通过后会在［消息］中告知您！'
             else
@@ -264,39 +264,45 @@ class UserController < ApplicationController
   end
 
   def student_manage
-    user_id = params[:user_id] # show user_id not current_user.id
-    teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
-    if teacher_info.present?
-      if teacher_info.role_type == 2 && teacher_info.district_id.present?
-        if user_id.present? && params[:type]
-          @user_info = UserProfile.joins(:user).where(user_id: user_id, district_id: teacher_info.district_id).select(:username, :student_code, :grade, :bj, :birthday, 'users.mobile')
-          if @user_info.present?
-            @result = CourseUserShip.joins(:course).where(user_id: user_id).select('courses.name', :last_score)
-          else
-            render_optional_error(403)
-          end
-        end
-
-        @students = UserProfile.left_joins(:district, :school, :user).where(district_id: teacher_info.district_id).select(:username, :grade, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name', 'users.nickname').page(params[:page]).per(params[:per])
-      elsif teacher_info.role_type == 3 && teacher_info.school_id.present?
-        @students = UserProfile.left_joins(:district, :school, :user).where(school_id: teacher_info.school_id).select(:username, :grade, :bj, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name', 'users.nickname').page(params[:page]).per(params[:per])
+    @teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
+    if @teacher_info.present?
+      students = UserProfile.left_joins(:district, :school, :user).where.not(user_id: current_user.id).select(:username, :grade, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name', 'users.nickname'); false
+      if @teacher_info.role_type == 2
+        students = students.where(district_id: @teacher_info.district_id)
+      elsif @teacher_info.role_type == 3
+        students = students.where(school_id: @teacher_info.school_id)
       end
+      @students = students.page(params[:page]).per(params[:per])
     else
       render_optional_error(403)
     end
   end
 
   def comp_student
-    teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
-    if teacher_info.present?
+    comp_id = params[:com]
+    ed = params[:ed]
+    school_id = params[:s]
+    @teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
+    if @teacher_info.present?
+      if comp_id.present?
+        @competition = Competition.find(comp_id)
+        students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select(:grade, :user_id, 'teams.user_id as leader_user_id', 'teams.identifier', 'events.name as event_name', 'u_p.username', 'u_p.gender', 'users.nickname'); false
 
-      if teacher_info.role_type == 2 && teacher_info.district_id.present?
-        @students = UserProfile.left_joins(:district, :school, :user).where(district_id: teacher_info.district_id).select(:username, :grade, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name', 'users.nickname').page(params[:page]).per(params[:per])
-      elsif teacher_info.role_type == 3 && teacher_info.school_id.present?
-        @competitions = Competition.where(status: 1).select(:id, :name)
-        if params[:ed].present?
-          @students = TeamUserShip.joins(:event, :team, :user).joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').where('teams.status=?', 2).where('teams.school_id=?', teacher_info.school_id).where('teams.event_id = ?', params[:ed]).select(:grade, :user_id, 'teams.user_id as leader_user_id', 'teams.identifier', 'events.name as event_name', 'u_p.username', 'u_p.gender', 'users.nickname').page(params[:page]).per(params[:per])
+        if @teacher_info.role_type == 2
+          students = students.where('teams.status=?', 3).where('teams.district_id=?', @teacher_info.district_id)
+        elsif @teacher_info.role_type == 3
+          students = students.where('teams.status=?', 2).where('teams.school_id=?', @teacher_info.school_id)
         end
+        if ed.present?
+          students = students.where('teams.event_id = ?', ed)
+        else
+          students = students.where('c.id = ?', comp_id)
+        end
+        if school_id.present? && (School.where(district_id: @teacher_info.district_id, status: 1).pluck(:id) & [school_id.to_i]).count>0
+          students = students.where('teams.school_id = ?', school_id)
+        end
+        @students = students.page(params[:page]).per(params[:per])
+
       end
     else
       render_optional_error(403)
@@ -604,6 +610,15 @@ class UserController < ApplicationController
 
   def get_districts
     render json: District.select(:id, :name, :city)
+  end
+
+  def get_competitions
+    status = params[:status] ## option only 1/2
+    result = Competition.where.not(status: 0).select(:id, :name, :apply_end_time, :school_audit_time, :district_audit_time)
+    if status.present? && ([1, 2] & [status.to_i]).count > 0
+      result = result.where(status: status)
+    end
+    render json: result
   end
 
   def get_events

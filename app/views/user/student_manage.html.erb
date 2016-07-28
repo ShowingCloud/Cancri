@@ -9,15 +9,21 @@
         <div class="user-main">
           <%= render 'user/tab' %>
           <div class="sub-content">
+
+            <% if @teacher_info.present? %>
+                <% if @teacher_info.role_type == 2 %>
+                    区县老师--district_id: <%= @teacher_info.district_id %>
+                <% end %>
+            <% end %>
             <% if @students.present? %>
                 <table class="table">
                   <tr>
-                  <th>姓名</th>
-                  <th>性别</th>
-                  <th>区县</th>
-                  <th>学校</th>
-                  <th>学籍号</th>
-                  <th>操作</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>区县</th>
+                    <th>学校</th>
+                    <th>学籍号</th>
+                    <th>操作</th>
                   </tr>
                   <% @students.each do |s| %>
                       <tr>

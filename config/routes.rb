@@ -176,6 +176,7 @@ Rails.application.routes.draw do
   get '/user/get_schools' => 'user#get_schools', as: 'user_get_schools'
   get '/user/get_districts' => 'user#get_districts', as: 'user_get_districts'
   get '/user/get_events' => 'user#get_events', as: 'user_get_events'
+  get '/user/get_competitions' => 'user#get_competitions', as: 'user_get_competitions'
   match '/user/programs' => 'user#programs', as: 'user_programs', via: [:get]
   match '/user/programs/:id' => 'user#program', via: [:get]
   post 'user/course_score' => 'user#course_score', as: 'user_course_score'
