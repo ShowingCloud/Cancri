@@ -372,13 +372,17 @@ class CompetitionsController < ApplicationController
   def leader_submit_team
     team_id = params[:td]
     if team_id.present?
-      team = Team.joins(:events).joins('left join competitions c on c.id = events.competition_id').where('teams.id=?', team_id).select('teams.*', 'c.apply_end_time').take
+      team = Team.joins(:event).joins('left join competitions c on c.id = events.competition_id').where('teams.id=?', team_id).select('teams.*', 'c.apply_end_time').take
       if team.present? && (team.apply_end_time > Time.now) && (team.status ==0) && (team.user_id == current_user.id)
-        team.status == 2
-        if team.save
-          result = [true, '提交成功,审核结果将会在消息中告知您']
+        if (team.team_user_ships.pluck(:status) & [false]).count >0
+          result = [false, '有队员还未确认参加,不能提交']
         else
-          result = [false, '提交失败']
+          team.status == 2
+          if team.save
+            result = [true, '提交成功,审核结果将会在消息中告知您']
+          else
+            result = [false, '提交失败']
+          end
         end
       else
         result = [false, '不规范操作或已过报名时间']
