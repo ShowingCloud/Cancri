@@ -28,8 +28,8 @@
                   <% @students.each do |s| %>
                       <tr>
                         <td><%= s.username %></td>
-                        <td><%= s.district_name %></td>
                         <td><%= s.gender %></td>
+                        <td><%= s.district_name %></td>
                         <td><%= s.school_name %></td>
                         <td><%= s.student_code %></td>
                         <td><a href="<%= "/#{s.nickname}" %>">查看详情</a></td>
