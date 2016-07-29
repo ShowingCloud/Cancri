@@ -45,8 +45,8 @@ Rails.application.routes.draw do
       post :player_agree_leader_invite
       post :leader_deal_player_apply
       post :leader_submit_team
-      post :school_submit_team
-      post :district_submit_team
+      post :school_submit_teams
+      post :district_submit_teams
       post :school_refuse_teams
       post :district_refuse_teams
     end
