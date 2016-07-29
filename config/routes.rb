@@ -185,6 +185,7 @@ Rails.application.routes.draw do
   match 'user/course_ware/:id' => 'user#course_ware', as: 'user_course_ware', via: [:get, :post]
   get 'user/student_manage' => 'user#student_manage', as: 'user_student_manage'
   get 'user/comp_student' => 'user#comp_student', as: 'user_comp_student'
+  get 'user/get_comp_students' => 'user#get_comp_students'
   # mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
 end

@@ -279,34 +279,48 @@ class UserController < ApplicationController
   end
 
   def comp_student
+    @teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
+    unless @teacher_info.present?
+      render_optional_error(403)
+    end
+  end
+
+  def get_comp_students
     comp_id = params[:com]
     ed = params[:ed]
     school_id = params[:s]
-    @teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
-    if @teacher_info.present?
+    teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
+    if teacher_info.present?
       if comp_id.present?
-        @competition = Competition.find(comp_id)
-        students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select(:grade, :user_id, 'teams.user_id as leader_user_id', 'teams.identifier', 'events.name as event_name', 'u_p.username', 'u_p.gender', 'users.nickname'); false
+        competition = Competition.where(id: comp_id, status: 0).first
+        if competition.present?
+          students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select(:grade, :user_id, 'teams.user_id as leader_user_id', 'teams.identifier', 'events.name as event_name', 'u_p.username', 'u_p.gender', 'users.nickname'); false
 
-        if @teacher_info.role_type == 2
-          students = students.where('teams.status=?', 3).where('teams.district_id=?', @teacher_info.district_id)
-        elsif @teacher_info.role_type == 3
-          students = students.where('teams.status=?', 2).where('teams.school_id=?', @teacher_info.school_id)
-        end
-        if ed.present?
-          students = students.where('teams.event_id = ?', ed)
+          if teacher_info.role_type == 2
+            students = students.where('teams.status=?', 3).where('teams.district_id=?', teacher_info.district_id)
+          elsif teacher_info.role_type == 3
+            students = students.where('teams.status=?', 2).where('teams.school_id=?', teacher_info.school_id)
+          end
+          if ed.present?
+            students = students.where('teams.event_id = ?', ed)
+          else
+            students = students.where('c.id = ?', comp_id)
+          end
+          if school_id.present? && (School.where(district_id: teacher_info.district_id, status: 1).pluck(:id) & [school_id.to_i]).count>0
+            students = students.where('teams.school_id = ?', school_id)
+          end
+          page_students = students.page(params[:page]).per(params[:per])
+          result = [true, page_students, students.count, competition]
         else
-          students = students.where('c.id = ?', comp_id)
+          result = [false, '不规范请求']
         end
-        if school_id.present? && (School.where(district_id: @teacher_info.district_id, status: 1).pluck(:id) & [school_id.to_i]).count>0
-          students = students.where('teams.school_id = ?', school_id)
-        end
-        @students = students.page(params[:page]).per(params[:per])
-
+      else
+        result = [false, '参数不完整']
       end
     else
-      render_optional_error(403)
+      result = [false, '403']
     end
+    render json: result
   end
 
   def cancel_apply
