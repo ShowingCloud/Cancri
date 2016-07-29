@@ -297,21 +297,21 @@ class UserController < ApplicationController
           students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select('team_user_ships.grade', 'team_user_ships.user_id', 'teams.user_id as leader_user_id', ' teams.identifier ', ' events.name as event_name ', ' u_p.username ', ' u_p.gender ', ' users.nickname '); false
 
           if teacher_info.role_type == 2
-            students = students.where(' teams.status=?', 3).where('teams.district_id=?', teacher_info.district_id)
+            students = students.where('teams.status=?', 3).where('teams.district_id=?', teacher_info.district_id)
           elsif teacher_info.role_type == 3
             students = students.where('teams.status=?', 2).where('teams.school_id=?', teacher_info.school_id)
           end
-          if ed.present?
+          if ed.present? && (ed.to_i !=0)
             students = students.where('teams.event_id = ?', ed)
           else
             students = students.where('c.id = ?', comp_id)
           end
-          if school_id.present? && (School.where(district_id: teacher_info.district_id, status: 1).pluck(:id) & [school_id.to_i]).count>0
+          if school_id.present? && (school_id.to_i !=0) && (School.where(district_id: teacher_info.district_id, status: 1).pluck(:id) & [school_id.to_i]).count>0
             students = students.where('teams.school_id = ?', school_id)
           end
           page_students = students.page(params[:page]).per(params[:per])
-          if page_students.count>0
-            result = [true, page_students, students.count, competition]
+          if page_students.length>0
+            result = [true, page_students, students.length, competition]
           else
             result = [false, '没有相关队伍']
           end
