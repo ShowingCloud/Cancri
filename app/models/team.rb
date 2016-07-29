@@ -18,9 +18,16 @@ class Team < ApplicationRecord
   validates :teacher, presence: true, format: {with: /\A[\u4e00-\u9fa5]{2,10}\Z/i, message: '只能包含2-10位中文'}
   validates :teacher_mobile, presence: true, format: {with: /\A1[34578][0-9]{9}\Z/i, message: '格式不正确'}
   validates :team_code, length: {in: 4..6}, allow_blank: true
-  after_save :create_identifier
+  after_create_commit :create_identifier
+  after_update_commit :notify_after_status_update
 
   protected
+
+  def notify_after_status_update
+    logger.info('hello status update')
+    puts self.status_was
+  end
+
   def create_identifier
     unless identifier.present?
       case group

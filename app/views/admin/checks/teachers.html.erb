@@ -4,7 +4,7 @@
     <a href="/admin/checks/teacher_list" class="btn btn-default" title="待审核裁判">
       教师列表</a>
     <!--<a href="/admin/checks/referees" class="btn btn-default" title="待审核裁判">-->
-      <!--待审核裁判</a>-->
+    <!--待审核裁判</a>-->
   </small>
 </h1>
 <% if @teacher_array.present? %>
@@ -13,6 +13,8 @@
       <tr>
         <th>姓名</th>
         <th>性别</th>
+        <th>手机</th>
+        <th>区县</th>
         <th>学校</th>
         <th>教师编号</th>
         <th>操作</th>
@@ -24,6 +26,8 @@
           <tr>
             <td><%= th[:username] %></td>
             <td><%= th[:gender]==1 ? '男' : '女' %></td>
+            <td><%= th[:mobile] %></td>
+            <td><%= th[:district] %></td>
             <td><%= th[:school] %></td>
             <td><%= th[:num] %></td>
             <td>
@@ -54,9 +58,13 @@
 
                               <div class="teacher-apply-level hide">
                                 <h3>级别</h3>
-                                <label class=""><input name="teacher-apply-level" value="3" type="radio"/> 校级</label>
-                                <label class=""><input name="teacher-apply-level" value="2" type="radio"/> 区级</label>
-                                <label class=""><input name="teacher-apply-level" value="1" type="radio"/> 市级</label>
+                                <label><input name="teacher-apply-level" value="1" type="radio"/> 市级</label><br>
+                                <label><input name="teacher-apply-level" value="2" type="radio"/> 区级(唯一)</label><br>
+                                <label><input name="teacher-apply-level" value="3" type="radio"/> 校级(唯一)</label><br>
+                                <label><input name="teacher-apply-level" value="4" type="radio"/> 区级</label><br>
+                                <label><input name="teacher-apply-level" value="5" type="radio"/> 校级</label><br>
+
+
                               </div>
 
                             </div>
