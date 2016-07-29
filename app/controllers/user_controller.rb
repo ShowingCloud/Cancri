@@ -49,7 +49,7 @@ class UserController < ApplicationController
             return false
           end
           unless UserRole.where(user_id: current_user.id, role_id: 1).exists?
-            th_role = UserRole.create(user_id: current_user.id, role_id: 1, status: 0, school_id: profile_params[:school_id], district_id: profile_params[:district_id]) # 教师
+            th_role = UserRole.create(user_id: current_user.id, role_id: 1, status: 0, school_id: profile_params[:school_id], district_id: profile_params[:district_id], cover: profile_params[:certificate]) # 教师
             if th_role.save
               message = '您的老师身份已提交审核，审核通过后会在［消息］中告知您！'
             else
@@ -296,7 +296,7 @@ class UserController < ApplicationController
       if comp_id.present?
         competition = Competition.where(id: comp_id, status: 1).first
         if competition.present?
-          students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select('team_user_ships.grade', 'team_user_ships.user_id', 'teams.user_id as leader_user_id', ' teams.identifier ', ' events.name as event_name ', ' u_p.username ', ' u_p.gender ', ' users.nickname '); false
+          students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select('team_user_ships.grade', 'teams.id as team_id', 'team_user_ships.user_id', 'teams.user_id as leader_user_id', 'teams.identifier ', 'events.name as event_name', ' u_p.username ', ' u_p.gender ', ' users.nickname '); false
 
           if teacher_info.role_type == 2
             students = students.where('teams.status=?', 3).where('teams.district_id=?', teacher_info.district_id)
