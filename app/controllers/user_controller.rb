@@ -292,7 +292,7 @@ class UserController < ApplicationController
     teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
     if teacher_info.present?
       if comp_id.present?
-        competition = Competition.where(id: comp_id, status: 0).first
+        competition = Competition.where(id: comp_id, status: 1).first
         if competition.present?
           students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select(:grade, :user_id, 'teams.user_id as leader_user_id', 'teams.identifier', 'events.name as event_name', 'u_p.username', 'u_p.gender', 'users.nickname'); false
 
@@ -310,7 +310,11 @@ class UserController < ApplicationController
             students = students.where('teams.school_id = ?', school_id)
           end
           page_students = students.page(params[:page]).per(params[:per])
-          result = [true, page_students, students.count, competition]
+          if page_students.count>0
+            result = [true, page_students, students.count, competition]
+          else
+            result = [false, '没有相关队伍']
+          end
         else
           result = [false, '不规范请求']
         end
