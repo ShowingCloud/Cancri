@@ -45,8 +45,8 @@ Rails.application.routes.draw do
       post :player_agree_leader_invite
       post :leader_deal_player_apply
       post :leader_submit_team
-      post :school_submit_team
-      post :district_submit_team
+      post :school_submit_teams
+      post :district_submit_teams
       post :school_refuse_teams
       post :district_refuse_teams
     end
@@ -185,6 +185,7 @@ Rails.application.routes.draw do
   match 'user/course_ware/:id' => 'user#course_ware', as: 'user_course_ware', via: [:get, :post]
   get 'user/student_manage' => 'user#student_manage', as: 'user_student_manage'
   get 'user/comp_student' => 'user#comp_student', as: 'user_comp_student'
+  get 'user/get_comp_students' => 'user#get_comp_students'
   # mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
 end
