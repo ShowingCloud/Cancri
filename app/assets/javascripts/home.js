@@ -1,4 +1,5 @@
 $(function () {
+
         var lazyload = {
             init: function () {
                 var tag = $('[data-src]');
@@ -472,7 +473,7 @@ $(function () {
                 success: function (data) {
                     if (data[0]) {
                         $('#update-user-info').modal('hide');
-                        alert_r(data[1],function(){
+                        alert_r(data[1], function () {
                             window.location.reload();
                         });
                     } else {
@@ -600,6 +601,181 @@ $(function () {
             $('#accept-invite').removeClass('hide');
         });
 
+        //参赛学生列表
+
+        if ($('#comp-stu').length > 0) {
+            var space = $('#comp-stu');
+            var comp = space.find('.comp-sel');
+            var es = space.find('.event-sel');
+
+            comp.on('change', {space: space}, function (event) {
+                event.preventDefault();
+                var data = event.data;
+                var space = data.space;
+                var _self = $(this);
+                var val = _self.val();
+                var es = space.find('.event-sel');
+                if (val != 0) {
+                    var option = {
+                        url: '/user/get_events',
+                        type: 'get',
+                        data: {cd: val},
+                        success: function (result) {
+                            if (result.length > 0) {
+                                es.empty();
+                                es.append($('<option value="0">请选择项目</option>'));
+                                $.each(result, function (k, v) {
+                                    var o = $('<option value="' + v.id + '">' + v.name + '</option>');
+                                    es.append(o);
+                                });
+                                es.addClass('active');
+                            }
+                        }
+                    };
+                    ajax_handle(option);
+                } else {
+                    es.empty().removeClass('active');
+                    es.append($('<option value="0">请选择项目</option>'));
+                }
+            });
+
+            es.on('change', {space: space}, function (event) {
+                event.preventDefault();
+                var data = event.data;
+                var space = data.space;
+                var comp = space.find('.comp-sel');
+                var _self = $(this);
+                var val = _self.val();
+                var com = comp.val();
+                var _space = space;
+                if (_self.hasClass('active')) {
+                    var option = {
+                        url: '/user/get_comp_students',
+                        type: 'get',
+                        data: {com: com, ed: val},
+                        success: function (result) {
+                            if (result[0] == true) {
+                                var players = result[1];
+                                var comp_info = result[3];
+                                _space.find('.comp-info').empty().append($('<h3>' + comp_info.name + '比赛</h3>' +
+                                    '<p class="label label-default"> 报名截止: ' + comp_info.apply_end_time.substr(0, 10) + '</p>' +
+                                    '<p class="label label-info"> 学校审核截至: ' + comp_info.school_audit_time.substr(0, 10) + '</p>' +
+                                    '<p class="label label-warning"> 区县审核截止: ' + comp_info.district_audit_time.substr(0, 10) + '</p>'
+                                ));
+
+                                var team_count = {};
+                                $.each(players, function (k, v) {
+                                    var id = v.identifier;
+                                    if (team_count[id]) {
+                                        team_count[id].push(v);
+                                    } else {
+                                        team_count[id] = [v];
+                                    }
+                                });
+
+                                $.each(team_count, function (k, v) {
+
+                                    var item = $('<div data-td=' + v[0].team_id + ' data-cd=' + com + ' class="team-item ' + k + '">' +
+                                    '<div class="item-title">' +
+                                    '<div class="label label-info">' +
+                                    '队伍编号：' + k +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="item-table">' +
+                                    '队员列表' +
+                                    '<table class="table">' +
+                                    '<tr>' +
+                                    '<th>姓名</th>' +
+                                    '<th>性别</th>' +
+                                    '<th>年级</th>' +
+                                    '</tr>' +
+                                    '</table>' +
+                                    '</div>' +
+                                    '<div class="item-control">' +
+                                    '<button class="btn-robodou team-control" data-type="refuse">取消参赛</button>' +
+                                    '<button class="btn-robodou team-control" data-type="submit">同意参赛</button>' +
+                                    '</div>' +
+                                    '</div>');
+
+                                    $('.team-list').append(item);
+
+                                    item.find('.team-control').off('click').on('click', function (event) {
+                                        event.preventDefault();
+
+                                        var _self = $(this);
+
+                                        var role = '';
+
+                                        var r = $('[data-role]').attr('data-role');
+
+                                        if (r == 2) {
+                                            role = 'district'
+                                        } else if (r == 3) {
+                                            role = 'school'
+                                        }
+
+                                        var type = $(this).attr('data-type');
+
+                                        var url = '/competitions/' + role + '_' + type + '_teams';
+
+                                        var p = $(this).parents('.team-item');
+                                        var td = p.attr('data-td');
+                                        var cd = p.attr('data-cd');
+
+                                        var option = {
+                                            url: url,
+                                            type: 'post',
+                                            data: {tds: [td], comd: cd},
+                                            success: function (result) {
+                                                if (result[0]) {
+                                                    alert_r(result[1], function () {
+                                                        window.location.reload();
+                                                    });
+                                                }
+                                            }
+                                        };
+                                        ajax_handle(option);
+
+                                    });
+
+                                    var _k = k;
+                                    $.each(v, function (i, val) {
+                                        var player = $('<tr>' +
+                                        '<th>' + val.username + '</th>' +
+                                        '<th>' + (val.gender == 1 ? '男' : '女') + '</th>' +
+                                        '<th>' + val.grade + '</th>' +
+                                        '</tr>');
+                                        $('.' + _k).find('.table').append(player);
+                                    });
+                                })
+                            }
+                        }
+                    };
+                    ajax_handle(option);
+                }
+            })
+        }
+
+        function submit_team() {
+            console.log(this);
+            var url = '';
+            if (rd == 3) {
+                url = '/competition/school_submit_teams';
+            } else if (rd == 2) {
+                url = '/competition/district_submit_teams';
+            }
+            var option = {
+                url: url,
+                type: 'post',
+                data: {tds: [id], comd: cd},
+                success: function (result) {
+                    console.log(result);
+                }
+            };
+            ajax_handle(option);
+        }
+
+
         function school_handle(dis) {
             var _modals = $('#school-modal');
             _modals.modal('show');
@@ -691,7 +867,6 @@ $(function () {
                 get_school(dis);
             });
         }
-
 
         function ajax_handle(option) {
             $.ajax(option);

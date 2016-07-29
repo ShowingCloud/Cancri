@@ -30,7 +30,7 @@
               <input type="hidden" id="team-identify" value="<%= @team_players.first.team_id %>"/>
 
               <div class="info-row">
-                <% if (@event.team_max_num >1) && (@team_players.first.players < @event.team_max_num) && (current_user.id == @team_players.first.leader_user_id) %>
+                <% if (@event.team_max_num >1) && (@team_players.first.players < @event.team_max_num) && (current_user.id == @team_players.first.leader_user_id) && (@team_players.first.team_status==0) %>
                     <div class="invite-panel">
                       <p>邀请队友</p>
                       <input type="text" class="search-player-input input-robodou" value=""/>
@@ -75,9 +75,9 @@
                       <td><%= p.leader_user_id == p.user_id ? '队长' : '队员' %><%= p.player_status==1 ? nil : '--待确认' %></td>
                       <% if current_user.id == @team_players.first.leader_user_id %>
                           <td>
-                            <% if p.leader_user_id == p.user_id && current_user.id == p.leader_user_id %>
+                            <% if p.leader_user_id == p.user_id && current_user.id == p.leader_user_id && (@team_players.first.team_status==0) %>
                                 <button class="btn btn-xs btn-danger" onclick="leader_delete_team(<%= p.team_id %>)">解散队伍</button>
-                            <% elsif current_user.id == p.leader_user_id %>
+                            <% elsif current_user.id == p.leader_user_id && (@team_players.first.team_status==0) %>
                                 <button class="btn btn-xs btn-info" onclick="leader_delete_player(<%= p.user_id %>)">清退</button>
                             <% end %>
                           </td>
@@ -86,6 +86,12 @@
                 <% end %>
                 </tbody>
               </table>
+
+              <% if (current_user.id == @team_players.first.leader_user_id) && (@team_players.first.team_status==0) %>
+                  <div class="submit-team">
+                    <button class="btn-robodou btn-big leader_submit_team" onclick="leader_submit_team(<%= @team_players.first.team_id %>,<%= @event.competition_id %>)">提交报名</button>
+                  </div>
+              <% end %>
             </div>
         <% else %>
             <% unless has_teacher_role %>
@@ -308,12 +314,14 @@
                       </div>
                       <div class="form-group">
                         <label for="identity_card" class="col-sm-2 control-label">身份证</label>
+
                         <div class="col-sm-9">
                           <input type="text" class="form-control" id="identity_card-join" value="<%= @user_info.identity_card %>">
                         </div>
                       </div>
                       <div class="form-group">
                         <label for="student_code" class="col-sm-2 control-label">学籍号</label>
+
                         <div class="col-sm-9">
                           <input type="text" class="form-control" id="student_code-join" value="<%= @user_info.student_code %>">
                         </div>
