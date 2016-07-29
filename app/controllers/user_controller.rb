@@ -280,7 +280,9 @@ class UserController < ApplicationController
 
   def comp_student
     @teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
-    unless @teacher_info.present?
+    if @teacher_info.present?
+      @competitions = Competition.where(status: 1).select(:id, :name, :apply_end_time, :school_audit_time, :district_audit_time)
+    else
       render_optional_error(403)
     end
   end
