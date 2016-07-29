@@ -5,16 +5,17 @@ class Admin::ChecksController < AdminController
   end
 
   def teachers
-    @teachers = UserProfile.joins(:user_roles).joins('inner join schools s on user_profiles.school_id=s.id').where('user_roles.role_id=?', 1).where('user_roles.status=?', 0).select(:id, :user_id, :username, :gender, :certificate, 'user_roles.cover as cover', 's.name as school_name', :mobile, :teacher_no).page(params[:page]).per(params[:per])
+    @teachers= UserRole.left_joins(:user, :school, :district).joins('left join user_profiles up on up.user_id=user_roles.user_id').where(role_id: 1, status: 0).select(:id, :cover, :user_id, 'schools.name as school_name', 'districts.name as district_name', 'users.mobile', 'up.username', 'up.gender', 'up.teacher_no').page(params[:page]).per(params[:per])
     @teacher_array = @teachers.map { |c| {
         id: c.id,
         user_id: c.user_id,
+        district: c.district_name,
         school: c.school_name,
         mobile: c.mobile,
         num: c.teacher_no,
         username: c.username,
         gender: c.gender,
-        certificate: c.certificate.present? ? ActionController::Base.helpers.asset_path(c.certificate_url(:large)) : nil
+        certificate: c.cover.present? ? ActionController::Base.helpers.asset_path(c.cover_url(:large)) : nil
     } }
   end
 
@@ -22,31 +23,40 @@ class Admin::ChecksController < AdminController
     level = params[:level]
     status = params[:status].to_i
     ud = params[:ud]
-    if status.present?
+    if status.present? && ud.present?
       ur = UserRole.where(user_id: ud, role_id: 1).take
       if ur.present?
         ur.status = status==1 ? true : false
-        if status==1
+
+        if status==1 && level.present? && ([level.to_i] & [1, 2, 3, 4, 5]).length>0
           ur.role_type = level
+        else
+          render json: [false, '请选择教师角色']
+          return false
         end
         if ur.save
-          if level == '1'
-            th_level = '市级'
-          elsif level == '2'
-            th_level = '区级'
-          else
-            th_level = '校级'
+          case ur.role_type
+            when 1 then
+              th_level = '市级'
+            when 2 then
+              th_level = '区级(审核比赛队伍)'
+            when 3 then
+              th_level = '校级(审核比赛队伍)'
+            when 4 then
+              th_level = '区级'
+            else
+              th_level = '校级'
           end
-          Notification.create!(user_id: ur.user_id, content: '您的教师身份审核'+(status==1 ? '通过! 角色为'+th_level : '未通过!'), message_type: 0)
+          Notification.create(user_id: ur.user_id, content: '您的教师身份审核'+(status==1 ? '通过! 角色为'+th_level : '未通过!'), message_type: 0)
           result = [true, '操作成功，即将推送消息告知被审核用户']
         else
-          result = [false, '操作失败']
+          result = [false, ur.errors.full_messages]
         end
       else
         result = [false, '该教师角色不存在']
       end
     else
-      result = [false, '请选择审核结果']
+      result = [false, '数据不完整']
     end
     render json: result
   end
