@@ -359,7 +359,7 @@ class CompetitionsController < ApplicationController
         team_ids = team_ids.map { |t| t.to_i }
         teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
         if teacher_info.present? && teacher_info.role_type == 2 && teacher_info.district_id.present?
-          all_team_ids = Team.joins(:events).where(district_id: teacher_info.district_id, status: 3).where('events.competition_id = ?', com_id).pluck(:id); false
+          all_team_ids = Team.joins(:event).where(district_id: teacher_info.district_id, status: 3).where('events.competition_id = ?', com_id).pluck(:id); false
           if (all_team_ids & team_ids) == team_ids
             if Team.where(id: team_ids).update_all(status: -3) == team_ids.length
               result = [true, '拒绝成功']
