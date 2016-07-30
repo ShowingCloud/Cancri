@@ -50,7 +50,7 @@ class Admin::ChecksController < AdminController
           Notification.create(user_id: ur.user_id, content: '您的教师身份审核'+(status==1 ? '通过! 角色为'+th_level : '未通过!'), message_type: 0)
           result = [true, '操作成功，即将推送消息告知被审核用户']
         else
-          result = [false, ur.errors.full_messages]
+          result = [false, ur.errors.full_messages.first]
         end
       else
         result = [false, '该教师角色不存在']
