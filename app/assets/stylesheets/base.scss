@@ -1589,11 +1589,10 @@ select {
   }
   .first-step {
     text-align: center;
-    width: 400px;
     margin: 10px auto;
     overflow: hidden;
     .box {
-      float: left;
+      display: inline-block;
       width: 180px;
       height: 180px;
       border: 1px solid #fff;

@@ -99,12 +99,16 @@
 <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
 <script type="text/javascript">
-    function alert_r(msg, cb) {
+    function alert_r(msg, cb, param) {
         $('.remodal').find('.content').text(msg);
         $('.remodal').remodal().open();
         $(document).on('closed', '.remodal', function () {
-            if(cb){
-                cb();
+            if (cb) {
+                if (param) {
+                    cb(param);
+                } else {
+                    cb();
+                }
             }
         });
     }

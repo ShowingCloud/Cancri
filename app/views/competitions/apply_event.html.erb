@@ -78,7 +78,7 @@
                             <% if p.leader_user_id == p.user_id && current_user.id == p.leader_user_id && (@team_players.first.team_status==0) %>
                                 <button class="btn btn-xs btn-danger" onclick="leader_delete_team(<%= p.team_id %>)">解散队伍</button>
                             <% elsif current_user.id == p.leader_user_id && (@team_players.first.team_status==0) %>
-                                <button class="btn btn-xs btn-info" onclick="leader_delete_player(<%= p.user_id %>)">清退</button>
+                                <button class="btn btn-xs btn-info" onclick="leader_delete_player(<%= p.user_id %>)">删除队员</button>
                             <% end %>
                           </td>
                       <% end %>
@@ -107,14 +107,16 @@
                       <i class="glyphicon glyphicon-user second"></i>
                     </div>
                   </div>
-                  <div id="step-for-join" class="box">
-                    <div class="msg">加入队伍</div>
-                    <div class="team-icon">
-                      <i class="glyphicon glyphicon-user first"></i>
-                      <i class="glyphicon glyphicon-user second"></i>
-                      <i class="glyphicon glyphicon-user third"></i>
-                    </div>
-                  </div>
+                  <% if @event.team_max_num != 1 %>
+                      <div id="step-for-join" class="box">
+                        <div class="msg">加入队伍</div>
+                        <div class="team-icon">
+                          <i class="glyphicon glyphicon-user first"></i>
+                          <i class="glyphicon glyphicon-user second"></i>
+                          <i class="glyphicon glyphicon-user third"></i>
+                        </div>
+                      </div>
+                  <% end %>
                 </div>
                 <div id="step-for-update" class="step-part hide">
                   <div class="step-head">创建队伍</div>

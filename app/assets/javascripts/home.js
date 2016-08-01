@@ -1,5 +1,4 @@
 $(function () {
-
         var lazyload = {
             init: function () {
                 var tag = $('[data-src]');
@@ -648,7 +647,7 @@ $(function () {
                 var val = _self.val();
                 var com = comp.val();
                 var _space = space;
-                if (_self.hasClass('active')) {
+                if (_self.hasClass('active') && val != 0) {
                     var option = {
                         url: '/user/get_comp_students',
                         type: 'get',
@@ -662,7 +661,6 @@ $(function () {
                                     '<p class="label label-info"> 学校审核截至: ' + comp_info.school_audit_time.substr(0, 10) + '</p>' +
                                     '<p class="label label-warning"> 区县审核截止: ' + comp_info.district_audit_time.substr(0, 10) + '</p>'
                                 ));
-
                                 var team_count = {};
                                 $.each(players, function (k, v) {
                                     var id = v.identifier;
@@ -672,9 +670,7 @@ $(function () {
                                         team_count[id] = [v];
                                     }
                                 });
-
                                 $.each(team_count, function (k, v) {
-
                                     var item = $('<div data-td=' + v[0].team_id + ' data-cd=' + com + ' class="team-item ' + k + '">' +
                                     '<div class="item-title">' +
                                     '<div class="label label-info">' +
@@ -696,48 +692,45 @@ $(function () {
                                     '<button class="btn-robodou team-control" data-type="submit">同意参赛</button>' +
                                     '</div>' +
                                     '</div>');
-
                                     $('.team-list').append(item);
-
                                     item.find('.team-control').off('click').on('click', function (event) {
                                         event.preventDefault();
-
                                         var _self = $(this);
-
                                         var role = '';
-
                                         var r = $('[data-role]').attr('data-role');
-
                                         if (r == 2) {
                                             role = 'district'
                                         } else if (r == 3) {
                                             role = 'school'
+                                        } else {
+                                            alert_r('您没有该权限');
+                                            return false;
                                         }
-
                                         var type = $(this).attr('data-type');
-
                                         var url = '/competitions/' + role + '_' + type + '_teams';
-
                                         var p = $(this).parents('.team-item');
                                         var td = p.attr('data-td');
                                         var cd = p.attr('data-cd');
-
                                         var option = {
                                             url: url,
                                             type: 'post',
                                             data: {tds: [td], comd: cd},
                                             success: function (result) {
                                                 if (result[0]) {
-                                                    alert_r(result[1], function () {
-                                                        window.location.reload();
-                                                    });
+                                                    alert_r(result[1], function (param) {
+                                                        var str = '';
+                                                        if (param[1] == 'submit') {
+                                                            str = '该队伍已通过审核'
+                                                        } else {
+                                                            str = '该队伍未通过审核'
+                                                        }
+                                                        param[0].parents('.item-control').empty().text(str);
+                                                    }, [_self, type]);
                                                 }
                                             }
                                         };
                                         ajax_handle(option);
-
                                     });
-
                                     var _k = k;
                                     $.each(v, function (i, val) {
                                         var player = $('<tr>' +
@@ -748,6 +741,8 @@ $(function () {
                                         $('.' + _k).find('.table').append(player);
                                     });
                                 })
+                            } else {
+                                alert_r(result[1]);
                             }
                         }
                     };
@@ -756,27 +751,7 @@ $(function () {
             })
         }
 
-        function submit_team() {
-            console.log(this);
-            var url = '';
-            if (rd == 3) {
-                url = '/competition/school_submit_teams';
-            } else if (rd == 2) {
-                url = '/competition/district_submit_teams';
-            }
-            var option = {
-                url: url,
-                type: 'post',
-                data: {tds: [id], comd: cd},
-                success: function (result) {
-                    console.log(result);
-                }
-            };
-            ajax_handle(option);
-        }
-
-
-        function school_handle(dis) {
+        function school_handle() {
             var _modals = $('#school-modal');
             _modals.modal('show');
             get_district();
