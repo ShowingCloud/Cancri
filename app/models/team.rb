@@ -24,8 +24,28 @@ class Team < ApplicationRecord
   protected
 
   def notify_after_status_update
-    logger.info('hello status update')
-    puts self.status_was
+    status_change = attribute_previous_change(:status)
+    if status_change.present? && status_change !=[0, 2]
+      user_ids = self.team_user_ships.pluck(:user_id)
+      identifier = self.identifier
+      case status_change
+        when [2, -2] then
+          content = '您所在的队伍:'+ identifier +',被学校老师 拒绝 参加比赛!'
+        when [-2, 3] then
+          content = '您所在的队伍:'+ identifier +',被学校老师 允许 参加比赛!'
+        when [3, 1] then
+          content = '您所在的队伍:'+ identifier +',被区县老师 允许 参加比赛,报名正式成功!'
+        when [3, -3] then
+          content = '您所在的队伍:'+ identifier +',被区县老师 拒绝 参加比赛!'
+        else
+          content=''
+      end
+      if user_ids.present? && content.present?
+        user_ids.each do |n|
+          Notification.create(user_id: n, content: content, message_type: 0)
+        end
+      end
+    end
   end
 
   def create_identifier
