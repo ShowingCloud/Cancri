@@ -13,7 +13,7 @@ class SingUp
   attribute :not_validate_code, Boolean
 
   validates :mobile, presence: true, length: {is: 11}, numericality: true
-  validates :password, presence: true, length: {minimum: 6, maximum: 20}
+  validates :password, presence: true, length: {minimum: 6, maximum: 20}, format: {with: /\A[\x21-\x7e]+\Z/i, message: '密码只能包含数字、字母、特殊字符'}
   validates :mobile_code, presence: true, length: {is: 6}
   validates :nickname, presence: true, length: {minimum: 3, maximum: 10}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含数字、字母、下划线'}
   validate :register_validation
