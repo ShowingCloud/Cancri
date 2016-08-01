@@ -130,14 +130,19 @@ class UserController < ApplicationController
   end
 
   def apply
-    if params[:type]=='2'
-      apply = []
-    elsif params[:type]=='3'
-      apply = []
+    type = params[:type] ## option default: competition
+    if type.present?
+      case type
+        when 'competition' then
+          @apply_info = @apply_info = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where(user_id: current_user.id).select('up.username', 'up.grade', 'up.bj', 'up.student_code', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.last_score').page(params[:page]).per(params[:per])
+        when 'activity' then
+          @apply_info = []
+        else
+          render_optional_error(404)
+      end
     else
-      apply = CourseUserShip.joins(:course).where(user_id: current_user.id).select(:id, :course_id, :run_time, :created_at, :run_address, 'courses.name') #current_user.course_user_ships
+      @apply_info = CourseUserShip.joins(:course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where(user_id: current_user.id).select(:score, :course_id, 'up.username', 'up.grade', 'up.bj', 'up.student_code', 'courses.name', 'courses.end_time').page(params[:page]).per(params[:per])
     end
-    @apply_info = apply
   end
 
   def programs

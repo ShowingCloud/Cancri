@@ -1,5 +1,5 @@
 class Admin::RolesController < AdminController
-  before_action :set_role, only: [:show, :edit, :update, :destroy]
+  before_action :set_role, only: [:show, :edit, :update]
 
   # GET /admin/roles
   # GET /admin/roles.json
@@ -59,10 +59,16 @@ class Admin::RolesController < AdminController
   # DELETE /admin/roles/1
   # DELETE /admin/roles/1.json
   def destroy
-    @role.destroy
+    has_use = UserRole.where(role_id: params[:id]).exists?
+    if has_use
+      @notice=[false, 0, '该角色已经被使用，不能删除']
+    else
+      @role = Role.find(params[:id])
+      @role.destroy
+      @notice=[true, @role.id, '新闻类型删除成功']
+    end
     respond_to do |format|
-      format.html { redirect_to admin_roles_url, notice: '角色删除成功' }
-      format.json { head :no_content }
+      format.js
     end
   end
 

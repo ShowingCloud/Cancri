@@ -1,7 +1,7 @@
 <h1 class="page-header">
-  <%= t('activerecord.models.role') %>列表
+  <%= t('activerecord.models.news_type') %>列表
   <small class="pull-right">
-    <a href="<%= new_admin_role_path %>" class="btn btn-default" title="添加角色">
+    <a href="<%= new_admin_news_type_path %>" class="btn btn-default" title="添加新闻类型">
       <i class="icon-only icon-plus"></i></a>
     <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
       <i class="icon-search icon-only"></i>
@@ -38,22 +38,27 @@
   <tr>
     <th>ID</th>
     <th><%= t('simple_form.labels.defaults.name') %></th>
+    <th>创建时间</th>
+    <th>更新时间</th>
     <th>操作</th>
   </tr>
   </thead>
 
   <tbody>
-  <% @roles.each do |role| %>
-      <tr id="role-<%= role.id %>">
-        <td><%= role.id %></td>
-        <td><%= role.name %></td>
-        <td><%= link_to [:admin, role], title: '查看', class: 'btn btn-xs btn-warn' do %>
+  <% @news_types.each do |news_type| %>
+      <tr id="news-type-<%= news_type.id %>">
+        <td><%= news_type.id %></td>
+        <td><%= news_type.name %></td>
+        <td><%= news_type.created_at.try(:strftime, '%Y-%m-%d %H:%M:%S') %></td>
+        <td><%= news_type.updated_at.try(:strftime, '%Y-%m-%d %H:%M:%S') %></td>
+
+        <td><%= link_to [:admin, news_type], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>
           <% end %>
-          <%= link_to edit_admin_role_path(role), title: '编辑', class: 'btn btn-xs btn-info' do %>
+          <%= link_to edit_admin_news_type_path(news_type), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>
           <% end %>
-          <%= link_to [:admin, role], method: :delete, data: {confirm: '确认删除吗?', remote: true}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+          <%= link_to [:admin, news_type], method: :delete, data: {confirm: '确认删除吗?', remote: true}, title: '删除', class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash bigger-120"></i>
           <% end %></td>
       </tr>
@@ -62,6 +67,5 @@
 </table>
 
 <nav>
-  <%= paginate @roles %>
+  <%= paginate @news_types %>
 </nav>
-
