@@ -614,6 +614,10 @@ $(function () {
                 var _self = $(this);
                 var val = _self.val();
                 var es = space.find('.event-sel');
+                es.empty().removeClass('active');
+                es.append($('<option value="-1">请选择项目</option>'));
+                es.append($('<option value="0">所有项目</option>'));
+                space.find('.team-list').empty();
                 if (val != 0) {
                     var option = {
                         url: '/user/get_events',
@@ -621,8 +625,6 @@ $(function () {
                         data: {cd: val},
                         success: function (result) {
                             if (result.length > 0) {
-                                es.empty();
-                                es.append($('<option value="0">请选择项目</option>'));
                                 $.each(result, function (k, v) {
                                     var o = $('<option value="' + v.id + '">' + v.name + '</option>');
                                     es.append(o);
@@ -632,9 +634,6 @@ $(function () {
                         }
                     };
                     ajax_handle(option);
-                } else {
-                    es.empty().removeClass('active');
-                    es.append($('<option value="0">请选择项目</option>'));
                 }
             });
 
@@ -647,7 +646,9 @@ $(function () {
                 var val = _self.val();
                 var com = comp.val();
                 var _space = space;
-                if (_self.hasClass('active') && val != 0) {
+                _space.find('.team-list').empty();
+                _space.find('.comp-info').empty()
+                if (_self.hasClass('active') && val != -1) {
                     var option = {
                         url: '/user/get_comp_students',
                         type: 'get',
@@ -656,11 +657,12 @@ $(function () {
                             if (result[0] == true) {
                                 var players = result[1];
                                 var comp_info = result[3];
-                                _space.find('.comp-info').empty().append($('<h3>' + comp_info.name + '比赛</h3>' +
+                                _space.find('.comp-info').append($('<h3>' + comp_info.name + '比赛</h3>' +
                                     '<p class="label label-default"> 报名截止: ' + comp_info.apply_end_time.substr(0, 10) + '</p>' +
                                     '<p class="label label-info"> 学校审核截至: ' + comp_info.school_audit_time.substr(0, 10) + '</p>' +
                                     '<p class="label label-warning"> 区县审核截止: ' + comp_info.district_audit_time.substr(0, 10) + '</p>'
                                 ));
+
                                 var team_count = {};
                                 $.each(players, function (k, v) {
                                     var id = v.identifier;
@@ -736,7 +738,7 @@ $(function () {
                                         var player = $('<tr>' +
                                         '<th>' + val.username + '</th>' +
                                         '<th>' + (val.gender == 1 ? '男' : '女') + '</th>' +
-                                        '<th>' + val.grade + '</th>' +
+                                        '<th>' + (val.grade ? val.grade : '空' )+ '</th>' +
                                         '</tr>');
                                         $('.' + _k).find('.table').append(player);
                                     });

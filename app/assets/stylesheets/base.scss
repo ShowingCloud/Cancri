@@ -169,12 +169,10 @@ a:hover {
 }
 
 #banner {
-  height: 500px;
-  padding: 40px;
+  padding: 40px 0;
 }
 
 #banner #banner-slider {
-  height: 420px;
   overflow: hidden;
 }
 
@@ -1747,6 +1745,38 @@ select {
     }
     .item-table {
       font-size: 12px;
+    }
+  }
+}
+
+#home-sidebar {
+  margin-top: 40px;
+  text-align: center;
+  color: #fff;
+  .s-top {
+    background: #445d79;
+    padding: 10px 0;
+  }
+  .s-middle {
+    padding: 20px 0;
+    .s-item {
+      text-align: center;
+      margin-bottom: 15px;
+      .s-item-img {
+        border: 1px solid #445d79;
+        padding: 2px;
+        margin-bottom: 4px;
+        overflow: hidden;
+        img {
+          width: 256px;
+          height: 160px;
+        }
+      }
+      .s-item-dec {
+        background: #8c0307;
+        padding: 6px 0;
+        color: #fff;
+      }
     }
   }
 }

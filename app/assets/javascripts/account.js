@@ -126,7 +126,10 @@ $(function () {
         }
     });
 
-
+    $('.btn-register-submit').on('click',function(event){
+        event.preventDefault();
+        $(this).parents('form').submit();
+    })
 });
 function refresh_captcha() {
     var src = $("img.rucaptcha-image").attr('src');
