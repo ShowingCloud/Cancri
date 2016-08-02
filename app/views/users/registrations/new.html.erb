@@ -6,15 +6,33 @@
           用户注册
         </div>
         <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+            <% if resource.errors.any? %>
+                <div class="alert alert-danger">
+                  <div id="error_explanation">
+                    <% if resource.errors[:nickname].present? %>
+                        <p>昵称:<%= resource.errors[:nickname].first %></p>
+                    <% end %>
+                    <% if resource.errors[:email].present? %>
+                        <p>邮箱:<%= resource.errors[:email].first %></p>
+                    <% end %>
+                    <% if resource.errors[:password].present? %>
+                        <p>密码:<%= resource.errors[:password].first %></p>
+                    <% end %>
+                    <% if resource.errors[:password_confirmation].present? %>
+                        <p>确认密码:<%= resource.errors[:password_confirmation].first %></p>
+                    <% end %>
+                  </div>
+                </div>
+            <% end %>
             <div class="passport-box">
               <div class="passport-sub-box">
                 <i class="glyphicon glyphicon-user"></i>
-                <input class="input-robodou" id="register-username" type="text" name="user[nickname]"
+                <input class="input-robodou" id="register-username" type="text" name="user[nickname]" value="<%= resource.nickname %>"
                        placeholder="请输入用户名">
               </div>
               <div class="passport-sub-box">
                 <i class="glyphicon glyphicon-envelope"></i>
-                <input class="input-robodou" id="register-email" type="email" name="user[email]"
+                <input class="input-robodou" id="register-email" type="email" name="user[email]" value="<%= resource.email %>"
                        placeholder="请输入邮箱">
               </div>
               <div class="passport-sub-box">
