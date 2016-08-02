@@ -177,16 +177,20 @@ class CompetitionsController < ApplicationController
     if request.method == 'POST' && ud.present? && td.present?
       event_info = Event.joins(:competition, :teams).where('teams.id=?', td.to_i).select(:id, :name, :team_max_num, 'competitions.apply_end_time', 'teams.players', 'teams.user_id', 'teams.identifier').take
       user_info = User.left_joins(:user_profile).where(id: ud).select(:id, :nickname, 'user_profiles.username').take
-      if event_info.present? && (event_info.apply_end_time > Time.now) && (event_info.team_max_num > event_info.players) && (current_user.id == event_info.user_id) && user_info.present? && !check_teacher_role(ud)
-        if TeamUserShip.where(user_id: ud, team_id: td).exists?
-          result = [false, '该用户已报名或已被邀请']
+      if event_info.present? && (event_info.apply_end_time > Time.now) && (event_info.team_max_num > event_info.players) && (current_user.id == event_info.user_id) && user_info.present?
+        if check_teacher_role(ud)
+          result = [false, '不能邀请老师']
         else
-          t_u = TeamUserShip.create(team_id: td, user_id: ud, event_id: event_info.id, status: false, school_id: 0)
-          if t_u.save
-            result= [true, '邀请成功,等待该队员同意', user_info.nickname, user_info.username]
-            Notification.create(user_id: ud, message_type: 1, content: current_user.user_profile.try(:username)+'邀请你参加['+event_info.name+']比赛项目,队伍为:'+event_info.identifier, t_u_id: t_u.id, team_id: td, reply_to: current_user.id)
+          if TeamUserShip.where(user_id: ud, event_id: event_info.id).exists?
+            result = [false, '该户已报名此项目或已被您或其他人邀请参加']
           else
-            result= [false, '邀请失败']
+            t_u = TeamUserShip.create(team_id: td, user_id: ud, event_id: event_info.id, status: false, school_id: 0)
+            if t_u.save
+              result= [true, '邀请成功,等待该队员同意', user_info.nickname, user_info.username]
+              Notification.create(user_id: ud, message_type: 1, content: current_user.user_profile.try(:username)+'邀请你参加['+event_info.name+']比赛项目,队伍为:'+event_info.identifier, t_u_id: t_u.id, team_id: td, reply_to: current_user.id)
+            else
+              result= [false, '邀请失败']
+            end
           end
         end
       else

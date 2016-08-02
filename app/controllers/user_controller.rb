@@ -301,7 +301,7 @@ class UserController < ApplicationController
       if comp_id.present?
         competition = Competition.where(id: comp_id, status: 1).first
         if competition.present?
-          students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select('team_user_ships.grade', 'teams.id as team_id', 'team_user_ships.user_id', 'teams.user_id as leader_user_id', 'teams.identifier ', 'events.name as event_name', ' u_p.username ', ' u_p.gender ', ' users.nickname ').order('teams.id'); false
+          students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select('team_user_ships.grade', 'teams.id as team_id', 'team_user_ships.user_id', 'teams.user_id as leader_user_id', 'teams.group', 'teams.identifier ', 'events.name as event_name', ' u_p.username ', ' u_p.gender ', ' users.nickname ').order('teams.group asc, teams.id, team_user_ships.id asc'); false
 
           if teacher_info.role_type == 2
             students = students.where('teams.status=?', 3).where('teams.district_id=?', teacher_info.district_id)
@@ -331,7 +331,34 @@ class UserController < ApplicationController
     else
       result = [false, '403']
     end
-    render json: result
+    respond_to do |format|
+      format.json { render json: result }
+      format.xls {
+        if students.present?
+          data = students.map { |x| {
+              项目: x.event_name,
+              组别: case x.group
+                    when 1 then
+                      '小学'
+                    when 2 then
+                      '中学'
+                    when 3 then
+                      '初中'
+                    when 4 then
+                      '高中'
+                    else
+                      '未知'
+                  end,
+              队伍: x.leader_user_id == x.user_id ? x.identifier : nil,
+              姓名: x.username,
+              性别: x.gender==1 ? '男' : (x.gender == 2 ? '女' : nil),
+              年级: x.grade
+          } }
+          filename = "#{data.first[:项目]}-#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+          send_data(data.to_xls, :type => "text/xls;charset=utf-8,header=present", :filename => filename)
+        end
+      }
+    end
   end
 
 

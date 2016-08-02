@@ -47,6 +47,8 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'roo'
+  gem 'better_errors'
+  gem 'binding_of_caller'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -66,3 +68,4 @@ gem 'carrierwave-video'
 gem 'sidekiq'
 gem 'sinatra', git: 'https://github.com/sinatra/sinatra.git', require: false
 gem 'jquery-fileupload-rails'
+gem 'to_xls-rails'

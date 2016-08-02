@@ -131,7 +131,7 @@ class Admin::ChecksController < AdminController
   end
 
   def school_list
-    @schools = School.joins('left join user_profiles u_p on u_p.user_id=schools.user_id').where(user_add: true).where('audit is not NULL').select(:id, :name, :school_type, :audit, :district, 'u_p.username').page(params[:page]).per(params[:per])
+    @schools = School.left_joins(:district).joins('left join user_profiles u_p on u_p.user_id=schools.user_id').where(user_add: true).where('audit is not NULL').select(:id, :name, :school_type, :audit, :district_id, 'districts.name as district_name', 'u_p.username').page(params[:page]).per(params[:per])
   end
 
   def review_school

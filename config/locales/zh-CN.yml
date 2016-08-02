@@ -263,6 +263,7 @@ zh-CN:
       consult: '用户反馈'
       course: '课程'
       course_score_attribute: '评分标准'
+      school: '学校'
   views:
     pagination:
         first: "首页"
