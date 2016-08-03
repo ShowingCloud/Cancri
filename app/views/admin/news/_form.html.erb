@@ -8,6 +8,14 @@
   <div class="panel-body">
     <%= simple_form_for([:admin, @new]) do |f| %>
         <%= f.error_notification %>
+        <% if @new.errors.any? %>
+            <% if @new.errors[:cover].present? %>
+                <div class="alert alert-danger">封面:<%= @new.errors[:cover].first %></div>
+            <% end %>
+            <% if @new.errors[:content].present? %>
+                <div class="alert alert-danger">内容:<%= @new.errors[:content].first %></div>
+            <% end %>
+        <% end %>
         <div class="form-inputs">
           <%= f.input :name, maxlength: '100' %>
           <label class="control-label">类型</label>
@@ -35,7 +43,10 @@
           <%= f.input :status, label: '显示' %>
           <%= f.input :is_hot, label: '热门' %>
           <div class="form-group">
-            <label for="exampleInputFile">封面</label>
+            <label class="text required control-label" for="news_cover">
+              <abbr title="必填字段">*</abbr>
+              封面
+            </label>
             <%= f.file_field :cover %>
             <%= f.hidden_field :cover_cache %>
             <p class="help-block">格式：jpg jpeg gif png</p>
