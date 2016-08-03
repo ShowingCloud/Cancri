@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   get 'courses/apply_show' => 'courses#apply_show'
   post 'courses/apply' => 'courses#apply'
   post 'courses/cancel' => 'courses#cancel_apply'
+  get 'news' => 'news#index'
+  get 'news/:id' => 'news#show'
   resources :courses
   resources :competitions, only: [:index, :show] do
     collection do
@@ -142,6 +144,7 @@ Rails.application.routes.draw do
     resources :photos #, only: [:new, :create, :index,:show]
     resources :videos
     resources :consults
+    resources :schools
   end
 
   require 'sidekiq/web'
@@ -185,7 +188,7 @@ Rails.application.routes.draw do
   match 'user/course_ware/:id' => 'user#course_ware', as: 'user_course_ware', via: [:get, :post]
   get 'user/student_manage' => 'user#student_manage', as: 'user_student_manage'
   get 'user/comp_student' => 'user#comp_student', as: 'user_comp_student'
-  get 'user/get_comp_students' => 'user#get_comp_students'
+  get 'user/get_comp_students' => 'user#get_comp_students', as: 'user_get_comp_students'
   # mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
 end

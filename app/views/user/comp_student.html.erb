@@ -1,5 +1,5 @@
 <div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
-  <div class="container" id="user-notification">
+  <div class="container" id="comp-stu">
     <div class="row">
       <div class="user-center">
         <div class="main-title">
@@ -9,67 +9,40 @@
         <div class="user-main">
           <%= render 'user/tab' %>
           <div class="sub-content">
-            <select id="select-competition">
-              <option value="">请选择比赛</option>
-
-              <% Competition.where(status: 1).select(:id, :name).each do |comp| %>
-                  <option value="<%= comp.id %>"><%= comp.name %></option>
-              <% end %>
-            </select>
-            <select id="select-event">
-              <option value="">请选择项目</option>
-
-            </select>
-            <% if @teacher_info.present? %>
-                <% if @teacher_info.role_type == 2 %>
-                    区县老师--district_id: <%= @teacher_info.district_id %>
-                <% end %>
-            <% end %>
-            <% if @competition.present? %>
-                <p><%= @competition.name %></p>
-                <p> 报名截止: <%= @competition.apply_end_time.strftime('%Y-%m-%d %H:%M') %></p>
-                <p>学校截至: <%= @competition.school_audit_time.strftime('%Y-%m-%d %H:%M') %></p>
-                <p> 区县截止: <%= @competition.district_audit_time.strftime('%Y-%m-%d %H:%M') %></p>
-            <% end %>
-
-            <% if @students.present? %>
-                <table class="table">
-                  <thead>
-                  <th>项目</th>
-                  <th>队伍</th>
-                  <th>姓名</th>
-                  <th>性别</th>
-                  <th>年级</th>
-                  <th>操作</th>
-                  </thead>
-                  <tbody>
-                  <% @students.each do |s| %>
-                      <tr>
-                        <td><%= s.event_name %></td>
-                        <td>
-                          <% if s.leader_user_id == s.user_id %>
-                              <%= s.identifier %>
-                          <% end %>
-                        </td>
-                        <td><%= s.username %></td>
-                        <td><%= (s.gender.present? && s.gender==1) ? '男' : '女' %></td>
-                        <td><%= s.grade %></td>
-                        <td>
-                          <a href="<%= "/#{s.nickname}" %>">查看详情</a> &nbsp;&nbsp;&nbsp;&nbsp;
-                          <% if s.leader_user_id == s.user_id %>
-                              <button class="btn btn-xs btn-info">拒绝参加</button>
-                          <% end %>
-                        </td>
-                      </tr>
+            <div class="top">
+              <% if @teacher_info.present? %>
+                  <% if @teacher_info.role_type>=2 %>
+                      <div class="teacher-info">
+                        <div>
+                          您的身份：
+                        </div>
+                        <div data-role="<%= @teacher_info.role_type %>" class="label <%= @teacher_info.role_type==2 ? 'label-warning' : 'label-info' %>"><%= @teacher_info.role_type==2 ? '区级审核老师' : '校级审核老师' %></div>
+                      </div>
                   <% end %>
+              <% end %>
+            </div>
+            <div class="middle">
+              <select id="select-competition" class="comp-sel">
+                <option value="0">请选择比赛</option>
 
-                  </tbody>
-                </table>
-                <nav>
-                  <%= paginate @students %>
-                </nav>
-            <% else %>
-            <% end %>
+                <% @competitions.each do |comp| %>
+                    <option value="<%= comp.id %>"><%= comp.name %></option>
+                <% end %>
+              </select>
+              <select id="select-event" class="event-sel">
+                <option value="0">请选择项目</option>
+
+              </select>
+            </div>
+            <div class="middle">
+              <div class="comp-info">
+              </div>
+            </div>
+            <div class="middle">
+              <h4>队伍列表：</h4>
+
+              <div class="team-list"></div>
+            </div>
           </div>
         </div>
       </div>

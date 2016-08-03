@@ -18,9 +18,36 @@ class Team < ApplicationRecord
   validates :teacher, presence: true, format: {with: /\A[\u4e00-\u9fa5]{2,10}\Z/i, message: '只能包含2-10位中文'}
   validates :teacher_mobile, presence: true, format: {with: /\A1[34578][0-9]{9}\Z/i, message: '格式不正确'}
   validates :team_code, length: {in: 4..6}, allow_blank: true
-  after_save :create_identifier
+  after_create_commit :create_identifier
+  after_update_commit :notify_after_status_update
 
   protected
+
+  def notify_after_status_update
+    status_change = attribute_previous_change(:status)
+    if status_change.present? && status_change !=[0, 2]
+      user_ids = self.team_user_ships.pluck(:user_id)
+      identifier = self.identifier
+      case status_change
+        when [2, -2] then
+          content = '您所在的队伍:'+ identifier +',被学校老师 拒绝 参加比赛!'
+        when [-2, 3] then
+          content = '您所在的队伍:'+ identifier +',被学校老师 允许 参加比赛!'
+        when [3, 1] then
+          content = '您所在的队伍:'+ identifier +',被区县老师 允许 参加比赛,报名正式成功!'
+        when [3, -3] then
+          content = '您所在的队伍:'+ identifier +',被区县老师 拒绝 参加比赛!'
+        else
+          content=''
+      end
+      if user_ids.present? && content.present?
+        user_ids.each do |n|
+          Notification.create(user_id: n, content: content, message_type: 0)
+        end
+      end
+    end
+  end
+
   def create_identifier
     unless identifier.present?
       case group
@@ -33,7 +60,7 @@ class Team < ApplicationRecord
         else
           identity = 'G'
       end
-      ('00000'+(id+128).to_s).each_byte do |c|
+      ('000'+(id+128).to_s)[-6..-1].each_byte do |c|
         if c != 48
           identity.concat((c.to_i + 16).chr)
         else

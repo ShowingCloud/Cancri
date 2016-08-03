@@ -58,7 +58,7 @@
       <div class="collapse navbar-collapse" id="nav-menu">
         <ul class="nav navbar-nav">
           <li><a href="/">首页</a></li>
-          <li><a class="un-do" href="">新闻</a></li>
+          <li><a class="" href="<%= news_path %>">新闻</a></li>
           <li><a href="<%= courses_index_path %>">课程</a></li>
           <li><a class="" href="<%= competitions_path %>">比赛</a></li>
           <li><a class="un-do" href="">荣誉榜</a></li>
@@ -99,12 +99,16 @@
 <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
 <script type="text/javascript">
-    function alert_r(msg, cb) {
+    function alert_r(msg, cb, param) {
         $('.remodal').find('.content').text(msg);
         $('.remodal').remodal().open();
         $(document).on('closed', '.remodal', function () {
-            if(cb){
-                cb();
+            if (cb) {
+                if (param) {
+                    cb(param);
+                } else {
+                    cb();
+                }
             }
         });
     }

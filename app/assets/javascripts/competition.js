@@ -282,3 +282,24 @@ function leader_delete_player(ud) {
         })
     }
 }
+
+//队长提交报名
+function leader_submit_team(td) {
+    if (confirm('确定提交报名信息?（提交后无法修改）')) {
+        $.ajax({
+            url: '/competitions/leader_submit_team',
+            dataType: 'json',
+            type: 'post',
+            data: {td: td},
+            success: function (data) {
+                if (data[0]) {
+                    alert_r(data[1], function () {
+                        window.location.reload();
+                    });
+                } else {
+                    alert_r(data[1]);
+                }
+            }
+        })
+    }
+}

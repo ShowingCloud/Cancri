@@ -49,7 +49,7 @@ class UserController < ApplicationController
             return false
           end
           unless UserRole.where(user_id: current_user.id, role_id: 1).exists?
-            th_role = UserRole.create(user_id: current_user.id, role_id: 1, status: 0, school_id: profile_params[:school_id], district_id: profile_params[:district_id]) # 教师
+            th_role = UserRole.create(user_id: current_user.id, role_id: 1, status: 0, school_id: profile_params[:school_id], district_id: profile_params[:district_id], cover: profile_params[:certificate]) # 教师
             if th_role.save
               message = '您的老师身份已提交审核，审核通过后会在［消息］中告知您！'
             else
@@ -130,14 +130,19 @@ class UserController < ApplicationController
   end
 
   def apply
-    if params[:type]=='2'
-      apply = []
-    elsif params[:type]=='3'
-      apply = []
+    type = params[:type] ## option default: competition
+    if type.present?
+      case type
+        when 'competition' then
+          @apply_info = @apply_info = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where(user_id: current_user.id).select('up.username', 'up.grade', 'up.bj', 'up.student_code', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.last_score').page(params[:page]).per(params[:per])
+        when 'activity' then
+          @apply_info = []
+        else
+          render_optional_error(404)
+      end
     else
-      apply = CourseUserShip.joins(:course).where(user_id: current_user.id).select(:id, :course_id, :run_time, :created_at, :run_address, 'courses.name') #current_user.course_user_ships
+      @apply_info = CourseUserShip.joins(:course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where(user_id: current_user.id).select(:score, :course_id, 'up.username', 'up.grade', 'up.bj', 'up.student_code', 'courses.name', 'courses.end_time').page(params[:page]).per(params[:per])
     end
-    @apply_info = apply
   end
 
   def programs
@@ -280,7 +285,9 @@ class UserController < ApplicationController
 
   def comp_student
     @teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
-    unless @teacher_info.present?
+    if @teacher_info.present?
+      @competitions = Competition.where(status: 1).select(:id, :name, :apply_end_time, :school_audit_time, :district_audit_time)
+    else
       render_optional_error(403)
     end
   end
@@ -292,25 +299,29 @@ class UserController < ApplicationController
     teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
     if teacher_info.present?
       if comp_id.present?
-        competition = Competition.where(id: comp_id, status: 0).first
+        competition = Competition.where(id: comp_id, status: 1).first
         if competition.present?
-          students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select(:grade, :user_id, 'teams.user_id as leader_user_id', 'teams.identifier', 'events.name as event_name', 'u_p.username', 'u_p.gender', 'users.nickname'); false
+          students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select('team_user_ships.grade', 'teams.id as team_id', 'team_user_ships.user_id', 'teams.user_id as leader_user_id', 'teams.group', 'teams.identifier ', 'events.name as event_name', ' u_p.username ', ' u_p.gender ', ' users.nickname ').order('teams.group asc, teams.id, team_user_ships.id asc'); false
 
           if teacher_info.role_type == 2
             students = students.where('teams.status=?', 3).where('teams.district_id=?', teacher_info.district_id)
           elsif teacher_info.role_type == 3
             students = students.where('teams.status=?', 2).where('teams.school_id=?', teacher_info.school_id)
           end
-          if ed.present?
+          if ed.present? && (ed.to_i !=0)
             students = students.where('teams.event_id = ?', ed)
           else
             students = students.where('c.id = ?', comp_id)
           end
-          if school_id.present? && (School.where(district_id: teacher_info.district_id, status: 1).pluck(:id) & [school_id.to_i]).count>0
+          if school_id.present? && (school_id.to_i !=0) && (School.where(district_id: teacher_info.district_id, status: 1).pluck(:id) & [school_id.to_i]).count>0
             students = students.where('teams.school_id = ?', school_id)
           end
           page_students = students.page(params[:page]).per(params[:per])
-          result = [true, page_students, students.count, competition]
+          if page_students.length>0
+            result = [true, page_students, students.length, competition]
+          else
+            result = [false, '没有相关队伍']
+          end
         else
           result = [false, '不规范请求']
         end
@@ -320,8 +331,36 @@ class UserController < ApplicationController
     else
       result = [false, '403']
     end
-    render json: result
+    respond_to do |format|
+      format.json { render json: result }
+      format.xls {
+        if students.present?
+          data = students.map { |x| {
+              项目: x.event_name,
+              组别: case x.group
+                    when 1 then
+                      '小学'
+                    when 2 then
+                      '中学'
+                    when 3 then
+                      '初中'
+                    when 4 then
+                      '高中'
+                    else
+                      '未知'
+                  end,
+              队伍: x.leader_user_id == x.user_id ? x.identifier : nil,
+              姓名: x.username,
+              性别: x.gender==1 ? '男' : (x.gender == 2 ? '女' : nil),
+              年级: x.grade
+          } }
+          filename = "#{data.first[:项目]}-#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+          send_data(data.to_xls, :type => "text/xls;charset=utf-8,header=present", :filename => filename)
+        end
+      }
+    end
   end
+
 
   def cancel_apply
     if request.method == 'POST'

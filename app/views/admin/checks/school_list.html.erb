@@ -19,7 +19,7 @@
   <% @schools.each do |s| %>
       <tr>
         <td><%= s.name %></td>
-        <td><%= s.district %></td>
+        <td><%= s.district_name %></td>
         <td>
           <% case s.school_type.to_i %>
           <% when 1 then %>
