@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="row">
+    <% @activities.each do |act| %>
+        <%= link_to activity_path(act), title: '查看活动' do %>
+            <div class="v-title"><%= act.name %></div>
+        <% end %>
+    <% end %>
+  </div>
+  <nav>
+    <%= paginate @activities %>
+  </nav>
+</div>
+
+
+
+
