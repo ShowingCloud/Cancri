@@ -12,6 +12,9 @@
             <% if @new.errors[:cover].present? %>
                 <div class="alert alert-danger">封面:<%= @new.errors[:cover].first %></div>
             <% end %>
+            <% if @new.errors[:news_type].present? %>
+                <div class="alert alert-danger">类型:<%= @new.errors[:news_type].first %></div>
+            <% end %>
             <% if @new.errors[:content].present? %>
                 <div class="alert alert-danger">内容:<%= @new.errors[:content].first %></div>
             <% end %>
