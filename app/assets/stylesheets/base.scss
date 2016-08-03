@@ -1517,26 +1517,30 @@ select {
 
 #event-list {
   .top {
-    color: #fff;
-    font-size: 18px;
-    padding: 10px 0;
+    padding: 20px 0;
     border-bottom: 1px solid #fff;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
   }
   .middle {
     padding: 10px 0;
     overflow: hidden;
+    .border-box {
+      padding: 20px;
+      border: 1px solid #fff;
+      border-radius: 15px;
+      overflow: hidden;
+    }
     .event-item {
       float: left;
       width: 25%;
       padding: 10px;
       overflow: hidden;
-      .item-box {
-        border: 1px solid #fff;
-        border-radius: 15px;
-        height: 200px;
-        img {
-          width: 100%;
-        }
+      text-align: center;
+      a {
+        color: #6699cc;
       }
     }
   }
@@ -1778,5 +1782,77 @@ select {
         color: #fff;
       }
     }
+  }
+}
+
+#news-list {
+  .top {
+    padding: 20px 0;
+    border-bottom: 1px solid #fff;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+  }
+  .middle {
+    .news-item {
+      .news-box {
+        border: 1px solid #fff;
+        box-shadow: 0 0 10px #fff;
+        border-radius: 20px;
+        padding: 10px;
+        margin: 20px;
+        .img-box {
+          text-align: center;
+          height: 160px;
+          overflow: hidden;
+          margin-bottom: 10px;
+          img {
+            width: 260px;
+          }
+        }
+        .info {
+          margin-bottom: 5px;
+          line-height: 20px;
+          font-size: 14px;
+          border-bottom: 1px solid #ccc;
+          overflow: hidden;
+          padding-bottom: 4px;
+          .tag {
+            color: #6699cc;
+            float: left;
+          }
+          .ct {
+            float: right;
+            color: #fff;
+          }
+        }
+        .title {
+          font-size: 16px;
+          line-height: 20px;
+          color: #fff;
+          margin-bottom: 10px;
+        }
+        .dec {
+          padding: 4px 0;
+          color: #fff;
+          word-break: break-all;
+          font-size: 14px;
+          line-height: 18px;
+          text-indent: 2em;
+        }
+      }
+    }
+  }
+}
+
+#news-show {
+  color: #fff;
+  overflow: hidden;
+  .tags {
+    color: #6699cc;
+    margin-bottom: 20px;
+  }
+  .images {
   }
 }

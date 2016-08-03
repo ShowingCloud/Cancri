@@ -647,7 +647,7 @@ $(function () {
                 var com = comp.val();
                 var _space = space;
                 _space.find('.team-list').empty();
-                _space.find('.comp-info').empty()
+                _space.find('.comp-info').empty();
                 if (_self.hasClass('active') && val != -1) {
                     var option = {
                         url: '/user/get_comp_students',
@@ -662,6 +662,10 @@ $(function () {
                                     '<p class="label label-info"> 学校审核截至: ' + comp_info.school_audit_time.substr(0, 10) + '</p>' +
                                     '<p class="label label-warning"> 区县审核截止: ' + comp_info.district_audit_time.substr(0, 10) + '</p>'
                                 ));
+
+                                if (players.length > 0) {
+                                    _space.find('.comp-info').append($('<a href="/user/get_comp_students.xls?com=' + com + '&ed=' + val + '" class="btn btn-robodou" title="下载名单">下载名单</a>'))
+                                }
 
                                 var team_count = {};
                                 $.each(players, function (k, v) {
@@ -738,7 +742,7 @@ $(function () {
                                         var player = $('<tr>' +
                                         '<th>' + val.username + '</th>' +
                                         '<th>' + (val.gender == 1 ? '男' : '女') + '</th>' +
-                                        '<th>' + (val.grade ? val.grade : '空' )+ '</th>' +
+                                        '<th>' + (val.grade ? val.grade : '空' ) + '</th>' +
                                         '</tr>');
                                         $('.' + _k).find('.table').append(player);
                                     });

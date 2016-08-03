@@ -1,22 +1,22 @@
 <div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
   <div class="container" id="event-list">
     <div class="top">
-      项目列表
+      <%= @events.first.comp_name %>
     </div>
     <div class="middle">
-      <% @events.each do |e| %>
-          <div class="event-item">
-            <% if e.end_apply_time > Time.now %>
-                <%= link_to "#{apply_event_competitions_path}?ed=#{e.id}", class: '' do %>
-                    <div class="item-box">
-                      <img src="" alt=""/>
-
-                      <div class="item-title"><%= e.name %></div>
-                    </div>
-                <% end %>
-            <% end %>
-          </div>
-      <% end %>
+      <div class="border-box">
+        <% @events.each do |e| %>
+            <div class="event-item">
+              <% if e.end_apply_time > Time.now %>
+                  <%= link_to "#{apply_event_competitions_path}?ed=#{e.id}", class: '' do %>
+                      <div class="item-box">
+                        <div class="item-title"><%= e.name %></div>
+                      </div>
+                  <% end %>
+              <% end %>
+            </div>
+        <% end %>
+      </div>
     </div>
     <div class="bottom">
       <nav>
