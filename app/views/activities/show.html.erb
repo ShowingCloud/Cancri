@@ -1,0 +1,47 @@
+<div class="container">
+  <%= @activity.name %>
+
+  <%= @activity.host_address %>
+
+  <div class="volunteer-bottom">
+    <% if @activity['11'] %>
+    12
+    <% end %>
+
+
+    <% if @already_apply %>
+        <p>您已经报名</p>
+    <% else %>
+        <% if current_user.present? %>
+            <% if current_user.mobile.present? %>
+                <button data-toggle="modal" data-target="#apply-activity" class="btn btn-primary">报名参加</button>
+
+                <!-- apply require info start -->
+                <% if 1==2 %>
+                    <%= @user_info.mobile %>
+                    <%= @user_info.school_id %>
+                    <%= @user_info.district_id %>
+                    <%= @user_info.district_id %>
+                    <%= @user_info.birthday %>
+                    <%= @user_info.grade %>
+                    <%= @user_info.username %>
+                    <% if @user_info.school_name.present? %>
+                        <%= @user_info.school_name %>
+                    <% end %>
+                    <% if @user_info.district_name.present? %>
+                        <%= @user_info.district_name %>
+                    <% end %>
+                    <!-- apply require info end -->
+                <% end %>
+            <% else %>
+                <!-- 请验证手机 -->
+                <button class="btn btn-primary">报名参加</button>
+            <% end %>
+        <% else %>
+            <a class="btn btn-primary" href="<%= "#{apply_require_activities_path}?id=#{@activity.id}" %>">报名参加</a>
+        <% end %>
+    <% end %>
+  </div>
+
+
+</div>

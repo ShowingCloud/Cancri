@@ -22,12 +22,18 @@
         <td><%= th[:username] %></td>
         <td><%= th[:gender] == 1 ? '男' : '女' %></td>
         <td>
-          <% if th[:role]==1 %>
-              <label class="label label-danger">市级</label>
-          <% elsif th[:role]==2 %>
-              <label class="label label-warning">区级</label>
-          <% elsif th[:role]==3 %>
-              <label class="label label-info">校级</label>
+          <% case th[:role] %>
+          <% when 1 then %>
+              市级老师
+          <% when 2 then %>
+              区县(唯一)
+          <% when 3 then %>
+              学校(唯一)
+          <% when 4 then %>
+              区县
+          <% when 5 then %>
+              学校
+          <% else %>
           <% end %>
         </td>
         <td class="ace-thumbnails">

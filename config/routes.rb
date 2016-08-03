@@ -54,6 +54,12 @@ Rails.application.routes.draw do
     end
   end
   get '/competitions/:id/events', to: 'competitions#events'
+  resources :activities do
+    collection do
+      post :apply_activity
+      get :apply_require
+    end
+  end
   resources :notifications
   namespace :kindeditor do
     post '/upload' => 'assets#create'
