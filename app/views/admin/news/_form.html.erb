@@ -9,15 +9,17 @@
     <%= simple_form_for([:admin, @new]) do |f| %>
         <%= f.error_notification %>
         <% if @new.errors.any? %>
-            <% if @new.errors[:cover].present? %>
-                <div class="alert alert-danger">封面:<%= @new.errors[:cover].first %></div>
-            <% end %>
-            <% if @new.errors[:news_type].present? %>
-                <div class="alert alert-danger">类型:<%= @new.errors[:news_type].first %></div>
-            <% end %>
-            <% if @new.errors[:content].present? %>
-                <div class="alert alert-danger">内容:<%= @new.errors[:content].first %></div>
-            <% end %>
+            <div class="alert alert-danger">
+              <% if @new.errors[:cover].present? %>
+                  <p>封面:<%= @new.errors[:cover].first %></p>
+              <% end %>
+              <% if @new.errors[:news_type].present? %>
+                  <p>类型:<%= @new.errors[:news_type].first %></p>
+              <% end %>
+              <% if @new.errors[:content].present? %>
+                  <p>内容:<%= @new.errors[:content].first %></p>
+              <% end %>
+            </div>
         <% end %>
         <div class="form-inputs">
           <%= f.input :name, maxlength: '100' %>
