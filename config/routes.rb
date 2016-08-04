@@ -127,18 +127,6 @@ Rails.application.routes.draw do
     resources :events do
       collection do
         get :teams
-        get :scores
-        get :add_score
-        post :add_score
-        get :edit_score
-        post :edit_score
-        post :create_team
-        post :add_team_player
-        post :delete_team_player
-        post :delete_team
-        post :add_score_attributes
-        post :delete_score_attribute
-        post :edit_event_sa_desc
       end
     end
     resources :event_schedules

@@ -13,8 +13,6 @@ class ActivitiesController < ApplicationController
         user_info = UserProfile.left_joins(:school, :district, :user).where(user_id: current_user.id).select(:username, :grade, :birthday, :school_id, :district_id, :bj, 'users.mobile', 'schools.name as school_name', 'districts.name as district_name').take; false
         @user_info = user_info ||= current_user.build_user_profile
       end
-    else
-
     end
   end
 

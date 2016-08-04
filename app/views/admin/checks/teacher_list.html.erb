@@ -20,7 +20,14 @@
   <% @teacher_array.each do |th| %>
       <tr>
         <td><%= th[:username] %></td>
-        <td><%= th[:gender] == 1 ? '男' : '女' %></td>
+        <td>
+          <% case th[:gender] %>
+          <% when 1 then %>
+              男
+          <% when 2 then %>
+              女
+          <% else %>
+          <% end %></td>
         <td>
           <% case th[:role] %>
           <% when 1 then %>
