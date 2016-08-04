@@ -196,7 +196,6 @@ $(function () {
                                 '<td><button class="btn btn-xs btn-info" onclick="invite_player(' + v.user_id + ')" data-user="' + v.user_id + '">邀请</button></td>' +
                                 '</tr>');
                                 tbody.append(tr);
-
                             });
                         }
                     } else {
@@ -212,7 +211,54 @@ $(function () {
         }
     });
 
+    $('#team-group').on('change', function () {
+        var _self = $(this);
+        var group = _self.val();
+        var g = $('#grade');
+        var icd = $('.identity-group');
+        g.find('option').show();
+        var a = [];
+        switch (group) {
+            case '0':
+                //未选择
+                g.prop('disabled', true);
+                icd.addClass('hide');
+                break;
+            case '1':
+                //小学组
+                g.prop('disabled', false);
+                a = [7, 8, 9, 10, 11, 12];
+                icd.addClass('hide');
+                break;
+            case '2':
+                //中学组
+                g.prop('disabled', false);
+                a = [1, 2, 3, 4, 5, 6];
+                icd.addClass('hide');
+                break;
+            case '3':
+                //初中组
+                g.prop('disabled', false);
+                a = [1, 2, 3, 4, 5, 6, 10, 11, 12];
+                icd.addClass('hide');
+                break;
+            case '4':
+                //高中组
+                g.prop('disabled', false);
+                a = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+                icd.removeClass('hide');
+                break;
+        }
 
+        if (a.length > 0) {
+            for (var i = 0; i < a.length; i++) {
+                $(g.find('option').get(a[i])).hide();
+            }
+            if ($.inArray(parseInt(g.val()), a) > -1) {
+                g.val(0);
+            }
+        }
+    })
 });
 
 function invite_player(user_id) {
@@ -238,8 +284,8 @@ function invite_player(user_id) {
             }
         });
     }
-
 }
+
 // 队长解散队伍
 function leader_delete_team(team_id) {
     if (confirm('确定解散队伍?')) {
@@ -258,8 +304,6 @@ function leader_delete_team(team_id) {
             }
         })
     }
-
-
 }
 
 // 队长清退队员

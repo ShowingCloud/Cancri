@@ -72,18 +72,7 @@
 </div>
 <div id="bs-pg" data-bk="<%= image_path('bs-pagebk.png') %>"></div>
 
-<div id="flash" class="modal fade">
-  <div class="notify-b">
-    <div class="title">
-      通知
-      <i data-dismiss="modal" class="close-flash glyphicon glyphicon-remove-circle"></i>
-    </div>
-    <div class="content">
-    </div>
-  </div>
-</div>
-
-<div class="remodal" data-remodal-id="modal"
+<div id="flash" class="remodal" data-remodal-id="modal"
      data-remodal-options="hashTracking: false, closeOnOutsideClick: false">
 
   <button data-remodal-action="close" class="remodal-close"></button>
@@ -100,8 +89,8 @@
 
 <script type="text/javascript">
     function alert_r(msg, cb, param) {
-        $('.remodal').find('.content').text(msg);
-        $('.remodal').remodal().open();
+        $('#flash').find('.content').text(msg);
+        $('#flash').remodal().open();
         $(document).on('closed', '.remodal', function () {
             if (cb) {
                 if (param) {
