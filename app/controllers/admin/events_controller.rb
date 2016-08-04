@@ -74,6 +74,12 @@ class Admin::EventsController < AdminController
   def edit
   end
 
+  def teams
+    @event = Event.find(params[:id])
+    @teams = Team.where(event_id: params[:id]).page(params[:page]).per(params[:per])
+  end
+
+
   # def add_score_attributes
   #   if request.method == 'POST'
   #     ed = params[:ed]

@@ -1,0 +1,51 @@
+<h1 class="page-header">
+  <%= @event.name %>
+  <span class="hidden team-max-num"> <%= @event.team_max_num %></span>
+</h1>
+
+<div class="row">
+  <div class="col-xs-12">
+    <% if @teams.present? %>
+        <div class="row">
+          <% @teams.each do |team| %>
+              <div class="col-xs-12 col-sm-6 col-md-4" id="<%= "hide-team-#{team.id}" %>">
+
+                <div class="widget-box">
+                  <div class="widget-header widget-header-small">
+                    <h4 class="">
+                      <i class="icon-flag-alt orange"></i>
+                      <%= team.identifier %>
+                    </h4>
+
+                    <div class="widget-toolbar action-buttons">
+                      <span class="badge" id="<%= team.id %>" style="font-size: 15px;padding: 1px 6px 2px 6px"><%= team.players %></span>
+                    </div>
+                  </div>
+                  <div class="widget-body">
+                    <div class="widget-main padding-8">
+                      <div class="event-team profile-feed">
+                        <% team.team_user_ships.each do |te| %>
+                            <div class="profile-activity clearfix" id="<%= "hide-player-#{te.user_id}" %>">
+                              <div>
+                                <%= te.user.user_profile.username %> - <%= te.user.nickname %>
+                              </div>
+                              <% if te.user_id == team.user_id %>
+                                  <div class="tools">队长</div>
+                              <% end %>
+                            </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+          <% end %>
+        </div>
+        <nav>
+          <%= paginate @teams %>
+        </nav>
+    <% end %>
+
+  </div>
+</div>

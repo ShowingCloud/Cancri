@@ -238,6 +238,29 @@ $(function () {
             }
         });
     });
+    $('.dd').nestable();
+    var max_num = $('.team-max-num').text();
+    if (max_num == 1) {
+        $('.event-team').slimScroll({
+            height: '42px',
+            alwaysVisible: true
+        });
+    } else if (max_num == 2) {
+        $('.event-team').slimScroll({
+            height: '85px',
+            alwaysVisible: true
+        });
+    } else if (max_num == 3) {
+        $('.event-team').slimScroll({
+            height: '123px',
+            alwaysVisible: true
+        });
+    } else {
+        $('.event-team').slimScroll({
+            height: '163px',
+            alwaysVisible: true
+        });
+    }
 });
 function trim(str) {
     return str.replace(/(^\s*)|(\s*$)/g, "");
