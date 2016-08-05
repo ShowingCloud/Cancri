@@ -17,21 +17,17 @@ class Admin::EventsController < AdminController
     respond_to do |format|
       format.html
       format.xls {
-        data = Event.select(:id, :name, :is_father, :parent_id, :competition_id, :group, :team_min_num, :team_max_num).order('competition_id desc,is_father desc').map { |x| {
+        data = @events.select(:id, :name, :is_father, :parent_id, :competition_id, :group, :team_min_num, :team_max_num).order('competition_id desc,is_father desc').map { |x| {
             名称: x.name,
-            is_father: x.is_father,
-            parent_id: x.parent_id,
-            competition_id: x.competition_id,
-            group: x.group,
-            team_min_num: x.team_min_num,
-            team_max_num: x.team_max_num,
+            组别名: x.is_father ? '是' : nil,
+            包含组别: x.group.gsub(/[1-4]/, '1' => '小', '2' => '中', '3' => '初', '4' => '高'),
+            队伍最少人数: x.is_father ? nil : x.team_min_num,
+            队伍最多人数: x.is_father ? nil : x.team_max_num,
         } }
         filename = "Event-Export-#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
         send_data(data.to_xls, :type => "text/xls;charset=utf-8,header=present", :filename => filename)
       }
     end
-
-
   end
 
   # GET /admin/events/1
@@ -75,8 +71,29 @@ class Admin::EventsController < AdminController
   end
 
   def teams
+    status = params[:status]
     @event = Event.find(params[:id])
-    @teams = Team.where(event_id: params[:id]).page(params[:page]).per(params[:per])
+    case status
+      when '组队中' then
+        status == 0
+      when '报名成功' then
+        status == 1
+      when '待学校审核' then
+        status == 2
+      when '待区县审核' then
+        status == 3
+      when '学校拒绝' then
+        status == -2
+      when '区县拒绝' then
+        status == -3
+      else
+        status == nil
+    end
+    teams = Team.includes(:team_user_ships, :user).where(event_id: params[:id]); false
+    if status.present?
+      teams = teams.where(status: params[:status])
+    end
+    @teams = teams.page(params[:page]).per(params[:per])
   end
 
 

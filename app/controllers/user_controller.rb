@@ -549,9 +549,9 @@ class UserController < ApplicationController
     @consults = Consult.where(user_id: current_user.id).all.order('id asc')
   end
 
-  # def point
-  #   @user_points = UserPoint.joins(:prize).where(user_id: current_user.id).select(:id, :is_audit, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize')
-  # end
+  def point
+    # @user_points = UserPoint.joins(:prize).where(user_id: current_user.id).select(:id, :is_audit, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize')
+  end
 
   # def add_point
   #   @point = current_user.user_points.build

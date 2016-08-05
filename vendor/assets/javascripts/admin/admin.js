@@ -212,6 +212,20 @@ $(function () {
             }
         });
     });
+
+    // 选择队伍状态
+    $('#select-team-status').on('change', function () {
+        var event_id = $('.event-id').text();
+        var status = $(this).val();
+        var status_params;
+        if (status == '') {
+            status_params = ''
+        } else {
+            status_params = '&status=' + status
+        }
+        window.location = '/admin/events/teams?id=' + event_id + status_params;
+    });
+
     // 编辑赛程评分／对抗
     $(".edit-event-schedule-submit").on('click', function (e) {
         e.preventDefault();

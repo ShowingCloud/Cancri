@@ -6,7 +6,7 @@
     <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
       <i class="icon-search icon-only"></i>
     </a>
-    <a href="<%= admin_events_path(format: 'xls') %>" class="btn btn-default" title="导出数据">
+    <a href="<%= admin_events_path(format: 'xls') %>?field=<%= params[:field] %>&keyword=<%= params[:keyword] %>" class="btn btn-default" title="导出数据">
       <i class="icon-external-link icon-only"></i>
     </a>
   </small>

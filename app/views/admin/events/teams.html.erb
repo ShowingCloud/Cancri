@@ -1,6 +1,32 @@
 <h1 class="page-header">
   <%= @event.name %>
   <span class="hidden team-max-num"> <%= @event.team_max_num %></span>
+  <span class="hidden event-id"><%= @event.id %></span>
+  <div class="col-xs-12 col-sm-2 form-group pull-right">
+    <select id="select-team-status" class="form-control">
+      <option value="">
+        &nbsp;全部
+      </option>
+      <option <%= 'selected' if params[:status] == '组队中' %> value="组队中">
+        组队中
+      </option>
+      <option <%= 'selected' if params[:status] == '报名成功' %> value="报名成功">
+        报名成功
+      </option>
+      <option <%= 'selected' if params[:status] == '待学校审核' %> value="待学校审核">
+        待学校审核
+      </option>
+      <option <%= 'selected' if params[:status] == '待区县审核' %> value="待区县审核">
+        待区县审核
+      </option>
+      <option <%= 'selected' if params[:status] == '学校拒绝' %> value="学校拒绝">
+        学校拒绝
+      </option>
+      <option <%= 'selected' if params[:status] == '区县拒绝' %> value="区县拒绝">
+        区县拒绝
+      </option>
+    </select>
+  </div>
 </h1>
 
 <div class="row">
@@ -14,7 +40,7 @@
                   <div class="widget-header widget-header-small">
                     <h4 class="">
                       <i class="icon-flag-alt orange"></i>
-                      <%= team.identifier %>
+                      <%= team.identifier %> 待学校审核
                     </h4>
 
                     <div class="widget-toolbar action-buttons">
