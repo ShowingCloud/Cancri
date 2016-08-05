@@ -1849,10 +1849,80 @@ select {
 #news-show {
   color: #fff;
   overflow: hidden;
+  .text-center {
+    padding: 10px 0;
+    border-bottom: 1px solid #fff;
+  }
   .tags {
     color: #6699cc;
     margin-bottom: 20px;
   }
   .images {
+    text-align: center;
   }
+  .cover {
+    max-width: 800px;
+  }
+}
+
+#activities {
+  .item {
+    width: 630px;
+    height: 236px;
+    text-align: center;
+    font-size: 48px;
+    color: #fff;
+    margin: 20px auto;
+    padding-top: 90px;
+    position: relative;
+    a {
+      color: #fff;
+    }
+  }
+  .circle {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    top: 36px;
+    right: 52px;
+    font-size: 18px;
+  }
+}
+
+#activity-show {
+  .box {
+    margin-top: 40px;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    padding: 20px;
+    color: #fff;
+  }
+  .top {
+    padding: 10px 0;
+    border-bottom: 1px solid #fff;
+    font-size: 24px;
+    text-align: center;
+    position: relative;
+    .ad {
+      position: absolute;
+      font-size: 14px;
+      bottom: 0;
+      color: #6699cc;
+    }
+  }
+  .middle {
+    padding: 10px 0;
+    .images {
+      text-align: center;
+      img {
+        max-width: 400px;
+      }
+    }
+  }
+  .bottom {
+    text-align: center;
+  }
+}
+.carousel-inner{
+  height: 342px;
 }

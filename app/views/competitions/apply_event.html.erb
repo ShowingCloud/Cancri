@@ -164,10 +164,22 @@
                         </div>
                       </div>
                       <div class="form-group">
+                        <label for="team-group" class="col-sm-2 control-label">队伍组别</label>
+
+                        <div class="col-sm-9">
+                          <select id="team-group" class="form-control">
+                            <option value="">请选择组别</option>
+                            <% @event.group.split(',').each do |g| %>
+                                <option value="<%= g %>"><%= t('group.group'+g.to_s) %></option>
+                            <% end %>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
                         <label for="grade" class="col-sm-2 control-label">年级</label>
 
                         <div class="col-sm-9">
-                          <select id="grade" class="form-control">
+                          <select id="grade" class="form-control" disabled="disabled">
                             <option value="0">请选择年级</option>
                             <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
                             <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
@@ -184,7 +196,7 @@
                           </select>
                         </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group identity-group hide">
                         <label for="identity_card" class="col-sm-2 control-label">身份证</label>
 
                         <div class="col-sm-9">
@@ -196,18 +208,6 @@
 
                         <div class="col-sm-9">
                           <input type="text" class="form-control" id="student_code" value="<%= @user_info.student_code %>">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="team-group" class="col-sm-2 control-label">队伍组别</label>
-
-                        <div class="col-sm-9">
-                          <select id="team-group" class="form-control">
-                            <option value="">请选择组别</option>
-                            <% @event.group.split(',').each do |g| %>
-                                <option value="<%= g %>"><%= t('group.group'+g.to_s) %></option>
-                            <% end %>
-                          </select>
                         </div>
                       </div>
                       <div class="form-group">

@@ -1,16 +1,19 @@
-<div class="container">
-  <div class="row">
-    <% @activities.each do |act| %>
-        <%= link_to activity_path(act), title: '查看活动' do %>
-            <div class="v-title"><%= act.name %></div>
-        <% end %>
-    <% end %>
+<div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="activities">
+    <div class="row">
+      <% @activities.each do |act| %>
+          <div class="item" data-src="<%= image_path('v-item-bk.png') %>">
+            <div class="circle">
+              活动招募
+            </div>
+            <%= link_to activity_path(act), title: '查看活动' do %>
+                <div class=""><%= act.name %></div>
+            <% end %>
+          </div>
+      <% end %>
+    </div>
+    <nav>
+      <%= paginate @activities %>
+    </nav>
   </div>
-  <nav>
-    <%= paginate @activities %>
-  </nav>
 </div>
-
-
-
-

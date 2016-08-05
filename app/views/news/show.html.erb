@@ -1,12 +1,15 @@
 <div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
   <div class="container" id="news-show">
     <div class="row">
-    <h2 class="text-center"><%= @news.name %></h2>
+      <h2 class="text-center"><%= @news.name %></h2>
 
-    <div class="tags">类型: <%= @news_type %></div>
-
-    <div class="images col-sm-12"><%= image_tag(@news.cover) %></div>
-    <%= @news.content.html_safe %>
+      <div class="tags">类型: <%= @news_type %></div>
+      <div class="images col-sm-12">
+        <%= image_tag(@news.cover,class: 'cover') %>
+      </div>
+      <div class="content col-sm-12">
+        <%= @news.content.html_safe %>
+      </div>
     </div>
   </div>
 </div>
