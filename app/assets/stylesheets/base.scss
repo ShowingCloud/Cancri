@@ -1684,6 +1684,12 @@ select {
     .invite-panel {
       padding: 20px;
       text-align: center;
+      .tips {
+        color: #6699cc;
+        font-size: 12px;
+        text-align: center;
+        display: block;
+      }
       th {
         text-align: center;
       }
@@ -1921,8 +1927,36 @@ select {
   }
   .bottom {
     text-align: center;
+    .content {
+      border-top: 1px solid #fff;
+      padding-top: 10px;
+      margin: 10px auto;
+      width: 400px;
+      text-align: left;
+      .special-row {
+        padding-top: 6px;
+      }
+    }
   }
 }
-.carousel-inner{
+
+.carousel-inner {
   height: 342px;
+}
+
+#board {
+  text-align: center;
+  color: #fff;
+  font-size: 12px;
+  .board-item {
+    height: 306px;
+    .sec-t {
+      color: #fff;
+    }
+    .sec-c {
+      color: #6699cc;
+      margin-top: 62px;
+    }
+  }
+
 }
