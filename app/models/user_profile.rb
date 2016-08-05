@@ -6,6 +6,7 @@ class UserProfile < ApplicationRecord
   before_validation :validate_data
   validates :gender, inclusion: [1, 2], allow_blank: true
   validates :school_id, numericality: {only_integer: true}, allow_blank: true
+  validates :grade, numericality: {only_integer: true}, allow_blank: true
   validates :district_id, numericality: {only_integer: true}, allow_blank: true
 
   GENDER = {male: 1, female: 2}

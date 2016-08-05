@@ -1,13 +1,10 @@
 <h1 class="page-header">
-  <%= t('activerecord.models.event') %>列表
+  <%= t('activerecord.models.activity') %>列表
   <small class="pull-right">
-    <a href="<%= new_admin_event_path %>" class="btn btn-default" title="添加比赛项目">
+    <a href="<%= new_admin_activity_path %>" class="btn btn-default" title="添加活动">
       <i class="icon-only icon-plus"></i></a>
     <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
       <i class="icon-search icon-only"></i>
-    </a>
-    <a href="<%= admin_events_path(format: 'xls') %>?field=<%= params[:field] %>&keyword=<%= params[:keyword] %>" class="btn btn-default" title="导出数据">
-      <i class="icon-external-link icon-only"></i>
     </a>
   </small>
 </h1>
@@ -41,49 +38,40 @@
   <tr>
     <th>ID</th>
     <th><%= t('simple_form.labels.defaults.name') %></th>
-    <th><%= t('simple_form.labels.defaults.competition_id') %></th>
-    <th>分组</th>
-    <th>组名</th>
-    <th>组别</th>
-    <th>项目状态</th>
-    <th>每队人数</th>
+    <th><%= t('simple_form.labels.defaults.host_address') %></th>
+    <th>显示</th>
+    <th>报名时间</th>
+    <th>举办时间</th>
     <th>操作</th>
   </tr>
   </thead>
 
   <tbody>
-  <% @events.each do |event| %>
+  <% @activities.each do |activity| %>
       <tr>
-        <td><%= event.id %></td>
-        <td><%= event.name %></td>
-        <td><%= event.competition.try(:name) %></td>
-        <td><%= event.parent_event.name if event.level==2 %></td>
-        <td><%= show_status(event.is_father) if event.is_father %></td>
-        <td><%= event.group.gsub(/[1-4]/, '1' => '小', '2' => '中', '3' => '初', '4' => '高') %></td>
-        <td><%= t('status.status'+event.status.to_s) %></td>
-        <td><%= "#{event.team_min_num}-" if event.team_min_num != event.team_max_num %><%= event.team_max_num %></td>
-        <td>
-          <%= link_to [:admin, event], title: '查看', class: 'btn btn-xs btn-warn' do %>
+        <td><%= activity.id %></td>
+        <td><%= activity.name %></td>
+        <td><%= activity.host_address %></td>
+        <td><%= show_status(activity.status) %></td>
+        <td><%= activity.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>
+          -- <%= activity.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %></td>
+        <td><%= activity.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>
+          -- <%= activity.end_time.try(:strftime, '%Y-%m-%d %H:%M') %></td>
+        <td><%= link_to [:admin, activity], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>
           <% end %>
-          <% unless event.is_father %>
-              <%= link_to "#{teams_admin_events_path}?id=#{event.id}", title: '队伍', class: 'btn btn-xs btn-primary' do %>
-                  <i class="icon-flag-alt bigger-120"></i>
-              <% end %>
-          <% end %>
-          <%= link_to edit_admin_event_path(event), title: '编辑', class: 'btn btn-xs btn-info' do %>
+          <%= link_to edit_admin_activity_path(activity), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>
           <% end %>
-          <%= link_to [:admin, event], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+          <%= link_to [:admin, activity], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash bigger-120"></i>
-          <% end %>
-        </td>
+          <% end %></td>
       </tr>
   <% end %>
   </tbody>
 </table>
 
 <nav>
-  <%= paginate @events %>
+  <%= paginate @activities %>
 </nav>
 

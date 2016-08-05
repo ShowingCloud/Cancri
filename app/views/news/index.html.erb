@@ -1,19 +1,41 @@
-<div class="container">
-  <% if @news_array.present? %>
-      <% @news_array.each do |news| %>
-          <%= link_to "/news/#{news[:id]}", title: '查看新闻' do %>
-              <%= news[:type] %>
-              <%= news[:desc] %>
-              <%= image_tag(news[:cover]) %>
-              <%= news[:created_at].try(:strftime, '%Y-%m-%d') %>
-              <%= news[:name] %>
+<div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="news-list">
+    <div class="top">
+      新闻
+    </div>
+    <div class="middle">
+      <% if @news_array.present? %>
+          <% @news_array.each do |news| %>
+              <div class="news-item col-sm-4">
+                <div class="news-box">
+                  <%= link_to "/news/#{news[:id]}", title: '查看新闻' do %>
+                      <div class="img-box">
+                        <%= image_tag(news[:cover]) %>
+                      </div>
+                      <div class="info">
+                        <div class="tag">
+                          <%= news[:type] %>
+                        </div>
+                        <div class="ct">
+                          <%= news[:created_at].try(:strftime, '%Y-%m-%d') %>
+                        </div>
+                      </div>
+                      <div class="title">
+                        <%= news[:name] %>
+                      </div>
+                      <div class="dec">
+                        <%= news[:desc] %>
+                      </div>
+                  <% end %>
+                </div>
+              </div>
           <% end %>
-          <br>
+      <% else %>
+          <p>暂无新闻</p>
       <% end %>
-  <% else %>
-      <p>暂无新闻</p>
-  <% end %>
-  <%= paginate @news %>
+      <%= paginate @news %>
+    </div>
+  </div>
 </div>
 
 

@@ -2,6 +2,9 @@
     <%= f.error_notification %>
     <% if @competition.errors.any? %>
         <div id="error_explanation">
+          <% if @competition.errors[:cover].present? %>
+              <div class="alert alert-danger">封面:<%= @competition.errors[:cover].first %></div>
+          <% end %>
           <% @competition.errors[:apply_end_time].each do |msg| %>
               <div class="alert alert-danger"><%= msg %></div>
           <% end %>
@@ -29,6 +32,19 @@
       <%= f.input :apply_require %>
       <%= f.input :apply_method %>
       <%= f.input :reward_method %>
+      <% if @competition.cover.present? %>
+          <div class="form-group">
+            <%= image_tag(@competition.cover_url(:middle), class: 'img-thumbnail') %>
+          </div>
+      <% end %>
+      <div class="form-group">
+        <label class="text required control-label" for="competitions_cover">
+          <abbr title="必填字段">*</abbr>
+          封面
+        </label>
+        <%= f.file_field :cover %>
+        <p class="help-block">格式：jpg jpeg gif png</p>
+      </div>
       <%= f.input :description %>
 
       <%= f.input :status, collection: Competition::STATUS, prompt: 1 %>

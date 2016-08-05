@@ -212,6 +212,20 @@ $(function () {
             }
         });
     });
+
+    // 选择队伍状态
+    $('#select-team-status').on('change', function () {
+        var event_id = $('.event-id').text();
+        var status = $(this).val();
+        var status_params;
+        if (status == '') {
+            status_params = ''
+        } else {
+            status_params = '&status=' + status
+        }
+        window.location = '/admin/events/teams?id=' + event_id + status_params;
+    });
+
     // 编辑赛程评分／对抗
     $(".edit-event-schedule-submit").on('click', function (e) {
         e.preventDefault();
@@ -238,6 +252,29 @@ $(function () {
             }
         });
     });
+    $('.dd').nestable();
+    var max_num = $('.team-max-num').text();
+    if (max_num == 1) {
+        $('.event-team').slimScroll({
+            height: '42px',
+            alwaysVisible: true
+        });
+    } else if (max_num == 2) {
+        $('.event-team').slimScroll({
+            height: '85px',
+            alwaysVisible: true
+        });
+    } else if (max_num == 3) {
+        $('.event-team').slimScroll({
+            height: '123px',
+            alwaysVisible: true
+        });
+    } else {
+        $('.event-team').slimScroll({
+            height: '163px',
+            alwaysVisible: true
+        });
+    }
 });
 function trim(str) {
     return str.replace(/(^\s*)|(\s*$)/g, "");

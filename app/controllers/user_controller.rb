@@ -296,6 +296,7 @@ class UserController < ApplicationController
     comp_id = params[:com]
     ed = params[:ed]
     school_id = params[:s]
+    status = params[:status]
     teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
     if teacher_info.present?
       if comp_id.present?
@@ -304,9 +305,25 @@ class UserController < ApplicationController
           students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select('team_user_ships.grade', 'teams.id as team_id', 'team_user_ships.user_id', 'teams.user_id as leader_user_id', 'teams.group', 'teams.identifier ', 'events.name as event_name', ' u_p.username ', ' u_p.gender ', ' users.nickname ').order('teams.group asc, teams.id, team_user_ships.id asc'); false
 
           if teacher_info.role_type == 2
-            students = students.where('teams.status=?', 3).where('teams.district_id=?', teacher_info.district_id)
+            case status
+              when '0' then
+                students = students.where('teams.status=?', -3)
+              when '1' then
+                students = students.where('teams.status=?', 1)
+              else
+                students = students.where('teams.status=?', 3)
+            end
+            students = students.where('teams.district_id=?', teacher_info.district_id)
           elsif teacher_info.role_type == 3
-            students = students.where('teams.status=?', 2).where('teams.school_id=?', teacher_info.school_id)
+            case status
+              when '0' then
+                students = students.where('teams.status=?', -2)
+              when '1' then
+                students = students.where('teams.status=?', 3)
+              else
+                students = students.where('teams.status=?', 2)
+            end
+            students = students.where('teams.school_id=?', teacher_info.school_id)
           end
           if ed.present? && (ed.to_i !=0)
             students = students.where('teams.event_id = ?', ed)
@@ -532,9 +549,9 @@ class UserController < ApplicationController
     @consults = Consult.where(user_id: current_user.id).all.order('id asc')
   end
 
-  # def point
-  #   @user_points = UserPoint.joins(:prize).where(user_id: current_user.id).select(:id, :is_audit, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize')
-  # end
+  def point
+    # @user_points = UserPoint.joins(:prize).where(user_id: current_user.id).select(:id, :is_audit, 'prizes.name', 'prizes.host_year', 'prizes.point', 'prizes.prize')
+  end
 
   # def add_point
   #   @point = current_user.user_points.build

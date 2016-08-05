@@ -8,6 +8,7 @@ class Competition < ApplicationRecord
   validates :name, presence: true, length: {maximum: 60}, uniqueness: true
   validates :host_year, presence: true, inclusion: {in: ['2016', '2017']}
   validates :aim, presence: true, length: {minimum: 5}
+  validates :cover, presence: true
   validates :organizing_committee, presence: true, length: {minimum: 5}
   validates :date_schedule, presence: true, length: {minimum: 5}
   validates :apply_require, presence: true, length: {minimum: 5}
@@ -16,6 +17,7 @@ class Competition < ApplicationRecord
   validates :status, presence: true
   mount_uploader :time_schedule, CompPdfUploader
   mount_uploader :detail_rule, CompPdfUploader
+  mount_uploader :cover, CoverUploader
   STATUS = {
       待显示: 0,
       显示: 1,

@@ -62,7 +62,7 @@
           <li><a href="<%= courses_index_path %>">课程</a></li>
           <li><a class="" href="<%= competitions_path %>">比赛</a></li>
           <li><a class="un-do" href="">荣誉榜</a></li>
-          <li><a class="un-do" href="">活动</a></li>
+          <li><a href="<%= activities_path %>">活动</a></li>
           <li><a class="" href="/demeanor">风采</a></li>
           <li><a class="un-do" href="">下载</a></li>
         </ul>
@@ -72,18 +72,7 @@
 </div>
 <div id="bs-pg" data-bk="<%= image_path('bs-pagebk.png') %>"></div>
 
-<div id="flash" class="modal fade">
-  <div class="notify-b">
-    <div class="title">
-      通知
-      <i data-dismiss="modal" class="close-flash glyphicon glyphicon-remove-circle"></i>
-    </div>
-    <div class="content">
-    </div>
-  </div>
-</div>
-
-<div class="remodal" data-remodal-id="modal"
+<div id="flash" class="remodal" data-remodal-id="modal"
      data-remodal-options="hashTracking: false, closeOnOutsideClick: false">
 
   <button data-remodal-action="close" class="remodal-close"></button>
@@ -100,8 +89,8 @@
 
 <script type="text/javascript">
     function alert_r(msg, cb, param) {
-        $('.remodal').find('.content').text(msg);
-        $('.remodal').remodal().open();
+        $('#flash').find('.content').text(msg);
+        $('#flash').remodal().open();
         $(document).on('closed', '.remodal', function () {
             if (cb) {
                 if (param) {

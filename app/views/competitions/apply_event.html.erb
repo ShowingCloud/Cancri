@@ -35,6 +35,7 @@
                       <p>邀请队友</p>
                       <input type="text" class="search-player-input input-robodou" value=""/>
                       <button id="search-player" class="btn btn-sm ">搜索队员</button>
+                      <span class="tips">未完善个人资料、未注册的用户无法添加</span>
                       <table class="table table-player-show hide">
                         <thead>
                         <tr>
@@ -156,7 +157,7 @@
                         <label for="school_name" class="col-sm-2 control-label">学校</label>
 
                         <div class="col-sm-9 special-row school-field">
-                          <% if @user_info.school_id.present? %>
+                          <% if @user_info.school_name.present? %>
                               <span class="change-school school-tag"><%= @user_info.school_name %> </span>
                           <% else %>
                               <button class="new-school btn-robodou school-tag">选择学校</button>
@@ -164,10 +165,22 @@
                         </div>
                       </div>
                       <div class="form-group">
+                        <label for="team-group" class="col-sm-2 control-label">队伍组别</label>
+
+                        <div class="col-sm-9">
+                          <select id="team-group" class="form-control">
+                            <option value="">请选择组别</option>
+                            <% @event.group.split(',').each do |g| %>
+                                <option value="<%= g %>"><%= t('group.group'+g.to_s) %></option>
+                            <% end %>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
                         <label for="grade" class="col-sm-2 control-label">年级</label>
 
                         <div class="col-sm-9">
-                          <select id="grade" class="form-control">
+                          <select id="grade" class="form-control" disabled="disabled">
                             <option value="0">请选择年级</option>
                             <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
                             <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
@@ -184,7 +197,7 @@
                           </select>
                         </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group identity-group hide">
                         <label for="identity_card" class="col-sm-2 control-label">身份证</label>
 
                         <div class="col-sm-9">
@@ -196,18 +209,6 @@
 
                         <div class="col-sm-9">
                           <input type="text" class="form-control" id="student_code" value="<%= @user_info.student_code %>">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="team-group" class="col-sm-2 control-label">队伍组别</label>
-
-                        <div class="col-sm-9">
-                          <select id="team-group" class="form-control">
-                            <option value="">请选择组别</option>
-                            <% @event.group.split(',').each do |g| %>
-                                <option value="<%= g %>"><%= t('group.group'+g.to_s) %></option>
-                            <% end %>
-                          </select>
                         </div>
                       </div>
                       <div class="form-group">
