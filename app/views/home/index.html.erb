@@ -26,26 +26,47 @@
             </a>
           </div>
         </div>
-        <div id="comps">
-          <div class="col-sm-4 col-xs-12">
-            <div class="comp">
-              <img src="<%= image_path('qd.jpg') %>" alt="">
+        <div class="banner-info">
 
-              <p>敬请期待</p>
+        </div>
+
+        <div id="board" class="board-inner">
+          <div class="row">
+            <div class="col-sm-4">
+              <a href="">
+                <div class="board-item" data-src="<%= image_path('board-bk.png') %>">
+                  <div class="sec-t">
+                    个人积分
+                  </div>
+                  <div class="sec-c">
+                    敬请期待
+                  </div>
+                </div>
+              </a>
             </div>
-          </div>
-          <div class="col-sm-4 col-xs-12">
-            <div class="comp">
-              <img src="<%= image_path('qd.jpg') %>" alt="">
-
-              <p>敬请期待</p>
+            <div class="col-sm-4">
+              <a href="">
+                <div class="board-item" data-src="<%= image_path('board-bk.png') %>">
+                  <div class="sec-t">
+                    学校积分
+                  </div>
+                  <div class="sec-c">
+                    敬请期待
+                  </div>
+                </div>
+              </a>
             </div>
-          </div>
-          <div class="col-sm-4 col-xs-12">
-            <div class="comp">
-              <img src="<%= image_path('qd.jpg') %>" alt="暂无比赛敬请期待">
-
-              <p>敬请期待</p>
+            <div class="col-sm-4">
+              <a href="">
+                <div class="board-item" data-src="<%= image_path('board-bk.png') %>">
+                  <div class="sec-t">
+                    老师积分
+                  </div>
+                  <div class="sec-c">
+                    敬请期待
+                  </div>
+                </div>
+              </a>
             </div>
           </div>
         </div>
@@ -56,33 +77,25 @@
             近期比赛&活动
           </div>
           <div class="s-middle">
-            <a href="">
+            <% @competition.each do |c| %>
+                <a href="/competitions/<%= c.id %>">
+                  <div class="s-item">
+                    <div class="s-item-img">
+                      <img src="<%= image_path(c.cover) %>" alt=""/>
+                    </div>
+                    <div class="s-item-dec">
+                      <%= c.name %>
+                    </div>
+                  </div>
+                </a>
+            <% end %>
+            <a href="/activities/<%= @activity.id %>">
               <div class="s-item">
                 <div class="s-item-img">
-                  <img src="<%= image_path('sider-1.png') %>" alt=""/>
+                  <img src="<%= image_path(@activity.cover) %>" alt=""/>
                 </div>
                 <div class="s-item-dec">
-                  西南位育杯
-                </div>
-              </div>
-            </a>
-            <a href="">
-              <div class="s-item">
-                <div class="s-item-img">
-                  <img src="<%= image_path('sider-2.png') %>" alt=""/>
-                </div>
-                <div class="s-item-dec">
-                  创客新星
-                </div>
-              </div>
-            </a>
-            <a href="">
-              <div class="s-item">
-                <div class="s-item-img">
-                  <img src="<%= image_path('sider-3.png') %>" alt=""/>
-                </div>
-                <div class="s-item-dec">
-                  亲子活动
+                  <%= @activity.name %>
                 </div>
               </div>
             </a>
