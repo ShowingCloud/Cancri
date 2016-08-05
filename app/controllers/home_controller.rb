@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   def index
-    @competition = Competition.where.not(status: 0).limit(2)
+    @competition = Competition.where.not(status: 0).order('id asc').limit(2)
     @activity = Activity.where(status: 1).last
   end
 
