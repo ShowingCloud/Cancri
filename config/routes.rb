@@ -61,6 +61,7 @@ Rails.application.routes.draw do
     end
   end
   resources :notifications
+  get '/downloads', to: 'downloads#index'
   namespace :kindeditor do
     post '/upload' => 'assets#create'
     get '/filemanager' => 'assets#list'
