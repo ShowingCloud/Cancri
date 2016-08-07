@@ -136,7 +136,7 @@ class UserController < ApplicationController
         when 'competition' then
           @apply_info = @apply_info = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where(user_id: current_user.id).select('up.username', 'up.grade', 'up.bj', 'up.student_code', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.last_score').page(params[:page]).per(params[:per])
         when 'activity' then
-          @apply_info = []
+          @apply_info = ActivityUserShip.joins(:activity).left_joins(:school).where(user_id: current_user.id).select(:id, :has_join, 'schools.name as school_name', 'activity_user_ships.grade', 'activities.*').page(params[:page]).per(params[:per])
         else
           render_optional_error(404)
       end
