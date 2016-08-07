@@ -1960,3 +1960,83 @@ select {
   }
 
 }
+
+#download {
+
+}
+
+#download .download .title {
+  font-size: 36px;
+  color: #FFFFFF;
+  text-align: center;
+  padding-top: 10px;
+}
+
+#download .download {
+  height: 700px;
+  background: transparent center center no-repeat;
+  margin: 40px auto;
+}
+
+#download .download .download-inner {
+  margin: 0 auto;
+  padding: 80px 0 0;
+  width: 830px;
+  text-align: center;
+}
+
+#download .download .download-inner .select-front {
+  border-bottom: 2px solid #88D5EC;
+}
+
+#download .download .bottom {
+  text-align: center;
+  padding-top: 20px;
+}
+
+.btn-download {
+  border: 1px solid #88D5EC;
+  color: #88D5EC;
+  padding: 4px 16px;
+  font-size: 18px;
+  background: transparent;
+  border-radius: 5px;
+}
+
+#download .download .download-inner .download-item {
+  width: 228px;
+  height: 167px;
+  margin: 30px 15px 30px;
+  color: #88D5EC;
+  display: inline-block;
+  visibility: hidden;
+}
+
+#download .download .download-inner .download-item.active {
+  visibility: visible;
+}
+
+#download .download .download-inner .download-item .sec-t {
+  float: left;
+  width: 88px;
+  margin-top: 50px;
+}
+
+#download .download .download-inner .download-item .sec-t i {
+  font-size: 44px;
+  margin-top: 20px;
+}
+
+#download .download .download-inner .download-item .sec-c {
+  margin-left: 90px;
+  margin-top: 70px;
+  font-size: 14px;
+}
+
+#download .download .download-inner .download-item .sec-c select {
+  width: 120px;
+  background: #376A92;
+  border: none;
+  outline: none;
+  color: #88D5EC;
+}

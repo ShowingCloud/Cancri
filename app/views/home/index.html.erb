@@ -77,28 +77,32 @@
             近期比赛&活动
           </div>
           <div class="s-middle">
-            <% @competition.each do |c| %>
-                <a href="/competitions/<%= c.id %>">
+            <% if @competition.present? %>
+                <% @competition.each do |c| %>
+                    <a href="/competitions/<%= c.id %>">
+                      <div class="s-item">
+                        <div class="s-item-img">
+                          <img src="<%= image_path(c.cover) %>" alt=""/>
+                        </div>
+                        <div class="s-item-dec">
+                          <%= c.name %>
+                        </div>
+                      </div>
+                    </a>
+                <% end %>
+            <% end %>
+            <% if @activity.present? %>
+                <a href="/activities/<%= @activity.id %>">
                   <div class="s-item">
                     <div class="s-item-img">
-                      <img src="<%= image_path(c.cover) %>" alt=""/>
+                      <img src="<%= image_path(@activity.cover) %>" alt=""/>
                     </div>
                     <div class="s-item-dec">
-                      <%= c.name %>
+                      <%= @activity.name %>
                     </div>
                   </div>
                 </a>
             <% end %>
-            <a href="/activities/<%= @activity.id %>">
-              <div class="s-item">
-                <div class="s-item-img">
-                  <img src="<%= image_path(@activity.cover) %>" alt=""/>
-                </div>
-                <div class="s-item-dec">
-                  <%= @activity.name %>
-                </div>
-              </div>
-            </a>
           </div>
         </div>
       </div>
