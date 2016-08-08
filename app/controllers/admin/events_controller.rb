@@ -8,21 +8,25 @@ class Admin::EventsController < AdminController
   # GET /admin/events
   # GET /admin/events.json
   def index
-    events = Event.includes(:parent_event, :competition).order('competition_id desc,is_father desc, parent_id'); false
+    events = Event.includes(:parent_event).joins(:competition).order('competition_id desc,is_father desc, parent_id'); false
     if params[:field].present? && params[:keyword].present?
-      events = events.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"])
+      if params[:field] == 'competition'
+        events = events.where(["competitions.name like ?", "%#{params[:keyword]}%"])
+      else
+        events = events.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"])
+      end
     end
-    @events= events.page(params[:page]).per(params[:per])
+    @events= events.select('events.*', 'competitions.name as comp_name').page(params[:page]).per(params[:per])
 
     respond_to do |format|
       format.html
       format.xls {
-        data = @events.select(:id, :name, :is_father, :parent_id, :competition_id, :group, :team_min_num, :team_max_num).order('competition_id desc,is_father desc').map { |x| {
+        data = @events.order('competition_id desc,is_father desc').map { |x| {
+            所属比赛: x.comp_name,
             名称: x.name,
             组别名: x.is_father ? '是' : nil,
             包含组别: x.group.gsub(/[1-4]/, '1' => '小', '2' => '中', '3' => '初', '4' => '高'),
-            队伍最少人数: x.is_father ? nil : x.team_min_num,
-            队伍最多人数: x.is_father ? nil : x.team_max_num,
+            队伍允许人数: x.is_father ? nil : "#{x.team_min_num}"+"#{x.team_max_num>1 ? "-#{x.team_max_num}" : nil}",
         } }
         filename = "Event-Export-#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
         send_data(data.to_xls, :type => "text/xls;charset=utf-8,header=present", :filename => filename)
