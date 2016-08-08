@@ -1708,6 +1708,17 @@ select {
       text-align: left;
     }
   }
+  .submit-team {
+    button {
+      margin-bottom: 5px;
+    }
+    .tips {
+      color: #6699cc;
+      font-size: 12px;
+      text-align: center;
+      display: block;
+    }
+  }
 }
 
 #accept-invite {
@@ -1751,7 +1762,19 @@ select {
     margin-bottom: 10px;
     padding: 10px;
     .item-title {
+      position: relative;
       margin-bottom: 10px;
+      .selected-div {
+        height: 24px;
+        position: absolute;
+        right: 10px;
+        text-align: center;
+        top: 4px;
+        width: 24px;
+        border: 1px solid #fff;
+        border-radius: 50%;
+        cursor: pointer;
+      }
     }
     .item-table {
       font-size: 12px;
@@ -1855,19 +1878,27 @@ select {
 #news-show {
   color: #fff;
   overflow: hidden;
-  .text-center {
-    padding: 10px 0;
-    border-bottom: 1px solid #fff;
-  }
-  .tags {
-    color: #6699cc;
-    margin-bottom: 20px;
-  }
-  .images {
-    text-align: center;
-  }
-  .cover {
-    max-width: 800px;
+
+  .news-content {
+    width: 840px;
+    margin: 50px auto;
+    .news-content-image {
+      background: transparent no-repeat center center;
+      text-align: center;
+      width: 840px;
+      height: 460px;
+      margin: 0 auto;
+      padding-top: 30px;
+      overflow: hidden;
+      img {
+        width: 700px;
+        height: 400px;
+      }
+    }
+    .news-content-tags {
+      color: #6699cc;
+      border-bottom: 1px solid #6699cc;
+    }
   }
 }
 

@@ -91,6 +91,7 @@
               <% if (current_user.id == @team_players.first.leader_user_id) && (@team_players.first.team_status==0) %>
                   <div class="submit-team">
                     <button class="btn-robodou btn-big leader_submit_team" onclick="leader_submit_team(<%= @team_players.first.team_id %>,<%= @event.competition_id %>)">提交报名</button>
+                    <span class="tips">请于报名时间截止前提交报名信息，否则视为未报名</span>
                   </div>
               <% end %>
             </div>
@@ -100,15 +101,15 @@
                 <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
                 <input type="hidden" id="gender" value="<%= @user_info.gender.to_i %>"/>
 
-                <div class="first-step">
-                  <div id="step-for-new" class="box">
-                    <div class="msg">创建队伍</div>
-                    <div class="new-team-icon">
-                      <i class="glyphicon glyphicon-plus first"></i>
-                      <i class="glyphicon glyphicon-user second"></i>
-                    </div>
-                  </div>
-                  <% if @event.team_max_num != 1 %>
+                <% if @event.team_max_num != 1 %>
+                    <div class="first-step">
+                      <div id="step-for-new" class="box">
+                        <div class="msg">创建队伍</div>
+                        <div class="new-team-icon">
+                          <i class="glyphicon glyphicon-plus first"></i>
+                          <i class="glyphicon glyphicon-user second"></i>
+                        </div>
+                      </div>
                       <div id="step-for-join" class="box">
                         <div class="msg">加入队伍</div>
                         <div class="team-icon">
@@ -117,9 +118,9 @@
                           <i class="glyphicon glyphicon-user third"></i>
                         </div>
                       </div>
-                  <% end %>
-                </div>
-                <div id="step-for-update" class="step-part hide">
+                    </div>
+                <% end %>
+                <div id="step-for-update" class="step-part <%= 'hide' if @event.team_max_num != 1 %>">
                   <div class="step-head">创建队伍</div>
                   <div class="form-horizontal">
                     <form>

@@ -8,7 +8,7 @@
           <div class="comp-item">
             <a href="<%= competition_path(c) %>">
               <div class="item-box">
-                <img src="" alt=""/>
+                <%= image_tag(c.cover) %>
                 <div class="shade">
                   <p><%= c.name %></p>
                 </div>
