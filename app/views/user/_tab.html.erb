@@ -37,17 +37,17 @@
   <% end %>
   <% if @action_apply_array.include?(action_name) %>
       <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>">
-        <div class="sub-menu-item active">
+        <div class="sub-menu-item <%= 'active' if !params[:type].present? %> ">
           课程
         </div>
       </a>
       <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>?type=competition">
-        <div class="sub-menu-item active">
+        <div class="sub-menu-item <%= 'active' if params[:type]=='competition' %>">
           比赛
         </div>
       </a>
       <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>?type=activity">
-        <div class="sub-menu-item active">
+        <div class="sub-menu-item <%= 'active' if params[:type]=='activity' %>">
           活动
         </div>
       </a>
