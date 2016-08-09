@@ -618,6 +618,7 @@ $(function () {
                 var school_id = $('#school-id').val();
                 var birthday = $('#birthday').val();
                 var grade = $('#grade').val();
+                var mobile = $('#mobile').val();
 
                 var option = {
                     url: '/activities/apply_activity',
@@ -628,7 +629,8 @@ $(function () {
                         district: district_id,
                         birthday: birthday,
                         grade: grade,
-                        act_d: _id
+                        act_d: _id,
+                        mobile: mobile
                     },
                     success: function (result) {
                         if (result[0]) {
@@ -651,6 +653,7 @@ $(function () {
             var comp = space.find('.comp-sel');
             var es = space.find('.event-sel');
             var sta = space.find('.status-sel');
+            var sub = space.find('.submit-team-many');
 
             comp.on('change', {space: space}, function (event) {
                 event.preventDefault();
@@ -717,6 +720,42 @@ $(function () {
                     console.log(status);
                     student_control_handle(com, val, status, _space)
                 }
+            });
+
+            sub.on('click', {space: space}, function (event) {
+                event.preventDefault();
+                var data = event.data;
+                var space = data.space;
+                var l = space.find('.team-item').length;
+
+                if (l < 1) {
+                    alert_r('请先选择比赛与项目！');
+                } else {
+                    var c = space.find('.selected-mark');
+                    var arr = [];
+                    var cd = c.parents('.team-iten').attr('data-cd');
+                    $.each(c, function (k, v) {
+                        var t = $(v);
+                        if (t.prop('checked')) {
+                            arr.push(t.parents('.team-iten').attr('data-td'));
+                        }
+                    });
+
+                    var url = '/competitions/district_submit_teams';
+                    var option = {
+                        url: url,
+                        type: 'post',
+                        data: {tds: arr, comd: cd},
+                        success: function (result) {
+                            if (result[0]) {
+                                alert_r('批量操作成功');
+                            } else {
+                                alert_r(result[1]);
+                            }
+                        }
+                    };
+                    ajax_handle(option);
+                }
             })
         }
 
@@ -764,6 +803,7 @@ $(function () {
                             '<div class="label label-info">' +
                             '队伍编号：' + k +
                             '</div>' +
+                            '<div class="selected-div "><input class="selected-mark" type="checkbox"></div>' +
                             '</div>' +
                             '<div class="item-table">' +
                             '队员列表' +
