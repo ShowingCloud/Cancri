@@ -7,7 +7,7 @@ class CompetitionsController < ApplicationController
     if params[:host_year].present?
       competitions = competitions.where(host_year: params[:host_year])
     end
-    @competitions = competitions.select(:id, :name).order('id desc').page(params[:page]).per(params[:per])
+    @competitions = competitions.select(:id, :name, :cover).order('id desc').page(params[:page]).per(params[:per])
   end
 
   def show
