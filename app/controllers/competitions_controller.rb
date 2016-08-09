@@ -112,7 +112,7 @@ class CompetitionsController < ApplicationController
     ed = params[:team_event]
 
 
-    if school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present? && teacher.present? && teacher_mobile.present? && group.present?
+    if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present? && teacher.present? && teacher_mobile.present? && group.present?
       if has_teacher_role
         result = [false, ' 不规范请求 ']
       else
