@@ -454,6 +454,35 @@ $(function () {
             var td = $('#team-id').val();
             var ed = $('#event-id').val();
 
+            if (username.length < 1) {
+                alert_r('请填写姓名！');
+                return false;
+            }
+            if (gender.length < 1) {
+                alert_r('请选择性别！');
+                return false;
+            }
+            if (birthday.length < 1) {
+                alert_r('请填写生日！');
+                return false;
+            }
+            if (school_id.length < 1) {
+                alert_r('请选择学校！');
+                return false;
+            }
+            if (student_code.length < 1) {
+                alert_r('请填写学籍号！');
+                return false;
+            }
+            if (grade.length < 1) {
+                alert_r('请选择年级！');
+                return false;
+            }
+            if (parseInt(grade) >= 10 && identity_card.length < 1) {
+                alert_r('由于您选择了高中年级，请填写身份证！');
+                return false;
+            }
+
             $.ajax({
                 url: '/competitions/player_agree_leader_invite',
                 type: 'post',
@@ -655,6 +684,50 @@ $(function () {
             var sta = space.find('.status-sel');
             var sub = space.find('.submit-team-many');
 
+            var s_sel = space.find('#select-school-by-dis');
+            if (s_sel.length > 0) {
+                var _s_sel = s_sel;
+                var option = {
+                    url: '/user/get_schools',
+                    type: 'get',
+                    dataType: 'json',
+                    data: {district_id: space.find('.teacher-info').attr('data-district-id')},
+                    success: function (result) {
+                        if (result.length > 0) {
+                            $.each(result, function (k, v) {
+                                var id = v.id;
+                                var name = v.name;
+                                var op = $('<option value="' + id + '">' + name + '</option>');
+                                _s_sel.append(op);
+                                _s_sel.addClass('active');
+                            });
+                        }
+                    },
+                    complete: function () {
+
+                    },
+                    error: function (error) {
+                        alert_r(error.responseText);
+                    }
+                };
+                ajax_handle(option);
+            }
+
+            s_sel.on('change', {space: space}, function (event) {
+                event.preventDefault();
+                var data = event.data;
+                var space = data.space;
+                var _self = $(this);
+                var val = _self.val();
+                var com = space.find('.comp-sel').val();
+                var ed = space.find('.event-sel').val();
+                var status = space.find('.status-sel').val();
+                var _space = space;
+                if (_self.hasClass('active') && val != -1) {
+                    student_control_handle(com, ed, status, _space, val);
+                }
+            });
+
             comp.on('change', {space: space}, function (event) {
                 event.preventDefault();
                 var data = event.data;
@@ -691,16 +764,16 @@ $(function () {
                 event.preventDefault();
                 var data = event.data;
                 var space = data.space;
-                var comp = space.find('.comp-sel');
                 var _self = $(this);
                 var val = _self.val();
-                var com = comp.val();
-                var _space = space;
+                var com = space.find('.comp-sel').val();
+                var sd = space.find('#select-school-by-dis').val();
                 var status = space.find('.status-sel').val();
+                var _space = space;
                 _space.find('.team-list').empty();
                 _space.find('.comp-info').empty();
                 if (_self.hasClass('active') && val != -1) {
-                    student_control_handle(com, val, status, _space)
+                    student_control_handle(com, val, status, _space, sd);
                 }
             });
 
@@ -708,17 +781,16 @@ $(function () {
                 event.preventDefault();
                 var data = event.data;
                 var space = data.space;
-                var comp = space.find('.comp-sel');
                 var _self = $(this);
                 var val = _self.val();
-                var com = comp.val();
+                var com = space.find('.comp-sel').val();
+                var ed = space.find('.event-sel').val();
+                var sd = space.find('#select-school-by-dis').val();
                 var _space = space;
-                var status = space.find('.status-sel').val();
                 _space.find('.team-list').empty();
                 _space.find('.comp-info').empty();
                 if (_self.hasClass('active') && val != -1) {
-                    console.log(status);
-                    student_control_handle(com, val, status, _space)
+                    student_control_handle(com, ed, val, _space, sd)
                 }
             });
 
@@ -729,7 +801,7 @@ $(function () {
                 var l = space.find('.team-item').length;
 
                 if (l < 1) {
-                    alert_r('请先选择比赛与项目！');
+                    alert_r('请先选择队伍！');
                 } else {
                     var c = space.find('.selected-mark');
                     var arr = [];
@@ -759,10 +831,13 @@ $(function () {
             })
         }
 
-        function student_control_handle(com, val, status, _space) {
-            var data = {com: com, ed: val};
+        function student_control_handle(com, ed, status, _space, s_id) {
+            var data = {com: com, ed: ed};
             if (status != 100) {
                 data['status'] = status;
+            }
+            if (s_id != 0) {
+                data['s'] = s_id;
             }
             var option = {
                 url: '/user/get_comp_students',
