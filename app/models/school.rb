@@ -1,6 +1,7 @@
 class School < ApplicationRecord
   has_many :user_profiles
   has_many :course_user_ships
+  has_many :activity_user_ships
   belongs_to :district
   has_many :teams
   has_many :team_user_ships

@@ -12,7 +12,22 @@
             <a href="<%= "/#{@user.nickname}" %>">比赛</a>
 
             <p>该用户之前参加的课程信息</p>
-            <%= @courses.length %>
+            <table class="table">
+              <tr>
+                <th>课程名称</th>
+                <th>课程时间</th>
+                <th>成绩</th>
+              </tr>
+              <% @courses.each do |c| %>
+                  <tr>
+                    <td><%= c.name %></td>
+                    <td><%= c.end_time.strftime('%Y-%m-%d') %></td>
+                    <td></td>
+                  </tr>
+
+              <% end %>
+            </table>
+
           </div>
         </div>
       </div>

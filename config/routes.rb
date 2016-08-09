@@ -61,6 +61,7 @@ Rails.application.routes.draw do
     end
   end
   resources :notifications
+  get '/downloads', to: 'downloads#index'
   namespace :kindeditor do
     post '/upload' => 'assets#create'
     get '/filemanager' => 'assets#list'
@@ -141,8 +142,17 @@ Rails.application.routes.draw do
     resources :schools
   end
 
+  namespace :api do
+    namespace :v1 do
+      resources :competitions
+      match '*path', via: :all, to: 'root#not_found'
+    end
+  end
+
   require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
+  authenticate :user, ->(u) { u.nickname=='001' } do
+    mount Sidekiq::Web => '/sidekiq'
+  end
 
   get 'user' => redirect('/user/preview')
   get '/:id', to: 'user#index'

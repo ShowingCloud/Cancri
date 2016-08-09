@@ -41,6 +41,16 @@
           课程
         </div>
       </a>
+      <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>?type=competition">
+        <div class="sub-menu-item active">
+          比赛
+        </div>
+      </a>
+      <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>?type=activity">
+        <div class="sub-menu-item active">
+          活动
+        </div>
+      </a>
   <% end %>
   <% if @action_student_manage.include?(action_name) %>
       <a href="<%= user_student_manage_path %>">

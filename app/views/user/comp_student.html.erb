@@ -17,6 +17,9 @@
                           您的身份：
                         </div>
                         <div data-role="<%= @teacher_info.role_type %>" class="label <%= @teacher_info.role_type==2 ? 'label-warning' : 'label-info' %>"><%= @teacher_info.role_type==2 ? '区级审核老师' : '校级审核老师' %></div>
+                        <% if @teacher_info.role_type==2 %>
+                            <button class="btn-robodou submit-team-many">提交名单</button>
+                        <% end %>
                       </div>
                   <% end %>
               <% end %>
@@ -33,6 +36,11 @@
                 <option value="0">请选择项目</option>
 
               </select>
+              <% if @teacher_info.role_type==2 %>
+                  <select id="select-school-by-dis" class="s-sel">
+                    <option value="0">请选择学校</option>
+                  </select>
+              <% end %>
               <select id="select-status" class="status-sel">
                 <option value="100">待审核</option>
                 <option value="0">未通过</option>

@@ -7,7 +7,7 @@ class CompetitionsController < ApplicationController
     if params[:host_year].present?
       competitions = competitions.where(host_year: params[:host_year])
     end
-    @competitions = competitions.select(:id, :name).order('id desc').page(params[:page]).per(params[:per])
+    @competitions = competitions.select(:id, :name, :cover).order('id desc').page(params[:page]).per(params[:per])
   end
 
   def show
@@ -112,7 +112,7 @@ class CompetitionsController < ApplicationController
     ed = params[:team_event]
 
 
-    if school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present? && teacher.present? && teacher_mobile.present? && group.present?
+    if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present? && teacher.present? && teacher_mobile.present? && group.present?
       if has_teacher_role
         result = [false, ' 不规范请求 ']
       else
@@ -294,13 +294,11 @@ class CompetitionsController < ApplicationController
       t_u = TeamUserShip.where(id: t_u_id).first
       if t_u.present?
         team_info = Event.joins(:competition).left_joins(:teams).where('teams.id=?', t_u.team_id).select(:name, 'competitions.apply_end_time', 'teams.user_id as leader_user_id', 'teams.status as team_status', 'teams.identifier').take
-        if team_info.present? && (team_info.apply_end_time > Time.now) && (team_info.team_status ==0) && (t_u.status==0) && (team_info.leader_user_id == current_user.id)
-
+        if team_info.present? && (team_info.apply_end_time > Time.now) && (team_info.team_status ==0) && (!t_u.status) && (team_info.leader_user_id == current_user.id)
           if reject.present? && reject=='1'
             Notification.create(user_id: t_u.user_id, content: team_info.name+'比赛项目中队伍'+team_info.identifier+'的队长拒绝了你的申请，您未能加入该队', message_type: 0)
             if t_u.destroy
               flash[:success] = '拒绝成功'
-              redirect_to "/user/notify?id=#{notification_id}"
             else
               flash[:error] = '拒绝失败'
             end
@@ -309,7 +307,6 @@ class CompetitionsController < ApplicationController
             if t_u.save
               flash[:success] = '接受成功'
               Notification.create(user_id: t_u.user_id, content: team_info.name+'比赛项目中'+team_info.identifier+'的队长同意了你的申请，您已成功加入了该队', message_type: 0)
-              redirect_to "/user/notify?id=#{params[:nd]}"
             else
               flash[:error] = '接受失败'
             end
@@ -321,6 +318,7 @@ class CompetitionsController < ApplicationController
         flash[:error] = '不规范请求'
       end
     end
+    redirect_to "/user/notify?id=#{notification_id}"
   end
 
   def school_refuse_teams

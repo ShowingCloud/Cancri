@@ -2,7 +2,7 @@ class ActivitiesController < ApplicationController
   before_action :authenticate_user!, :only => [:apply_activity, :apply_require]
 
   def index
-    @activities = Activity.all.page(params[:page]).per(params[:per])
+    @activities = Activity.where(status: 1).order('id desc').page(params[:page]).per(params[:per])
   end
 
   def show
