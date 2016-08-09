@@ -44,6 +44,7 @@
                       无
                   <% end %>
                 </p>
+
                 <p>
                   班级：
                   <% if @user_info.bj.present? %>
@@ -53,6 +54,14 @@
                   <% end %>
                 </p>
 
+                <p>
+                  学校：
+                  <% if @user_info.school.present? %>
+                      <%= @user_info.school %>
+                  <% else %>
+                      无
+                  <% end %>
+                </p>
 
                 <p>生日：<%= @user_info.birthday %></p>
 
