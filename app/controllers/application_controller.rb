@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
 
   def check_teacher_role(ud)
     if ud.to_i !=0
-      UserRole.where(role_id: 1, user_id: ud).exists?
+      UserRole.where(role_id: 1, user_id: ud, status: 1).exists?
     else
       false
     end
