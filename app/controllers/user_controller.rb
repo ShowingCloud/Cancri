@@ -1,16 +1,7 @@
 class UserController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_user, only: [:index, :courses]
+  before_action :set_user, only: [:competitions, :courses, :activities]
   before_action :is_teacher, only: [:programs, :program, :program_se, :create_program, :course_score]
-
-
-  def index
-    @competitions = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where(user_id: @user.id).select('up.username', 'up.grade', 'up.bj', 'up.student_code', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.last_score').page(params[:page]).per(params[:per])
-  end
-
-  def courses
-    @courses = CourseUserShip.joins(:course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where(user_id: @user.id).select(:score, 'up.username', 'up.grade', 'up.bj', 'up.student_code', 'courses.name', 'courses.end_time').page(params[:page]).per(params[:per])
-  end
 
   # 个人信息概览
   def preview
@@ -101,6 +92,18 @@ class UserController < ApplicationController
       end
       redirect_to user_profile_path
     end
+  end
+
+  def competitions
+    @competitions = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id').joins('left join competitions c on c.id = events.competition_id').where('c.end_time < ?', Time.now).where(user_id: @user.id, status: true).select('team_user_ships.grade', 'schools.name as school_name', 'up.username', 'up.bj', 'up.student_code', 'c.name as comp_name', 'c.organizing_committee', 'c.start_time', 'c.end_time', 'events.name as event_name', 'teams.identifier', 'teams.last_score').page(params[:page]).per(params[:per])
+  end
+
+  def courses
+    @courses = CourseUserShip.left_joins(:school, :course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where('courses.end_time < ?', Time.now).where(user_id: @user.id).select(:score, :grade, 'up.username', 'up.student_code', 'courses.name', 'courses.end_time', 'schools.name as school_name').page(params[:page]).per(params[:per])
+  end
+
+  def activities
+    @activities = ActivityUserShip.left_joins(:activity, :school).joins('left join user_profiles up on up.user_id = activity_user_ships.user_id').where('activities.end_time < ?', Time.now).where(user_id: @user.id).select(:score, :grade, :has_join, 'up.username', 'activities.name', 'activities.start_time', 'activities.end_time', 'schools.name as school_name').page(params[:page]).per(params[:per])
   end
 
   def family_hacker
@@ -750,10 +753,15 @@ class UserController < ApplicationController
 
   def set_user
     id = params[:id]
-    unless id.present? && id =~ /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/
-      render_optional_error(404)
+    if id.present?
+      if id =~ /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/
+        @user = User.find_by_nickname(id)
+      else
+        render_optional_error(404)
+      end
+    else
+      @user = current_user
     end
-    @user = User.find_by_nickname(id)
     unless @user
       render_optional_error(404)
     end

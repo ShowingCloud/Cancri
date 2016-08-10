@@ -1,0 +1,64 @@
+<h1 class="page-header">
+  <%= @activity.name %>报名列表
+  <small class="pull-right">
+    <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
+      <i class="icon-search icon-only"></i>
+    </a>
+  </small>
+</h1>
+<div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
+  <div class="widget-header widget-header-small">
+    <h5 class="lighter">搜索</h5>
+  </div>
+  <div class="widget-body">
+    <div class="widget-main">
+      <form class="form" role="form" method="get">
+        <div class="input-group" data-search="field">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+              <span data-search-text class="admin-search-field"><%= t('simple_form.labels.defaults.name') %></span>
+              <span class="caret"></span></button>
+            <ul class="dropdown-width dropdown-menu">
+              <li data-search-option="username"><a>姓名</a></li>
+              <li data-search-option="mobile"><a>手机</a></li>
+              <li data-search-option="school_name"><a>学校</a></li>
+            </ul>
+          </div>
+          <input type="hidden" name="field" value="<%= params[:field].present? ? params[:field] : 'username' %>"/>
+          <input placeholder="输入关键字，按回车键提交" value="<%= params[:keyword] %>" name="keyword" type="text" class="form-control" aria-label="...">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<table class="table table-bordered table-hover table-striped">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>姓名</th>
+    <th>手机号</th>
+    <th>学校</th>
+    <th>年级</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @users.each do |u| %>
+      <tr>
+        <td><%= u.id %></td>
+        <td><%= u.username %></td>
+        <td><%= u.mobile %></td>
+        <td><%= u.school_name %></td>
+        <td><%= u.grade %></td>
+        <td>打分</td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<nav>
+  <%= paginate @users %>
+</nav>
+

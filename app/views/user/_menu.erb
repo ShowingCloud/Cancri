@@ -28,7 +28,7 @@
         <%= has_teacher_role ? '项目管理' : '报名信息' %>
       </div>
     </a>
-    <a href="<%= has_teacher_role ? user_student_manage_path : "#" %>">
+    <a href="<%= has_teacher_role ? user_student_manage_path : '/user/competitions' %>">
       <div class="sidebar-item">
         <i class="glyphicon glyphicon-cog"></i>
         <%= has_teacher_role ? '学生管理' : '个人管理' %>
