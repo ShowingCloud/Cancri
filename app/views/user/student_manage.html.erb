@@ -32,7 +32,7 @@
                         <td><%= s.district_name %></td>
                         <td><%= s.school_name %></td>
                         <td><%= s.student_code %></td>
-                        <td><a href="<%= "/#{s.nickname}" %>">查看详情</a></td>
+                        <td><a href="<%= "/user/competitions?id=#{s.id}" %>">查看详情</a></td>
                       </tr>
                   <% end %>
                 </table>

@@ -16,14 +16,12 @@
                       <tr>
                         <th>课程名称</th>
                         <th>课程时间</th>
-                        <th>成绩</th>
                         <th>操作</th>
                       </tr>
                       <% @apply_info.each do |a| %>
-                          <tr >
+                          <tr>
                             <td><%= a.name %></td>
                             <td><%= a.end_time.strftime('%Y-%m-%d') %></td>
-                            <td></td>
                             <td data-id="<%= a.course_id %>"><%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.id}", class: 'btn-robodou btn-abort-lesson' do %>
                                   取消报名
                               <% end %></td>
@@ -41,14 +39,18 @@
                         <th>比赛名称</th>
                         <th>项目名称</th>
                         <th>比赛时间</th>
-                        <th>成绩</th>
+                        <th>下载</th>
                       </tr>
                       <% @apply_info.each do |a| %>
                           <tr>
                             <td><%= a.comp_name %></td>
                             <td><%= a.event_name %></td>
                             <td><%= a.start_time.strftime('%Y-%m-%d') %></td>
-                            <td></td>
+                            <td>
+                              <% if a.start_time>Time.now %>
+                                  <a href="<%= image_path('logo.png'); %>" download="download" class="">下载参赛证</a>
+                              <% end %>
+                            </td>
                           </tr>
                       <% end %>
                     </table>

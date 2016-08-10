@@ -2,6 +2,7 @@
 <% @action_notify_array = ['notification', 'notify_show'] %>
 <% @action_apply_array = ['apply', 'programs', 'program', 'create_program', 'program_se'] %>
 <% @action_student_manage = ['student_manage', 'comp_student'] %>
+<% @action_stu_info = ['competitions','courses','activities'] %>
 
 
 <div class="sidebar">
@@ -29,10 +30,9 @@
       </div>
     </a>
     <a href="<%= has_teacher_role ? user_student_manage_path : '/user/competitions' %>">
-      <div class="sidebar-item">
+      <div class="sidebar-item <%= 'active' if @action_stu_info.include?(action_name) %>">
         <i class="glyphicon glyphicon-cog"></i>
         <%= has_teacher_role ? '学生管理' : '个人管理' %>
-
       </div>
     </a>
     <a href="<%= user_notification_path %>">
