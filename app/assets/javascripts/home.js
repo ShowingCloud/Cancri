@@ -634,6 +634,17 @@ $(function () {
             var space = $('#activity-show');
             var go = space.find('.go-activity');
             var _id = space.attr('data-id');
+
+            //var mob_b = space.find('.activity-no-mobile');
+            //
+            //mob_b.on('click', function (event) {
+            //    event.preventDefault();
+            //    alert_r('请先验证手机', function () {
+            //        window.location.href = '/user/mobile';
+            //    })
+            //});
+
+
             go.on('click', function (event) {
                 event.preventDefault();
                 $('.content').removeClass('hide');

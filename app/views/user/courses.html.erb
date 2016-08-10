@@ -9,9 +9,7 @@
         <div class="user-main">
           <%= render 'user/tab' %>
           <div class="sub-content">
-            <a href="<%= "/#{@user.nickname}" %>">比赛</a>
-
-            <p>该用户之前参加的课程信息</p>
+            <p>参加课程的历史信息</p>
             <table class="table">
               <tr>
                 <th>课程名称</th>
@@ -24,10 +22,8 @@
                     <td><%= c.end_time.strftime('%Y-%m-%d') %></td>
                     <td></td>
                   </tr>
-
               <% end %>
             </table>
-
           </div>
         </div>
       </div>
