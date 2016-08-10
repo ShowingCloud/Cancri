@@ -1,4 +1,8 @@
 class Admin::ActivitiesController < AdminController
+
+  before_action do
+    authenticate_permissions(['admin', 'editor', 'super_admin'])
+  end
   before_action :set_activity, only: [:show, :edit, :update, :destroy, :users]
 
   # GET /admin/activities
@@ -38,6 +42,23 @@ class Admin::ActivitiesController < AdminController
       end
     end
     @users = users.select(:id, :user_id, :has_join, :score, 'u_p.username', 'users.mobile', 'schools.name as school_name', 'activity_user_ships.grade').order('school_name').page(params[:page]).per(params[:per])
+  end
+
+  def update_user_score
+    aud = params[:aud]
+    score = params[:score]
+    if aud.present? && score.present?
+      a_u = ActivityUserShip.find(aud)
+      a_u.score = score
+      if a_u.save
+        result = [true, '打分成功']
+      else
+        result = [false, '打分失败']
+      end
+    else
+      result = [false, '参数不完整']
+    end
+    render json: result
   end
 
   # POST /admin/activities

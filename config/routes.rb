@@ -134,6 +134,9 @@ Rails.application.routes.draw do
     resources :event_schedules
     resources :news
     resources :activities do
+      collection do
+        post :update_user_score
+      end
       member do
         get :users
       end
