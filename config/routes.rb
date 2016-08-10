@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       post :register_email_exists
       post :register_mobile_exists
       post :register_nickname_exists
+      get :require_add_mobile
     end
   end
   get '/demeanor' => 'demeanor#index'
@@ -132,7 +133,14 @@ Rails.application.routes.draw do
     end
     resources :event_schedules
     resources :news
-    resources :activities
+    resources :activities do
+      collection do
+        post :update_user_score
+      end
+      member do
+        get :users
+      end
+    end
     resources :news_types
     resources :volunteers
     resources :score_attributes
@@ -155,9 +163,10 @@ Rails.application.routes.draw do
   end
 
   get 'user' => redirect('/user/preview')
-  get '/:id', to: 'user#index'
-  get '/:id/courses', to: 'user#courses'
 
+  get '/user/competitions', to: 'user#competitions'
+  get '/user/courses', to: 'user#courses'
+  get '/user/activities', to: 'user#activities'
   match 'user/preview' => 'user#preview', as: 'user_preview', via: [:get, :post]
   get 'user/preview/:id' => 'user#preview'
   match 'user/profile' => 'user#profile', as: 'user_profile', via: [:get, :post]

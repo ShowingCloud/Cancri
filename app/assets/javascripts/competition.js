@@ -15,6 +15,48 @@ $(function () {
         var teacher_mobile = $('#team-teacher-mobile').val();
         var ed = $('#event-identify').val();
 
+        if (username.length < 1) {
+            alert_r('请填写姓名！');
+            return false;
+        }
+        if (gender.length < 1) {
+            alert_r('请选择性别！');
+            return false;
+        }
+        if (birthday.length < 1) {
+            alert_r('请填写生日！');
+            return false;
+        }
+        if (school_id.length < 1) {
+            alert_r('请选择学校！');
+            return false;
+        }
+        if (student_code.length < 1) {
+            alert_r('请填写学籍号！');
+            return false;
+        }
+        if (grade.length < 1) {
+            alert_r('请选择年级！');
+            return false;
+        }
+        if (team_group.length < 1) {
+            alert_r('请选择组别！');
+            return false;
+        }
+        if (team_group == 4 && identity_card.length < 1) {
+            alert_r('由于您选择了高中组，请填写身份证！');
+            return false;
+        }
+        if (team_teacher.length < 1) {
+            alert_r('请填写指导老师！');
+            return false;
+        }
+        if (teacher_mobile.length < 1) {
+            alert_r('请填写指导老师电话！');
+            return false;
+        }
+
+
         $.ajax({
             url: '/competitions/leader_create_team',
             type: 'post',
@@ -71,6 +113,35 @@ $(function () {
         var grade = $('#grade-join').val();
         var student_code = $('#student_code-join').val();
         var td = $('#join-team-id').val();
+
+        if (username.length < 1) {
+            alert_r('请填写姓名！');
+            return false;
+        }
+        if (gender.length < 1) {
+            alert_r('请选择性别！');
+            return false;
+        }
+        if (birthday.length < 1) {
+            alert_r('请填写生日！');
+            return false;
+        }
+        if (school_id.length < 1) {
+            alert_r('请选择学校！');
+            return false;
+        }
+        if (student_code.length < 1) {
+            alert_r('请填写学籍号！');
+            return false;
+        }
+        if (grade.length < 1) {
+            alert_r('请选择年级！');
+            return false;
+        }
+        if (parseInt(grade) >= 10 && identity_card.length < 1) {
+            alert_r('由于您选择了高中年级，请填写身份证！');
+            return false;
+        }
 
         $.ajax({
             url: '/competitions/apply_join_team',

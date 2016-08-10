@@ -1300,7 +1300,8 @@ select {
         overflow: hidden;
         cursor: pointer;
         .thumb {
-          width: 255px;
+          width: 100%;
+          height: 100%;
         }
       }
     }
@@ -1410,6 +1411,11 @@ select {
         border-radius: 15px;
         position: relative;
         overflow: hidden;
+        .cover{
+          width: 100%;
+          height: 100%;
+        }
+
         &:hover {
           .shade {
             bottom: 0;
@@ -1492,7 +1498,6 @@ select {
             background: rgba(30, 150, 200, 0.7);
           }
           .fold-head {
-
             padding: 10px 20px;
             text-align: left;
             cursor: pointer;
@@ -1504,6 +1509,7 @@ select {
           .fold-body {
             opacity: 0;
             display: none;
+            padding: 5px 0;
             &.active {
               opacity: 1;
               display: block;

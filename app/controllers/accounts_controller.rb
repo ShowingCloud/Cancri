@@ -20,6 +20,12 @@ class AccountsController < ApplicationController
     render json: result
   end
 
+  # 操作前需要添加手机
+  def require_add_mobile
+    session[:redirect_to] = request.headers[:Referer]
+    redirect_to user_mobile_path, notice: '操作前请添加手机'
+  end
+
   def register
     if current_user.present?
       redirect_to root_path

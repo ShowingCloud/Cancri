@@ -36,7 +36,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p>........................................................</p>
+              <p><%= @competition.aim %></p>
             </div>
           </div>
           <div class="section-fold even">
@@ -45,11 +45,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p>......</p>
-
-              <p>....</p>
-
-              <p>.....</p>
+              <p><%= @competition.organizing_committee %></p>
             </div>
           </div>
           <div class="section-fold">
@@ -58,11 +54,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p>......</p>
-
-              <p>....</p>
-
-              <p>.....</p>
+              <p><%= @competition.date_schedule %></p>
             </div>
           </div>
         </div>
@@ -74,37 +66,29 @@
         <div class="section-content">
           <div class="section-fold">
             <div class="fold-head">
-              比赛宗旨
+              参赛要求
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p>........................................................</p>
+              <p><%= @competition.apply_require %></p>
             </div>
           </div>
           <div class="section-fold even">
             <div class="fold-head">
-              大赛组委会
+              奖励方法
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p>......</p>
-
-              <p>....</p>
-
-              <p>.....</p>
+              <p><%= @competition.reward_method %></p>
             </div>
           </div>
           <div class="section-fold">
             <div class="fold-head">
-              日程安排
+              参赛方法
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p>......</p>
-
-              <p>....</p>
-
-              <p>.....</p>
+              <p><%= @competition.apply_method %></p>
             </div>
           </div>
         </div>

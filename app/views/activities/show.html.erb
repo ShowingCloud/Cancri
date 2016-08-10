@@ -34,7 +34,7 @@
                               <label for="mobile" class="col-sm-2 control-label">手机</label>
 
                               <div class="col-sm-9">
-                                <input type="text" class="form-control" id="mobile" value="<%= @user_info.mobile %>" placeholder="手机">
+                                <input type="text" class="form-control" id="mobile" disabled="disabled" value="<%= @user_info.mobile %>" placeholder="手机">
                               </div>
                             </div>
                             <div class="form-group">
@@ -86,8 +86,7 @@
                           </form>
                         </div>
                     <% else %>
-                        <!-- 请验证手机 -->
-                        <button class="btn btn-primary">报名参加</button>
+                        <a href="<%= require_add_mobile_accounts_path %>">报名参加</a>
                     <% end %>
                 <% else %>
                     <a class="btn btn-primary" href="<%= "#{apply_require_activities_path}?id=#{@activity.id}" %>">报名参加</a>

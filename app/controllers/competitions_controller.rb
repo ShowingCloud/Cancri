@@ -3,9 +3,10 @@ class CompetitionsController < ApplicationController
   before_action :set_competition, only: [:show]
 
   def index
+    host_year = params[:host_year]
     competitions = Competition.where.not(status: 0); false
-    if params[:host_year].present?
-      competitions = competitions.where(host_year: params[:host_year])
+    if host_year.present?
+      competitions = competitions.where(host_year: host_year)
     end
     @competitions = competitions.select(:id, :name, :cover).order('id desc').page(params[:page]).per(params[:per])
   end
@@ -18,10 +19,12 @@ class CompetitionsController < ApplicationController
   end
 
   def apply_event
+    event_id = params[:ed]
     if require_mobile
-      @event = Event.joins(:competition).where(id: params[:ed]).select('events.*', 'competitions.name as comp_name', 'competitions.apply_end_time as end_apply_time').take
+      current_user_id = current_user.id
+      @event = Event.joins(:competition).where(id: event_id).select('events.*', 'competitions.name as comp_name', 'competitions.apply_end_time as end_apply_time').take
       if @event.present?
-        a_p = TeamUserShip.where(event_id: params[:ed], user_id: current_user.id).take
+        a_p = TeamUserShip.where(event_id: event_id, user_id: current_user_id).take
         if a_p.present?
           if a_p.status
             @has_apply = [true, true]
@@ -33,7 +36,7 @@ class CompetitionsController < ApplicationController
           @has_apply = [false, false]
         end
       end
-      user_info = UserProfile.left_joins(:school, :district).where(user_id: current_user.id).select('user_profiles.*', 'schools.name as school_name', 'districts.name as district_name').take; false
+      user_info = UserProfile.left_joins(:school, :district).where(user_id: current_user_id).select('user_profiles.*', 'schools.name as school_name', 'districts.name as district_name').take; false
       @user_info = user_info ||= current_user.build_user_profile
     else
       session[:redirect_to] = request.headers[:Referer]
@@ -162,8 +165,9 @@ class CompetitionsController < ApplicationController
   end
 
   def search_user
-    if request.method == 'GET' && params[:invited_name].present? && params[:invited_name].length>1
-      users = UserProfile.left_joins(:user, :school).where(['user_profiles.username like ?', "#{params[:invited_name]}%"]).where('school_id is not NULL').select(:user_id, :nickname, 'user_profiles.username', 'schools.name as school_name', 'user_profiles.gender', 'user_profiles.grade')
+    invited_name = params[:invited_name]
+    if request.method == 'GET' && invited_name.present? && invited_name.length>1
+      users = UserProfile.left_joins(:user, :school).where(['user_profiles.username like ?', "#{invited_name}%"]).where('school_id is not NULL').select(:user_id, :nickname, 'user_profiles.username', 'schools.name as school_name', 'user_profiles.gender', 'user_profiles.grade')
       result = [true, users]
     else
       result = [false, '请至少输入名字的前两个字']
@@ -205,21 +209,25 @@ class CompetitionsController < ApplicationController
 
   def leader_delete_team
     td = params[:td]
-    team_info = Event.joins(:teams, :competition).where('teams.id=?', td).select(:name, :team_max_num, 'teams.user_id', 'teams.status', 'competitions.apply_end_time').take
-    if team_info.present? && (team_info.status ==0) && (team_info.user_id == current_user.id) && (team_info.apply_end_time > Time.now)
-      players = TeamUserShip.where(team_id: td).pluck(:id); false
-      if Team.find(td).destroy
-        result = [true, '解散成功']
-        if (team_info.team_max_num > 1) && (players.length>1)
-          players.drop(current_user.id).each do |u|
-            Notification.create(user_id: u, message_type: 0, content: '在比赛项目--'+team_info.name+'中,您参加的队伍已被队长解散')
+    if td.present?
+      team_info = Event.joins(:teams, :competition).where('teams.id=?', td).select(:name, :team_max_num, 'teams.user_id', 'teams.status', 'teams.players', 'competitions.apply_end_time').take
+      if team_info.present? && (team_info.status ==0) && (team_info.user_id == current_user.id) && (team_info.apply_end_time > Time.now)
+        if Team.find(td).destroy
+          result = [true, '解散成功']
+          if (team_info.team_max_num > 1) && (team_info.players>1)
+            players = TeamUserShip.where(team_id: td).pluck(:id); false
+            players.drop(current_user.id).each do |u|
+              Notification.create(user_id: u, message_type: 0, content: '在比赛项目--'+team_info.name+'中,您参加的队伍已被队长解散')
+            end
           end
+        else
+          result = [false, '解散失败']
         end
       else
-        result = [false, '解散失败']
+        result = [false, '不规范请求或报名时间已截止']
       end
     else
-      result = [false, '不规范请求或报名时间已截止']
+      result = [false, '参数不完整']
     end
     render json: result
   end
@@ -327,7 +335,7 @@ class CompetitionsController < ApplicationController
     if com_id.present? && team_ids.present? && team_ids.is_a?(Array)
       competition = Competition.where(id: com_id, status: 1).select(:school_audit_time).take
       if competition.present? && competition.school_audit_time > Time.now
-        team_ids = params[:tds].map { |t| t.to_i }
+        team_ids = team_ids.map { |t| t.to_i }
         teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
         if teacher_info.present? && teacher_info.role_type == 3 && teacher_info.school_id.present?
           all_team_ids = Team.joins(:event).where(school_id: teacher_info.school_id, status: 2).where('events.competition_id = ?', com_id).pluck(:id); false

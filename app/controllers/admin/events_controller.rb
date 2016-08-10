@@ -13,7 +13,7 @@ class Admin::EventsController < AdminController
       if params[:field] == 'competition'
         events = events.where(["competitions.name like ?", "%#{params[:keyword]}%"])
       else
-        events = events.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"])
+        events = events.where(["events.#{params[:field]} like ?", "%#{params[:keyword]}%"])
       end
     end
     @events= events.select('events.*', 'competitions.name as comp_name').page(params[:page]).per(params[:per])

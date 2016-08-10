@@ -50,7 +50,7 @@
   <% @activities.each do |activity| %>
       <tr>
         <td><%= activity.id %></td>
-        <td><%= activity.name %></td>
+        <td><a href="<%= "/admin/activities/#{activity.id}/users" %>" title="报名列表"><%= activity.name %></a></td>
         <td><%= activity.host_address %></td>
         <td><%= show_status(activity.status) %></td>
         <td><%= activity.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>

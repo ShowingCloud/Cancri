@@ -35,19 +35,19 @@
         </div>
       </a>
   <% end %>
-  <% if @action_apply_array.include?(action_name) %>
+  <% if action_name=='apply' %>
       <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>">
-        <div class="sub-menu-item active">
+        <div class="sub-menu-item <%= 'active' if !params[:type].present? %> ">
           课程
         </div>
       </a>
       <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>?type=competition">
-        <div class="sub-menu-item active">
+        <div class="sub-menu-item <%= 'active' if params[:type]=='competition' %>">
           比赛
         </div>
       </a>
       <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>?type=activity">
-        <div class="sub-menu-item active">
+        <div class="sub-menu-item <%= 'active' if params[:type]=='activity' %>">
           活动
         </div>
       </a>
@@ -61,6 +61,23 @@
       <a href="<%= user_comp_student_path %>">
         <div class="sub-menu-item <%= 'active' if action_name == 'comp_student' %>">
           参赛学生
+        </div>
+      </a>
+  <% end %>
+  <% if @action_stu_info.include?(action_name) %>
+      <a href="/user/courses">
+        <div class="sub-menu-item <%= 'active' if action_name == 'courses' %> ">
+          课程
+        </div>
+      </a>
+      <a href="/user/competitions">
+        <div class="sub-menu-item <%= 'active' if action_name == 'competitions' %>">
+          比赛
+        </div>
+      </a>
+      <a href="/user/activities">
+        <div class="sub-menu-item <%= 'active' if action_name == 'activities' %>">
+          活动
         </div>
       </a>
   <% end %>

@@ -1,16 +1,7 @@
 class UserController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_user, only: [:index, :courses]
+  before_action :set_user, only: [:competitions, :courses, :activities]
   before_action :is_teacher, only: [:programs, :program, :program_se, :create_program, :course_score]
-
-
-  def index
-    @competitions = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where(user_id: @user.id).select('up.username', 'up.grade', 'up.bj', 'up.student_code', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.last_score').page(params[:page]).per(params[:per])
-  end
-
-  def courses
-    @courses = CourseUserShip.joins(:course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where(user_id: @user.id).select(:score, 'up.username', 'up.grade', 'up.bj', 'up.student_code', 'courses.name', 'courses.end_time').page(params[:page]).per(params[:per])
-  end
 
   # 个人信息概览
   def preview
@@ -20,10 +11,11 @@ class UserController < ApplicationController
 
   # 修改个人信息
   def profile
+    current_user_id = current_user.id
     # 获取Profile
     @user_profile = current_user.user_profile ||= current_user.build_user_profile
     # @th_role_status = UserRole.where(user_id: current_user.id, role_id: 1).first # 教师
-    @has_roles = UserRole.where(user_id: current_user.id).pluck(:role_id, :status)
+    @has_roles = UserRole.where(user_id: current_user_id).pluck(:role_id, :status)
 
     # @has_roles = current_user.user_roles.select(:role_id, :status)
     if request.method == 'POST'
@@ -48,8 +40,8 @@ class UserController < ApplicationController
             flash[:error] = '选择教师身份时，请填写姓名、性别、学校(区县)、教师编号、和上传教师证件'
             return false
           end
-          unless UserRole.where(user_id: current_user.id, role_id: 1).exists?
-            th_role = UserRole.create(user_id: current_user.id, role_id: 1, status: 0, school_id: profile_params[:school_id], district_id: profile_params[:district_id], cover: profile_params[:certificate]) # 教师
+          unless UserRole.where(user_id: current_user_id, role_id: 1).exists?
+            th_role = UserRole.create(user_id: current_user_id, role_id: 1, status: 0, school_id: profile_params[:school_id], district_id: profile_params[:district_id], cover: profile_params[:certificate]) # 教师
             if th_role.save
               message = '您的老师身份已提交审核，审核通过后会在［消息］中告知您！'
             else
@@ -62,8 +54,8 @@ class UserController < ApplicationController
             flash[:error] = '选择家庭创客身份时，请填写姓名、性别、学校、描述和图片'
             return false
           end
-          unless UserRole.where(user_id: current_user.id, role_id: 2).exists?
-            th_role = UserRole.create!(user_id: current_user.id, role_id: 2, status: 0, cover: profile_params[:cover], desc: profile_params[:desc]) # 家庭创客
+          unless UserRole.where(user_id: current_user_id, role_id: 2).exists?
+            th_role = UserRole.create(user_id: current_user_id, role_id: 2, status: 0, cover: profile_params[:cover], desc: profile_params[:desc]) # 家庭创客
             if th_role.save
               message = '您的家庭创客身份已提交审核，审核通过后会在［消息］中告知您！'
             else
@@ -102,6 +94,18 @@ class UserController < ApplicationController
     end
   end
 
+  def competitions
+    @competitions = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id').joins('left join competitions c on c.id = events.competition_id').where('c.end_time < ?', Time.now).where(user_id: @user.id, status: true).select('team_user_ships.grade', 'schools.name as school_name', 'up.username', 'up.bj', 'up.student_code', 'c.name as comp_name', 'c.organizing_committee', 'c.start_time', 'c.end_time', 'events.name as event_name', 'teams.identifier', 'teams.last_score').page(params[:page]).per(params[:per])
+  end
+
+  def courses
+    @courses = CourseUserShip.left_joins(:school, :course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where('courses.end_time < ?', Time.now).where(user_id: @user.id).select(:score, :grade, 'up.username', 'up.student_code', 'courses.name', 'courses.end_time', 'schools.name as school_name').page(params[:page]).per(params[:per])
+  end
+
+  def activities
+    @activities = ActivityUserShip.left_joins(:activity, :school).joins('left join user_profiles up on up.user_id = activity_user_ships.user_id').where('activities.end_time < ?', Time.now).where(user_id: @user.id).select(:score, :grade, :has_join, 'up.username', 'activities.name', 'activities.start_time', 'activities.end_time', 'schools.name as school_name').page(params[:page]).per(params[:per])
+  end
+
   def family_hacker
     @has_already = UserRole.where(user_id: current_user.id, role_id: 2).take
     unless @has_already.present?
@@ -115,7 +119,7 @@ class UserController < ApplicationController
         desc = hacker_params[:desc]
         cover = hacker_params[:cover]
         if desc.present? && cover.present?
-          u_r = UserRole.create!(user_id: current_user.id, role_id: 2, status: 0, cover: cover, desc: desc)
+          u_r = UserRole.create(user_id: current_user.id, role_id: 2, status: 0, cover: cover, desc: desc)
           if u_r.save
             flash[:success] = '申请成功,审核结果将会通过[消息]告知您'
             redirect_to user_preview_path
@@ -132,16 +136,17 @@ class UserController < ApplicationController
   def apply
     type = params[:type] ## option default: competition
     if type.present?
+      current_user_id = current_user.id
       case type
         when 'competition' then
-          @apply_info = @apply_info = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where(user_id: current_user.id).select('up.username', 'up.grade', 'up.bj', 'up.student_code', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.last_score').page(params[:page]).per(params[:per])
+          @apply_info = @apply_info = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where(user_id: current_user_id).select('up.username', 'up.grade', 'up.bj', 'up.student_code', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.last_score').page(params[:page]).per(params[:per])
         when 'activity' then
-          @apply_info = ActivityUserShip.joins(:activity).left_joins(:school).where(user_id: current_user.id).select(:id, :has_join, 'schools.name as school_name', 'activity_user_ships.grade', 'activities.*').page(params[:page]).per(params[:per])
+          @apply_info = ActivityUserShip.joins(:activity).left_joins(:school).where(user_id: current_user_id).select(:id, :has_join, 'schools.name as school_name', 'activity_user_ships.grade', 'activities.*').page(params[:page]).per(params[:per])
         else
           render_optional_error(404)
       end
     else
-      @apply_info = CourseUserShip.joins(:course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where(user_id: current_user.id).select(:score, :course_id, 'up.username', 'up.grade', 'up.bj', 'up.student_code', 'courses.name', 'courses.end_time').page(params[:page]).per(params[:per])
+      @apply_info = CourseUserShip.joins(:course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where(user_id: current_user_id).select(:score, :course_id, 'up.username', 'up.grade', 'up.bj', 'up.student_code', 'courses.name', 'courses.end_time').page(params[:page]).per(params[:per])
     end
   end
 
@@ -269,9 +274,10 @@ class UserController < ApplicationController
   end
 
   def student_manage
-    @teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
+    current_user_id =current_user.id
+    @teacher_info = UserRole.where(role_id: 1, status: 1, user_id: current_user_id).select(:role_type, :school_id, :district_id).take
     if @teacher_info.present?
-      students = UserProfile.left_joins(:district, :school, :user).where.not(user_id: current_user.id).select(:username, :grade, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name', 'users.nickname'); false
+      students = UserProfile.left_joins(:district, :school, :user).where.not(user_id: current_user_id).select(:username, :grade, :gender, :student_code, 'schools.name as school_name', 'districts.name as district_name', 'users.nickname'); false
       if @teacher_info.role_type == 2
         students = students.where(district_id: @teacher_info.district_id)
       elsif @teacher_info.role_type == 3
@@ -528,10 +534,11 @@ class UserController < ApplicationController
   end
 
   def consult
+    current_user_id = current_user.id
     if request.method == 'POST'
       content = params[:consult][:content]
       if content.present? && content.length < 256 && content.length > 5
-        consult = Consult.create!(user_id: current_user.id, content: content)
+        consult = Consult.create!(user_id: current_user_id, content: content)
         if consult.save
           flash[:success]='调戏成功'
           redirect_to user_consult_path
@@ -539,14 +546,14 @@ class UserController < ApplicationController
           flash[:error]='提交失败'
         end
       else
-        @consult = Consult.new(content: params[:consult][:content])
+        @consult = Consult.new(content: content)
         flash[:error]='请填写6-255位字符的反馈内容'
       end
     end
     unless @consult.present?
       @consult = current_user.consults.build
     end
-    @consults = Consult.where(user_id: current_user.id).all.order('id asc')
+    @consults = Consult.where(user_id: current_user_id).all.order('id asc')
   end
 
   def point
@@ -660,11 +667,12 @@ class UserController < ApplicationController
       if school.present?
         result=[false, '该学校已存在或已被添加(待审核)']
       else
-        has_add = School.where(user_id: current_user.id, status: 0).exists?
+        current_user_id = current_user.id
+        has_add = School.where(user_id: current_user_id, status: 0).exists?
         if has_add.present?
           result= [false, '您已经添加过一所待审核学校，在审核前不能再次添加']
         else
-          add_s = School.create!(name: name, district_id: district, user_id: current_user.id, user_add: true, status: false)
+          add_s = School.create(name: name, district_id: district, user_id: current_user_id, user_add: true, status: false)
           if add_s.save
             result=[true, '添加成功,该学校仅为您显示，审核通过后才能选择该学校', add_s.id]
           else
@@ -744,10 +752,16 @@ class UserController < ApplicationController
   private
 
   def set_user
-    unless params[:id].present? && params[:id] =~ /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/
-      render_optional_error(404)
+    id = params[:id]
+    if id.present?
+      if id =~ /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/
+        @user = User.find_by_nickname(id)
+      else
+        render_optional_error(404)
+      end
+    else
+      @user = current_user
     end
-    @user = User.find_by_nickname(params[:id])
     unless @user
       render_optional_error(404)
     end

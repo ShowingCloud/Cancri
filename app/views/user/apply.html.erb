@@ -9,32 +9,70 @@
         <div class="user-main">
           <%= render 'user/tab' %>
           <div class="sub-content">
-            <% if @apply_info.size>0 %>
-                <% @apply_info.each do |a| %>
-                    <%= debug a %>
-                    <% if a.course_id %>
-                        <div class="lesson-item" data-id="<%= a.course_id %>">
-                          <div class="title"><%= a.name %></div>
-
-                          <div class="btn-row">
-                            <%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.id}", class: 'btn-robodou btn-abort-lesson' do %>
-                                取消报名
-                            <% end %>
-                          </div>
-                        </div>
-                    <% elsif a.comp_name.present? %>
-                        <div class="lesson-item">
-                          <div class="title"><%= a.comp_name %></div>
-                          <p>报名时间: <%= a.created_at.strftime('%Y-%m-%d') %></p>
-
-                          <p>上课时间: <%= a.run_time %> </p>
-
-                          <p>上课地点: <%= a.run_address %></p>
-                        </div>
-                    <% end %>
+            <% if !params[:type].present? %>
+                <!--课程信息-->
+                <% if @apply_info.size>0 %>
+                    <table class="table">
+                      <tr>
+                        <th>课程名称</th>
+                        <th>课程时间</th>
+                        <th>操作</th>
+                      </tr>
+                      <% @apply_info.each do |a| %>
+                          <tr>
+                            <td><%= a.name %></td>
+                            <td><%= a.end_time.strftime('%Y-%m-%d') %></td>
+                            <td data-id="<%= a.course_id %>"><%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.id}", class: 'btn-robodou btn-abort-lesson' do %>
+                                  取消报名
+                              <% end %></td>
+                          </tr>
+                      <% end %>
+                    </table>
+                <% else %>
+                    您暂时没有报名任何课程。
                 <% end %>
-            <% else %>
-                您暂时没有报名任何课程。
+            <% elsif params[:type]=='competition' %>
+                <!--比赛信息-->
+                <% if @apply_info.size>0 %>
+                    <table class="table">
+                      <tr>
+                        <th>比赛名称</th>
+                        <th>项目名称</th>
+                        <th>比赛时间</th>
+                        <th>下载</th>
+                      </tr>
+                      <% @apply_info.each do |a| %>
+                          <tr>
+                            <td><%= a.comp_name %></td>
+                            <td><%= a.event_name %></td>
+                            <td><%= a.start_time.strftime('%Y-%m-%d') %></td>
+                            <td>
+                              <% if a.start_time>Time.now %>
+                                  <a href="<%= image_path('logo.png'); %>" download="download" class="">下载参赛证</a>
+                              <% end %>
+                            </td>
+                          </tr>
+                      <% end %>
+                    </table>
+                <% else %>
+                    您暂时没有报名任何比赛
+                <% end %>
+            <% elsif params[:type]=='activity' %>
+                <!--活动信息-->
+                <table class="table">
+                  <tr>
+                    <th>活动名称</th>
+                    <th>活动地点</th>
+                    <th>活动时间</th>
+                  </tr>
+                  <% @apply_info.each do |a| %>
+                      <tr>
+                        <td><%= a.name %></td>
+                        <td><%= a.host_address %></td>
+                        <td><%= a.start_time.strftime('%Y-%m-%d') %></td>
+                      </tr>
+                  <% end %>
+                </table>
             <% end %>
           </div>
         </div>

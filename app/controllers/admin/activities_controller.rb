@@ -1,5 +1,9 @@
 class Admin::ActivitiesController < AdminController
-  before_action :set_activity, only: [:show, :edit, :update, :destroy]
+
+  before_action do
+    authenticate_permissions(['admin', 'editor', 'super_admin'])
+  end
+  before_action :set_activity, only: [:show, :edit, :update, :destroy, :users]
 
   # GET /admin/activities
   # GET /admin/activities.json
@@ -19,6 +23,42 @@ class Admin::ActivitiesController < AdminController
 
   # GET /admin/activities/1/edit
   def edit
+  end
+
+  def users
+    field = params[:field]
+    keyword = params[:keyword]
+    users = @activity.activity_user_ships.left_joins(:school, :user).joins('left join user_profiles u_p on u_p.user_id = activity_user_ships.user_id'); false
+    if field.present? && keyword.present?
+      case field
+        when 'school_name' then
+          users = users.where(["schools.name like ?", "%#{keyword}%"])
+        when 'username' then
+          users = users.where(["u_p.username like ?", "%#{keyword}%"])
+        when 'mobile' then
+          users = users.where(["users.mobile like ?", "%#{keyword}%"])
+        else
+          render_optional_error(404)
+      end
+    end
+    @users = users.select(:id, :user_id, :has_join, :score, 'u_p.username', 'users.mobile', 'schools.name as school_name', 'activity_user_ships.grade').order('school_name').page(params[:page]).per(params[:per])
+  end
+
+  def update_user_score
+    aud = params[:aud]
+    score = params[:score]
+    if aud.present? && score.present?
+      a_u = ActivityUserShip.find(aud)
+      a_u.score = score
+      if a_u.save
+        result = [true, '打分成功']
+      else
+        result = [false, '打分失败']
+      end
+    else
+      result = [false, '参数不完整']
+    end
+    render json: result
   end
 
   # POST /admin/activities
