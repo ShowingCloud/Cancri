@@ -30,7 +30,7 @@
                 </div>
                 <div class="right">
                   <div class="little-panels school-field">
-                    <% if @user_info.school_id.present? %>
+                    <% if @user_info.school_id>0 %>
                         <span class="change-school school-tag"><%= @user_info.school_name %> </span>
                     <% else %>
                         <button class="new-school btn-robodou">选择学校</button>
@@ -103,7 +103,7 @@
 </div>
 
 <div class="modal fade" id="add-school">
-      <div class="school-modal-inner">
+  <div class="school-modal-inner">
     <div class="title">
       添加学校
     </div>

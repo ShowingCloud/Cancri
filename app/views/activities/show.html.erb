@@ -48,7 +48,7 @@
                               <label for="school_name" class="col-sm-2 control-label">学校</label>
 
                               <div class="col-sm-9 special-row school-field">
-                                <% if @user_info.school_name.present? %>
+                                <% if @user_info.school_id>0 %>
                                     <span class="change-school school-tag"><%= @user_info.school_name %> </span>
                                 <% else %>
                                     <button class="new-school btn-robodou">选择学校</button>

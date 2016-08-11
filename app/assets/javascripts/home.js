@@ -441,6 +441,14 @@ $(function () {
             }
         });
 
+        $('.control-idc').on('change',function(event){
+            event.preventBubble();
+            var v = $(this).val();
+            if(v>=10){
+                $('.idc-form').removeClass('hide');
+            }
+        });
+
         $('.accept-invite-submit').on('click', function (event) {
             event.preventDefault();
             var username = $('#username-join').val();
@@ -478,8 +486,8 @@ $(function () {
                 alert_r('请选择年级！');
                 return false;
             }
-            if (parseInt(grade) >= 10 && identity_card.length < 1) {
-                alert_r('由于您选择了高中年级，请填写身份证！');
+            if (parseInt(grade) >= 10 && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
+                alert_r('由于您选择了高中年级，请正确填写身份证！');
                 return false;
             }
 

@@ -66,7 +66,7 @@
                     <label class="control-label" for="user_profile_school_id">学校</label>
 
                     <div class="school-field">
-                      <% if @user_profile.school.try(:id) %>
+                      <% if @user_profile.school_id>0 %>
                           <span class="change-school school-tag"><%= @user_profile.school.try(:name) %> </span>
                       <% else %>
                           <button class="new-school btn-robodou">选择学校</button>

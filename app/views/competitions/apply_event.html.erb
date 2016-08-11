@@ -100,6 +100,7 @@
                 <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
                 <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
                 <input type="hidden" id="gender" value="<%= @user_info.gender.to_i %>"/>
+                <input type="hidden" id="max_num" value="<%= @event.team_max_num %>"/>
 
                 <% if @event.team_max_num != 1 %>
                     <div class="first-step">
@@ -158,7 +159,7 @@
                         <label for="school_name" class="col-sm-2 control-label">学校</label>
 
                         <div class="col-sm-9 special-row school-field">
-                          <% if @user_info.school_name.present? %>
+                          <% if @user_info.school_id.present? && @user_info.school_id!=0 %>
                               <span class="change-school school-tag"><%= @user_info.school_name %> </span>
                           <% else %>
                               <button class="new-school btn-robodou school-tag">选择学校</button>
@@ -286,7 +287,7 @@
                         <label for="school_name" class="col-sm-2 control-label">学校</label>
 
                         <div class="col-sm-9 special-row school-field">
-                          <% if @user_info.school_id.present? %>
+                          <% if @user_info.school_id>0 %>
                               <span class="change-school school-tag"><%= @user_info.school_name %> </span>
                           <% else %>
                               <button class="new-school btn-robodou">选择学校</button>

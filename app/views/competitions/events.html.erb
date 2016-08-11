@@ -1,23 +1,29 @@
 <div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
   <div class="container" id="event-list">
     <div class="top">
-      <%= @events.first.comp_name %>
+      <% if @events.length>0 %>
+          <%= @events.first.comp_name %>
+      <% else %>
+          该比赛暂无项目
+      <% end %>
     </div>
-    <div class="middle">
-      <div class="border-box">
-        <% @events.each do |e| %>
-            <div class="event-item">
-              <% if e.end_apply_time > Time.now %>
-                  <%= link_to "#{apply_event_competitions_path}?ed=#{e.id}", class: '' do %>
-                      <div class="item-box">
-                        <div class="item-title"><%= e.name %></div>
-                      </div>
+    <% if @events.length>0 %>
+        <div class="middle">
+          <div class="border-box">
+            <% @events.each do |e| %>
+                <div class="event-item">
+                  <% if e.end_apply_time > Time.now %>
+                      <%= link_to "#{apply_event_competitions_path}?ed=#{e.id}", class: '' do %>
+                          <div class="item-box">
+                            <div class="item-title"><%= e.name %></div>
+                          </div>
+                      <% end %>
                   <% end %>
-              <% end %>
-            </div>
-        <% end %>
-      </div>
-    </div>
+                </div>
+            <% end %>
+          </div>
+        </div>
+    <% end %>
     <div class="bottom">
       <nav>
         <%= paginate @events %>
