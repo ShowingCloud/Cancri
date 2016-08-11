@@ -1,19 +1,20 @@
 class DemeanorController < ApplicationController
   def index
-    photos = Photo.where(status: 1).order('id desc').page(params[:page]).per(params[:per]); false
-    if params[:cd]
-      @photos = photos.where(competition_id: params[:cd])
-    else
-      @photos = photos
+    comp_id = params[:cd]
+    photos = Photo.left_joins(:competition).where(status: 1).order('competition_id'); false
+    if comp_id
+      photos = photos.where(competition_id: comp_id)
     end
+    @photos = photos.select('photos.*', 'competitions.name as comp_name').page(params[:page]).per(params[:per])
   end
 
   def videos
-    if params[:cd]
-      @videos = Video.where(status: 1, competition_id: params[:cd]).order('id desc').page(params[:page]).per(params[:per])
-    else
-      @videos = Video.where(status: 1).order('id desc').page(params[:page]).per(params[:per])
+    comp_id = params[:cd]
+    videos = Video.left_joins(:competition).where(status: 1).order('competition_id'); false
+    if comp_id
+      videos = videos.where(competition_id: comp_id)
     end
+    @videos = videos.select('videos.*', 'competitions.name as comp_name').page(params[:page]).per(params[:per])
   end
 
   def get_comps_via_year
