@@ -1291,7 +1291,7 @@ select {
       margin: 0;
       overflow: hidden;
       height: 230px;
-      padding: 15px;
+      padding: 20px 15px;
       .image-border {
         border: 1px solid #ffffff;
         width: 100%;
@@ -1303,6 +1303,12 @@ select {
           width: 100%;
           height: 100%;
         }
+      }
+      .dec{
+        text-align: center;
+        font-size: 14px;
+        padding: 4px 0;
+        color: #fff;
       }
     }
   }
@@ -1934,27 +1940,34 @@ select {
 
 #activity-show {
   .box {
-    margin-top: 40px;
-    border: 2px solid #fff;
-    border-radius: 20px;
+    background: transparent center center no-repeat;
+    margin: 40px auto 0;
     padding: 20px;
     color: #fff;
+    height: 749px;
+    width: 1070px;
   }
   .top {
-    padding: 10px 0;
-    border-bottom: 1px solid #fff;
+    padding: 20px 0;
     font-size: 24px;
     text-align: center;
     position: relative;
     .ad {
       position: absolute;
       font-size: 14px;
-      bottom: 0;
+      bottom: 20px;
       color: #6699cc;
+      left: 100px;
     }
   }
+  .box-inner{
+    height: 640px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: 10px;
+  }
   .middle {
-    padding: 10px 0;
+    padding: 20px 50px;
     .images {
       text-align: center;
       img {

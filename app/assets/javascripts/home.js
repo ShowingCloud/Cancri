@@ -873,7 +873,7 @@ $(function () {
                         ));
 
                         if (players.length > 0) {
-                            _space.find('.comp-info').append($('<a href="/user/get_comp_students.xls?com=' + com + '&ed=' + val + '" class="btn btn-robodou" title="下载名单">下载名单</a>'))
+                            _space.find('.comp-info').append($('<a href="/user/get_comp_students.xls?com=' + com + '&ed=' + ed + '" class="btn btn-robodou" title="下载名单">下载名单</a>'))
                         }
 
                         var team_count = {};
