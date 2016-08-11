@@ -52,8 +52,13 @@
         <td><%= u.mobile %></td>
         <td><%= u.school_name %></td>
         <td><%= u.grade %></td>
-        <td>打分</td>
-      </tr>
+        <td>
+          <% if u.score.present? %>
+              <span id="activity-score-<%= u.id %>" class="update-activity-score btn btn-xs btn-warning" style="width: 40px; display: inline-block;" data-id="<%= u.id %>" data-name="<%= u.username %>"><%= u.score %></span>
+          <% else %>
+              <span id="activity-score-<%= u.id %>" class="create-activity-score btn btn-xs btn-info" style="width: 40px; display: inline-block;" data-id="<%= u.id %>" data-name="<%= u.username %>">打分</span>
+          <% end %>
+          </tr>
   <% end %>
   </tbody>
 </table>
@@ -62,3 +67,31 @@
   <%= paginate @users %>
 </nav>
 
+<div id="activity-score-form" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="widget-header model-header">
+        <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+        <h4 class="blue smaller text-center">打分</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row text-center select-review-status">
+          <label class=""><input name="review-status" value="1" type="radio"/> 通过</label>&nbsp;&nbsp;
+          <label class=""><input name="review-status" value="0" type="radio"/> 未通过</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm" data-dismiss="modal">
+          <i class="icon-remove"></i>
+          取消
+        </button>
+
+        <button class="btn btn-sm btn-primary school-review-status-submit">
+          <i class="icon-ok"></i>
+          提交
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
