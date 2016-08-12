@@ -55,7 +55,7 @@ class UserController < ApplicationController
             return false
           end
           unless UserRole.where(user_id: current_user_id, role_id: 2).exists?
-            th_role = UserRole.create(user_id: current_user_id, role_id: 2, status: 0, cover: profile_params[:cover], desc: profile_params[:desc]) # 家庭创客
+            th_role = UserRole.create(user_id: current_user_id, role_id: 2, status: 0, cover: profile_params[:cover], desc: profile_params[:desc], school_id: profile_params[:school_id], district_id: profile_params[:district_id]) # 家庭创客
             if th_role.save
               message = '您的家庭创客身份已提交审核，审核通过后会在［消息］中告知您！'
             else
@@ -325,7 +325,7 @@ class UserController < ApplicationController
               when '0' then
                 students = students.where('teams.status=?', -2)
               when '1' then
-                students = students.where('teams.status=?', 3)
+                students = students.where('teams.status': [3, 1, -3])
               else
                 students = students.where('teams.status=?', 2)
             end
