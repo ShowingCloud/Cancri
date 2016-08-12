@@ -308,7 +308,7 @@ class UserController < ApplicationController
       if comp_id.present?
         competition = Competition.where(id: comp_id, status: 1).first
         if competition.present?
-          students = TeamUserShip.joins(:event, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select('team_user_ships.grade', 'teams.id as team_id', 'team_user_ships.user_id', 'teams.user_id as leader_user_id', 'teams.group', 'teams.identifier ', 'events.name as event_name', ' u_p.username ', ' u_p.gender ', ' users.nickname ').order('teams.group asc, teams.id, team_user_ships.id asc'); false
+          students = TeamUserShip.joins(:event, :school, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select('team_user_ships.grade', 'teams.id as team_id', 'team_user_ships.user_id', 'teams.user_id as leader_user_id', 'teams.group', 'teams.identifier ', 'events.name as event_name', ' u_p.username ', ' u_p.gender ', ' users.nickname ', 'users.mobile', 'schools.name as school_name').order('teams.group asc, teams.id, team_user_ships.id asc'); false
 
           if teacher_info.role_type == 2
             case status
@@ -370,11 +370,18 @@ class UserController < ApplicationController
                     when 4 then
                       '高中'
                     else
-                      '未知'
                   end,
               队伍: x.leader_user_id == x.user_id ? x.identifier : nil,
               姓名: x.username,
-              性别: x.gender==1 ? '男' : (x.gender == 2 ? '女' : nil),
+              性别: case x.gender
+                    when 1 then
+                      '男'
+                    when 2 then
+                      '女'
+                    else
+                  end,
+              学校: x.school_name,
+              手机: x.mobile,
               年级: x.grade
           } }
           filename = "#{data.first[:项目]}-#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
