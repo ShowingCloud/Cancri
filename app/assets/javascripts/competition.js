@@ -288,6 +288,14 @@ $(function () {
         }
     });
 
+    $('#grade-join').on('change', function (event) {
+        event.preventDefault();
+        var v = $(this).val();
+        if (v >= 10) {
+            $('.identity-group-join').removeClass('hide');
+        }
+    });
+
     $('#team-group').on('change', function () {
         var _self = $(this);
         var group = _self.val();

@@ -442,8 +442,9 @@ $(function () {
         });
 
         $('.control-idc').on('change', function (event) {
-            event.preventBubble();
+            event.preventDefault();
             var v = $(this).val();
+            console.log(v);
             if (v >= 10) {
                 $('.idc-form').removeClass('hide');
             }
