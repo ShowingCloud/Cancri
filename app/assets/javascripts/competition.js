@@ -43,8 +43,8 @@ $(function () {
             alert_r('请选择组别！');
             return false;
         }
-        if (team_group == 4 && identity_card.length < 1) {
-            alert_r('由于您选择了高中组，请填写身份证！');
+        if (parseInt(grade) >= 10 && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
+            alert_r('由于您选择了高中年级，请正确填写身份证！');
             return false;
         }
         if (team_teacher.length < 1) {
@@ -77,7 +77,13 @@ $(function () {
             success: function (data) {
                 if (data[0]) {
                     $('#update-user-info').modal('hide');
-                    alert_r(data[1], function () {
+                    var m = $('#max_num').val();
+                    console.log(m);
+                    var msg = '队伍创建成功！';
+                    if (m == 1) {
+                        msg = '报名信息已完善，请于报名时间截止前提交';
+                    }
+                    alert_r(msg, function () {
                         window.location.reload();
                     });
                 } else {
@@ -138,8 +144,8 @@ $(function () {
             alert_r('请选择年级！');
             return false;
         }
-        if (parseInt(grade) >= 10 && identity_card.length < 1) {
-            alert_r('由于您选择了高中年级，请填写身份证！');
+        if (parseInt(grade) >= 10 && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
+            alert_r('由于您选择了高中年级，请正确填写身份证！');
             return false;
         }
 
@@ -298,19 +304,19 @@ $(function () {
             case '1':
                 //小学组
                 g.prop('disabled', false);
-                a = [7, 8, 9, 10, 11, 12];
+                a = [6, 7, 8, 9, 10, 11, 12];
                 icd.addClass('hide');
                 break;
             case '2':
                 //中学组
                 g.prop('disabled', false);
-                a = [1, 2, 3, 4, 5, 6];
+                a = [1, 2, 3, 4, 5];
                 icd.addClass('hide');
                 break;
             case '3':
                 //初中组
                 g.prop('disabled', false);
-                a = [1, 2, 3, 4, 5, 6, 10, 11, 12];
+                a = [1, 2, 3, 4, 5, 10, 11, 12];
                 icd.addClass('hide');
                 break;
             case '4':

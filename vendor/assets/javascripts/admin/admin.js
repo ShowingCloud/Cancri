@@ -178,7 +178,6 @@ $(function () {
         $('.audit-point-submit').on('click', function () {
             var status = $(".audit-point-status [name='audit-point']:checked").val();
             if (upd) {
-                console.log(status);
                 if (!status) {
                     alert('请选择审核结果');
                     return false;

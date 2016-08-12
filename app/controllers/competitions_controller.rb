@@ -336,7 +336,7 @@ class CompetitionsController < ApplicationController
       competition = Competition.where(id: com_id, status: 1).select(:school_audit_time).take
       if competition.present? && competition.school_audit_time > Time.now
         team_ids = team_ids.map { |t| t.to_i }
-        teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
+        teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
         if teacher_info.present? && teacher_info.role_type == 3 && teacher_info.school_id.present?
           all_team_ids = Team.joins(:event).where(school_id: teacher_info.school_id, status: 2).where('events.competition_id = ?', com_id).pluck(:id); false
           if (all_team_ids & team_ids) == team_ids
@@ -367,7 +367,7 @@ class CompetitionsController < ApplicationController
       competition = Competition.where(id: com_id, status: 1).select(:district_audit_time).take
       if competition.present? && competition.district_audit_time > Time.now
         team_ids = team_ids.map { |t| t.to_i }
-        teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
+        teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
         if teacher_info.present? && teacher_info.role_type == 2 && teacher_info.district_id.present?
           all_team_ids = Team.joins(:event).where(district_id: teacher_info.district_id, status: 3).where('events.competition_id = ?', com_id).pluck(:id); false
           if (all_team_ids & team_ids) == team_ids
@@ -421,8 +421,8 @@ class CompetitionsController < ApplicationController
     if com_id.present? && team_ids.present? && team_ids.is_a?(Array)
       competition = Competition.where(id: com_id, status: 1).select(:school_audit_time).take
       if competition.present? && competition.school_audit_time > Time.now
-        team_ids = params[:tds].map { |t| t.to_i }
-        teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
+        team_ids = team_ids.map { |t| t.to_i }
+        teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
         if teacher_info.present? && teacher_info.role_type == 3 && teacher_info.school_id.present?
           all_team_ids = Team.joins(:event).where(school_id: teacher_info.school_id, status: [2, -2]).where('events.competition_id = ?', com_id).pluck(:id); false
           if (all_team_ids & team_ids) == team_ids
@@ -453,7 +453,7 @@ class CompetitionsController < ApplicationController
       competition = Competition.where(id: com_id, status: 1).select(:district_audit_time).take
       if competition.present? && competition.district_audit_time > Time.now
         team_ids = team_ids.map { |t| t.to_i }
-        teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, 'u_p.school_id', 'u_p.district_id').take
+        teacher_info = UserRole.joins('left join user_profiles u_p on user_roles.user_id = u_p.user_id').where(role_id: 1, status: 1, user_id: current_user.id).select(:role_type, :school_id, :district_id).take
         if teacher_info.present? && teacher_info.role_type == 2 && teacher_info.district_id.present?
           all_team_ids = Team.joins(:event).where(district_id: teacher_info.district_id, status: [3, -3]).where('events.competition_id = ?', com_id).pluck(:id); false
           if (all_team_ids & team_ids) == team_ids
