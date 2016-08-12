@@ -4,16 +4,17 @@
       <a href="/demeanor/videos">视频</a>
     </div>
     <div class="middle">
-      <% @photos.each do |p| %>
-          <div class="thumb-box">
-            <div class="image-border">
-              <%= image_tag(p.image_url, class: 'thumb') %>
-            </div>
-            <div class="dec">
-              <%= p.comp_name %>
-            </div>
-          </div>
-
+      <% if @photos.length>0 %>
+          <% @photos.each do |p| %>
+              <div class="thumb-box">
+                <div class="image-border">
+                  <%= image_tag(p.image_url, class: 'thumb') %>
+                </div>
+                <div class="dec">
+                  <%= p.comp_name %>
+                </div>
+              </div>
+          <% end %>
       <% end %>
     </div>
     <div class="bottom">

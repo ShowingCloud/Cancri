@@ -947,9 +947,12 @@ $(function () {
                                                 }
                                                 param[0].parents('.item-control').empty().text(str);
                                             }, [_self, type]);
+                                        }else{
+                                            alert_r(result[1]);
                                         }
                                     }
                                 };
+
                                 ajax_handle(option);
                             });
                             var _k = k;
