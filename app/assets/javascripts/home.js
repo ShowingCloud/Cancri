@@ -741,6 +741,8 @@ $(function () {
                 var com = space.find('.comp-sel').val();
                 var ed = space.find('.event-sel').val();
                 var status = space.find('.status-sel').val();
+                space.find('.team-list').empty();
+                space.find('.comp-info').empty();
                 var _space = space;
                 if (_self.hasClass('active') && val != -1) {
                     student_control_handle(com, ed, status, _space, val);
@@ -824,13 +826,17 @@ $(function () {
                 } else {
                     var c = space.find('.selected-mark');
                     var arr = [];
-                    var cd = c.parents('.team-iten').attr('data-cd');
+                    var obj = [];
+                    var cd = c.parents('.team-item').attr('data-cd');
                     $.each(c, function (k, v) {
                         var t = $(v);
                         if (t.prop('checked')) {
-                            arr.push(t.parents('.team-iten').attr('data-td'));
+                            arr.push(t.parents('.team-item').attr('data-td'));
+                            obj.push(t.parents('.team-item').find('.item-control'));
                         }
                     });
+
+                    console.log(arr);
 
                     var url = '/competitions/district_submit_teams';
                     var option = {
@@ -840,6 +846,9 @@ $(function () {
                         success: function (result) {
                             if (result[0]) {
                                 alert_r('批量操作成功');
+                                $.each(obj, function (k, v) {
+                                    $(v).empty().text('审核已通过');
+                                })
                             } else {
                                 alert_r(result[1]);
                             }
