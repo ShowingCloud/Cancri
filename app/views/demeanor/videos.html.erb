@@ -2,16 +2,22 @@
   <div class="container" id="demeanor-video">
     <div class="top">
       <a href="/demeanor">图片</a>
+      <span>视频</span>
     </div>
     <div class="middle">
-      <% @videos.each do |p| %>
-          <div class="video-box">
-            <div class="video-tag" data-video="<%= p.video_url %>">
-              <div class="video-icon">
-                <i class="glyphicon glyphicon-play-circle"></i>
+      <% if @videos.length>0 %>
+          <% @videos.each do |p| %>
+              <div class="video-box">
+                <div class="video-tag" data-src="<%= image_path('sider-2.png') %>" data-video="<%= p.video_url %>">
+                  <div class="video-icon">
+                    <i class="glyphicon glyphicon-play-circle"></i>
+                  </div>
+                </div>
+                <div class="dec">
+                  <%= p.comp_name %>
+                </div>
               </div>
-            </div>
-          </div>
+          <% end %>
       <% end %>
     </div>
     <div class="bottom">
@@ -22,11 +28,11 @@
   </div>
 </div>
 
-<div id="video-win" class="video-win modal fade" >
+<div id="video-win" class="video-win modal fade">
   <div class="inner-video">
     <div class="off" data-dismiss="modal">
       <i class="glyphicon glyphicon-remove-circle"></i>
     </div>
-    <video class="audio-main" src="" controls="controls" preload="auto" ></video>
+    <video class="audio-main" src="" controls="controls" preload="auto"></video>
   </div>
 </div>
