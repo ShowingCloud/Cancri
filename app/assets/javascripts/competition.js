@@ -43,7 +43,7 @@ $(function () {
             alert_r('请选择组别！');
             return false;
         }
-        if (parseInt(grade) >= 10 && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
+        if (parseInt(grade) >= 10 && !/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
             alert_r('由于您选择了高中年级，请正确填写身份证！');
             return false;
         }
@@ -144,7 +144,7 @@ $(function () {
             alert_r('请选择年级！');
             return false;
         }
-        if (parseInt(grade) >= 10 && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
+        if (parseInt(grade) >= 10 && !/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
             alert_r('由于您选择了高中年级，请正确填写身份证！');
             return false;
         }
