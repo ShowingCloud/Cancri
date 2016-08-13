@@ -66,14 +66,14 @@
                     <label class="control-label" for="user_profile_school_id">学校</label>
 
                     <div class="school-field">
-                      <% if @user_profile.school_id>0 %>
+                      <% if @user_profile.school_id.present? && @user_profile.school_id!=0 %>
                           <span class="change-school school-tag"><%= @user_profile.school.try(:name) %> </span>
                       <% else %>
                           <button class="new-school btn-robodou">选择学校</button>
                       <% end %>
 
                     </div>
-                    <input id="school-id" class="school-hidden-input" type="hidden" name="user_profile[school_id]" value="<%= @user_profile.school.try(:id) %>"/>
+                    <input id="school-id" class="school-hidden-input" type="hidden" name="user_profile[school_id]" value="<%= @user_profile.school_id %>"/>
                     <input id="district-id" type="hidden" name="user_profile[district_id]" value="<%= @user_profile.district_id %>"/>
                   </div>
                   <div class="form-group">

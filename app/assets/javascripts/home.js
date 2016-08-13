@@ -441,10 +441,11 @@ $(function () {
             }
         });
 
-        $('.control-idc').on('change',function(event){
-            event.preventBubble();
+        $('.control-idc').on('change', function (event) {
+            event.preventDefault();
             var v = $(this).val();
-            if(v>=10){
+            console.log(v);
+            if (v >= 10) {
                 $('.idc-form').removeClass('hide');
             }
         });
@@ -486,7 +487,7 @@ $(function () {
                 alert_r('请选择年级！');
                 return false;
             }
-            if (parseInt(grade) >= 10 && /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
+            if (parseInt(grade) >= 10 && !/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
                 alert_r('由于您选择了高中年级，请正确填写身份证！');
                 return false;
             }
@@ -741,6 +742,8 @@ $(function () {
                 var com = space.find('.comp-sel').val();
                 var ed = space.find('.event-sel').val();
                 var status = space.find('.status-sel').val();
+                space.find('.team-list').empty();
+                space.find('.comp-info').empty();
                 var _space = space;
                 if (_self.hasClass('active') && val != -1) {
                     student_control_handle(com, ed, status, _space, val);
@@ -824,13 +827,17 @@ $(function () {
                 } else {
                     var c = space.find('.selected-mark');
                     var arr = [];
-                    var cd = c.parents('.team-iten').attr('data-cd');
+                    var obj = [];
+                    var cd = c.parents('.team-item').attr('data-cd');
                     $.each(c, function (k, v) {
                         var t = $(v);
                         if (t.prop('checked')) {
-                            arr.push(t.parents('.team-iten').attr('data-td'));
+                            arr.push(t.parents('.team-item').attr('data-td'));
+                            obj.push(t.parents('.team-item').find('.item-control'));
                         }
                     });
+
+                    console.log(arr);
 
                     var url = '/competitions/district_submit_teams';
                     var option = {
@@ -840,6 +847,9 @@ $(function () {
                         success: function (result) {
                             if (result[0]) {
                                 alert_r('批量操作成功');
+                                $.each(obj, function (k, v) {
+                                    $(v).empty().text('审核已通过');
+                                })
                             } else {
                                 alert_r(result[1]);
                             }
@@ -947,9 +957,12 @@ $(function () {
                                                 }
                                                 param[0].parents('.item-control').empty().text(str);
                                             }, [_self, type]);
+                                        } else {
+                                            alert_r(result[1]);
                                         }
                                     }
                                 };
+
                                 ajax_handle(option);
                             });
                             var _k = k;

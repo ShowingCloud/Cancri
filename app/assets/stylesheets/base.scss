@@ -1283,6 +1283,14 @@ select {
 #demeanor-photo {
   .top {
     padding: 20px 0;
+    span {
+      margin: 0 15px;
+      color: #fff;
+    }
+    a {
+      margin: 0 15px;
+      color: #6699cc;
+    }
   }
   .middle {
     .thumb-box {
@@ -1304,7 +1312,7 @@ select {
           height: 100%;
         }
       }
-      .dec{
+      .dec {
         text-align: center;
         font-size: 14px;
         padding: 4px 0;
@@ -1338,6 +1346,14 @@ select {
 #demeanor-video {
   .top {
     padding: 20px 0;
+    span {
+      margin: 0 15px;
+      color: #fff;
+    }
+    a {
+      margin: 0 15px;
+      color: #6699cc;
+    }
   }
   .middle {
     .video-box {
@@ -1346,7 +1362,7 @@ select {
       margin: 0;
       overflow: hidden;
       height: 230px;
-      padding: 15px;
+      padding: 20px 15px;
       .video-tag {
         border: 1px solid #ffffff;
         width: 100%;
@@ -1354,13 +1370,19 @@ select {
         border-radius: 5px;
         overflow: hidden;
         cursor: pointer;
-        background: rgba(0, 0, 0, .3);
+        background: rgba(0, 0, 0, .3) center center;
+        background-size: cover;
         .video-icon {
           font-size: 54px;
           color: #fff;
           text-align: center;
           margin-top: 64px;
         }
+      }
+      .dec {
+        text-align: center;
+        font-size: 14px;
+        color: #fff;
       }
     }
   }
@@ -1417,7 +1439,7 @@ select {
         border-radius: 15px;
         position: relative;
         overflow: hidden;
-        .cover{
+        .cover {
           width: 100%;
           height: 100%;
         }
@@ -1783,8 +1805,6 @@ select {
         text-align: center;
         top: 4px;
         width: 24px;
-        border: 1px solid #fff;
-        border-radius: 50%;
         cursor: pointer;
       }
     }
@@ -1960,7 +1980,7 @@ select {
       left: 100px;
     }
   }
-  .box-inner{
+  .box-inner {
     height: 640px;
     overflow-y: auto;
     overflow-x: hidden;
