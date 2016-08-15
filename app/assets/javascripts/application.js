@@ -25,5 +25,6 @@
 //= require admin/bootbox.min
 //= require remodal
 //= require competition
+//= require comp_voucher
 //= //require turbolinks
 //= //require_tree .

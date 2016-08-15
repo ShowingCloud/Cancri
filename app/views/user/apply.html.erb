@@ -47,13 +47,19 @@
                             <td><%= a.event_name %></td>
                             <td><%= a.start_time.strftime('%Y-%m-%d') %></td>
                             <td>
-                              <% if a.start_time>Time.now %>
-                                  <a href="<%= image_path('logo.png'); %>" download="download" class="">下载参赛证</a>
-                              <% end %>
+                              <button id="download-voucher" class="btn btn-primary btn-xs">下载参赛证</button>
                             </td>
                           </tr>
                       <% end %>
                     </table>
+                    <div style="display:none">
+                      <div id="qrcodeCanvas"></div>
+                      <div>
+                        <%= image_tag('jpeg.jpeg', id: 'use-voucher') %>
+                        <canvas id="myCanvas" width="1276" height="1789"></canvas>
+                      </div>
+                    </div>
+
                 <% else %>
                     您暂时没有报名任何比赛
                 <% end %>
