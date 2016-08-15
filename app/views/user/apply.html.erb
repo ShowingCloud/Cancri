@@ -47,7 +47,7 @@
                             <td><%= a.event_name %></td>
                             <td><%= a.start_time.strftime('%Y-%m-%d') %></td>
                             <td>
-                              <button id="download-voucher" class="btn btn-primary btn-xs">下载参赛证</button>
+                              <button  onclick='download_comp_voucher("{<%= "username:'#{a.username}',gender:'#{a.gender}',bj:'#{a.bj}',school_name:'#{a.school_name}',age:'#{a.birthday.strftime('%Y-%m-%d')}',student_code:'#{a.student_code}',comp_name:'#{a.comp_name}',event_name:'#{a.event_name}',identifier:'#{a.identifier}',teacher:'#{a.teacher}',teacher_mobile:'#{a.teacher_mobile}'" %>}")' class="btn btn-primary btn-xs">下载参赛证</button>
                             </td>
                           </tr>
                       <% end %>
@@ -95,5 +95,10 @@
     </div>
   </div>
 </div>
+<script type="text/javascript" charset="utf-8" src="/assets/jquery.qrcode.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/assets/jspdf.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/assets/comp_voucher.js"></script>
+
+
 
 

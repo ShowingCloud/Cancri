@@ -102,12 +102,12 @@ class UserController < ApplicationController
         when 'competition' then
           @apply_info = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where('c.end_time > ?', Time.now).where(user_id: current_user_id).select(:id, 'up.username', :grade, 'up.gender', 'up.birthday', 'up.bj', 'up.student_code', 'up.identity_card', 'schools.name as school_name', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.last_score', 'teams.identifier', 'teams.teacher', 'teams.teacher_mobile').page(params[:page]).per(params[:per])
         when 'activity' then
-          @apply_info = ActivityUserShip.joins(:activity).left_joins(:school).where('c.end_time > ?', Time.now).where(user_id: current_user_id).select(:id, :has_join, 'schools.name as school_name', 'activity_user_ships.grade', 'activities.*').page(params[:page]).per(params[:per])
+          @apply_info = ActivityUserShip.joins(:activity).left_joins(:school).where('activities.end_time > ?', Time.now).where(user_id: current_user_id).select(:id, :has_join, 'schools.name as school_name', 'activity_user_ships.grade', 'activities.*').page(params[:page]).per(params[:per])
         else
           render_optional_error(404)
       end
     else
-      @apply_info = CourseUserShip.joins(:course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where('c.end_time > ?', Time.now).where(user_id: current_user_id).select(:score, :course_id, 'up.username', 'up.grade', 'up.bj', 'up.student_code', 'courses.name', 'courses.end_time').page(params[:page]).per(params[:per])
+      @apply_info = CourseUserShip.joins(:course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where('courses.end_time > ?', Time.now).where(user_id: current_user_id).select(:score, :course_id, 'up.username', 'up.grade', 'up.bj', 'up.student_code', 'courses.name', 'courses.end_time').page(params[:page]).per(params[:per])
     end
   end
 
