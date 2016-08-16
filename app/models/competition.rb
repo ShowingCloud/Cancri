@@ -21,7 +21,7 @@ class Competition < ApplicationRecord
   STATUS = {
       待显示: 0,
       显示: 1,
-      比赛结束: 2,
+      结束: 2,
   }
 
   def validate_datetime

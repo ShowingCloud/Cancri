@@ -8,7 +8,11 @@ class Admin::ActivitiesController < AdminController
   # GET /admin/activities
   # GET /admin/activities.json
   def index
-    @activities = Activity.all.page(params[:page]).per(params[:per])
+    activities = Activity.includes(:parent_activity).order('id desc'); false
+    if params[:field].present? && params[:keyword].present?
+      activities = activities.where(["activities.#{params[:field]} like ?", "%#{params[:keyword]}%"])
+    end
+    @activities= activities.page(params[:page]).per(params[:per])
   end
 
   # GET /admin/activities/1

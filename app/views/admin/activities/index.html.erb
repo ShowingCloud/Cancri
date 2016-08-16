@@ -38,6 +38,8 @@
   <tr>
     <th>ID</th>
     <th><%= t('simple_form.labels.defaults.name') %></th>
+    <th>含子活动</th>
+    <th>所属活动</th>
     <th><%= t('simple_form.labels.defaults.host_address') %></th>
     <th>显示</th>
     <th>报名时间</th>
@@ -51,6 +53,8 @@
       <tr>
         <td><%= activity.id %></td>
         <td><a href="<%= "/admin/activities/#{activity.id}/users" %>" title="报名列表"><%= activity.name %></a></td>
+        <td><%= activity.is_father ? "是" : "" %></td>
+        <td><%= activity.parent_id.present? ? activity.parent_activity.name : "" %></td>
         <td><%= activity.host_address %></td>
         <td><%= show_status(activity.status) %></td>
         <td><%= activity.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>

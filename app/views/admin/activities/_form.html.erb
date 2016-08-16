@@ -20,6 +20,8 @@
         <div class="form-inputs">
           <%= f.input :name %>
           <%= f.input :host_year, collection: 2016..2017 %>
+          <%= f.input :parent_id, collection: Activity.where(is_father: true).where('activities.apply_end_time > ?', Time.now).select(:id, :name), label: '所属活动' %>
+          <%= f.input :is_father, label: '包含子活动' %>
           <%= f.input :host_address %>
           <% if @activity.cover? %>
               <div class="form-group">
@@ -35,7 +37,7 @@
           <label class="select required control-label" for="news_content"><abbr title="必填字段">*</abbr>内容:</label>
           <%= f.kindeditor :content, :window_onload => true, :owner_id => @activity.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
           <br>
-          <%= f.input :status, label: '显示' %>
+          <%= f.input :status, collection: Competition::STATUS, label: '状态' %>
           <div class="row">
             <div class="form-group datetime optional col-md-6 required" data-date-merge>
               <label class="datetime optional control-label"><abbr title="必填字段">*</abbr> 报名开始时间</label>

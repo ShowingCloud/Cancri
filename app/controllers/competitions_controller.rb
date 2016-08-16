@@ -15,7 +15,8 @@ class CompetitionsController < ApplicationController
   end
 
   def events
-    @events = Event.left_joins(:competition).where(competition_id: params[:id], is_father: 0).select('events.*', 'competitions.name as comp_name', 'competitions.apply_end_time as end_apply_time').page(params[:page]).per(params[:per])
+    @competition = Competition.find(params[:id])
+    @events = Event.where(competition_id: @competition.id, is_father: 0).page(params[:page]).per(params[:per])
   end
 
   def apply_event

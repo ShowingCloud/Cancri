@@ -2,17 +2,25 @@ class ActivitiesController < ApplicationController
   before_action :authenticate_user!, :only => [:apply_activity, :apply_require]
 
   def index
-    @activities = Activity.where(status: 1).order('id desc').page(params[:page]).per(params[:per])
+    @activities = Activity.where(level: 1).where.not(status: 0).order('status asc').page(params[:page]).per(params[:per])
   end
 
   def show
-    @activity = Activity.find(params[:id])
+    id = params[:id]
+    @activity = Activity.find(id)
+
     if current_user.present?
-      @already_apply = ActivityUserShip.where(user_id: current_user.id, activity_id: params[:id]).exists?
-      unless @already_apply
-        user_info = UserProfile.left_joins(:school, :district, :user).where(user_id: current_user.id).select(:username, :grade, :birthday, :school_id, :district_id, :bj, 'users.mobile', 'schools.name as school_name', 'districts.name as district_name').take; false
-        @user_info = user_info ||= current_user.build_user_profile
+      current_user_id = current_user.id
+      if @activity.is_father
+        @child_activities = Activity.find_by_sql('select a.id,a.name,(select 1 as one from activity_user_ships a_u_s where a_u_s.user_id = '+ "#{current_user_id}" +' and a_u_s.activity_id = a.id) as has_apply from activities a where a.parent_id ='+ "#{@activity.id}"+'  GROUP BY a.id')
+      else
+        @already_apply = ActivityUserShip.where(user_id: current_user_id, activity_id: id).exists?
+        unless @already_apply
+          user_info = UserProfile.left_joins(:school, :district, :user).where(user_id: current_user_id).select(:username, :grade, :birthday, :school_id, :district_id, :bj, 'users.mobile', 'schools.name as school_name', 'districts.name as district_name').take; false
+          @user_info = user_info ||= current_user.build_user_profile
+        end
       end
+
     end
   end
 

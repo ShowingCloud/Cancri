@@ -1,28 +1,28 @@
 <div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
   <div class="container" id="event-list">
     <div class="top">
-      <% if @events.length>0 %>
-          <%= @events.first.comp_name %>
-      <% else %>
-          该比赛暂无项目
-      <% end %>
+      <%= @competition.name %>
     </div>
     <% if @events.length>0 %>
         <div class="middle">
-          <div class="border-box">
-            <% @events.each do |e| %>
-                <div class="event-item">
-                  <% if e.end_apply_time > Time.now %>
+          <% if @competition.apply_end_time > Time.now %>
+              <div class="border-box">
+                <% @events.each do |e| %>
+                    <div class="event-item">
                       <%= link_to "#{apply_event_competitions_path}?ed=#{e.id}", class: '' do %>
                           <div class="item-box">
                             <div class="item-title"><%= e.name %></div>
                           </div>
                       <% end %>
-                  <% end %>
-                </div>
-            <% end %>
-          </div>
+                    </div>
+                <% end %>
+              </div>
+          <% else %>
+              <h3 class="text-center" style="color: white">已过报名时间</h3>
+          <% end %>
         </div>
+    <% else %>
+        该比赛暂无项目
     <% end %>
     <div class="bottom">
       <nav>
