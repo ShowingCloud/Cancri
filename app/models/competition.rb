@@ -6,6 +6,7 @@ class Competition < ApplicationRecord
 
   before_validation :validate_datetime
   before_validation :validate_time_now, on: :create
+  before_validation :set_district
   validates :name, presence: true, length: {maximum: 60}, uniqueness: true
   validates :host_year, presence: true, inclusion: {in: ['2016', '2017']}
   validates :aim, presence: true, length: {minimum: 5}
@@ -24,6 +25,12 @@ class Competition < ApplicationRecord
       显示: 1,
       结束: 2,
   }
+
+  def set_district
+    if district_id == nil
+      self.district_id = 0
+    end
+  end
 
   def validate_datetime
     if apply_start_time.present? && apply_end_time.present? && start_time.present? && end_time.present? && school_audit_time.present? && district_audit_time.present?

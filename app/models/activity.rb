@@ -18,6 +18,9 @@ class Activity < ApplicationRecord
   private
 
   def check_include_self
+    if district_id == nil
+      self.district_id = 0
+    end
     if parent_id.present? && parent_id == id
       errors[:parent_id] << '所属项目不能是自己'
     end
