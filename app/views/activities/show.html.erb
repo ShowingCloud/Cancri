@@ -16,12 +16,27 @@
             </div>
 
             <% if @activity.is_father %>
-                <div class="text-center">
-                  <% @child_activities.each do |c| %>
-                      <p>
-                        <a href="<%= "#{activities_path}/#{c.id}" %>"><%= c.name %></a> <%= c.has_apply ==1 ? '(已报名)' : '' if current_user.present? %>
-                      </p>
-                  <% end %>
+                <div class="bottom">
+                  <div class="sub-act">
+                    <div class="sub-act-title">
+                      详细活动
+                    </div>
+                    <div class="sub-act-content">
+                      <% @child_activities.each do |c| %>
+                          <a href="<%= "#{activities_path}/#{c.id}" %>">
+                            <div class="sub-activity">
+                              <div class="img-thumbnail">
+                                <img src="<%= image_path(c.cover) %>" alt=""/>
+                              </div>
+                              <div class="dec">
+                                <%= c.name %>
+                                <strong><%= c.has_apply ==1 ? '(已报名)' : '' if current_user.present? %></strong>
+                              </div>
+                            </div>
+                          </a>
+                      <% end %>
+                    </div>
+                  </div>
                 </div>
             <% else %>
                 <div class="bottom">

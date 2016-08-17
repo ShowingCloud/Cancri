@@ -2007,6 +2007,39 @@ select {
         padding-top: 6px;
       }
     }
+    .sub-act {
+      padding: 0 40px;
+      .sub-act-title {
+        font-size: 14px;
+        padding: 5px 0;
+        border-bottom: 1px solid #fff;
+        font-weight: bold;
+        text-align: left;
+      }
+      .sub-act-content {
+        padding: 5px 0;
+        a {
+          color: #6699cc;
+        }
+        .sub-activity {
+          border: 1px solid #6699cc;
+          padding: 10px;
+          display: inline-block;
+          background: rgba(0, 0, 0, .3);
+          cursor: pointer;
+          &:hover {
+            border-color: #66ccff;
+          }
+          .img-thumbnail {
+            width: 200px;
+            img {
+              width: 192px;
+              height: 120px;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
