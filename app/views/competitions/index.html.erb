@@ -5,13 +5,15 @@
     </div>
     <div class="middle">
       <% @competitions.each do |c| %>
-
           <div class="comp-item">
             <a href="<%= competition_path(c) %>">
               <div class="item-box">
                 <%= image_tag(c.cover, class: 'cover') %>
                 <div class="shade">
                   <p><%= c.name %></p>
+                  <div class="shade-btn">
+                    <button class="btn-go-comp">查看详情</button>
+                  </div>
                 </div>
               </div>
             </a>
