@@ -20,7 +20,10 @@ class ActivitiesController < ApplicationController
           @user_info = user_info ||= current_user.build_user_profile
         end
       end
-
+    else
+      if @activity.is_father
+        @child_activities = @activity.child_activities
+      end
     end
   end
 

@@ -19,7 +19,7 @@
                 <div class="text-center">
                   <% @child_activities.each do |c| %>
                       <p>
-                        <a href="<%= "#{activities_path}/#{c.id}" %>"><%= c.name %></a> <%= c.has_apply ==1 ? '(已报名)' : '' %>
+                        <a href="<%= "#{activities_path}/#{c.id}" %>"><%= c.name %></a> <%= c.has_apply ==1 ? '(已报名)' : '' if current_user.present? %>
                       </p>
                   <% end %>
                 </div>
