@@ -2,7 +2,11 @@ class ActivitiesController < ApplicationController
   before_action :authenticate_user!, :only => [:apply_activity, :apply_require]
 
   def index
-    @activities = Activity.where(level: 1).where.not(status: 0).order('status asc').page(params[:page]).per(params[:per])
+    activities = Activity.where(level: 1).where.not(status: 0); false
+    if cookies[:area] == '1'
+      activities = activities.where(district_id: 9)
+    end
+    @activities = activities.order('status asc').page(params[:page]).per(params[:per])
   end
 
   def show
@@ -12,7 +16,7 @@ class ActivitiesController < ApplicationController
     if current_user.present?
       current_user_id = current_user.id
       if @activity.is_father
-        @child_activities = Activity.find_by_sql('select a.id,a.name,(select 1 as one from activity_user_ships a_u_s where a_u_s.user_id = '+ "#{current_user_id}" +' and a_u_s.activity_id = a.id) as has_apply from activities a where a.parent_id ='+ "#{@activity.id}"+'  GROUP BY a.id')
+        @child_activities = Activity.find_by_sql('select a.id,a.name,a.cover,(select 1 as one from activity_user_ships a_u_s where a_u_s.user_id = '+ "#{current_user_id}" +' and a_u_s.activity_id = a.id) as has_apply from activities a where a.parent_id ='+ "#{@activity.id}"+'  GROUP BY a.id')
       else
         @already_apply = ActivityUserShip.where(user_id: current_user_id, activity_id: id).exists?
         unless @already_apply

@@ -8,6 +8,10 @@ class CompetitionsController < ApplicationController
     if host_year.present?
       competitions = competitions.where(host_year: host_year)
     end
+
+    if cookies[:area] == '1'
+      competitions = competitions.where(district_id: 9)
+    end
     @competitions = competitions.select(:id, :name, :cover).order('id desc').page(params[:page]).per(params[:per])
   end
 

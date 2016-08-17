@@ -1,7 +1,15 @@
 class HomeController < ApplicationController
   def index
-    @competition = Competition.where.not(status: 0).order('id asc').limit(2)
-    @activity = Activity.where(status: 1).last
+    competition = Competition.where.not(status: 0); false
+    activity = Activity.where(status: 1); false
+
+    if cookies[:area] == '1'
+      competition = competition.where(district_id: 9)
+      activity = activity.where(district_id: 9)
+    end
+
+    @competition = competition.order('id asc').limit(2)
+    @activity = activity.last
   end
 
   def error_404

@@ -1,9 +1,12 @@
 class NewsController < ApplicationController
   def index
     if params[:type].present?
-      news = News.where(status: 1).where("locate(#{params[:type]},news_type)>0")
+      news = News.where(status: 1).where("locate(#{params[:type]},news_type)>0"); false
     else
-      news = News.where(status: 1)
+      news = News.where(status: 1); false
+    end
+    if cookies[:area] == '1'
+      news = news.where(district_id: 9)
     end
     @news = news.page(params[:page]).per(params[:per])
     if @news.length>0

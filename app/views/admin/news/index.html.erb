@@ -22,6 +22,8 @@
               <span class="caret"></span></button>
             <ul class="dropdown-width dropdown-menu">
               <li data-search-option="name"><a><%= t('simple_form.labels.defaults.name') %></a></li>
+              <li data-search-option="district"><a><%= t('simple_form.labels.defaults.district_id') %></a></li>
+              <li data-search-option="publisher"><a>发布者</a></li>
               <li data-search-option="id"><a>ID</a></li>
             </ul>
           </div>
@@ -41,6 +43,7 @@
     <th>类型</th>
     <th>显示</th>
     <th>热门</th>
+    <th>区县</th>
     <th>发布人</th>
     <th>发布时间</th>
     <th>更新时间</th>
@@ -56,6 +59,7 @@
         <td><%= news[:type] %></td>
         <td><%= show_status(news[:status]) %></td>
         <td><%= show_status(news[:is_hot]) %></td>
+        <td><%= news[:district_name] %></td>
         <td><%= news[:publisher] %></td>
         <td><%= news[:created_at].try(:strftime, '%Y-%m-%d') %></td>
         <td><%= news[:updated_at].try(:strftime, '%Y-%m-%d') %></td>

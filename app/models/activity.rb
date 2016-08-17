@@ -3,6 +3,7 @@ class Activity < ApplicationRecord
   has_many :users, through: :activity_user_ships
   has_many :child_activities, class_name: Activity, foreign_key: :parent_id
   belongs_to :parent_activity, class_name: Activity, foreign_key: :parent_id
+  belongs_to :district
 
   before_validation :check_include_self
   validates :name, presence: true, length: {maximum: 50}, uniqueness: true

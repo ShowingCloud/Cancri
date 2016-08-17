@@ -20,6 +20,7 @@
         <div class="form-inputs">
           <%= f.input :name %>
           <%= f.input :host_year, collection: 2016..2017 %>
+          <%= f.input :district_id, collection: District.select(:id, :name)%>
           <%= f.input :parent_id, collection: Activity.where(is_father: true).where('activities.apply_end_time > ?', Time.now).select(:id, :name), label: '所属活动' %>
           <%= f.input :is_father, label: '包含子活动' %>
           <%= f.input :host_address %>
