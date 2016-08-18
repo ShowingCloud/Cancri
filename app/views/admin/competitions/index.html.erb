@@ -74,7 +74,7 @@
                   <i class="icon-group icon-only"></i>
               <% end %>
           <% end %>
-          <%= link_to "/admin/photos?cod=#{comp.id}", title: '选手风采', class: 'btn btn-xs btn-warn' do %>
+          <%= link_to "/admin/photos?type_id=#{comp.id}&type=0", title: '选手风采', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-close bigger-120"></i>
           <% end %>
           <%= link_to [:admin, comp], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>

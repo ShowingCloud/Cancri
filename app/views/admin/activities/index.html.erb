@@ -75,6 +75,11 @@
                   <i class="icon-edit bigger-120"></i>
               <% end %>
           <% end %>
+          <% if activity.level==1 %>
+              <%= link_to "/admin/photos?type_id=#{activity.id}&type=1", title: '选手风采', class: 'btn btn-xs btn-warn' do %>
+                  <i class="icon-eye-close bigger-120"></i>
+              <% end %>
+          <% end %>
           <% if activity.apply_start_time < Time.now %>
               <%= link_to [:admin, activity], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
                   <i class="icon-trash bigger-120"></i>

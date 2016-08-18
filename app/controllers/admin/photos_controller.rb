@@ -5,14 +5,20 @@ class Admin::PhotosController < AdminController
   # GET /admin/demeanor
   # GET /admin/demeanor.json
   def index
-    @competition = Competition.where(id: params[:cod]).select(:id, :name).take
-    unless @competition
-      raise ActiveRecord::RecordNotFound
-    end
-    if params[:field].present? && params[:keyword].present?
-      @photos = Photo.where(competition_id: params[:cod]).where(["#{params[:field]} like ?", "%#{params[:keyword]}%"]).page(params[:page]).per(params[:per])
+    type = params[:type]
+    type_id = params[:type_id]
+    if type.present?
+      case type
+        when '0' then
+          @model_type = Competition.find(type_id)
+        when '1' then
+          @model_type = Activity.find(type_id)
+        else
+          render_optional_error(404)
+      end
+      @photos = Photo.where(type_id: type_id).page(params[:page]).per(params[:per])
     else
-      @photos = Photo.where(competition_id: params[:cod]).all.page(params[:page]).per(params[:per])
+      render_optional_error(404)
     end
   end
 
@@ -38,7 +44,7 @@ class Admin::PhotosController < AdminController
     respond_to do |format|
       if @photo.save
 
-        format.html { redirect_to "/admin/photos?cod=#{@photo.competition_id}", notice: '上传成功' }
+        format.html { redirect_to "/admin/photos", notice: '上传成功' }
         format.js
       else
         format.html { render action: 'new' }
@@ -66,7 +72,7 @@ class Admin::PhotosController < AdminController
   def destroy
     @photo.destroy
     respond_to do |format|
-      format.html { redirect_to "#{admin_photos_url}?cod=#{params[:cod]}", notice: '删除成功' }
+      format.html { redirect_to "#{admin_photos_url}?type_id=#{@photo.type_id}&type=#{@photo.type_id}", notice: '删除成功' }
       format.json { head :no_content }
     end
   end
@@ -79,7 +85,7 @@ class Admin::PhotosController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def photo_params
-    params.require(:photo).permit(:competition_id, :image, :sort, :desc, :status)
+    params.require(:photo).permit(:type_id, :image, :photo_type, :sort, :desc, :status)
   end
 
 end

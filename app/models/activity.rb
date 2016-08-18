@@ -5,6 +5,7 @@ class Activity < ApplicationRecord
   belongs_to :parent_activity, class_name: Activity, foreign_key: :parent_id
   belongs_to :district
 
+
   before_validation :check_include_self
   validates :name, presence: true, length: {maximum: 50}, uniqueness: true
   validates :host_year, presence: true
