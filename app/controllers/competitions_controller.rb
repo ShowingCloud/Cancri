@@ -8,6 +8,10 @@ class CompetitionsController < ApplicationController
     if host_year.present?
       competitions = competitions.where(host_year: host_year)
     end
+
+    if cookies[:area] == '1'
+      competitions = competitions.where(district_id: 9)
+    end
     @competitions = competitions.select(:id, :name, :cover).order('id desc').page(params[:page]).per(params[:per])
   end
 
@@ -15,7 +19,8 @@ class CompetitionsController < ApplicationController
   end
 
   def events
-    @events = Event.left_joins(:competition).where(competition_id: params[:id], is_father: 0).select('events.*', 'competitions.name as comp_name', 'competitions.apply_end_time as end_apply_time').page(params[:page]).per(params[:per])
+    @competition = Competition.find(params[:id])
+    @events = Event.where(competition_id: @competition.id, is_father: 0).page(params[:page]).per(params[:per])
   end
 
   def apply_event

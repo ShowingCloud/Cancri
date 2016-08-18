@@ -1,7 +1,7 @@
 <h1 class="page-header">
-  <%= @competition.name %>--<%= t('activerecord.models.demeanor') %>列表 (视频)
+  <%= @model_type.name %>--<%= t('activerecord.models.demeanor') %>列表 (视频)
   <small class="pull-right">
-    <a href="<%= "#{admin_photos_path}?cod=#{@competition.id}" %>" class="btn btn-default" title="图片列表">
+    <a href="<%= "#{admin_photos_path}?type_id=#{@model_type.id}&type=#{params[:type]}" %>" class="btn btn-default" title="图片列表">
       图片列表</a>
   </small>
 </h1>
@@ -13,10 +13,10 @@
           您的浏览器不支持 video 标签。
         </video>
         <div class="actions">
-          <%= link_to edit_admin_video_path(video), title: '编辑', class: 'btn btn-xs btn-info' do %>
+          <%= link_to "", title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>
           <% end %>
-          <%= link_to "#{admin_video_path(video)}?cod=#{video.competition_id}", method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+          <%= link_to "#{admin_video_path(video)}", method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash bigger-120"></i>
           <% end %>
         </div>
@@ -34,12 +34,12 @@
 
     <div class="form-inputs">
       <%= f.input :status %>
-      <%= f.hidden_field :competition_id, value: params[:cod].present? ? params[:cod] : @video.competition_id %>
+      <%= f.hidden_field :type_id, value: params[:type_id].present? ? params[:type_id] : @video.type_id %>
       <%= f.file_field :video, multiple: true, name: "video[video]" %>
     </div>
 
     <!--<div class="form-actions">-->
-      <!--<%= f.button :submit, class: 'btn btn-primary' %>-->
+    <!--<%= f.button :submit, class: 'btn btn-primary' %>-->
     <!--</div>-->
 <% end %>
 
@@ -48,6 +48,9 @@
   {%=o.name%}
   <div class="progress"><div class="bar" style="width: 0%"></div></div>
 </div>
+
+
+
 
 
 

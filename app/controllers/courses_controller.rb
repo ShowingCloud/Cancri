@@ -2,31 +2,21 @@ class CoursesController < ApplicationController
   before_action :authenticate_user!, only: [:apply, :apply_show]
 
   def index
-    course=Course.where(status: 1).order('created_at desc')
-    if cookies[:area]
-      course = course.where(district_id: 9)
-    end
-    @course_array = course.select(:id, :name, :num, :apply_count, :apply_end_time).page(params[:page]).per(params[:per])
     if current_user.present?
-      @courses = @course_array.map { |c| {
-          id: c.id,
-          name: c.name,
-          num: c.num,
-          apply_end_time: c.apply_end_time,
-          apply_count: c.apply_count,
-          has_apply: c.course_user_ships.where(user_id: current_user.id).exists?
-      } }
+      current_user_id = current_user.id
+      courses = Course.find_by_sql("select c.id,c.name,c.num,c.district_id,c.apply_end_time,c.apply_count,(select 1 as one from course_user_ships c_u_s where c_u_s.course_id = c.id and c_u_s.user_id = '#{current_user_id}') as has_apply from courses c where status=1 order by c.created_at desc")
+      if cookies[:area]=='1'
+        courses = Course.find_by_sql("select c.id,c.name,c.num,c.district_id,c.apply_end_time,c.apply_count,(select 1 as one from course_user_ships c_u_s where c_u_s.course_id = c.id and c_u_s.user_id = '#{current_user_id}') as has_apply from courses c where status=1 and district_id=9 order by c.created_at desc")
+      end
+      courses = Kaminari.paginate_array(courses)
     else
-      @courses = @course_array.map { |c| {
-          id: c.id,
-          name: c.name,
-          num: c.num,
-          apply_end_time: c.apply_end_time,
-          apply_count: c.apply_count,
-          has_apply: false
-      } }
+      course=Course.where(status: 1).order('created_at desc'); false
+      if cookies[:area]=='1'
+        course = course.where(district_id: 9)
+      end
+      courses = course.select(:id, :name, :num, :apply_count, :apply_end_time)
     end
-
+    @courses = courses.page(params[:page]).per(params[:per])
   end
 
   def show

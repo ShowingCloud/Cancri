@@ -38,6 +38,8 @@
   <tr>
     <th>ID</th>
     <th><%= t('simple_form.labels.defaults.name') %></th>
+    <th>含子活动</th>
+    <th>所属活动</th>
     <th><%= t('simple_form.labels.defaults.host_address') %></th>
     <th>显示</th>
     <th>报名时间</th>
@@ -51,21 +53,39 @@
       <tr>
         <td><%= activity.id %></td>
         <td><a href="<%= "/admin/activities/#{activity.id}/users" %>" title="报名列表"><%= activity.name %></a></td>
+        <td><%= activity.is_father ? "是" : "" %></td>
+        <td><%= activity.parent_id.present? ? activity.parent_activity.name : "" %></td>
         <td><%= activity.host_address %></td>
         <td><%= show_status(activity.status) %></td>
         <td><%= activity.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>
           -- <%= activity.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %></td>
         <td><%= activity.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>
           -- <%= activity.end_time.try(:strftime, '%Y-%m-%d %H:%M') %></td>
-        <td><%= link_to [:admin, activity], title: '查看', class: 'btn btn-xs btn-warn' do %>
+        <td>
+          <% if activity.is_father && (activity.apply_start_time > Time.now) %>
+              <%= link_to "/admin/activities/#{activity.id}/add_child", title: '添加子活动', class: 'btn btn-xs btn-primary' do %>
+                  <i class="icon-plus bigger-120"></i>
+              <% end %>
+          <% end %>
+          <%= link_to [:admin, activity], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>
           <% end %>
-          <%= link_to edit_admin_activity_path(activity), title: '编辑', class: 'btn btn-xs btn-info' do %>
-              <i class="icon-edit bigger-120"></i>
+          <% if activity.end_time > Time.now %>
+              <%= link_to edit_admin_activity_path(activity), title: '编辑', class: 'btn btn-xs btn-info' do %>
+                  <i class="icon-edit bigger-120"></i>
+              <% end %>
           <% end %>
-          <%= link_to [:admin, activity], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
-              <i class="icon-trash bigger-120"></i>
-          <% end %></td>
+          <% if activity.level==1 %>
+              <%= link_to "/admin/photos?type_id=#{activity.id}&type=1", title: '选手风采', class: 'btn btn-xs btn-warn' do %>
+                  <i class="icon-eye-close bigger-120"></i>
+              <% end %>
+          <% end %>
+          <% if activity.apply_start_time < Time.now %>
+              <%= link_to [:admin, activity], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+                  <i class="icon-trash bigger-120"></i>
+              <% end %>
+          <% end %>
+        </td>
       </tr>
   <% end %>
   </tbody>

@@ -136,9 +136,11 @@ Rails.application.routes.draw do
     resources :activities do
       collection do
         post :update_user_score
+        post :add_child
       end
       member do
         get :users
+        get :add_child
       end
     end
     resources :news_types

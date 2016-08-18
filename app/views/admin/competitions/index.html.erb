@@ -22,7 +22,8 @@
               <span class="caret"></span></button>
             <ul class="dropdown-width dropdown-menu">
               <li data-search-option="name"><a><%= t('simple_form.labels.defaults.name') %></a></li>
-
+              <li data-search-option="district"><a><%= t('simple_form.labels.defaults.district_id') %></a></li>
+              <li data-search-option="status"><a>显示 [1或0]</a></li>
               <li data-search-option="id"><a>ID</a></li>
             </ul>
           </div>
@@ -39,6 +40,7 @@
     <th>ID</th>
     <th>赛事名称</th>
     <th>赛事状态</th>
+    <th>区县</th>
     <th>报名时间</th>
     <th>审核时间</th>
     <th>操作</th>
@@ -51,6 +53,7 @@
         <td><%= comp.id %></td>
         <td><%= comp.name %></td>
         <td><%= t('status.status'+comp.status.to_s) %></td>
+        <td><%= comp.district_name %></td>
         <td><%= comp.apply_start_time.try(:strftime, '%Y-%m-%d') %>
           -- <%= comp.apply_end_time.try(:strftime, '%Y-%m-%d') %></td>
         <td><%= comp.school_audit_time.try(:strftime, '%Y-%m-%d') %>
@@ -71,7 +74,7 @@
                   <i class="icon-group icon-only"></i>
               <% end %>
           <% end %>
-          <%= link_to "/admin/photos?cod=#{comp.id}", title: '选手风采', class: 'btn btn-xs btn-warn' do %>
+          <%= link_to "/admin/photos?type_id=#{comp.id}&type=0", title: '选手风采', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-close bigger-120"></i>
           <% end %>
           <%= link_to [:admin, comp], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>

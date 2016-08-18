@@ -15,85 +15,109 @@
               <%= @activity.content.html_safe %>
             </div>
 
-            <div class="bottom">
-              <% if @already_apply %>
-                  <p>您已经报名</p>
-              <% else %>
-                  <% if current_user.present? %>
-                      <% if current_user.mobile.present? %>
-                          <button class="btn btn-primary go-activity">报名参加</button>
-                          <div class="content form-horizontal hide">
-                            <form>
-                              <div class="form-group">
-                                <label for="username" class="col-sm-2 control-label">姓名</label>
-
-                                <div class="col-sm-9">
-                                  <input type="text" class="form-control" id="username" value="<%= @user_info.username %>" placeholder="姓名">
-                                </div>
+            <% if @activity.is_father %>
+                <div class="bottom">
+                  <div class="sub-act">
+                    <div class="sub-act-title">
+                      详细活动
+                    </div>
+                    <div class="sub-act-content">
+                      <% @child_activities.each do |c| %>
+                          <a href="<%= "#{activities_path}/#{c.id}" %>">
+                            <div class="sub-activity">
+                              <div class="dec">
+                                <%= c.name %>
+                                <strong><%= c.has_apply ==1 ? '(已报名)' : '' if current_user.present? %></strong>
                               </div>
-                              <div class="form-group">
-                                <label for="mobile" class="col-sm-2 control-label">手机</label>
-
-                                <div class="col-sm-9">
-                                  <input type="text" class="form-control" id="mobile" disabled="disabled" value="<%= @user_info.mobile %>" placeholder="手机">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label for="birthday" class="col-sm-2 control-label">生日</label>
-
-                                <div class="col-sm-9">
-                                  <input type="text" class="form-control datetime" id="birthday" value="<%= @user_info.birthday %>" data-type="select-date" data-date-format="yyyy-mm-dd">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label for="school_name" class="col-sm-2 control-label">学校</label>
-
-                                <div class="col-sm-9 special-row school-field">
-                                  <% if @user_info.school_id.present? && @user_info.school_id!=0 %>
-                                      <span class="change-school school-tag"><%= @user_info.school_name %> </span>
-                                  <% else %>
-                                      <button class="new-school btn-robodou">选择学校</button>
-                                  <% end %>
-                                  <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
-                                  <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label for="grade" class="col-sm-2 control-label">年级</label>
-
-                                <div class="col-sm-9">
-                                  <select id="grade" class="form-control">
-                                    <option value="0">请选择年级</option>
-                                    <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
-                                    <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
-                                    <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
-                                    <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
-                                    <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
-                                    <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
-                                    <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
-                                    <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
-                                    <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
-                                    <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
-                                    <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
-                                    <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
-                                  </select>
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-9">
-                                  <button class="btn btn-info btn-block apply-activity">提交</button>
-                                </div>
-                              </div>
-                            </form>
-                          </div>
-                      <% else %>
-                          <a href="<%= require_add_mobile_accounts_path %>">报名参加</a>
+                            </div>
+                          </a>
                       <% end %>
+                    </div>
+                  </div>
+                </div>
+            <% else %>
+                <div class="bottom">
+                  <% if @already_apply %>
+                      <p>您已经报名</p>
                   <% else %>
-                      <a class="btn btn-primary" href="<%= "#{apply_require_activities_path}?id=#{@activity.id}" %>">报名参加</a>
+                      <% if current_user.present? %>
+                          <% if current_user.mobile.present? %>
+                              <button class="btn btn-primary go-activity">报名参加</button>
+                              <div class="content form-horizontal hide">
+                                <form>
+                                  <div class="form-group">
+                                    <label for="username" class="col-sm-2 control-label">姓名</label>
+
+                                    <div class="col-sm-9">
+                                      <input type="text" class="form-control" id="username" value="<%= @user_info.username %>" placeholder="姓名">
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="mobile" class="col-sm-2 control-label">手机</label>
+
+                                    <div class="col-sm-9">
+                                      <input type="text" class="form-control" id="mobile" disabled="disabled" value="<%= @user_info.mobile %>" placeholder="手机">
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="birthday" class="col-sm-2 control-label">生日</label>
+
+                                    <div class="col-sm-9">
+                                      <input type="text" class="form-control datetime" id="birthday" value="<%= @user_info.birthday %>" data-type="select-date" data-date-format="yyyy-mm-dd">
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="school_name" class="col-sm-2 control-label">学校</label>
+
+                                    <div class="col-sm-9 special-row school-field">
+                                      <% if @user_info.school_id.present? && @user_info.school_id!=0 %>
+                                          <span class="change-school school-tag"><%= @user_info.school_name %> </span>
+                                      <% else %>
+                                          <button class="new-school btn-robodou">选择学校</button>
+                                      <% end %>
+                                      <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
+                                      <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="grade" class="col-sm-2 control-label">年级</label>
+
+                                    <div class="col-sm-9">
+                                      <select id="grade" class="form-control">
+                                        <option value="0">请选择年级</option>
+                                        <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
+                                        <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
+                                        <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
+                                        <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
+                                        <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
+                                        <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
+                                        <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
+                                        <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
+                                        <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
+                                        <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
+                                        <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
+                                        <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-9">
+                                      <button class="btn btn-info btn-block apply-activity">提交</button>
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
+                          <% else %>
+                              <a href="<%= require_add_mobile_accounts_path %>">报名参加</a>
+                          <% end %>
+                      <% else %>
+                          <a class="btn btn-primary" href="<%= "#{apply_require_activities_path}?id=#{@activity.id}" %>">报名参加</a>
+                      <% end %>
                   <% end %>
-              <% end %>
-            </div>
+                </div>
+            <% end %>
+
+
           </div>
         </div>
       </div>

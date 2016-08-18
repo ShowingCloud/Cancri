@@ -8,7 +8,11 @@ class Admin::ActivitiesController < AdminController
   # GET /admin/activities
   # GET /admin/activities.json
   def index
-    @activities = Activity.all.page(params[:page]).per(params[:per])
+    activities = Activity.includes(:parent_activity).order('parent_id desc', 'id desc'); false
+    if params[:field].present? && params[:keyword].present?
+      activities = activities.where(["activities.#{params[:field]} like ?", "%#{params[:keyword]}%"])
+    end
+    @activities= activities.page(params[:page]).per(params[:per])
   end
 
   # GET /admin/activities/1
@@ -23,6 +27,20 @@ class Admin::ActivitiesController < AdminController
 
   # GET /admin/activities/1/edit
   def edit
+  end
+
+  def add_child
+    @activity = Activity.find(params[:id])
+    @child_activity = Activity.new
+    if request.method == 'POST'
+      @child_activity = Activity.new(name: params[:activity][:name], district_id: @activity.district_id, parent_id: @activity.id, content: params[:activity][:content], status: params[:activity][:status], host_year: @activity.host_year, host_address: params[:activity][:host_address], apply_start_time: @activity.apply_start_time, apply_end_time: @activity.apply_end_time, start_time: @activity.start_time, end_time: @activity.end_time)
+      if @child_activity.save
+        flash[:notice]= @child_activity.name+'创建成功'
+        redirect_to "/admin/activities/#{@child_activity.id}"
+      else
+        flash[:notice] = '创建失败'
+      end
+    end
   end
 
   def users

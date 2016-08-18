@@ -1,12 +1,15 @@
 <h1 class="page-header">
-  <%= @competition.name %>--<%= t('activerecord.models.demeanor') %>列表 (图片)
-  <small class="pull-right">
-    <a href="<%= "#{admin_videos_path}?cod=#{@competition.id}" %>" class="btn btn-default" title="视频列表">
-      视频列表</a>
-    <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
-      <i class="icon-search icon-only"></i>
-    </a>
-  </small>
+  <% if @model_type.present? %>
+      <%= @model_type.name %>--<%= t('activerecord.models.demeanor') %>列表 (图片)
+      <small class="pull-right">
+        <a href="<%= "#{admin_videos_path}?type_id=#{@model_type.id}&type=#{params[:type]}" %>" class="btn btn-default" title="视频列表">
+          视频列表</a>
+        <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
+          <i class="icon-search icon-only"></i>
+        </a>
+      </small>
+  <% end %>
+
 </h1>
 <div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
   <div class="widget-header widget-header-small">
@@ -54,10 +57,10 @@
 
               <div class="tools tools-bottom">
 
-                <%= link_to "#{edit_admin_photo_path(p)}?cod=#{@competition.id}", title: '编辑' do %>
+                <%= link_to "", title: '编辑' do %>
                     <i class="icon-pencil"></i>
                 <% end %>
-                <%= link_to "/admin/photos/#{p.id}?cod=#{@competition.id}", method: :delete, data: {confirm: '确认删除吗?'}, title: '删除' do %>
+                <%= link_to "/admin/photos/#{p.id}", method: :delete, data: {confirm: '确认删除吗?'}, title: '删除' do %>
                     <i class="icon-remove red"></i>
                 <% end %>
               </div>
@@ -76,7 +79,8 @@
 
     <div class="form-inputs">
       <%= f.input :status, label: '是否显示' %>
-      <%= f.hidden_field :competition_id, value: params[:cod].present? ? params[:cod] : @photo.competition_id %>
+      <%= f.hidden_field :photo_type, value: 0 %>
+      <%= f.hidden_field :type_id, value: params[:type_id].present? ? params[:type_id] : @photo.type_id %>
 
       <%= f.file_field :image, multiple: true, name: "photo[image]" %>
       <p class="help-block">格式: jpg jpeg gif png</p>
@@ -88,6 +92,14 @@
   {%=o.name%}
   <div class="progress"><div class="bar" style="width: 0%"></div></div>
 </div>
+
+
+
+
+
+
+
+
 
 
 

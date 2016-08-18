@@ -7,11 +7,15 @@ class Admin::CompetitionsController < AdminController
   # GET /admin/competitions
   # GET /admin/competitions.json
   def index
+    competitions = Competition.left_joins(:district).select('competitions.*', 'districts.name as district_name'); false
     if params[:field].present? && params[:keyword].present?
-      @competitions = Competition.all.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"]).page(params[:page]).per(params[:per])
-    else
-      @competitions = Competition.all.page(params[:page]).per(params[:per])
+      if params[:field] == 'district'
+        competitions = competitions.where(["districts.name like ?", "%#{params[:keyword]}%"])
+      else
+        competitions = competitions.where(["competitions.#{params[:field]} like ?", "%#{params[:keyword]}%"])
+      end
     end
+    @competitions = competitions.page(params[:page]).per(params[:per])
   end
 
   def get_events

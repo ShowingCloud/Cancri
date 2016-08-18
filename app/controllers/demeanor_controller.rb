@@ -2,6 +2,9 @@ class DemeanorController < ApplicationController
   def index
     comp_id = params[:cd]
     photos = Photo.left_joins(:competition).where(status: 1).order('competition_id'); false
+    if cookies[:area] == '1'
+      photos = photos.where('competitions.district_id = ?', 9)
+    end
     if comp_id
       photos = photos.where(competition_id: comp_id)
     end
@@ -11,6 +14,9 @@ class DemeanorController < ApplicationController
   def videos
     comp_id = params[:cd]
     videos = Video.left_joins(:competition).where(status: 1).order('competition_id'); false
+    if cookies[:area] == '1'
+      videos = videos.where('competitions.district_id = ?', 9)
+    end
     if comp_id
       videos = videos.where(competition_id: comp_id)
     end

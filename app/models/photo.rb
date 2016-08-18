@@ -1,6 +1,6 @@
 class Photo < ApplicationRecord
-  belongs_to :competition
-  validates :competition_id, presence: true
+  validates :photo_type, presence: true, inclusion: {in: [0, 1]}
+  validates :type_id, presence: true
   mount_uploader :image, CoverUploader
 
 

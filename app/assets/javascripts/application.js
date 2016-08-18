@@ -25,5 +25,8 @@
 //= require admin/bootbox.min
 //= require remodal
 //= require competition
+//= require jquery.qrcode.min
+//= require comp_voucher
+
 //= //require turbolinks
 //= //require_tree .

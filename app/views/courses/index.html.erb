@@ -12,30 +12,30 @@
             </div>
             <div class="lesson-list">
               <% @courses.each do |c| %>
-                  <div class="lesson-item <%= 'disable' if c[:has_apply] %> <%= 'overtime' if c[:apply_end_time]<Time.now %>" data-course-id="<%= c[:id] %>">
+                  <div class="lesson-item <%= 'disable' if c.try(:has_apply) %> <%= 'overtime' if c.apply_end_time<Time.now %>" data-course-id="<%= c.id %>">
                     <div class="title">
-                      <%= c[:name] %>
+                      <%= c.name %>
                     </div>
 
-                    <p>报名结束时间：<%= c[:apply_end_time].try(:strftime, '%Y-%m-%d') %></p>
+                    <p>报名结束时间：<%= c.apply_end_time.try(:strftime, '%Y-%m-%d') %></p>
 
-                    <p>招募人数：<%= c[:num] %> </p>
+                    <p>招募人数：<%= c.num %> </p>
 
-                    <p>剩余名额：<%= c[:num]-c[:apply_count] %></p>
+                    <p>剩余名额：<%= c.num-c.apply_count %></p>
 
-                    <% if c[:has_apply] %>
+                    <% if c.try(:has_apply) %>
                         <p><div class="label label-success">您已报名</div></p>
                     <% end %>
 
-                    <% if c[:apply_end_time]<Time.now %>
+                    <% if c.apply_end_time<Time.now %>
                         <p><div class="label label-warning">报名结束</div></p>
                     <% end %>
 
-                    <a href="<%= "/courses/#{c[:id]}" %>" class="pull-right btn-robodou show-lesson">查看详情</a>
+                    <a href="<%= "/courses/#{c.id}" %>" class="pull-right btn-robodou show-lesson">查看详情</a>
                   </div>
               <% end %>
               <nav>
-                <%= paginate @course_array %>
+                <%= paginate @courses %>
               </nav>
             </div>
         <% else %>

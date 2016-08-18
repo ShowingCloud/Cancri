@@ -5,8 +5,21 @@ class Admin::VideosController < AdminController
   # GET /admin/demeanor
   # GET /admin/demeanor.json
   def index
-    @competition = Competition.find(params[:cod])
-    @videos = Video.where(competition_id: params[:cod]).all.page(params[:page]).per(params[:per])
+    type = params[:type]
+    type_id = params[:type_id]
+    if type.present?
+      case type
+        when '0' then
+          @model_type = Competition.find(type_id)
+        when '1' then
+          @model_type = Activity.find(type_id)
+        else
+          render_optional_error(404)
+      end
+      @videos = Video.where(type_id: type_id).all.page(params[:page]).per(params[:per])
+    else
+      render_optional_error(404)
+    end
   end
 
 
@@ -62,7 +75,7 @@ class Admin::VideosController < AdminController
   def destroy
     @video.destroy
     respond_to do |format|
-      format.html { redirect_to "#{admin_videos_url}?cod=#{params[:cod]}", notice: '删除成功' }
+      format.html { redirect_to "#{admin_videos_url}?type_id=#{@video.type_id}&type=#{@video.type_id}", notice: '删除成功' }
       format.json { head :no_content }
     end
   end
@@ -75,6 +88,6 @@ class Admin::VideosController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def video_params
-    params.require(:video).permit(:competition_id, :video, :sort, :desc, :status)
+    params.require(:video).permit(:type_id, :video, :video_type, :sort, :desc, :status)
   end
 end
