@@ -1,0 +1,38 @@
+<h1 class="page-header">
+  新增 <%= @activity.name %> 的子活动
+  <small class="pull-right">
+    <a href="<%= admin_activities_path %>" class="btn btn-default" title="活动列表">
+      <i class="icon-list icon-only"></i></a>
+  </small>
+</h1>
+
+<div class="panel panel-info">
+  <div class="panel-heading">新增子活动</div>
+  <div class="panel-body">
+    <%= simple_form_for(@child_activity, url: "/admin/activities/add_child?id=#{@activity.id}", method: :post) do |f| %>
+        <%= f.error_notification %>
+
+        <div class="form-inputs">
+          <%= f.input :name %>
+          <%= f.input :host_address %>
+          <label class="select required control-label" for="news_content"><abbr title="必填字段">*</abbr>内容:</label>
+          <%= f.kindeditor :content, :window_onload => true, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
+          <br>
+          <%= f.input :status, collection: Competition::STATUS, label: '状态' %>
+
+        </div>
+        <div class="form-actions">
+          <%= f.button :submit, class: 'btn btn-primary add-mark-score' %>
+        </div>
+    <% end %>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+</script>
+
+
+
+
+

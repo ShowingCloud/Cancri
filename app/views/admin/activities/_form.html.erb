@@ -14,97 +14,104 @@
               <% @activity.errors[:end_time].each do |msg| %>
                   <div class="alert alert-danger"><%= msg %></div>
               <% end %>
+              <% @activity.errors[:cover].each do |msg| %>
+                  <div class="alert alert-danger">封面:<%= msg %></div>
+              <% end %>
             </div>
         <% end %>
 
         <div class="form-inputs">
           <%= f.input :name %>
-          <%= f.input :host_year, collection: 2016..2017 %>
-          <%= f.input :district_id, collection: District.select(:id, :name)%>
-          <%= f.input :parent_id, collection: Activity.where(is_father: true).where('activities.apply_end_time > ?', Time.now).select(:id, :name), label: '所属活动' %>
-          <%= f.input :is_father, label: '包含子活动' %>
           <%= f.input :host_address %>
-          <% if @activity.cover? %>
+          <% if @activity.level==1 %>
+              <%= f.input :host_year, collection: 2016..2017 %>
+              <%= f.input :district_id, collection: District.select(:id, :name) %>
+              <%= f.input :is_father, label: '包含子活动' %>
+              <% if @activity.cover? %>
+                  <div class="form-group">
+                    <%= image_tag(@activity.cover_url(:middle), class: 'img-thumbnail') %>
+                  </div>
+              <% end %>
               <div class="form-group">
-                <%= image_tag(@activity.cover_url(:middle), class: 'img-thumbnail') %>
+                <label for="exampleInputFile"><abbr title="必填字段">*</abbr>封面</label>
+                <%= f.file_field :cover %>
+                <%= f.hidden_field :cover_cache %>
+                <p class="help-block">格式：jpg jpeg gif png</p>
               </div>
+
+              <div class="row">
+                <div class="form-group datetime optional col-md-6 required" data-date-merge>
+                  <label class="datetime optional control-label"><abbr title="必填字段">*</abbr> 报名开始时间</label>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <span>日期</span>
+                      <input data-date-merge-date value="<%= @activity.apply_start_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                    </div>
+                    <div class="col-md-6 bootstrap-timepicker">
+                      <span>时间</span>
+                      <input data-date-merge-time value="<%= @activity.apply_start_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
+                    </div>
+                  </div>
+                  <input data-date-merge-result type="hidden" name="activity[apply_start_time]" value="<%= @activity.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+                </div>
+                <div class="form-group datetime optional col-md-6" data-date-merge>
+                  <label class="datetime optional control-label"><abbr title="必填字段">*</abbr> 报名结束时间</label>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <span>日期</span>
+                      <input data-date-merge-date value="<%= @activity.apply_end_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                    </div>
+                    <div class="col-md-6 bootstrap-timepicker">
+                      <span>时间</span>
+                      <input data-date-merge-time value="<%= @activity.apply_end_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
+                    </div>
+                  </div>
+                  <input data-date-merge-result type="hidden" name="activity[apply_end_time]" value="<%= @activity.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+                </div>
+                <div class="form-group datetime optional col-md-6" data-date-merge>
+                  <label class="datetime optional control-label"><abbr title="必填字段">*</abbr> 活动开始时间</label>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <span>日期</span>
+                      <input data-date-merge-date value="<%= @activity.start_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                    </div>
+                    <div class="col-md-6 bootstrap-timepicker">
+                      <span>时间</span>
+                      <input data-date-merge-time value="<%= @activity.start_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
+                    </div>
+                  </div>
+                  <input data-date-merge-result type="hidden" name="activity[start_time]" value="<%= @activity.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+                </div>
+                <div class="form-group datetime optional col-md-6" data-date-merge>
+                  <label class="datetime optional control-label"><abbr title="必填字段">*</abbr> 活动结束时间</label>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <span>日期</span>
+                      <input data-date-merge-date value="<%= @activity.end_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                    </div>
+                    <div class="col-md-6 bootstrap-timepicker">
+                      <span>时间</span>
+                      <input data-date-merge-time value="<%= @activity.end_time.try(:strftime, '%H:%M:%S') %>" data-control="timeForm" class="datetime optional form-control"/>
+                    </div>
+                  </div>
+                  <input data-date-merge-result type="hidden" name="activity[end_time]" value="<%= @activity.end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+                </div>
+              </div>
+
           <% end %>
-          <div class="form-group">
-            <label for="exampleInputFile"><abbr title="必填字段">*</abbr>封面</label>
-            <%= f.file_field :cover %>
-            <%= f.hidden_field :cover_cache %>
-            <p class="help-block">格式：jpg jpeg gif png</p>
-          </div>
           <label class="select required control-label" for="news_content"><abbr title="必填字段">*</abbr>内容:</label>
           <%= f.kindeditor :content, :window_onload => true, :owner_id => @activity.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
           <br>
           <%= f.input :status, collection: Competition::STATUS, label: '状态' %>
-          <div class="row">
-            <div class="form-group datetime optional col-md-6 required" data-date-merge>
-              <label class="datetime optional control-label"><abbr title="必填字段">*</abbr> 报名开始时间</label>
 
-              <div class="row">
-                <div class="col-md-6">
-                  <span>日期</span>
-                  <input data-date-merge-date value="<%= @activity.apply_start_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
-                </div>
-                <div class="col-md-6 bootstrap-timepicker">
-                  <span>时间</span>
-                  <input data-date-merge-time value="<%= @activity.apply_start_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
-                </div>
-              </div>
-              <input data-date-merge-result type="hidden" name="activity[apply_start_time]" value="<%= @activity.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
-            </div>
-            <div class="form-group datetime optional col-md-6" data-date-merge>
-              <label class="datetime optional control-label"><abbr title="必填字段">*</abbr> 报名结束时间</label>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <span>日期</span>
-                  <input data-date-merge-date value="<%= @activity.apply_end_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
-                </div>
-                <div class="col-md-6 bootstrap-timepicker">
-                  <span>时间</span>
-                  <input data-date-merge-time value="<%= @activity.apply_end_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
-                </div>
-              </div>
-              <input data-date-merge-result type="hidden" name="activity[apply_end_time]" value="<%= @activity.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
-            </div>
-            <div class="form-group datetime optional col-md-6" data-date-merge>
-              <label class="datetime optional control-label"><abbr title="必填字段">*</abbr> 活动开始时间</label>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <span>日期</span>
-                  <input data-date-merge-date value="<%= @activity.start_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
-                </div>
-                <div class="col-md-6 bootstrap-timepicker">
-                  <span>时间</span>
-                  <input data-date-merge-time value="<%= @activity.start_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
-                </div>
-              </div>
-              <input data-date-merge-result type="hidden" name="activity[start_time]" value="<%= @activity.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
-            </div>
-            <div class="form-group datetime optional col-md-6" data-date-merge>
-              <label class="datetime optional control-label"><abbr title="必填字段">*</abbr> 活动结束时间</label>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <span>日期</span>
-                  <input data-date-merge-date value="<%= @activity.end_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
-                </div>
-                <div class="col-md-6 bootstrap-timepicker">
-                  <span>时间</span>
-                  <input data-date-merge-time value="<%= @activity.end_time.try(:strftime, '%H:%M:%S') %>" data-control="timeForm" class="datetime optional form-control"/>
-                </div>
-              </div>
-              <input data-date-merge-result type="hidden" name="activity[end_time]" value="<%= @activity.end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
-            </div>
-          </div>
         </div>
 
         <div class="form-actions">
-          <%= f.button :submit, class: 'btn btn-primary' %>
+          <%= f.button :submit, class: 'btn btn-primary', 'data-disable-with' => '正在提交' %>
         </div>
     <% end %>
   </div>
