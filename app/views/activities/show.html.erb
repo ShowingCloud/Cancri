@@ -25,9 +25,6 @@
                       <% @child_activities.each do |c| %>
                           <a href="<%= "#{activities_path}/#{c.id}" %>">
                             <div class="sub-activity">
-                              <div class="img-thumbnail">
-                                <img src="<%= image_path(c.cover) %>" alt=""/>
-                              </div>
                               <div class="dec">
                                 <%= c.name %>
                                 <strong><%= c.has_apply ==1 ? '(已报名)' : '' if current_user.present? %></strong>
