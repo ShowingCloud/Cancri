@@ -55,6 +55,18 @@ $(function () {
             fold.on('click', function () {
                 $(this).siblings('.fold-body').toggleClass('active');
             });
+            var sp = $('.split-string');
+            if (sp.length > 0) {
+                $.each(sp, function (k, v) {
+                    var _self = $(v);
+                    var str = _self.val();
+                    var formatStr = str.split(';');
+                    var p = _self.parents('.fold-body');
+                    for (var i = 0; i < formatStr.length; i++) {
+                        p.append('<p>' + formatStr[i] + '</p>')
+                    }
+                })
+            }
         }
 
         if ($('#course_file_course_ware').length > 0) {
