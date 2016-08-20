@@ -36,7 +36,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p><%= @competition.aim %></p>
+              <%== @competition.aim.gsub(';', '<br>') %>
             </div>
           </div>
           <div class="section-fold even">
@@ -45,7 +45,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p><%= @competition.organizing_committee %></p>
+              <%== @competition.organizing_committee.gsub(';', '<br>') %>
             </div>
           </div>
           <div class="section-fold">
@@ -54,7 +54,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p><%= @competition.date_schedule %></p>
+              <%== @competition.date_schedule.gsub(';', '<br>') %>
             </div>
           </div>
         </div>
@@ -70,7 +70,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p><%= @competition.apply_require %></p>
+              <%== @competition.apply_require.gsub(';', '<br>') %>
             </div>
           </div>
           <div class="section-fold even">
@@ -79,7 +79,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p><%= @competition.reward_method %></p>
+              <%== @competition.reward_method.gsub(';', '<br>') %>
             </div>
           </div>
           <div class="section-fold">
@@ -88,7 +88,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <p><%= @competition.apply_method %></p>
+              <%== @competition.apply_method.gsub(';', '<br>') %>
             </div>
           </div>
         </div>
