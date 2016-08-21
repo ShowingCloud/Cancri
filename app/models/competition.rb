@@ -1,6 +1,8 @@
 class Competition < ApplicationRecord
   has_many :events
   belongs_to :district
+  has_many :photos
+  has_many :videos
 
   before_validation :validate_datetime
   before_validation :validate_time_now, on: :create

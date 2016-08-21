@@ -46,7 +46,7 @@ class Admin::VideosController < AdminController
     respond_to do |format|
       if @video.save
 
-        format.html { redirect_to "/admin/videos?cod=#{@video.competition_id}", notice: '上传成功' }
+        format.html { redirect_to "/admin/videos", notice: '上传成功' }
         format.js
       else
         format.html { render action: 'new' }
@@ -75,7 +75,7 @@ class Admin::VideosController < AdminController
   def destroy
     @video.destroy
     respond_to do |format|
-      format.html { redirect_to "#{admin_videos_url}?type_id=#{@video.type_id}&type=#{@video.type_id}", notice: '删除成功' }
+      format.html { redirect_to "#{admin_videos_url}?type_id=#{@video.type_id}&type=#{@video.video_type}", notice: '删除成功' }
       format.json { head :no_content }
     end
   end
