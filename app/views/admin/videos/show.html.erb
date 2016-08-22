@@ -2,10 +2,10 @@
   显示<%= t('activerecord.models.demeanor') %>
   <small class="pull-right">
     <!--<a href="<%= "#{new_admin_video_path}?cod=#{@video.competition_id}" %>" title="新建<%= t('activerecord.models.demeanor') %>" class="btn btn-default">-->
-      <!--<i class="icon-plus icon-only"></i></a>-->
+    <!--<i class="icon-plus icon-only"></i></a>-->
     <a href="<%= edit_admin_video_path(@video) %>" title="编辑" class="btn btn-default">
       <i class="icon-edit icon-only"></i></a>
-    <a href="<%= "#{admin_videos_path}?cod=#{@video.competition_id}" %>" title="列表" class="btn btn-default">
+    <a href="<%= "#{admin_videos_path}?type_id=#{@video.type_id}&type=#{@video.video_type}" %>" title="列表" class="btn btn-default">
       <i class="icon-list icon-only"></i></a>
   </small>
 </h1>
@@ -23,9 +23,18 @@
   </div>
   <ul class="list-group">
     <li class="list-group-item">
-      <h4><%= t('simple_form.labels.defaults.competition_id') %>:</h4>
+      <h4> 显示:</h4>
 
-      <%= @video.competition.name %>
+      <%= @video.status ? '是' : '否' %>
+    </li>
+    <li class="list-group-item">
+      <h4>归属:</h4>
+      <% if @video.video_type == 0 %>
+          <%= @video.competition.name %>
+      <% elsif @video.video_type == 1 %>
+          <%= @video.activity.name %>
+      <% end %>
+
     </li>
 
   </ul>

@@ -194,7 +194,7 @@
             <span class="menu-text"> 课程 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/competitions' ? 'active' : '' %>">
+        <li class="<%= (params[:controller] == 'admin/competitions' || (params[:type_id].present? && params[:type]=='0')) ? 'active' : '' %>">
           <a href="<%= admin_competitions_path %>">
             <i class="icon-beaker"></i>
             <span class="menu-text"> 比赛 </span>
@@ -206,7 +206,7 @@
             <span class="menu-text"> 项目 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/activities' ? 'active' : '' %>">
+        <li class="<%= (params[:controller] == 'admin/activities' || (params[:type_id].present? && params[:type]=='1')) ? 'active' : '' %>">
           <a href="<%= admin_activities_path %>">
             <i class="icon-gift"></i>
             <span class="menu-text"> 活动 </span>

@@ -13,7 +13,7 @@
           您的浏览器不支持 video 标签。
         </video>
         <div class="actions">
-          <%= link_to "", title: '编辑', class: 'btn btn-xs btn-info' do %>
+          <%= link_to "#{admin_video_path(video)}/edit", title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>
           <% end %>
           <%= link_to "#{admin_video_path(video)}", method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
@@ -34,6 +34,7 @@
 
     <div class="form-inputs">
       <%= f.input :status %>
+      <%= f.hidden_field :video_type, value: params[:type].present? ? params[:type] : @video.video_type %>
       <%= f.hidden_field :type_id, value: params[:type_id].present? ? params[:type_id] : @video.type_id %>
       <%= f.file_field :video, multiple: true, name: "video[video]" %>
     </div>

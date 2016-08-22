@@ -72,7 +72,7 @@ class Admin::PhotosController < AdminController
   def destroy
     @photo.destroy
     respond_to do |format|
-      format.html { redirect_to "#{admin_photos_url}?type_id=#{@photo.type_id}&type=#{@photo.type_id}", notice: '删除成功' }
+      format.html { redirect_to "#{admin_photos_url}?type_id=#{@photo.type_id}&type=#{@photo.photo_type}", notice: '删除成功' }
       format.json { head :no_content }
     end
   end
