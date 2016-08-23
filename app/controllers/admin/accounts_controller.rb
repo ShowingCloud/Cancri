@@ -63,8 +63,8 @@ class Admin::AccountsController < AdminController
     status, message = self.change_password_method(@current_admin, params[:password], params[:new_password], params[:confirm_password])
 
     if status
-      session[:admin_id] = nil
-      flash[:success] = message
+      sign_out
+      flash[:error] = message
       redirect_to action: :new
     else
       flash[:error] = message
