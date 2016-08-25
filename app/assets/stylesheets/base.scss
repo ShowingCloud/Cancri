@@ -143,28 +143,28 @@ a:hover {
   padding-bottom: 26px;
 }
 
-#main #footer {
-  position: absolute;
-  bottom: 0;
+#footer {
+  background: #3E4648;
   font-size: 12px;
   border-top: 1px solid #979797;
-  color: #979797;
+  color: #fff;
   padding: 4px 20px;
   width: 100%;
+  position: relative;
 }
 
-#main #footer a {
-  color: #979797;
+#footer a {
+  color: #fff;
   cursor: pointer;
 }
 
-#main #footer a:hover {
+#footer a:hover {
   text-decoration: none;
 }
 
-#main #footer .separator {
+#footer .separator {
   width: 0;
-  border-left: 1px solid #979797;
+  border-left: 1px solid #FFF;
   margin: 0 9px 0 8px;
 }
 
