@@ -1,26 +1,26 @@
 class DemeanorController < ApplicationController
   def index
     comp_id = params[:cd]
-    photos = Photo.left_joins(:competition).where(status: 1).order('competition_id'); false
+    photos = Photo.joins('left join competitions c on c.id = photos.type_id').where(status: 1, photo_type: 0).order('type_id'); false
     if cookies[:area] == '1'
-      photos = photos.where('competitions.district_id = ?', 9)
+      photos = photos.where('c.district_id = ?', 9)
     end
     if comp_id
-      photos = photos.where(competition_id: comp_id)
+      photos = photos.where(type_id: comp_id)
     end
-    @photos = photos.select('photos.*', 'competitions.name as comp_name').page(params[:page]).per(params[:per])
+    @photos = photos.select('photos.*', 'c.name as comp_name').page(params[:page]).per(params[:per])
   end
 
   def videos
     comp_id = params[:cd]
-    videos = Video.left_joins(:competition).where(status: 1).order('competition_id'); false
+    videos = Video.joins('left join competitions c on c.id = videos.type_id').where(status: 1, video_type: 0).order('type_id'); false
     if cookies[:area] == '1'
-      videos = videos.where('competitions.district_id = ?', 9)
+      videos = videos.where('c.district_id = ?', 9)
     end
     if comp_id
-      videos = videos.where(competition_id: comp_id)
+      videos = videos.where(type_id: comp_id)
     end
-    @videos = videos.select('videos.*', 'competitions.name as comp_name').page(params[:page]).per(params[:per])
+    @videos = videos.select('videos.*', 'c.name as comp_name').page(params[:page]).per(params[:per])
   end
 
   def get_comps_via_year

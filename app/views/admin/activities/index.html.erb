@@ -62,7 +62,7 @@
         <td><%= activity.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>
           -- <%= activity.end_time.try(:strftime, '%Y-%m-%d %H:%M') %></td>
         <td>
-          <% if activity.is_father && (activity.apply_start_time > Time.now) %>
+          <% if activity.is_father && (activity.apply_end_time > Time.now) %>
               <%= link_to "/admin/activities/#{activity.id}/add_child", title: '添加子活动', class: 'btn btn-xs btn-primary' do %>
                   <i class="icon-plus bigger-120"></i>
               <% end %>

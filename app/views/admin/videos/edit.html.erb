@@ -3,7 +3,7 @@
   <small class="pull-right">
     <a href="<%= admin_video_path(@video) %>" title="显示该<%= t('activerecord.models.demeanor') %>" class="btn btn-default">
       <i class="icon-eye-open icon-only"></i></a>
-    <a href="<%= "#{admin_videos_path}?cod=#{@video.competition_id}" %>" title="<%= t('activerecord.models.demeanor') %>列表" class="btn btn-default">
+    <a href="<%= "#{admin_videos_path}?type_id=#{@video.type_id}&type=#{@video.video_type}" %>" title="<%= t('activerecord.models.demeanor') %>列表" class="btn btn-default">
       <i class="icon-list icon-only"></i></a>
   </small>
 </h1>

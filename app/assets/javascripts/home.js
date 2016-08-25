@@ -55,18 +55,6 @@ $(function () {
             fold.on('click', function () {
                 $(this).siblings('.fold-body').toggleClass('active');
             });
-            var sp = $('.split-string');
-            if (sp.length > 0) {
-                $.each(sp, function (k, v) {
-                    var _self = $(v);
-                    var str = _self.val();
-                    var formatStr = str.split(';');
-                    var p = _self.parents('.fold-body');
-                    for (var i = 0; i < formatStr.length; i++) {
-                        p.append('<p>' + formatStr[i] + '</p>')
-                    }
-                })
-            }
         }
 
         if ($('#course_file_course_ware').length > 0) {
@@ -538,9 +526,9 @@ $(function () {
                 var lessons = JSON.parse(cookie);
                 $.each(lessons, function (k, v) {
                     var div = $('<div class="lesson-control" data-course-id="' + v.id + '">' +
-                    '<a href="/courses/' + v.id + '">' + v.name + '</a>' +
-                    '<i class="glyphicon glyphicon-remove-circle remove-lesson"></i>' +
-                    '</div>');
+                        '<a href="/courses/' + v.id + '">' + v.name + '</a>' +
+                        '<i class="glyphicon glyphicon-remove-circle remove-lesson"></i>' +
+                        '</div>');
                     $('.apply-lessons').find('.content').append(div);
                     div.find('.remove-lesson').on('click', function (event) {
                         event.preventDefault();
@@ -915,26 +903,26 @@ $(function () {
                         }
                         $.each(team_count, function (k, v) {
                             var item = $('<div data-td=' + v[0].team_id + ' data-cd=' + com + ' class="team-item ' + k + '">' +
-                            '<div class="item-title">' +
-                            '<div class="label label-info">' +
-                            '队伍编号：' + k +
-                            '</div>' +
-                            '<div class="selected-div "><input class="selected-mark" type="checkbox"></div>' +
-                            '</div>' +
-                            '<div class="item-table">' +
-                            '队员列表' +
-                            '<table class="table">' +
-                            '<tr>' +
-                            '<th>姓名</th>' +
-                            '<th>性别</th>' +
-                            '<th>年级</th>' +
-                            '</tr>' +
-                            '</table>' +
-                            '</div>' +
-                            '<div class="item-control">' +
-                            control_str +
-                            '</div>' +
-                            '</div>');
+                                '<div class="item-title">' +
+                                '<div class="label label-info">' +
+                                '队伍编号：' + k +
+                                '</div>' +
+                                '<div class="selected-div "><input class="selected-mark" type="checkbox"></div>' +
+                                '</div>' +
+                                '<div class="item-table">' +
+                                '队员列表' +
+                                '<table class="table">' +
+                                '<tr>' +
+                                '<th>姓名</th>' +
+                                '<th>性别</th>' +
+                                '<th>年级</th>' +
+                                '</tr>' +
+                                '</table>' +
+                                '</div>' +
+                                '<div class="item-control">' +
+                                control_str +
+                                '</div>' +
+                                '</div>');
                             $('.team-list').append(item);
                             item.find('.team-control').off('click').on('click', function (event) {
                                 event.preventDefault();
@@ -980,10 +968,10 @@ $(function () {
                             var _k = k;
                             $.each(v, function (i, val) {
                                 var player = $('<tr>' +
-                                '<th>' + val.username + '</th>' +
-                                '<th>' + (val.gender == 1 ? '男' : '女') + '</th>' +
-                                '<th>' + (val.grade ? val.grade : '空' ) + '</th>' +
-                                '</tr>');
+                                    '<th>' + val.username + '</th>' +
+                                    '<th>' + (val.gender == 1 ? '男' : '女') + '</th>' +
+                                    '<th>' + (val.grade ? val.grade : '空' ) + '</th>' +
+                                    '</tr>');
                                 $('.' + _k).find('.table').append(player);
                             });
                         })

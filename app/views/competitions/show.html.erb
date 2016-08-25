@@ -36,7 +36,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <input class="split-string" type="hidden" value="<%= @competition.aim %>">
+              <%== @competition.aim.gsub(';', '<br>') %>
             </div>
           </div>
           <div class="section-fold even">
@@ -45,7 +45,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <input class="split-string" type="hidden" value="<%= @competition.organizing_committee %>">
+              <%== @competition.organizing_committee.gsub(';', '<br>') %>
             </div>
           </div>
           <div class="section-fold">
@@ -54,7 +54,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <input class="split-string" type="hidden" value="<%= @competition.date_schedule %>">
+              <%== @competition.date_schedule.gsub(';', '<br>') %>
             </div>
           </div>
         </div>
@@ -70,7 +70,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <input class="split-string" type="hidden" value="<%= @competition.apply_require %>">
+              <%== @competition.apply_require.gsub(';', '<br>') %>
             </div>
           </div>
           <div class="section-fold even">
@@ -79,7 +79,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <input class="split-string" type="hidden" value="<%= @competition.reward_method %>">
+              <%== @competition.reward_method.gsub(';', '<br>') %>
             </div>
           </div>
           <div class="section-fold">
@@ -88,7 +88,7 @@
               <span class="caret"></span>
             </div>
             <div class="fold-body">
-              <input class="split-string" type="hidden" value="<%= @competition.apply_method %>">
+              <%== @competition.apply_method.gsub(';', '<br>') %>
             </div>
           </div>
         </div>

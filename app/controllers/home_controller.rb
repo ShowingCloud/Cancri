@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   def index
     competition = Competition.where.not(status: 0); false
-    activity = Activity.where(status: 1); false
+    activity = Activity.where(status: 1, level: 1); false
 
     if cookies[:area] == '1'
       competition = competition.where(district_id: 9)

@@ -4,6 +4,8 @@ class Activity < ApplicationRecord
   has_many :child_activities, class_name: Activity, foreign_key: :parent_id
   belongs_to :parent_activity, class_name: Activity, foreign_key: :parent_id
   belongs_to :district
+  has_many :photos
+  has_many :videos
 
 
   before_validation :check_include_self
