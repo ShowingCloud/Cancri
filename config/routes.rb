@@ -212,6 +212,6 @@ Rails.application.routes.draw do
   get 'user/comp_student' => 'user#comp_student', as: 'user_comp_student'
   get 'user/get_comp_students' => 'user#get_comp_students', as: 'user_get_comp_students'
   get 'user/join_voucher', to: 'user#join_voucher'
-  # mount ActionCable.server => '/cable'
+  mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
 end

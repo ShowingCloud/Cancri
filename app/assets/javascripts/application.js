@@ -13,10 +13,11 @@
 //= require jquery_ujs
 //= require bootstrap.min
 //= require bootstrap-dialog
+//= require cable
+//= require channels/notification
 //= require common
 //= require account
 //= require user
-//= require message-bus
 //= require notify
 //= require home
 //= require admin/bootstrap-datepicker.min

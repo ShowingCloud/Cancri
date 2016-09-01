@@ -6,6 +6,11 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  before_action do
+    cookies.signed[:user_id] ||= current_user.try(:id)
+  end
+
+
   # def require_user
   #   if current_user.blank?
   #     respond_to do |format|
@@ -14,6 +19,10 @@ class ApplicationController < ActionController::Base
   #     end
   #   end
   # end
+  def current_user
+    return @current_user if defined? @current_user
+    @current_user ||= warden.authenticate(scope: :user)
+  end
 
   def require_mobile
     if current_user.present?

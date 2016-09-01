@@ -17,8 +17,9 @@ class Notification < ApplicationRecord
   def realtime_push_to_client
     if user.private_token.present?
       hash = notify_hash
+      hash[:user] = self.user.private_token
       hash[:count] = self.user.notifications.unread.count
-      PushJob.perform_async(self.user.private_token, hash)
+      PushJob.perform_later hash
     end
   end
 
