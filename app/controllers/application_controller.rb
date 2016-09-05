@@ -11,14 +11,6 @@ class ApplicationController < ActionController::Base
   end
 
 
-  # def require_user
-  #   if current_user.blank?
-  #     respond_to do |format|
-  #       format.html { authenticate_user! }
-  #       format.all { head(:unauthorized) }
-  #     end
-  #   end
-  # end
   def current_user
     return @current_user if defined? @current_user
     @current_user ||= warden.authenticate(scope: :user)
