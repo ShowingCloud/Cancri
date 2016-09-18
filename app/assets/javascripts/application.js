@@ -14,7 +14,6 @@
 //= require bootstrap.min
 //= require bootstrap-dialog
 //= require cable
-//= require channels/notification
 //= require common
 //= require account
 //= require user
