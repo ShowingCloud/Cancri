@@ -18,13 +18,14 @@ class Notification < ApplicationRecord
     if user.private_token.present?
       hash = notify_hash
       hash[:count] = self.user.notifications.unread.count
-      PushJob.perform_async(self.user.private_token, hash)
+      PushJob.perform_later hash
     end
   end
 
   def notify_hash
     {
         content: self.content[0, 30],
+        user_id: self.user_id,
         time: Time.now.try(:strftime, '%Y-%m-%d %H:%M:%S')
     }
   end

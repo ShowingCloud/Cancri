@@ -1,9 +1,8 @@
-class PushJob
-  include Sidekiq::Worker
-  sidekiq_options queue: 'notifications'
+class PushJob < ApplicationJob
+  queue_as :notifications
 
-  def perform(token, hash)
-    MessageBus.publish "/channel/#{token}", hash
+  def perform(hash)
+    ActionCable.server.broadcast "notifications_channel_#{hash[:user_id]}", message: hash
   end
 
 end
