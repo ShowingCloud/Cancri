@@ -66,7 +66,7 @@ bower.json
 config/database.yml
 
 # Don't upload precompiled assets
-pubic/assets/*
+public/assets/*
 
 # sensitive data
 config/database.yml
