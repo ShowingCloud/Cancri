@@ -68,3 +68,4 @@ gem 'sidekiq'
 gem 'sinatra', git: 'https://github.com/sinatra/sinatra.git', require: false
 gem 'jquery-fileupload-rails'
 gem 'to_xls-rails'
+gem 'omniauth-cas', git: 'https://github.com/dlindahl/omniauth-cas.git'

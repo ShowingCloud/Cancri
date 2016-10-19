@@ -10,6 +10,13 @@ class ApplicationController < ActionController::Base
     cookies.signed[:user_id] ||= current_user.try(:id)
   end
 
+  def new_session_path(scope)
+    new_user_session_path
+  end
+
+  def session_path(scope)
+    new_user_session_path
+  end
 
   def current_user
     return @current_user if defined? @current_user

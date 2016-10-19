@@ -13,8 +13,8 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable, :confirmable,
-         :timeoutable, :authentication_keys => [:login]
+         :recoverable, :rememberable, :trackable, :validatable,
+         :timeoutable, :omniauthable,:omniauth_providers => [:cas], :authentication_keys => [:login]
 
   validates :nickname, presence: true, uniqueness: true, length: {in: 2..10}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含中文、数字、字母、下划线'}
   validates :password, length: {in: 6..128}, format: {with: /\A[\x21-\x7e]+\Z/i, message: '密码只能包含数字、字母、特殊字符'}, allow_nil: true
@@ -47,6 +47,12 @@ class User < ApplicationRecord
     else
       where(conditions).first
     end
+  end
+
+  def self.from_sso(auth)
+    user = find_by(guid: auth.extra.id)
+    user = create(guid: auth.extra.id, password:Devise.friendly_token[0,20],nickname: auth.info.nickname, mobile: auth.extra.mobile) if user.nil?
+    user
   end
 
   private
