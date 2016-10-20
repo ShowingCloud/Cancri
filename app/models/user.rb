@@ -12,13 +12,9 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :user_profile, allow_destroy: true
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,
-         :timeoutable, :omniauthable,:omniauth_providers => [:cas], :authentication_keys => [:login]
+  devise :timeoutable, :omniauthable,:omniauth_providers => [:cas]
 
   validates :nickname, presence: true, uniqueness: true, length: {in: 2..10}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含中文、数字、字母、下划线'}
-  validates :password, length: {in: 6..128}, format: {with: /\A[\x21-\x7e]+\Z/i, message: '密码只能包含数字、字母、特殊字符'}, allow_nil: true
-  validates :password, presence: true, on: :create
   validates :email, uniqueness: true, allow_blank: true, format: {with: /\A[^@\s]+@[^@\s]+\z/, message: '已被使用'}
 
 
@@ -34,7 +30,6 @@ class User < ApplicationRecord
     devise_mailer.send(notification, self, *args).deliver_later
   end
 
-  attr_accessor :login
   attr_accessor :email_info
   attr_accessor :email_code
   attr_accessor :mobile_info
@@ -51,7 +46,8 @@ class User < ApplicationRecord
 
   def self.from_sso(auth)
     user = find_by(guid: auth.extra.id)
-    user = create(guid: auth.extra.id, password:Devise.friendly_token[0,20],nickname: auth.info.nickname, mobile: auth.extra.mobile) if user.nil?
+    email = auth.extra.email || ''
+    user = create(guid: auth.extra.id, nickname: auth.info.nickname, mobile: auth.extra.mobile,email: email) if user.nil?
     user
   end
 
