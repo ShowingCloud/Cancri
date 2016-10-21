@@ -5,10 +5,11 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       sign_in @user, :event => :authentication
       token = SecureRandom.uuid.gsub('-', '')
       $redis.set "token-#{token}",{id:@user.id,auth_at:Time.zone.now}.to_json
+      $redis.set("ticket-#{params[:ticket]}",{session_id:session.id,token:token}.to_json)
       render json:{token: token}
     else
       sign_in_and_redirect @user, :event => :authentication
-      set_flash_message(:notice, :success, :kind => "SSO") if is_navigational_format?
+      $redis.set("ticket-#{params[:ticket]}",{session_id:session.id}.to_json)
     end
   end
 

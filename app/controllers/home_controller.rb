@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   def index
+    puts session.id
     competition = Competition.where.not(status: 0); false
     activity = Activity.where(status: 1, level: 1); false
 
