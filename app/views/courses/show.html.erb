@@ -6,9 +6,8 @@
           <%= @course.name %>
         </div>
         <div class="content">
-          <p>课程描述:<%= @course.desc.html_safe %></p>
 
-          <p>对象：<%= @course.target %></p>
+        <p>对象：<%= @course.target %></p>
 
           <p>下载课件：
             <% if @course.course_files.present? %>
@@ -30,11 +29,6 @@
           <p>上课地点：<%= @course.run_address %></p>
 
           <p>招募人数：<%= @course.num %></p>
-
-          <p class="already_num">已报名人数：<%= @course.apply_count %></p>
-
-          <input type="hidden" id="apply-course" value="<%= @course.id %>">
-
           <div class="text-center">
             <% if @has_apply %>
                 <span class="label label-info">您已报名</span>
@@ -52,6 +46,13 @@
                 <% end %>
             <% end %>
           </div>
+          <p class="already_num">已报名人数：<%= @course.apply_count %></p>
+          <br>
+          <br>
+          <p>课程描述:<%= @course.desc.html_safe %></p>
+          <input type="hidden" id="apply-course" value="<%= @course.id %>">
+
+
           <% if current_user.present? %>
               <div class="apply">
                 <div class="title">
