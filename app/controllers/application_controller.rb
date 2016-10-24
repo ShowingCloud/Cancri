@@ -18,6 +18,10 @@ class ApplicationController < ActionController::Base
     new_user_session_path
   end
 
+  def after_sign_in_path_for(resource)
+    request.env['omniauth.origin'] || stored_location_for(resource) || root_path
+  end
+
   def current_user
     return @current_user if defined? @current_user
     @current_user ||= warden.authenticate(scope: :user)
