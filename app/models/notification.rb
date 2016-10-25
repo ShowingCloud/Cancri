@@ -1,8 +1,7 @@
 class Notification < ApplicationRecord
   belongs_to :user
-  validates :user_id, presence: true
-  validates :message_type, presence: true
-  validates :content, presence: true
+  validates :user_id, :message_type, :content, presence: true
+
   # 友情提示 0
   # 队长邀请队员 1
   # 申请加入队伍 2
