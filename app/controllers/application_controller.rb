@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
   def render_optional_error(status_code)
     status = status_code.to_s
     fname = %w(404 403 422 500).include?(status) ? status : 'unknown'
-    render template: "/errors/#{fname}", format: [:html],
+    render template: "/errors/#{fname}", formats: [:html],
            handler: [:erb], status: status, layout: request.fullpath.to_s.index('/admin') ? 'admin_boot' : 'application'
   end
 

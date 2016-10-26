@@ -15,10 +15,10 @@
               <div class="alert alert-danger"><%= msg %></div>
           <% end %>
           <% @competition.errors[:time_schedule].each do |msg| %>
-              <div class="alert alert-danger"><%= msg %></div>
+              <div class="alert alert-danger">时间安排:<%= msg %></div>
           <% end %>
           <% @competition.errors[:detail_rule].each do |msg| %>
-              <div class="alert alert-danger"><%= msg %></div>
+              <div class="alert alert-danger">详细规则:<%= msg %></div>
           <% end %>
         </div>
     <% end %>
@@ -44,7 +44,7 @@
           封面
         </label>
         <%= f.file_field :cover, value: @competition.cover %>
-        <p class="help-block">格式：jpg jpeg gif png</p>
+        <p class="help-block">格式：jpg jpeg gif png, 大小: 1M以内</p>
       </div>
       <%= f.input :description %>
 
@@ -154,16 +154,16 @@
 
       <div class="form-group">
         <label for="exampleInputFile">时间安排</label>
-        <%= f.file_field :time_schedule %>
-        <p class="help-block">格式：pdf</p>
+        <%= f.file_field :time_schedule, id: 'check-time-schedule' %>
+        <p class="help-block">格式: pdf; 大小: 小于3M</p>
       </div>
       <% if @competition.detail_rule.present? %>
           <a href="<%= @competition.detail_rule %>" target="_blank">查看详细规则</a>
       <% end %>
       <div class="form-group">
         <label for="exampleInputFile">详细规则</label>
-        <%= f.file_field :detail_rule %>
-        <p class="help-block">格式：pdf</p>
+        <%= f.file_field :detail_rule, id: 'check-detail-rule' %>
+        <p class="help-block">格式: pdf; 大小: 小于3M</p>
       </div>
 
     </div>

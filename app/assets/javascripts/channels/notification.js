@@ -30,7 +30,8 @@ function notify(title, content) {
             notif.replaceId = 'Meteoric';
             notif.show();
         } else {
-            window.webkitNotifications.requestPermission($jy.notify);
+            // window.webkitNotifications.requestPermission($jy.notify);
+            window.webkitNotifications.requestPermission(notify);
         }
     }
     else if ("Notification" in window) {
@@ -40,6 +41,10 @@ function notify(title, content) {
                 "icon": iconUrl,
                 "body": content
             });
+            notification.addEventListener('click', function () {
+                window.location.href = '/user/notification';
+                this.close();
+            })
         }
         //如果没权限，则请求权限
         else if (Notification.permission !== 'denied') {

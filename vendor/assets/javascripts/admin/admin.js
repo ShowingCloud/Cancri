@@ -383,7 +383,57 @@ $(function () {
             alwaysVisible: true
         });
     }
+
+    // check comp time_schedule and detail_rule
+    var rule_detail = $('#check-detail-rule');
+    var time_schedule = $('#check-time-schedule');
+    if (rule_detail.length > 0) {
+        rule_detail.bind('change', function () {
+            multiple_check_type_size(rule_detail, ['pdf'], 3);
+        });
+    }
+    if (time_schedule.length > 0) {
+        time_schedule.bind('change', function () {
+            multiple_check_type_size(time_schedule, ['pdf'], 3);
+        });
+    }
 });
 function trim(str) {
     return str.replace(/(^\s*)|(\s*$)/g, "");
+}
+
+function get_file_type(file_name) {
+    return file_name.substring(file_name.lastIndexOf(".") + 1);
+}
+
+function check_file_type(obj, limit_type, file_type) {
+    if ($.inArray(file_type, limit_type) == -1) {
+        alert('文件格式不规范,请上传 ' + limit_type.join('、') + ' 格式的文件');
+        obj[0].value = '';
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function check_file_size(obj, limit_size, file_size) {
+    var size = file_size / 1024 / 1024;
+    if (size > limit_size) {
+        alert("文件大小不能大于" + limit_size + "M，请重新选择");
+        obj[0].value = '';
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function multiple_check_type_size(obj, limit_type, limit_size) {
+    var has_no_error;
+    $.each(obj[0].files, function (k, v) {
+        has_no_error = (check_file_type(obj, limit_type, get_file_type(v.name)) && check_file_size(obj, limit_size, v.size));
+        if (!has_no_error) {
+            return false;
+        }
+    });
+    return !has_no_error;
 }
