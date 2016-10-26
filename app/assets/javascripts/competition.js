@@ -51,10 +51,10 @@ $(function () {
             alert_r('请填写指导老师！');
             return false;
         }
-        if (teacher_mobile.length < 1) {
-            alert_r('请填写指导老师电话！');
-            return false;
-        }
+        // if (teacher_mobile.length < 1) {
+        //     alert_r('请填写指导老师电话！');
+        //     return false;
+        // }
 
 
         $.ajax({
@@ -78,7 +78,6 @@ $(function () {
                 if (data[0]) {
                     $('#update-user-info').modal('hide');
                     var m = $('#max_num').val();
-                    console.log(m);
                     var msg = '队伍创建成功！';
                     if (m == 1) {
                         msg = '报名信息已完善，请于报名时间截止前提交';

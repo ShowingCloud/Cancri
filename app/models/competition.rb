@@ -10,7 +10,7 @@ class Competition < ApplicationRecord
   validates :name, presence: true, length: {maximum: 60}, uniqueness: true
   validates :host_year, presence: true, inclusion: {in: ['2016', '2017']}
   validates :cover, presence: true, file_size: {less_than: 1.megabyte, message: '大小不能超过1M'}
-  validates :aim, :organizing_committee, :date_schedule, :apply_require, :apply_method, :reward_method, presence: true, length: {minimum: 5}
+  validates :aim, :organizing_committee, :date_schedule, presence: true, length: {minimum: 5}
   validates :status, presence: true
   validates :time_schedule, :detail_rule, file_size: {less_than: 3.megabytes, message: '大小不能超过3M'}
   mount_uploader :time_schedule, CompPdfUploader

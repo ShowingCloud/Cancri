@@ -37,8 +37,8 @@ class UserController < ApplicationController
 
         message = ''
         if roles.present? && roles.include?('教师')
-          unless teacher_no.present? && certificate.present? && school_id.present? && district_id.present? && username.present? && [1, 2].include?(gender.to_i)
-            flash[:error] = '选择教师身份时，请填写姓名、性别、学校(区县)、教师编号、和上传教师证件'
+          unless school_id.present? && district_id.present? && username.present? && [1, 2].include?(gender.to_i)
+            flash[:error] = '选择教师身份时，请填写姓名、性别、学校(区县)'
             return false
           end
           unless UserRole.where(user_id: current_user_id, role_id: 1).exists?
@@ -71,13 +71,13 @@ class UserController < ApplicationController
 
         if @user_profile.update_attributes(username: username, birthday: birthday, gender: gender, address: address, teacher_no: teacher_no, autograph: autograph, school_id: school_id, district_id: district_id, grade: grade, bj: bj, student_code: student_code, identity_card: identity_card)
           flash[:success] = '更新成功-'+message
+          redirect_to user_profile_path
         else
           flash[:error] = '更新失败-'+message
         end
       else
         flash[:error] = '不能提交空信息'
       end
-      redirect_to user_profile_path
     end
   end
 

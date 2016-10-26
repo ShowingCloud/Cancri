@@ -15,8 +15,8 @@ class Team < ApplicationRecord
   validates :district_id, presence: true
   validates :group, presence: true, length: {is: 1}
   validates :event_id, presence: true, uniqueness: {scope: :user_id, message: '一个用户不能报名一个项目两次'}
-  validates :teacher, presence: true, format: {with: /\A[\u4e00-\u9fa5]{2,10}\Z/i, message: '只能包含2-10位中文'}
-  validates :teacher_mobile, presence: true, format: {with: /\A1[34578][0-9]{9}\Z/i, message: '格式不正确'}
+  validates :teacher, presence: true #, format: {with: /\A[\u4e00-\u9fa5]{2,10}\Z/i, message: '只能包含2-10位中文'}
+  validates :teacher_mobile, allow_blank: true, format: {with: /\A1[34578][0-9]{9}\Z/i, message: '格式不正确'}
   validates :team_code, length: {in: 4..6}, allow_blank: true
   after_create_commit :create_identifier
   after_update_commit :notify_after_status_update

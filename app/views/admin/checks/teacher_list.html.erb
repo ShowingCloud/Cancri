@@ -44,9 +44,11 @@
           <% end %>
         </td>
         <td class="ace-thumbnails">
-          <a href="<%= th[:certificate] %>" title="<%= th[:username] %>" data-rel="colorbox">
-            教师证
-          </a>
+          <% if th[:certificate].present? %>
+              <a href="<%= th[:certificate] %>" title="<%= th[:username] %>" data-rel="colorbox">
+                教师证
+              </a>
+          <% end %>
         </td>
         <td><%= th[:mobile] %></td>
         <td><%= th[:school] %></td>

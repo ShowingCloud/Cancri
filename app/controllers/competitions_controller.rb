@@ -120,9 +120,9 @@ class CompetitionsController < ApplicationController
     ed = params[:team_event]
 
 
-    if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present? && teacher.present? && teacher_mobile.present? && group.present?
+    if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present? && teacher.present? && group.present?
       if has_teacher_role
-        result = [false, ' 不规范请求 ']
+        result = [false, '不规范请求']
       else
         user = current_user.user_profile ||= current_user.build_user_profile
         if user.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
