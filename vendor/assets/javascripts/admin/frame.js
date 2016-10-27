@@ -254,7 +254,7 @@ function list_score_attributes_init() {
             var add_all_score_attribute = $('.add-all-score-attribute');
             var select_all_score_attribute = $('#select-all-score-attribute');
             score_attribute.before(select_all_score_attribute, add_all_score_attribute, select_tl_sa);
-            $.each(result.score_attributes, function (key, val) {
+            $.each(result, function (key, val) {
                 var list = $('<label class="brand-li">' + ' ' + '<input type="checkbox" name="score-attribute"  class="sa-label" value="' + val.id + '" data-id="' + val.name + '" autocomplete="off">' + '  ' + val.name + '--' + (val.write_type == 1 ? '手动' : val.write_type == 2 ? 'app' : '赛道' ) + '</label>');
                 list.on("mouseover", function () {
                     $(this).css({color: "#5bc0de"})

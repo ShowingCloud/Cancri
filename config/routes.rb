@@ -129,6 +129,7 @@ Rails.application.routes.draw do
     resources :events do
       collection do
         get :teams
+        post :add_score_attributes
       end
     end
     resources :event_schedules
@@ -162,6 +163,7 @@ Rails.application.routes.draw do
           delete :all
         end
       end
+      resources :scores
       match '*path', via: :all, to: 'root#not_found'
     end
   end
