@@ -28,11 +28,13 @@ class Admin::ChecksController < AdminController
       if ur.present?
         ur.status = status==1 ? true : false
 
-        if status==1 && level.present? && ([level.to_i] & [1, 2, 3, 4, 5]).length>0
-          ur.role_type = level
-        else
-          render json: [false, '请选择教师角色']
-          return false
+        if status==1
+          if level.present? && ([level.to_i] & [1, 2, 3, 4, 5]).length>0
+            ur.role_type = level
+          else
+            render json: [false, '请选择教师角色']
+            return false
+          end
         end
         if ur.save
           case ur.role_type
