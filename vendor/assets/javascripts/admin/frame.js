@@ -56,8 +56,9 @@ $(function () {
     add_score_attribute_init();
 
     $('.select-tl-sa').on("click", function () {
-        var esd = $("#score-attribute [name='score-attribute']:checked").val();
-        var sa_name = $("#score-attribute [name='score-attribute']:checked").attr('data-id');
+        var checked_score_attribute = $("#score-attribute [name='score-attribute']:checked");
+        var esd = checked_score_attribute.val();
+        var sa_name = checked_score_attribute.attr('data-id');
         get_tl_sa(esd, sa_name);
         score_attribute.addClass('hidden');
         two_level_sa.removeClass('hidden');
@@ -77,7 +78,7 @@ $(function () {
                 success: function (data) {
                     if (data[0]) {
                         $(".hide-tr" + sa_id).addClass('hide');
-                        alert(data[1]);
+                        admin_gritter_notice(data[1]);
                     }
                     else {
                         alert(data[1]);
@@ -114,21 +115,7 @@ $(function () {
                             success: function (data) {
                                 if (data[0]) {
                                     document.getElementById("sa-desc" + sa_id).innerHTML = after_edit_desc;
-                                    // 更改成功提示信息
-                                    BootstrapDialog.show({
-                                        title: data[1],
-                                        cssClass: 'login-dialog',
-                                        message: '成功修改为：' + after_edit_desc,
-                                        buttons: [
-                                            {
-                                                label: 'OK(enter)',
-                                                hotkey: 13, // 按 'enter' 键关掉提示信息
-                                                action: function (dialogItself) {
-                                                    dialogItself.close();
-                                                }
-                                            }
-                                        ]
-                                    });
+                                    admin_gritter_notice('更新成功');
                                 }
                                 else {
                                     alert(data[1]);
@@ -327,7 +314,7 @@ function get_tl_sa(esd, sa_name) {
             var add_selected_sa = $('.add-selected-sa');
 
             two_level_sa.before(select_all_tl_sa, add_selected_sa);
-            $.each(result.score_attributes, function (key, val) {
+            $.each(result, function (key, val) {
                 var list = $('<label class="series-li">' + '<input type="checkbox" name="two-level-sa" class="tl-sa-label" autocomplete="off" value="' + val.id + '">' + ' ' + val.name + '</label>');
                 list.on("mouseover", function () {
                     $(this).css({color: "lightskyblue"})
@@ -456,4 +443,11 @@ function delete_event_worker(ud, ed) {
         });
     }
 
+}
+function admin_gritter_notice(respond_message) {
+    $.gritter.add({
+        title: '操作状态:',
+        text: respond_message,
+        time: '3000'
+    });
 }

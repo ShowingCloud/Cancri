@@ -45,23 +45,26 @@ class Admin::EventsController < AdminController
     } }
   end
 
-  # def edit_event_sa_desc
-  #   desc = params[:desc]
-  #   sa_id = params[:sa_id]
-  #   if desc.present? && sa_id.present?
-  #     sa_ship = EventSaShip.find(sa_id)
-  #     sa_ship.desc = desc
-  #     if sa_ship.save
-  #       result = [true, '操作成功 ']
-  #     else
-  #       result = [false, '更改失败']
-  #     end
-  #
-  #   else
-  #     result = [false, '参数不完整']
-  #   end
-  #   render json: result
-  # end
+  def edit_event_sa_desc
+    desc = params[:desc]
+    sa_id = params[:sa_id]
+    if desc.present? && sa_id.present?
+      sa_ship = EventSaShip.find_by_id(sa_id)
+      if sa_ship
+        sa_ship.desc = desc
+        if sa_ship.save
+          result = [true, '操作成功 ']
+        else
+          result = [false, '更改失败']
+        end
+      else
+        result = [false, '参数不规范']
+      end
+    else
+      result = [false, '参数不完整']
+    end
+    render json: result
+  end
 
 
   # GET /admin/events/new
@@ -133,21 +136,21 @@ class Admin::EventsController < AdminController
     end
   end
 
-  # def delete_score_attribute
-  #   if params[:sa_id].present?
-  #     sa = EventSaShip.find(params[:sa_id])
-  #     if sa.is_parent && EventSaShip.where(['id = :sa_id OR parent_id = :value', {:sa_id => params[:sa_id], :value => sa.score_attribute_id}]).delete_all
-  #       result = [true, '删除成功']
-  #     elsif EventSaShip.delete(params[:sa_id])
-  #       result = [true, '删除成功']
-  #     else
-  #       result = [false, '删除失败']
-  #     end
-  #   else
-  #     result = [false, '不规范请求']
-  #   end
-  #   render json: result
-  # end
+  def delete_score_attribute
+    if params[:sa_id].present?
+      sa = EventSaShip.find(params[:sa_id])
+      if sa.is_parent && EventSaShip.where(['id = :sa_id OR parent_id = :value', {:sa_id => params[:sa_id], :value => sa.score_attribute_id}]).delete_all
+        result = [true, '删除成功']
+      elsif EventSaShip.delete(params[:sa_id])
+        result = [true, '删除成功']
+      else
+        result = [false, '删除失败']
+      end
+    else
+      result = [false, '不规范请求']
+    end
+    render json: result
+  end
 
   # POST /admin/events
   # POST /admin/events.json

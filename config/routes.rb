@@ -130,6 +130,8 @@ Rails.application.routes.draw do
       collection do
         get :teams
         post :add_score_attributes
+        post :edit_event_sa_desc
+        post :delete_score_attribute
       end
     end
     resources :event_schedules
@@ -155,7 +157,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :competitions
+      resources :competitions do
+        collection do
+          get :get_events
+        end
+      end
       resources :notifications do
         collection do
           post :update_read
