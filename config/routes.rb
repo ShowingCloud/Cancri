@@ -162,6 +162,11 @@ Rails.application.routes.draw do
           get :get_events
         end
       end
+      resources :events do
+        collection do
+          get :score_attrs
+        end
+      end
       resources :notifications do
         collection do
           post :update_read
