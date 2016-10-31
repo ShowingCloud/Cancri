@@ -15,11 +15,9 @@ class Notification < ApplicationRecord
   private
 
   def realtime_push_to_client
-    if user.private_token.present?
       hash = notify_hash
       hash[:count] = self.user.notifications.unread.count
       PushJob.perform_later hash
-    end
   end
 
   def notify_hash

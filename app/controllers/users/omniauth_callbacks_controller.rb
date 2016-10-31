@@ -9,14 +9,12 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       token = SecureRandom.uuid.gsub('-', '')
       $redis.set "token-#{token}",{id:@user.id,auth_at:Time.zone.now}.to_json
       $redis.set("ticket-#{params[:ticket]}",{session_id:session.id,token:token}.to_json)
-      render json:{token: token}
+      redirect_to root_path(token: token,user_id: @user.id, nickname: @user.nickname)
     else
-      puts session.id
       sign_in_and_redirect @user, :event => :authentication
       session[:ticket] = params[:ticket]
       session.options[:id] = session.instance_variable_get(:@by).generate_sid
       session.options[:renew] = false
-      puts session.id
       $redis.set("ticket-#{params[:ticket]}",{session_id:session.id}.to_json)
     end
   end

@@ -75,7 +75,7 @@ module Api
           else
             return nil
           end
-          User.find(json[:id])
+          User.find(json["id"])
         else
           nil
         end
