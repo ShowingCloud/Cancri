@@ -11,7 +11,7 @@ module Api
         optional! :page, default: 1
         optional! :per, default: 20, values: 1..150
 
-        @notifications = Notification.where(user_id: current_user.id).order('id desc').page(params[:page]).per(params[:per])
+        @notifications = Notification.where(user_id: current_user.id).order(:read).reverse_order.page(params[:page]).per(params[:per])
 
         render json: @notifications
       end
