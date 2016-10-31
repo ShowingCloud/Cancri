@@ -24,39 +24,46 @@ class Admin::ChecksController < AdminController
     status = params[:status].to_i
     ud = params[:ud]
     if status.present? && ud.present?
-      ur = UserRole.where(user_id: ud, role_id: 1).take
+      ur = UserRole.where(user_id: ud, role_id: 1, status: 0).take
       if ur.present?
-        ur.status = status==1 ? true : false
-
-        if status==1 && level.present? && ([level.to_i] & [1, 2, 3, 4, 5]).length>0
-          ur.role_type = level
-        else
-          render json: [false, '请选择教师角色']
-          return false
-        end
-        if ur.save
-          case ur.role_type
-            when 1 then
-              th_level = '市级'
-            when 2 then
-              th_level = '区级(审核比赛队伍)'
-            when 3 then
-              th_level = '校级(审核比赛队伍)'
-            when 4 then
-              th_level = '区级'
+        if status == 1
+          if ([level.to_i] & [1, 2, 3, 4, 5]).length>0
+            ur.role_type = level
+            ur.status = 1
+            if ur.save
+              case ur.role_type
+                when 1 then
+                  th_level = '市级'
+                when 2 then
+                  th_level = '区级(审核比赛队伍)'
+                when 3 then
+                  th_level = '校级(审核比赛队伍)'
+                when 4 then
+                  th_level = '区级'
+                else
+                  th_level = '校级'
+              end
+              Notification.create(user_id: ud, content: '您的教师身份审核通过! 角色为:'+th_level, message_type: 0)
+              result = [true, '操作成功，即将推送消息告知被审核用户']
             else
-              th_level = '校级'
+              result = [false, ur.errors.full_messages.first]
+            end
+          else
+            result = [false, '等级参数不规范']
           end
-          Notification.create(user_id: ur.user_id, content: '您的教师身份审核'+(status==1 ? '通过! 角色为'+th_level : '未通过!'), message_type: 0)
-          result = [true, '操作成功，即将推送消息告知被审核用户']
         else
-          result = [false, ur.errors.full_messages.first]
+          if ur.delete
+            result = [true, '操作成功，即将推送消息告知被审核用户']
+            Notification.create(user_id: ud, content: '您的教师身份审核未通过!', message_type: 0)
+          else
+            result = [false, ' 操作失败 ']
+          end
         end
       else
-        result = [false, '该教师角色不存在']
+        result = [false, ' 该待审核教师角色不存在 ']
       end
     else
-      result = [false, '数据不完整']
+      result = [false, ' 数据不规范 ']
     end
     render json: result
   end

@@ -42,11 +42,9 @@
       <h4>包含组别:</h4>
       <% groups = @event.group.try(:split, ',')
          groups.each do |name| %>
-          <div>
-            <label>
-              <%= t('group.group'+name.to_s) %>
-            </label>
-          </div>
+          <label>
+            <%= t('group.group'+name.to_s) %>
+          </label>
       <% end %>
     </li>
 
@@ -75,59 +73,62 @@
   <input type="hidden" value="<%= @event.id %>" name="event-identifier">
 </div>
 
-<div class="panel panel-info">
-  <div class="panel-heading">
-    成绩属性
-    <button class="open-add-score-attribute btn btn-xs btn-primary pull-right">显示属性</button>
-  </div>
 
-
-  <div class="add-score-attribute panel-body">
-    <div class="form-group">
-      <div class="selected-info">
-      </div>
-      <div class="clearfix"></div>
-      <div id="score-attribute">
-        <label style="margin:0 5px;font-size: 22px" id="select-all-score-attribute"><input type="checkbox" name="select_all" class="select-all-score-attribute" autocomplete="off">
-          <b>全选</b></label>
-        <button class="select-tl-sa btn btn-xs btn-success hidden">添加其子属性</button>
-        <button class="add-all-score-attribute btn btn-xs btn-primary hidden">添加所选属性</button>
+<% unless @event.is_father %>
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        成绩属性
+        <button class="open-add-score-attribute btn btn-xs btn-primary pull-right">显示属性</button>
       </div>
 
-      <div id="two-level-sa" class="hidden">
-        <label id="select-all-tl-sa"><input type="checkbox" name="select_all" class="select-all-tl-sa" autocomplete="off">
-          <b>全选</b></label>
-        <button class="add-selected-sa btn btn-xs btn-primary hidden">添加所选属性</button>
+
+      <div class="add-score-attribute panel-body">
+        <div class="form-group">
+          <div class="selected-info">
+          </div>
+          <div class="clearfix"></div>
+          <div id="score-attribute">
+            <label style="margin:0 5px;font-size: 22px" id="select-all-score-attribute"><input type="checkbox" name="select_all" class="select-all-score-attribute" autocomplete="off">
+              <b>全选</b></label>
+            <button class="select-tl-sa btn btn-xs btn-success hidden">添加其子属性</button>
+            <button class="add-all-score-attribute btn btn-xs btn-primary hidden">添加所选属性</button>
+          </div>
+
+          <div id="two-level-sa" class="hidden">
+            <label id="select-all-tl-sa"><input type="checkbox" name="select_all" class="select-all-tl-sa" autocomplete="off">
+              <b>全选</b></label>
+            <button class="add-selected-sa btn btn-xs btn-primary hidden">添加所选属性</button>
+          </div>
+        </div>
       </div>
+
     </div>
-  </div>
 
-</div>
-
-<div>
-  <% if @score_attributes.present? %>
-      <table class="table table-bordered table-hover table-striped">
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>名称</th>
-          <th>备注</th>
-          <th>操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        <% @score_attributes.each do |sa| %>
-            <tr class="<%= "hide-tr#{sa[:id]}" %>">
-              <td><%= sa[:id] %></td>
-              <td><%= sa[:name]+' -- '+t('write_type.write_type'+sa[:write_type].to_s) %></td>
-              <td id="<%= "sa-desc#{sa[:id]}" %>"><%= sa[:desc] %></td>
-              <td>
-                <span class="btn btn-xs btn-warning edit-event-sa-desc" data-id="<%= sa[:id] %>" data-text="<%= sa[:name] %>" title="添加描述"><i class="glyphicon glyphicon-edit"></i></span>
-                <span class="btn btn-xs btn-danger delete-event-sa" data-id="<%= sa[:id] %>" title="删除"><i class="glyphicon glyphicon-trash"></i></span>
-              </td>
+    <div>
+      <% if @score_attributes.present? %>
+          <table class="table table-bordered table-hover table-striped">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>名称</th>
+              <th>备注</th>
+              <th>操作</th>
             </tr>
-        <% end %>
-        </tbody>
-      </table>
-  <% end %>
-</div>
+            </thead>
+            <tbody>
+            <% @score_attributes.each do |sa| %>
+                <tr class="<%= "hide-tr#{sa[:id]}" %>">
+                  <td><%= sa[:id] %></td>
+                  <td><%= sa[:name]+' -- '+t('write_type.write_type'+sa[:write_type].to_s) %></td>
+                  <td id="<%= "sa-desc#{sa[:id]}" %>"><%= sa[:desc] %></td>
+                  <td>
+                    <span class="btn btn-xs btn-warning edit-event-sa-desc" data-id="<%= sa[:id] %>" data-text="<%= sa[:name] %>" title="添加描述"><i class="glyphicon glyphicon-edit"></i></span>
+                    <span class="btn btn-xs btn-danger delete-event-sa" data-id="<%= sa[:id] %>" title="删除"><i class="glyphicon glyphicon-trash"></i></span>
+                  </td>
+                </tr>
+            <% end %>
+            </tbody>
+          </table>
+      <% end %>
+    </div>
+<% end %>

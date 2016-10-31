@@ -206,6 +206,12 @@
             <span class="menu-text"> 项目 </span>
           </a>
         </li>
+        <li class="<%= params[:controller] == 'admin/score_attributes' ? 'active' : '' %>">
+          <a href="<%= admin_score_attributes_path %>">
+            <i class="icon-hdd"></i>
+            <span class="menu-text"> 成绩属性 </span>
+          </a>
+        </li>
         <li class="<%= (params[:controller] == 'admin/activities' || (params[:type_id].present? && params[:type]=='1')) ? 'active' : '' %>">
           <a href="<%= admin_activities_path %>">
             <i class="icon-gift"></i>
