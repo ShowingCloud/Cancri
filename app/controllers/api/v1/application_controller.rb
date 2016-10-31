@@ -68,14 +68,14 @@ module Api
       end
 
       def token_authenticate
-        if params[:token].present?
-          data = $redis.get("token-#{params[:token]}")
-          if data.present?
-            json = JSON.parse(data)
+        if request.headers["auth-token"].present?
+          value = $redis.get("token-#{request.headers["auth-token"]}")
+          if value.present?
+            data = JSON.parse(value)
           else
             return nil
           end
-          User.find(json["id"])
+          User.find(data["id"])
         else
           nil
         end
