@@ -64,6 +64,11 @@
         <td><%= t('status.status'+event.status.to_s) %></td>
         <td><%= "#{event.team_min_num}-" if event.team_min_num != event.team_max_num %><%= event.team_max_num %></td>
         <td>
+          <% unless event.is_father %>
+              <%= link_to edit_admin_event_schedule_path(event), title: '赛程', class: 'btn btn-xs btn-info' do %>
+                  <i class="icon-edit icon-filter"></i>
+              <% end %>
+          <% end %>
           <%= link_to [:admin, event], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>
           <% end %>

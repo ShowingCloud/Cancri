@@ -46,7 +46,7 @@
 
   <tbody>
   <% @score_attributes.each do |sa| %>
-      <tr>
+      <tr id="score-attr-<%= sa.id %>">
         <td><%= sa.id %></td>
         <td><%= sa.name %></td>
         <td>
@@ -59,7 +59,7 @@
           <%= link_to edit_admin_score_attribute_path(sa), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>
           <% end %>
-          <%= link_to [:admin, sa], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+          <%= link_to [:admin, sa], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', remote: true, class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash bigger-120"></i>
           <% end %></td>
       </tr>

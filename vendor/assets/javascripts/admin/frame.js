@@ -444,10 +444,11 @@ function delete_event_worker(ud, ed) {
     }
 
 }
-function admin_gritter_notice(respond_message) {
+function admin_gritter_notice(status, respond_message) {
     $.gritter.add({
         title: '操作状态:',
         text: respond_message,
-        time: '3000'
+        time: '3000',
+        class_name: status ? '' : 'gritter-error'
     });
 }
