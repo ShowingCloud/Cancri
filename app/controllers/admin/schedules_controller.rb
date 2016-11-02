@@ -4,7 +4,7 @@ class Admin::SchedulesController < AdminController
   # GET /admin/schedules
   # GET /admin/schedules.json
   def index
-    @schedules = Schedule.all.page(params[:page]).per(params[:per])
+    @schedules = Schedule.all.order(:sort).page(params[:page]).per(params[:per])
   end
 
   # GET /admin/schedules/1
@@ -82,6 +82,6 @@ class Admin::SchedulesController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def schedule_params
-    params.require(:schedule).permit(:name)
+    params.require(:schedule).permit(:name, :sort)
   end
 end

@@ -153,6 +153,7 @@ Rails.application.routes.draw do
       resources :events do
         collection do
           get :score_attrs
+          get :group_schedules
         end
       end
       resources :notifications do
