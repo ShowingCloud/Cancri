@@ -6,7 +6,7 @@ module ApplicationHelper
   end
 
   def iframe_src(path)
-    url = URI.join(Settings.cas_url, path)
+    url = URI.join(Settings.auth_url, path)
     url.query = URI.encode_www_form([["service", request.base_url]])
     url
   end

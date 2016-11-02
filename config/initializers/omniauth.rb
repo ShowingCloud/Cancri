@@ -1,5 +1,5 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :cas, url: Settings.cas_url, on_single_sign_out:Proc.new{
+  provider :cas, url: Settings.auth_url, on_single_sign_out:Proc.new{
     |request|  saml = Nokogiri.parse(request.params['logoutRequest'])
                 sess_idx = saml.xpath('//samlp:SessionIndex').text
                 data = $redis.get("ticket-#{sess_idx}")
