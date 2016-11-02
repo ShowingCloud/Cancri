@@ -1,27 +1,15 @@
 Rails.application.routes.draw do
 
   root to: 'home#index'
-  devise_for :users, path: 'account', controllers: {
-      sessions: 'users/sessions', registrations: 'users/registrations',
-      confirmations: 'users/confirmations',
-      passwords: 'users/passwords'
-  } #, path_names: {sign_in: 'login'}
-  mount RuCaptcha::Engine => '/rucaptcha'
-  resources :accounts, only: [:new, :create, :destroy] do
-    collection do
-      get :register
-      post :register_post
-      post :validate_captcha
-      get :forget_password
-      get :reset_password
-      post :reset_password_post
-      post :send_code
-      post :register_email_exists
-      post :register_mobile_exists
-      post :register_nickname_exists
-      get :require_add_mobile
-    end
+  devise_for :users, skip: [:sessions], path: 'account', controllers: {
+      :omniauth_callbacks => "users/omniauth_callbacks"
+  }
+  devise_scope :user do
+    get 'account/sign_in', to: redirect('/account/auth/cas'), :as => :new_user_session
+    delete "account/sign_out", :to => 'users/sessions#destroy', :as => :destroy_user_session
   end
+  mount RuCaptcha::Engine => '/rucaptcha'
+
   get '/demeanor' => 'demeanor#index'
   get '/demeanor/videos' => 'demeanor#videos'
   get '/demeanor/get_comps_via_year' => 'demeanor#get_comps_via_year'
@@ -227,4 +215,6 @@ Rails.application.routes.draw do
   get 'user/join_voucher', to: 'user#join_voucher'
   mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
+
+  # get '/auth/:provider/callback', to: 'sessions#create'
 end

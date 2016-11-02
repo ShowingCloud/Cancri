@@ -25,9 +25,10 @@ class Users::SessionsController < Devise::SessionsController
   def destroy
     current_user.update_attributes(private_token: nil)
     signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
+    $redis.del("ticket-#{session[:ticket]}")
     set_flash_message :notice, :signed_out if signed_out && is_flashing_format?
     yield if block_given?
-    respond_to_on_destroy
+    redirect_to(Settings.cas_url+"/logout?service="+ request.base_url + '/auth/cas/callback')
   end
 
 # protected
