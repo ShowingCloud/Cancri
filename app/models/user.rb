@@ -45,9 +45,14 @@ class User < ApplicationRecord
   end
 
   def self.from_sso(auth)
-    user = find_by(guid: auth.extra.id)
-    email = auth.extra.email || ''
-    user = create(guid: auth.extra.id, nickname: auth.info.nickname, mobile: auth.extra.mobile,email: email) if user.nil?
+    user = find_by(id: auth.extra.id)
+    if user.nil?
+      email = auth.info.email.strip || ""
+      mobile = auth.extra.mobile.strip
+      mobile = "" if mobile == "--- \n..."
+      email = "" if email == "--- \n..."
+      user = create(id: auth.extra.id, nickname: auth.info.nickname, mobile: mobile,email: email)
+    end
     user
   end
 
