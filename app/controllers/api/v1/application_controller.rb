@@ -60,11 +60,25 @@ module Api
       end
 
       def current_user
-        @current_user ||= warden.authenticate(scope: :user)
+        @current_user ||= token_authenticate
       end
 
       def authenticate!
         error!({'error' => '401 Unauthorized'}, 401) unless current_user
+      end
+
+      def token_authenticate
+        if request.headers["auth-token"].present?
+          value = $redis.get("token-#{request.headers["auth-token"]}")
+          if value.present?
+            data = JSON.parse(value)
+          else
+            return nil
+          end
+          User.find(data["id"])
+        else
+          nil
+        end
       end
 
     end

@@ -10,7 +10,21 @@ module ApplicationCable
     protected
 
     def find_verified_user
-      cookies.signed[:user_id] || nil
+      cookies.signed[:user_id] || token_user(request.params[:token])
+    end
+
+    def token_user(token)
+      if token.present?
+        value = $redis.get("token-#{token}")
+        if value.present?
+          data = JSON.parse(value)
+          data["id"]
+        else
+          nil
+        end
+      else
+        nil
+      end
     end
 
   end

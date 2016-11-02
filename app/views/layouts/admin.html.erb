@@ -212,6 +212,12 @@
             <span class="menu-text"> 成绩属性 </span>
           </a>
         </li>
+        <li class="<%= params[:controller] == 'admin/schedules' ? 'active' : '' %>">
+          <a href="<%= admin_schedules_path %>">
+            <i class="icon-calendar"></i>
+            <span class="menu-text"> 赛程名 </span>
+          </a>
+        </li>
         <li class="<%= (params[:controller] == 'admin/activities' || (params[:type_id].present? && params[:type]=='1')) ? 'active' : '' %>">
           <a href="<%= admin_activities_path %>">
             <i class="icon-gift"></i>

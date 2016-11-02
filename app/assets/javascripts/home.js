@@ -883,7 +883,7 @@ $(function () {
                         ));
 
                         if (players.length > 0) {
-                            _space.find('.comp-info').append($('<a href="/user/get_comp_students.xls?com=' + com + '&ed=' + ed + '" class="btn btn-robodou" title="下载名单">下载名单</a>'))
+                            _space.find('.comp-info').append($('<a href="/user/get_comp_students.xls?com=' + com + '&ed=' + ed + '&status=' + status + '" class="btn btn-robodou" title="下载名单">下载名单</a>'))
                         }
 
                         var team_count = {};
@@ -916,6 +916,7 @@ $(function () {
                                 '<th>姓名</th>' +
                                 '<th>性别</th>' +
                                 '<th>年级</th>' +
+                                '<th>项目</th>' +
                                 '</tr>' +
                                 '</table>' +
                                 '</div>' +
@@ -949,12 +950,7 @@ $(function () {
                                     success: function (result) {
                                         if (result[0]) {
                                             alert_r(result[1], function (param) {
-                                                var str = '';
-                                                if (param[1] == 'submit') {
-                                                    str = '该队伍已通过审核'
-                                                } else {
-                                                    str = '该队伍未通过审核'
-                                                }
+                                                var str = (param[1] == 'submit') ? '该队伍已通过审核' : '该队伍未通过审核';
                                                 param[0].parents('.item-control').empty().text(str);
                                             }, [_self, type]);
                                         } else {
@@ -971,6 +967,7 @@ $(function () {
                                     '<th>' + val.username + '</th>' +
                                     '<th>' + (val.gender == 1 ? '男' : '女') + '</th>' +
                                     '<th>' + (val.grade ? val.grade : '空' ) + '</th>' +
+                                    '<th>' + val.event_name + '</th>' +
                                     '</tr>');
                                 $('.' + _k).find('.table').append(player);
                             });

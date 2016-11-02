@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   def index
+    puts  request.env['omniauth.origin']
     competition = Competition.where.not(status: 0); false
     activity = Activity.where(status: 1, level: 1); false
 
