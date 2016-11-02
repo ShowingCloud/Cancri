@@ -278,7 +278,7 @@ class UserController < ApplicationController
               when '1' then
                 students = students.where('teams.status=?', 1)
               else
-                students = students.where('teams.status=?', 3)
+                students = students.where('teams.status': [2, 3, -3])
             end
             students = students.where('teams.district_id=?', teacher_info.district_id)
           elsif teacher_info.role_type == 3
