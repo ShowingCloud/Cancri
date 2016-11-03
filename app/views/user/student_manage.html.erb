@@ -28,11 +28,11 @@
                   <% @students.each do |s| %>
                       <tr>
                         <td><%= s.username %></td>
-                        <td><%= s.gender %></td>
+                        <td><%= s.gender == 1 ? '男' : (s.gender == 2 ? '女' : '') %></td>
                         <td><%= s.district_name %></td>
                         <td><%= s.school_name %></td>
                         <td><%= s.student_code %></td>
-                        <td><a href="<%= "/user/competitions?id=#{s.id}" %>">查看详情</a></td>
+                        <td><a href="<%= "/user/competitions?id=#{s.nickname}" %>">查看详情</a></td>
                       </tr>
                   <% end %>
                 </table>
