@@ -9,7 +9,7 @@ class Admin::SchoolsController < AdminController
   def index
     schools = School.left_joins(:district).where(status: 1).select(:id, :name, :status, :user_add, :teacher_role, 'districts.name as district_name').order('district_id asc'); false
     if params[:field].present? && params[:keyword].present?
-      schools = schools.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"])
+      schools = schools.where(["schools.#{params[:field]} like ?", "%#{params[:keyword]}%"])
     end
     @schools = schools.page(params[:page]).per(params[:per])
 
