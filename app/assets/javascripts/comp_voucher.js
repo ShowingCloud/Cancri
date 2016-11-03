@@ -36,24 +36,22 @@ function download_comp_voucher(user_info) {
 
         var back_image = document.getElementById("use-voucher");
         ctx.drawImage(back_image, 0, 0);
-        ctx.fillText(user["username"], 360, 180);
-        ctx.fillText(age, 930, 180);
-        ctx.fillText(user_gender, 360, 270);
-        ctx.fillText(user["student_code"], 930, 270);
-        ctx.fillText(user["school_name"], 360, 360);
-        ctx.fillText(user["bj"], 360, 450);
-        ctx.fillText(user["event_name"], 380, 1322);
-        ctx.fillText(user["identifier"], 380, 1435);
-        ctx.fillText(user["teacher"], 380, 1540);
-        ctx.fillText(user["teacher_mobile"], 380, 1640);
+        ctx.fillText(user["username"], 300, 165);
+        ctx.fillText(age, 880, 165);
+        ctx.fillText(user_gender, 300, 250);
+        ctx.fillText(user["school_name"], 300, 338);
+        ctx.fillText(user["event_name"], 300, 1198);
+        ctx.fillText(user["identifier"], 300, 1308);
+        ctx.fillText(user["teacher"], 300, 1408);
+        ctx.fillText(user["teacher_mobile"], 300, 1505);
         ctx.font = "Normal 50px Arial";
         ctx.fillStyle = "white";
-        ctx.fillText(user["comp_name"], 430, 900);
+        ctx.fillText(user["comp_name"], 380, 765);
 
         var qrcode_canvas = $("#qrcodeCanvas").find("canvas")[0];
         var qrcode_image = new Image();
         qrcode_image.src = qrcode_canvas.toDataURL("image/jpeg");
-        ctx.drawImage(qrcode_image, 850, 1400);
+        ctx.drawImage(qrcode_image, 785, 1266);
         var all_img = new Image();
         all_img.src = canvas.toDataURL("image/jpeg");
 
