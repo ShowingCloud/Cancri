@@ -13,7 +13,7 @@
 
             <p>
               <% if current_user.mobile.present? %>
-                  手机：<%= current_user.mobile %> <a href="<%= user_reset_mobile_path %>">修改</a>
+                  <!-- 手机：<%= current_user.mobile %> <a href="<%= user_mobile_path %>">修改</a> -->
               <% else %>
                   <a href="<%= user_mobile_path %>">添加手机</a>
               <% end %>
@@ -21,7 +21,7 @@
 
             <p>
               <% if current_user.email.present? %>
-                  邮箱：<%= current_user.email %> <a href="<%= user_reset_email_path %>">修改</a>
+                  <!-- 邮箱：<%= current_user.email %> <a href="<%= user_email_path %>">修改</a> -->
               <% else %>
                   <a href="<%= user_email_path %>">添加邮箱</a>
               <% end %>
@@ -74,5 +74,3 @@
     </div>
   </div>
 </div>
-
-
