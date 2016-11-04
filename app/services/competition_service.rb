@@ -15,12 +15,12 @@ class CompetitionService
         id: e.id,
         group: e.group,
         events: e.group.present? ? e.group.split(',').map { |n| {
-            name: e.name,
+            name: (e.is_father) ? e.name : '其他',
             group: n.to_i,
             z_e: e.is_father ? e.child_events.select { |a| a.group.index(n) }.map { |z_e| {
                 id: z_e.id,
                 name: z_e.name
-            } } : nil
+            } } : {id: e.id, name: e.name}
         } } : e.name,
     } }
   end
