@@ -29,7 +29,14 @@ class ApplicationController < ActionController::Base
 
   def require_mobile
     if current_user.present?
-      current_user.mobile.present?
+      response = Typhoeus.get("#{Settings.auth_url}/user_infos/#{current_user.id}.json",headers: { Authorization: Settings.auth_token })
+      if response.code == 200
+          data =  JSON.parse(response.body)
+          return true && current_user.update_attributes(mobile:data["mobile"]) if data["mobile"].present?
+      else
+          logger.error "request user data from #{response.effective_url} failed"
+          current_user.mobile.present?
+      end
     else
       false
     end

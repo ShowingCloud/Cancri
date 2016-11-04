@@ -72,3 +72,4 @@ gem 'omniauth-cas', git: 'https://github.com/dlindahl/omniauth-cas.git'
 gem 'redis'
 gem 'redis-namespace'
 gem 'redis-rails'
+gem "typhoeus"
