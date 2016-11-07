@@ -11,17 +11,24 @@
           <div class="sub-content">
             <div class="top">
               <% if @teacher_info.present? %>
-                  <% if @teacher_info.role_type>=2 %>
-                      <div class="teacher-info" data-district-id="<%= @teacher_info.district_id %>">
-                        <div>
-                          您的身份：
-                        </div>
-                        <div data-role="<%= @teacher_info.role_type %>" class="label <%= @teacher_info.role_type==2 ? 'label-warning' : 'label-info' %>"><%= @teacher_info.role_type==2 ? '区级审核老师' : '校级审核老师' %></div>
-                        <% if @teacher_info.role_type==2 %>
-                            <button class="btn-robodou submit-team-many">提交名单</button>
-                        <% end %>
-                      </div>
-                  <% end %>
+                  <% role_type = @teacher_info.role_type %>
+                  <div class="teacher-info" data-district-id="<%= @teacher_info.district_id %>">
+                    <div>
+                      您的身份：
+                    </div>
+                    <% case %>
+                    <% when 1 then %>
+                        <div data-role="<%= role_type %>" class="label label-warning">市级教师</div>
+                    <% when 2 then %>
+                        <div data-role="<%= role_type %>" class="label label-info">区级教师</div>
+                        <button class="btn-robodou submit-team-many">提交名单</button>
+                    <% when 3 then %>
+                        <div data-role="<%= role_type %>" class="label label-primary">校级教师</div>
+                    <% else %>
+                    <% end %>
+                  </div>
+              <% else %>
+                  <!-- no exist-->
               <% end %>
             </div>
             <div class="middle">
@@ -41,11 +48,13 @@
                     <option value="0">所有学校</option>
                   </select>
               <% end %>
-              <select id="select-status" class="status-sel">
-                <option value="100">待审核</option>
-                <option value="0">未通过</option>
-                <option value="1">审核通过</option>
-              </select>
+              <% if @teacher_info.role_type !=1 %>
+                  <select id="select-status" class="status-sel">
+                    <option value="100">待审核</option>
+                    <option value="0">未通过</option>
+                    <option value="1">审核通过</option>
+                  </select>
+              <% end %>
             </div>
             <div class="middle">
               <div class="comp-info">
