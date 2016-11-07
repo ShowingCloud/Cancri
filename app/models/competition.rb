@@ -3,6 +3,7 @@ class Competition < ApplicationRecord
   belongs_to :district
   has_many :photos
   has_many :videos
+  has_many :competition_schedules, :dependent => :destroy
 
   before_validation :validate_datetime
   before_validation :validate_time_now, on: :create

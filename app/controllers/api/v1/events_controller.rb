@@ -1,7 +1,7 @@
 module Api
   module V1
     class EventsController < Api::V1::ApplicationController
-      before_action :authenticate_user!
+      before_action :authenticate!
 
       # 获取某一项目的成绩属性
       # GET /api/v1/events/score_attrs
@@ -29,7 +29,7 @@ module Api
         requires :event_id, type: Integer
         requires :group, type: Integer, values: 1..4
         requires :schedule_id, type: Integer
-        teams = CompetitionService.group_teams(params[:ed], params[:group], params[:schedule_id])
+        teams = CompetitionService.get_group_teams(params[:event_id], params[:group], params[:schedule_id])
         render jason: teams
       end
 

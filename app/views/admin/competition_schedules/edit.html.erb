@@ -1,0 +1,215 @@
+<h1 class="page-header">
+  <% if @comp_schedules.present? %>
+      <%= @comp_schedule.first.competition.name %> -- 赛事进程
+  <% else %>
+      <%= @comp_schedule.competition.name %> -- 赛事进程
+  <% end %>
+</h1>
+<% if @comp_schedules.present? %>
+    <div style="width: 600px">
+      <table class="table table-bordered table-hover table-striped">
+        <thead>
+        <tr>
+          <th>进程名称</th>
+          <th>时间段</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <% @comp_schedules.each do |cs| %>
+            <tr id="comp-schedule-tr-<%= cs.id %>">
+              <td><%= cs.name %></td>
+              <td><%= "#{cs.start_time.strftime('%Y-%m-%d %H:%M') }#{" -- #{cs.end_time.try(:strftime, '%Y-%m-%d %H:%M')}" if cs.end_time.present?}" %></td>
+              <td>
+                <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+                  <a class="green" href="<%= "#edit-schedule-#{cs.id}" %>" role="button" data-toggle="modal">
+                    <i class="icon-pencil bigger-130"></i>
+                  </a>
+                  <%= link_to "/admin/competition_schedules/#{cs.id}", method: :delete, data: {confirm: '确认删除吗?'}, remote: true, title: '删除'+cs.name, class: 'red' do %>
+                      <i class="icon-trash bigger-130"></i>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+            <div id="<%= "edit-schedule-#{cs.id}" %>" class="modal">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="blue bigger text-center">修改进程</h4>
+                  </div>
+
+                  <div class="modal-body overflow-visible">
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-12">
+
+                        <div class="form-group">
+                          <label for="form-field-name">名称</label>
+
+                          <div>
+                            <input class="input-large" type="text" id="<%= "schedule-name-#{cs.id}" %>" value="<%= cs.name %>"/>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="form-field-first">时间段</label>
+
+                          <!-- start -->
+                          <div class="row">
+                            <div class="form-group datetime optional col-md-6 required" data-date-merge>
+                              <label class="datetime optional control-label"><abbr title="必填字段">*</abbr>开始时间</label>
+
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <span>日期</span>
+                                  <input data-date-merge-date value="<%= cs.start_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime  form-control" data-date-format="yyyy-mm-dd">
+                                </div>
+                                <div class="col-md-6 bootstrap-timepicker">
+                                  <span>时间</span>
+                                  <input data-date-merge-time value="<%= cs.start_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime  form-control"/>
+                                </div>
+                              </div>
+                              <input data-date-merge-result type="hidden" id="<%= "schedule-start-time-#{cs.id}" %>" value="<%= cs.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+                            </div>
+                            <div class="form-group datetime optional col-md-6" data-date-merge>
+                              <label class="datetime optional control-label">结束时间</label>
+
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <span>日期</span>
+                                  <input data-date-merge-date value="<%= cs.end_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime form-control" data-date-format="yyyy-mm-dd">
+                                </div>
+                                <div class="col-md-6 bootstrap-timepicker">
+                                  <span>时间</span>
+                                  <input data-date-merge-time value="<%= cs.end_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime form-control"/>
+                                </div>
+                              </div>
+                              <input data-date-merge-result type="hidden" id="<%= "schedule-end-time-#{cs.id}" %>" value="<%= cs.end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+                            </div>
+                          </div>
+                          <!-- end -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="modal-footer">
+                    <button class="btn btn-sm" data-dismiss="modal">
+                      <i class="icon-remove"></i>
+                      取消
+                    </button>
+
+                    <button class="btn btn-sm btn-primary edit-schedule-submit" data-id="<%= cs.id %>">
+                      <i class="icon-ok"></i>
+                      更新
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+    <%= simple_form_for([:admin, @one_cs]) do |f| %>
+        <%= f.error_notification %>
+
+        <div class="form-inputs">
+          <%= f.input :name %>
+          <%= f.hidden_field :competition_id, value: params[:id] %>
+
+          <!-- start -->
+          <div class="row">
+            <div class="form-group datetime optional col-md-6 required" data-date-merge>
+              <label class="datetime optional control-label"><abbr title="必填字段">*</abbr>开始时间</label>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <span>日期</span>
+                  <input data-date-merge-date value="<%= @one_cs.start_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                </div>
+                <div class="col-md-6 bootstrap-timepicker">
+                  <span>时间</span>
+                  <input data-date-merge-time value="<%= @one_cs.start_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
+                </div>
+              </div>
+              <input data-date-merge-result type="hidden" name="competition_schedule[start_time]" value="<%= @one_cs.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+            </div>
+            <div class="form-group datetime optional col-md-6" data-date-merge>
+              <label class="datetime optional control-label">结束时间</label>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <span>日期</span>
+                  <input data-date-merge-date value="<%= @one_cs.end_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                </div>
+                <div class="col-md-6 bootstrap-timepicker">
+                  <span>时间</span>
+                  <input data-date-merge-time value="<%= @one_cs.end_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
+                </div>
+              </div>
+              <input data-date-merge-result type="hidden" name="competition_schedule[end_time]" value="<%= @one_cs.end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+            </div>
+          </div>
+          <!-- end -->
+        </div>
+        <div class="form-actions">
+          <button data-control="formFormat" type="submit" class="btn btn-primary">
+            <i class="icon-ok"></i>
+            新建进程
+          </button>
+        </div>
+    <% end %>
+<% else %>
+    <%= simple_form_for([:admin, @comp_schedule]) do |f| %>
+        <%= f.error_notification %>
+
+        <div class="form-inputs">
+          <%= f.input :name %>
+          <%= f.hidden_field :competition_id, value: params[:id] %>
+          <!-- start -->
+          <div class="row">
+            <div class="form-group datetime optional col-md-6 required" data-date-merge>
+              <label class="datetime optional control-label"><abbr title="必填字段">*</abbr>开始时间</label>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <span>日期</span>
+                  <input data-date-merge-date value="<%= @comp_schedule.start_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime  form-control" data-date-format="yyyy-mm-dd">
+                </div>
+                <div class="col-md-6 bootstrap-timepicker">
+                  <span>时间</span>
+                  <input data-date-merge-time value="<%= @comp_schedule.start_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime  form-control"/>
+                </div>
+              </div>
+              <input data-date-merge-result type="hidden" name="competition_schedule[start_time]" value="<%= @comp_schedule.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+            </div>
+            <div class="form-group datetime optional col-md-6" data-date-merge>
+              <label class="datetime optional control-label">结束时间</label>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <span>日期</span>
+                  <input data-date-merge-date value="<%= @comp_schedule.end_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime form-control" data-date-format="yyyy-mm-dd">
+                </div>
+                <div class="col-md-6 bootstrap-timepicker">
+                  <span>时间</span>
+                  <input data-date-merge-time value="<%= @comp_schedule.end_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime form-control"/>
+                </div>
+              </div>
+              <input data-date-merge-result type="hidden" name="competition_schedule[start_time]" value="<%= @comp_schedule.end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+            </div>
+          </div>
+          <!-- end -->
+        </div>
+        <div class="form-actions">
+          <button data-control="formFormat" type="submit" class="btn btn-primary">
+            <i class="icon-ok"></i>
+            提交
+          </button>
+        </div>
+    <% end %>
+<% end %>
+
+
