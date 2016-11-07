@@ -22,7 +22,7 @@
                           <tr>
                             <td><%= a.name %></td>
                             <td><%= a.end_time.strftime('%Y-%m-%d') %></td>
-                            <td data-id="<%= a.course_id %>"><%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.id}", class: 'btn-robodou btn-abort-lesson' do %>
+                            <td><%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.course_id}", class: 'btn-robodou btn-abort-lesson' do %>
                                   取消报名
                               <% end %></td>
                           </tr>
@@ -96,7 +96,3 @@
     </div>
   </div>
 </div>
-
-
-
-
