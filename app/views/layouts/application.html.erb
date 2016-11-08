@@ -3,6 +3,7 @@
 <head>
   <%= render_page_title %>
   <%= csrf_meta_tags %>
+  <%= action_cable_meta_tag %>
   <link rel="icon" href="<%= asset_path('icon.png') %>"/>
   <%= javascript_include_tag 'jquery_cookie', 'data-turbolinks-track' => true %>
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>

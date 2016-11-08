@@ -269,7 +269,7 @@ class UserController < ApplicationController
       if comp_id.present?
         competition = Competition.where(id: comp_id, status: 1).first
         if competition.present?
-          students = TeamUserShip.joins(:event, :school, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select('team_user_ships.grade', 'teams.id as team_id', 'team_user_ships.user_id', 'teams.user_id as leader_user_id', 'teams.group', 'teams.identifier ', 'events.name as event_name', ' u_p.username ', ' u_p.gender ', ' users.nickname ', 'users.mobile', 'schools.name as school_name').order('teams.group asc, teams.id, team_user_ships.id asc'); false
+          students = TeamUserShip.joins(:event, :school, :team, :user).joins('left join competitions c on c.id = events.competition_id').joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').select('team_user_ships.grade', 'teams.id as team_id', 'team_user_ships.user_id', 'teams.user_id as leader_user_id', 'teams.group', 'teams.teacher', 'teams.identifier ', 'events.name as event_name', ' u_p.username ', ' u_p.gender ', ' users.nickname ', 'users.mobile', 'schools.name as school_name').order('teams.group asc, teams.id, team_user_ships.id asc'); false
 
           if teacher_info.role_type == 2
             case status
@@ -281,6 +281,11 @@ class UserController < ApplicationController
                 students = students.where('teams.status': [2, 3, -3])
             end
             students = students.where('teams.district_id=?', teacher_info.district_id)
+            if school_id.present? && school_id.to_i !=0 && (School.find_by_id(school_id).try(:district_id) == teacher_info.district_id)
+              students = students.where('teams.school_id = ?', school_id)
+            else
+              students = []
+            end
           elsif teacher_info.role_type == 3
             case status
               when '0' then
@@ -291,18 +296,30 @@ class UserController < ApplicationController
                 students = students.where('teams.status=?', 2)
             end
             students = students.where('teams.school_id=?', teacher_info.school_id)
+          elsif teacher_info.role_type == 1
+            case status
+              when '1' then
+                if school_id.present? && school_id.to_i !=0
+                  students = students.where('teams.school_id = ?', school_id)
+                end
+                students = students.where('teams.status = ?', 1)
+              else
+                students = []
+            end
           end
-          if ed.present? && (ed.to_i !=0)
-            students = students.where('teams.event_id = ?', ed)
-          else
-            students = students.where('c.id = ?', comp_id)
-          end
-          if school_id.present? && (school_id.to_i !=0) && (School.where(district_id: teacher_info.district_id, status: 1).pluck(:id) & [school_id.to_i]).count>0
-            students = students.where('teams.school_id = ?', school_id)
-          end
-          page_students = students.page(params[:page]).per(params[:per])
-          if page_students.length>0
-            result = [true, page_students, students.length, competition]
+
+          if students.length>0
+            if ed.present? && (ed.to_i !=0)
+              students = students.where('teams.event_id = ?', ed)
+            else
+              students = students.where('c.id = ?', comp_id)
+            end
+            if students.length>0
+              page_students = students.page(params[:page]).per(params[:per])
+              result = [true, page_students, students.length, competition]
+            else
+              result = [false, '没有相关队伍']
+            end
           else
             result = [false, '没有相关队伍']
           end
@@ -342,6 +359,7 @@ class UserController < ApplicationController
                     else
                   end,
               学校: x.school_name,
+              指导老师: x.teacher,
               手机: x.mobile,
               年级: x.grade
           } }

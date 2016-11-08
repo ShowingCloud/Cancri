@@ -298,3 +298,4 @@ zh-CN:
      group: '组别'
      grade: '年级:'
      role_type: '角色类型:'
+     end_time: '结束时间'
