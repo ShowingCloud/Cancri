@@ -26,11 +26,12 @@ module Api
       # GET /api/v1/events/group_teams
 
       def group_teams
-        requires :event_id, type: Integer
-        requires :group, type: Integer, values: 1..4
-        requires :schedule_id, type: Integer
-        teams = CompetitionService.get_group_teams(params[:event_id], params[:group], params[:schedule_id])
-        render jason: teams
+        requires! :event_id, type: Integer
+        requires! :group, type: Integer, values: 1..4
+        requires! :schedule_id, type: Integer
+        optional! :has_score, values: %w(0 1) # 未参加 已参加
+        teams = CompetitionService.get_group_teams(params[:event_id], params[:group], params[:schedule_id], params[:has_score])
+        render json: teams
       end
 
     end

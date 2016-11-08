@@ -8,12 +8,13 @@ module Api
 
       def index
         @competitions = Competition.includes(:competition_schedules).where(status: 1).select(:id, :name)
-        render json: @competitions, :include => :competition_schedules
+        render json: @competitions, :include => :competition_schedules, only: [:id, :name]
       end
 
+      # 获取特定比赛下项目列表
+      # GET /api/v1/get_events
+
       def get_events
-        optional! :page, default: 1
-        optional! :per, default: 20, values: 1..100
         requires! :comp_id, type: Integer
         @events = CompetitionService.get_events(params[:comp_id])
         render json: @events

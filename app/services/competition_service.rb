@@ -24,4 +24,37 @@ class CompetitionService
         } } : e.name,
     } }
   end
+
+  def self.get_group_teams(event_id, group, schedule_id, has_score)
+    team_sql = Team.joins('left join user_profiles u_p on u_p.user_id = teams.user_id').joins('left join schools s on s.id = teams.school_id')
+                   .joins('left join users u on u.id = teams.user_id')
+                   .joins("left join scores sc on teams.id=sc.team1_id and sc.schedule_id=#{schedule_id}").where(event_id: event_id, group: group).select(:id, :teacher, :teacher_mobile, :identifier, 'u_p.username', 'u.mobile', 's.name as school_name', 'count(sc.id) as score_num').group(:id, 'u_p.username')
+    case has_score.to_i
+      when 0 then
+        team_sql.having('count(sc.id) = ?', 0)
+      when 1 then
+        team_sql.having('count(sc.id) > ?', 0)
+      else
+        team_sql
+    end
+  end
+
+  def self.post_team_scores(event_id, schedule_id, kind, th, team1_id, score1, last_score, note, device_no, confirm_sign, operator_id)
+    score = Score.where(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id).take
+    if score.present?
+      if score.update_attributes(score1: 1, score_attribute: score1, last_score: last_score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
+        result = {status: true, message: '成绩保存成功!'}
+      else
+        result = {status: false, message: '成绩保存失败!'}
+      end
+    else
+      score = Score.create(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id, score1: 1, score_attribute: score1, last_score: last_score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
+      if score.save
+        result = {status: true, message: '成绩保存成功!'}
+      else
+        result = {status: false, message: '成绩保存失败!'}
+      end
+    end
+    result
+  end
 end

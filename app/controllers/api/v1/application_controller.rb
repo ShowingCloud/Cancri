@@ -56,18 +56,18 @@ module Api
       end
 
       def error_404!
-        error!({'error' => 'Page not found'}, 404)
+        error!({error: 'Page not found'}, 404)
       end
 
       def current_user
-        @current_user ||= token_authenticate
+        @current_user ||= local_or_token_authenticate
       end
 
       def authenticate!
-        error!({'error' => '401 Unauthorized'}, 401) unless current_user
+        error!({error: '401 Unauthorized'}, 401) unless current_user
       end
 
-      def token_authenticate
+      def local_or_token_authenticate
         if request.headers["auth-token"].present?
           value = $redis.get("token-#{request.headers["auth-token"]}")
           if value.present?
@@ -77,7 +77,7 @@ module Api
           end
           User.find(data["id"])
         else
-          nil
+          warden.authenticate(scope: :user)
         end
       end
 

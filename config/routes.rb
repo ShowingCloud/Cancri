@@ -154,6 +154,7 @@ Rails.application.routes.draw do
         collection do
           get :score_attrs
           get :group_schedules
+          get :group_teams
         end
       end
       resources :notifications do
@@ -163,7 +164,11 @@ Rails.application.routes.draw do
           delete :all
         end
       end
-      resources :scores
+      resources :scores do
+        collection do
+          post :upload_scores
+        end
+      end
       match '*path', via: :all, to: 'root#not_found'
     end
   end
