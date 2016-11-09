@@ -12,10 +12,10 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :user_profile, allow_destroy: true
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :timeoutable, :omniauthable,:omniauth_providers => [:cas]
+  devise :timeoutable, :omniauthable, :omniauth_providers => [:cas]
 
   validates :nickname, presence: true, uniqueness: true, length: {in: 2..10}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含中文、数字、字母、下划线'}
-  validates :email, uniqueness: true, allow_blank: true, format: {with: /\A[^@\s]+@[^@\s]+\z/, message: '已被使用'}
+  validates :email, uniqueness: true, allow_blank: true, format: {with: /\A[^@\s]+@[^@\s]+\z/, message: '格式不正确'}
 
 
   def email_changed?
@@ -45,15 +45,16 @@ class User < ApplicationRecord
   end
 
   def self.from_sso(auth)
-    user = find_by(id: auth.extra.id)
-    email = auth.info.email.strip || ""
-    mobile = auth.extra.mobile.strip
-    mobile = "" if mobile == "--- \n..."
-    email = "" if email == "--- \n..."
+    id = auth.extra.id
+    user = find_by(id: id)
+    mobile = auth.extra.try(:mobile)
+    email = auth.info.try(:email)
+    email = email.present? ? email.strip : ''
+    mobile = mobile.present? ? mobile.strip : ''
     if user.nil?
-      user = create(id: auth.extra.id, nickname: auth.info.nickname, mobile: mobile,email: email)
+      user = create(id: auth.extra.id, nickname: auth.info.nickname, mobile: mobile, email: email)
     else
-      user.update_attributes(email:email,mobile:mobile)
+      user.update_attributes(email: email, mobile: mobile)
     end
     user
   end
