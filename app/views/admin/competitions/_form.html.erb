@@ -33,6 +33,7 @@
       <%= f.input :apply_require %>
       <%= f.input :apply_method %>
       <%= f.input :reward_method %>
+      <%= f.input :emc_contact,placeholder:'例如:张三:15366666666; 王五:15388888888 (多个以分号隔开)' %>
       <% if @competition.cover.present? %>
           <div class="form-group">
             <%= image_tag(@competition.cover_url(:middle), class: 'img-thumbnail') %>
