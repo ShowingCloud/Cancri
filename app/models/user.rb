@@ -51,6 +51,8 @@ class User < ApplicationRecord
     email = auth.info.try(:email)
     email = email.present? ? email.strip : ''
     mobile = mobile.present? ? mobile.strip : ''
+    mobile = '' if mobile == "--- \n..."
+    email = '' if email == "--- \n..."
     if user.nil?
       user = create(id: auth.extra.id, nickname: auth.info.nickname, mobile: mobile, email: email)
     else
