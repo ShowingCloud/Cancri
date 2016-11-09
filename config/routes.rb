@@ -155,6 +155,7 @@ Rails.application.routes.draw do
           get :score_attrs
           get :group_schedules
           get :group_teams
+          get :get_team_by_identifier
         end
       end
       resources :notifications do

@@ -7,8 +7,8 @@ module Api
       # GET /api/v1/competitions
 
       def index
-        @competitions = Competition.includes(:competition_schedules).where(status: 1).select(:id, :name)
-        render json: @competitions, :include => :competition_schedules, only: [:id, :name]
+        @competitions = Competition.includes(:competition_schedules).where(status: 1).select(:id, :name, :emc_contact)
+        render json: @competitions, :include => :competition_schedules, only: [:id, :name, :emc_contact]
       end
 
       # 获取特定比赛下项目列表

@@ -34,6 +34,15 @@ module Api
         render json: teams
       end
 
+      # 根据队伍编号获取队伍及队员信息
+      # GET /api/v1/events/get_team_by_identifier
+
+      def get_team_by_identifier
+        requires! :identifier, type: String, desc: '队伍编号'
+        team_info = CompetitionService.via_identifier_get_team(params[:identifier])
+        render json: team_info
+      end
+
     end
   end
 end

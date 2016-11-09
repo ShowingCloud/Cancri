@@ -42,18 +42,29 @@ class CompetitionService
   def self.post_team_scores(event_id, schedule_id, kind, th, team1_id, score1, last_score, note, device_no, confirm_sign, operator_id)
     score = Score.where(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id).take
     if score.present?
-      if score.update_attributes(score1: 1, score_attribute: score1, last_score: last_score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
-        result = {status: true, message: '成绩保存成功!'}
+      if score.update_attributes(score_attribute: score1, last_score: last_score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
+        result = {status: true, message: '成绩更新成功'}
       else
-        result = {status: false, message: '成绩保存失败!'}
+        result = {status: false, message: '成绩更新失败'}
       end
     else
-      score = Score.create(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id, score1: 1, score_attribute: score1, last_score: last_score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
+      score = Score.create(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id, score_attribute: score1, last_score: last_score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
       if score.save
-        result = {status: true, message: '成绩保存成功!'}
+        result = {status: true, message: '成绩保存成功'}
       else
-        result = {status: false, message: '成绩保存失败!'}
+        result = {status: false, message: '成绩保存失败'}
       end
+    end
+    result
+  end
+
+  def self.via_identifier_get_team(identifier)
+    team = Team.joins(:event).joins('left join competitions comp on comp.id = events.competition_id').where(identifier: identifier).select(:identifier, :id, :group, 'events.name as event_name', 'events.competition_id as comp_id', 'comp.name as comp_name').take
+    if team.present?
+      players = TeamUserShip.joins('left join user_profiles up on up.user_id = team_user_ships.user_id').where(team_id: team.id).select('up.username', 'up.grade', 'up.gender')
+      result = {status: true, identifier: team.identifier, group: team.group, event_name: team.event_name, comp_name: team.comp_name, players: players}
+    else
+      result = {status: false, message: '该队伍编码不存在'}
     end
     result
   end
