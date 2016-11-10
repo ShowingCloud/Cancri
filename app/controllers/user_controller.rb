@@ -294,15 +294,10 @@ class UserController < ApplicationController
             end
             students = students.where('teams.school_id=?', teacher_info.school_id)
           elsif teacher_info.role_type == 1
-            case status
-              when '1' then
-                if school_id.present? && school_id.to_i !=0
-                  students = students.where('teams.school_id = ?', school_id)
-                end
-                students = students.where('teams.status = ?', 1)
-              else
-                students = []
+            if school_id.present? && school_id.to_i !=0
+              students = students.where('teams.school_id = ?', school_id)
             end
+            students = students.where('teams.status = ?', 1)
           end
 
           if students.length>0
