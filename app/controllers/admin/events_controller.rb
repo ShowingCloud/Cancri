@@ -37,7 +37,7 @@ class Admin::EventsController < AdminController
   # GET /admin/events/1
   # GET /admin/events/1.json
   def show
-    @score_attributes = EventSaShip.includes(:score_attribute, :score_attribute_parent).where(event_id: params[:id], is_parent: 0).order('id asc').map { |s| {
+    @score_attributes = EventSaShip.includes(:score_attribute, :score_attribute_parent).where(event_id: params[:id], is_parent: 0).order('sort asc').map { |s| {
         id: s.id,
         name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name,
         write_type: s.score_attribute.write_type,
@@ -149,6 +149,22 @@ class Admin::EventsController < AdminController
       end
     else
       result = [false, '不规范请求']
+    end
+    render json: result
+  end
+
+  def update_score_attrs_sort
+    ids = params[:ids]
+
+    if ids && ids.is_a?(Array)
+      event_sa = {}
+      ids.each_with_index do |id, index|
+        event_sa[id.to_i] ={sort: index+1}
+      end
+      EventSaShip.update(event_sa.keys, event_sa.values)
+      result ={status: true, message: '更新成功'}
+    else
+      result ={status: false, message: '更新失败'}
     end
     render json: result
   end

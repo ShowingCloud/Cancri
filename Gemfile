@@ -73,3 +73,5 @@ gem 'redis'
 gem 'redis-namespace'
 gem 'redis-rails'
 gem "typhoeus"
+gem 'wicked_pdf'
+gem 'wkhtmltopdf_binary'

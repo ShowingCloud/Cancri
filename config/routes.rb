@@ -120,6 +120,7 @@ Rails.application.routes.draw do
         post :add_score_attributes
         post :edit_event_sa_desc
         post :delete_score_attribute
+        post :update_score_attrs_sort
       end
     end
     resources :event_schedules
@@ -220,6 +221,7 @@ Rails.application.routes.draw do
   get 'user/comp_student' => 'user#comp_student', as: 'user_comp_student'
   get 'user/get_comp_students' => 'user#get_comp_students', as: 'user_get_comp_students'
   get 'user/join_voucher', to: 'user#join_voucher'
+  get 'user/export_voucher', to: 'user#export_voucher'
   mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
 

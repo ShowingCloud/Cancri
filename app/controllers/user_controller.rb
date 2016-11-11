@@ -100,7 +100,7 @@ class UserController < ApplicationController
     if type.present?
       case type
         when 'competition' then
-          @apply_info = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where('c.end_time > ?', Time.now).where(user_id: current_user_id).select(:id, 'up.username', :grade, 'up.gender', 'up.birthday', 'up.bj', 'up.student_code', 'up.identity_card', 'schools.name as school_name', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.last_score', 'teams.identifier', 'teams.group', 'teams.teacher', 'teams.teacher_mobile').page(params[:page]).per(params[:per])
+          @apply_info = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where('c.end_time > ?', Time.now).where(user_id: current_user_id).select(:id, 'up.username', :grade, 'up.gender', 'up.birthday', 'up.bj', 'up.student_code', 'up.identity_card', 'schools.name as school_name', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'events.id as event_id', 'teams.last_score', 'teams.identifier', 'teams.group', 'teams.teacher', 'teams.teacher_mobile').page(params[:page]).per(params[:per])
         when 'activity' then
           @apply_info = ActivityUserShip.joins(:activity).left_joins(:school).where('activities.end_time > ?', Time.now).where(user_id: current_user_id).select(:id, :has_join, 'schools.name as school_name', 'activity_user_ships.grade', 'activities.*').page(params[:page]).per(params[:per])
         else
@@ -360,6 +360,13 @@ class UserController < ApplicationController
         end
       }
     end
+  end
+
+
+  def export_voucher
+    @apply_info = TeamUserShip.joins(:team, :event).left_joins(:school).joins('left join user_profiles up on up.user_id = team_user_ships.user_id left join competitions c on c.id = events.competition_id').where('events.id=?', params[:ed]).where('c.end_time > ?', Time.now).where(user_id: current_user.id).select(:id, 'up.username', :grade, 'up.gender', 'up.birthday', 'up.identity_card', 'schools.name as school_name', 'c.name as comp_name', 'c.start_time', 'events.name as event_name', 'teams.identifier', 'teams.group', 'teams.teacher', 'teams.teacher_mobile').take
+    pdf = render_to_string pdf: 'pdfs', template: 'user/export_voucher.html.erb', layout: 'pdf', formats: :pdf, encoding: 'UTF-8', :disposition => 'inline'
+    send_data(pdf, filename: "#{@apply_info.identifier}_#{@apply_info.event_name}_#{@apply_info.username}.pdf", :type => 'application/pdf')
   end
 
 
