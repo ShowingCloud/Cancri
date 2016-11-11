@@ -67,7 +67,7 @@
   <div id="qrcodeCanvas"></div>
   <span class="username"><%= @apply_info.try(:username) %></span>
   <span class="age"><%= (Time.now.year - @apply_info.birthday.year) %></span>
-  <span class="gender"><%= @apply_info.try(:gender) == 1 ? '男':'女' %></span>
+  <span class="gender"><%= @apply_info.try(:gender) == 1 ? '男' : '女' %></span>
   <span class="school"><%= @apply_info.try(:school_name) %></span>
   <span class="competition" style="color: white"><%= @apply_info.try(:comp_name) %></span>
   <span class="event"><%= @apply_info.try(:event_name) %></span>
@@ -81,7 +81,7 @@
   $('#qrcodeCanvas').qrcode({
     width: 230,
     height: 230,
-    text: utf16to8("我们的家园就撒娇大手大脚啊说山东撒打算打算打算大大大")
+    text: utf16to8("<%= "编号:#{@apply_info.identifier};姓名:#{@apply_info.try(:username)};项目:#{@apply_info.try(:event_name)}" %>")
   });
   function utf16to8(str) {
     var out, i, len, c;
