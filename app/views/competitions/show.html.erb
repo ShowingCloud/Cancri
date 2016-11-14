@@ -91,6 +91,17 @@
               <%== @competition.apply_method.gsub(';', '<br>') %>
             </div>
           </div>
+          <% if @competition.description.present? %>
+            <div class="section-fold">
+              <div class="fold-head">
+                比赛描述
+                <span class="caret"></span>
+              </div>
+              <div class="fold-body">
+                <%== @competition.description.gsub(';', '<br>') %>
+              </div>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
