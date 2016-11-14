@@ -4,8 +4,8 @@ class CompetitionService
     EventSaShip.includes(:score_attribute, :score_attribute_parent).where(event_id: event_id, is_parent: 0).order('sort asc').map { |s| {
         id: s.id,
         name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name,
-        score_type: s.score_attribute.write_type,
-        desc: s.desc.blank? ? nil : s.desc
+        score_type: s.score_attribute.try(:write_type),
+        value_type: s.score_attribute.try(:desc)
     } }
   end
 
@@ -29,10 +29,10 @@ class CompetitionService
     team_sql = Team.joins('left join user_profiles u_p on u_p.user_id = teams.user_id').joins('left join schools s on s.id = teams.school_id')
                    .joins('left join users u on u.id = teams.user_id')
                    .joins("left join scores sc on teams.id=sc.team1_id and sc.schedule_id=#{schedule_id}").where(event_id: event_id, group: group).select(:id, :teacher, :teacher_mobile, :identifier, 'u_p.username', 'u.mobile', 's.name as school_name', 'count(sc.id) as score_num').group(:id, 'u_p.username')
-    case has_score.to_i
-      when 0 then
+    case has_score
+      when '0' then
         team_sql.having('count(sc.id) = ?', 0)
-      when 1 then
+      when '1' then
         team_sql.having('count(sc.id) > ?', 0)
       else
         team_sql
