@@ -307,7 +307,7 @@ class UserController < ApplicationController
               students = students.where('c.id = ?', comp_id)
             end
             if students.length>0
-              page_students = students.page(params[:page]).per(params[:per])
+              page_students = students.page(params[:page]).per(10)
               result = [true, page_students, students.length, competition]
             else
               result = [false, '没有相关队伍']

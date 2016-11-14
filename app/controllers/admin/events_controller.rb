@@ -37,11 +37,11 @@ class Admin::EventsController < AdminController
   # GET /admin/events/1
   # GET /admin/events/1.json
   def show
-    @score_attributes = EventSaShip.includes(:score_attribute, :score_attribute_parent).where(event_id: params[:id], is_parent: 0).order('sort asc').map { |s| {
+    @score_attributes = EventSaShip.includes(:score_attribute, :score_attribute_parent).where(event_id: params[:id], is_parent: 0).where.not(score_attribute_id: 0).order('sort asc').map { |s| {
         id: s.id,
         name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name,
         write_type: s.score_attribute.write_type,
-        desc: s.desc.blank? ? nil : s.desc,
+        desc: s.score_attribute.try(:desc),
         sort: s.sort
     } }
   end

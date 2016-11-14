@@ -47,17 +47,7 @@
                             <td><%= a.event_name %></td>
                             <td><%= a.start_time.strftime('%Y-%m-%d') %></td>
                             <td>
-                              <% case a.team_status when 0 %>
-                                  还未提交队伍
-                              <% when 1 %>
-                                  <a class="btn btn-xs btn-primary" href="/user/export_voucher?ed=<%= a.event_id %>">下载参赛证</a>
-                              <% when 2, 3 %>
-                                  待审核
-                              <% when -2, -3 %>
-                                  审核未通过
-                              <% else %>
-                                  未知
-                              <% end %>
+                              <a class="btn btn-xs btn-primary" href="/user/export_voucher?ed=<%= a.event_id %>">下载参赛证</a>
                             </td>
                           </tr>
                       <% end %>
