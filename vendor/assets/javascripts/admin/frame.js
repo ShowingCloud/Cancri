@@ -23,7 +23,6 @@ $(function () {
     $('.add-event-worker-submit').on('click', function () {
         var user_ids = $("#window-select-event-worker").val();
         var event_id = $('#added-event-id').val();
-        console.log(user_ids);
         if (user_ids != null) {
             $.ajax({
                 url: '/admin/competitions/add_event_worker',
@@ -76,12 +75,9 @@ $(function () {
                 type: 'post',
                 data: {"sa_id": sa_id},
                 success: function (data) {
+                    admin_gritter_notice(data[0], data[1]);
                     if (data[0]) {
                         $(".hide-tr" + sa_id).addClass('hide');
-                        admin_gritter_notice(data[1]);
-                    }
-                    else {
-                        alert(data[1]);
                     }
                 }
             });

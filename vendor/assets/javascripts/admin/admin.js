@@ -359,7 +359,36 @@ $(function () {
             }
         });
     });
-    $('.dd').nestable();
+    var dd = $('.dd');
+    if (dd.length > 0) {
+        dd.nestable();
+
+        $('#update-event-score-sort').on('click', function () {
+            var event_id = $('#event-id').val();
+            var serialize_json = $('.dd').nestable('serialize');
+            var ids = [];
+            $.each(serialize_json, function (k, v) {
+                ids.push(v["id"]);
+            });
+            if (ids != []) {
+                $.ajax({
+                    url: '/admin/events/update_score_attrs_sort',
+                    type: 'post',
+                    data: {
+                        ids: ids, event_id: event_id
+                    },
+                    success: function (data) {
+                        admin_gritter_notice(data["status"], data["message"]);
+                    },
+                    error: function (data) {
+                        admin_gritter_notice(false, '更新失败');
+                    }
+                });
+            }
+
+        })
+    }
+
     var max_num = $('.team-max-num').text();
     if (max_num == 1) {
         $('.event-team').slimScroll({

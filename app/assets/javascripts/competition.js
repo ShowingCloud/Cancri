@@ -14,9 +14,10 @@ $(function () {
         var team_teacher = $('#team-teacher').val();
         var teacher_mobile = $('#team-teacher-mobile').val();
         var ed = $('#event-identify').val();
+        var chinese_english_reg = /^[a-zA-Z\u4e00-\u9fa5]{2,10}$/;
 
-        if (username.length < 1) {
-            alert_r('请填写姓名！');
+        if (!chinese_english_reg.test(username)) {
+            alert_r('请填写姓名(2-10位的中文或英文字符)！');
             return false;
         }
         if (gender.length < 1) {
@@ -193,35 +194,35 @@ $(function () {
                         space.find('.team-info').remove();
                         space.find('.accept').remove();
                         var info = $('<table class="team-info">' +
-                        '<tr>' +
-                        '<td>队伍编号</td>' +
-                        '<td>' + result.identifier + '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>队长姓名</td>' +
-                        '<td>' + result.username + '</td>' +
-                        '</tr>' +
-                        '<td>所属学校</td>' +
-                        '<td>' + result.school_name + '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>指导老师</td>' +
-                        '<td>' + result.teacher + '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>老师电话</td>' +
-                        '<td>' + result.teacher_mobile + '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>队伍人数</td>' +
-                        '<td>' + result.players + '</td>' +
-                        '</tr>' +
-                        '</table>');
+                            '<tr>' +
+                            '<td>队伍编号</td>' +
+                            '<td>' + result.identifier + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td>队长姓名</td>' +
+                            '<td>' + result.username + '</td>' +
+                            '</tr>' +
+                            '<td>所属学校</td>' +
+                            '<td>' + result.school_name + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td>指导老师</td>' +
+                            '<td>' + result.teacher + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td>老师电话</td>' +
+                            '<td>' + result.teacher_mobile + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td>队伍人数</td>' +
+                            '<td>' + result.players + '</td>' +
+                            '</tr>' +
+                            '</table>');
                         space.append(info);
                         if (result.status == 0 && result.players < result.team_max_num) {
                             var btn = $('<div class="accept">' +
-                            '<button data-id="' + result.id + '" class="btn-primary btn btn-block btn-join-team">加入该队</button>' +
-                            '</div>');
+                                '<button data-id="' + result.id + '" class="btn-primary btn btn-block btn-join-team">加入该队</button>' +
+                                '</div>');
                             space.append(btn);
                         }
                         $('.btn-join-team').on('click', function (event) {
@@ -266,11 +267,11 @@ $(function () {
                             $('.search-player-input').val('');
                             $.each(result, function (k, v) {
                                 var tr = $('<tr><td>' + v.nickname + '</td>' +
-                                '<td>' + v.username + '</td>' +
-                                '<td>' + v.school_name + '</td>' +
-                                '<td>' + v.grade + '</td>' +
-                                '<td><button class="btn btn-xs btn-info" onclick="invite_player(' + v.user_id + ')" data-user="' + v.user_id + '">邀请</button></td>' +
-                                '</tr>');
+                                    '<td>' + v.username + '</td>' +
+                                    '<td>' + v.school_name + '</td>' +
+                                    '<td>' + v.grade + '</td>' +
+                                    '<td><button class="btn btn-xs btn-info" onclick="invite_player(' + v.user_id + ')" data-user="' + v.user_id + '">邀请</button></td>' +
+                                    '</tr>');
                                 tbody.append(tr);
                             });
                         }
@@ -359,8 +360,8 @@ function invite_player(user_id) {
                     $('.table-player-show').addClass('hide');
                     var team_players_info = $('#team-players-info').find('tbody');
                     var tr_info = $('<tr id="team-player-' + user_id + '"><td>' + data[2] + '</td><td>' + data[3] + '</td>' +
-                    '<td></td><td></td>' +
-                    '<td>队员(待确认)</td><td><button class="btn btn-xs btn-info" onclick="leader_delete_player(' + user_id + ')">清退</button></td></tr>');
+                        '<td></td><td></td>' +
+                        '<td>队员(待确认)</td><td><button class="btn btn-xs btn-info" onclick="leader_delete_player(' + user_id + ')">清退</button></td></tr>');
                     team_players_info.append(tr_info);
                 } else {
                     alert_r(data[1]);

@@ -106,6 +106,44 @@
 
     <div>
       <% if @score_attributes.present? %>
+          <div class="row">
+            <div class="col-xs-12">
+              <!-- PAGE CONTENT BEGINS -->
+
+              <div class="row">
+
+                <div class="col-sm-8">
+                  <span id="update-event-score-sort" class="btn btn-xs btn-primary">更新排序</span>
+                  <div class="dd dd-draghandle">
+                    <ol class="dd-list">
+                      <% @score_attributes.each_with_index do |sa, index| %>
+                          <li class="dd-item dd2-item <%= "hide-tr#{sa[:id]}" %>" data-id="<%= sa[:id] %>">
+                            <div class="dd-handle dd2-handle">
+                              <i class="normal-icon  blue bigger-130"><%= sa[:id] %></i>
+
+                              <i class="drag-icon icon-move bigger-125"></i>
+                            </div>
+                            <div class="dd2-content"><%= sa[:name]+' -- '+t('write_type.write_type'+sa[:write_type].to_s) %>
+                              <div class="pull-right action-buttons">
+                                <a class="red">
+                                  <span class="delete-event-sa" data-id="<%= sa[:id] %>" title="删除"><i class="icon-trash bigger-130"></i></span>
+                                </a>
+                              </div>
+                            </div>
+                          </li>
+                      <% end %>
+                      <input type="hidden" id="event-id" value="<%= @event.id %>">
+                    </ol>
+                  </div>
+                </div>
+              </div><!-- PAGE CONTENT ENDS -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+      <% end %>
+    </div>
+
+    <div>
+      <% unless @score_attributes.present? %>
           <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>

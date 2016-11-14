@@ -155,16 +155,22 @@ class Admin::EventsController < AdminController
 
   def update_score_attrs_sort
     ids = params[:ids]
+    event_id = params[:event_id]
 
-    if ids && ids.is_a?(Array)
-      event_sa = {}
-      ids.each_with_index do |id, index|
-        event_sa[id.to_i] ={sort: index+1}
+    if event_id && ids && ids.is_a?(Array)
+      event_sas = EventSaShip.where(event_id: event_id)
+      if event_sas && ((event_sas.pluck(:id).map { |x| x.to_s } & ids).count == ids.length)
+        update_attrs_json = {}
+        ids.each_with_index do |id, index|
+          update_attrs_json[id.to_i] ={sort: index+1}
+        end
+        EventSaShip.update(update_attrs_json.keys, update_attrs_json.values)
+        result ={status: true, message: '更新成功'}
+      else
+        result ={status: false, message: '不规范请求'}
       end
-      EventSaShip.update(event_sa.keys, event_sa.values)
-      result ={status: true, message: '更新成功'}
     else
-      result ={status: false, message: '更新失败'}
+      result ={status: false, message: '不规范请求'}
     end
     render json: result
   end

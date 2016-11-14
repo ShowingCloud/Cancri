@@ -10,57 +10,57 @@
           <%= render 'user/tab' %>
           <div class="sub-content">
             <% if @teacher_info.present? %>
-            <% role_type = @teacher_info.role_type %>
-            <div class="top">
+                <% role_type = @teacher_info.role_type %>
+                <div class="top">
                   <div class="teacher-info" data-district-id="<%= @teacher_info.district_id %>">
                     <div>
                       您的身份：
                     </div>
                     <% case role_type
-                       when 1 %>
+                         when 1 %>
                         <div data-role="<%= role_type %>" class="label label-warning">市级教师</div>
                     <% when 2 %>
                         <div data-role="<%= role_type %>" class="label label-info">区级教师</div>
-                        <button class="btn-robodou submit-team-many">提交名单</button>
+                        <button class="btn-robodou submit-team-many">批量同意参赛</button>
                     <% when 3 %>
                         <div data-role="<%= role_type %>" class="label label-primary">校级教师</div>
                     <% end %>
                   </div>
-            </div>
-            <div class="middle">
-              <select id="select-competition" class="comp-sel">
-                <option value="0">请选择比赛</option>
+                </div>
+                <div class="middle">
+                  <select id="select-competition" class="comp-sel">
+                    <option value="0">请选择比赛</option>
 
-                <% @competitions.each do |comp| %>
-                    <option value="<%= comp.id %>"><%= comp.name %></option>
-                <% end %>
-              </select>
-              <select id="select-event" class="event-sel">
-                <option value="0">请选择项目</option>
-
-              </select>
-              <% if role_type == 2 %>
-                  <select id="select-school-by-dis" class="s-sel">
-                    <option value="0">所有学校</option>
+                    <% @competitions.each do |comp| %>
+                        <option value="<%= comp.id %>"><%= comp.name %></option>
+                    <% end %>
                   </select>
-              <% end %>
-              <% if role_type != 1 %>
-                  <select id="select-status" class="status-sel">
-                    <option value="100">待审核</option>
-                    <option value="0">未通过</option>
-                    <option value="1">审核通过</option>
-                  </select>
-              <% end %>
-            </div>
-            <div class="middle">
-              <div class="comp-info">
-              </div>
-            </div>
-            <div class="middle">
-              <h4>队伍列表：</h4>
+                  <select id="select-event" class="event-sel">
+                    <option value="0">请选择项目</option>
 
-              <div class="team-list"></div>
-            </div>
+                  </select>
+                  <% if role_type == 2 %>
+                      <select id="select-school-by-dis" class="s-sel">
+                        <option value="0">所有学校</option>
+                      </select>
+                  <% end %>
+                  <% if role_type != 1 %>
+                      <select id="select-status" class="status-sel">
+                        <option value="100">待审核</option>
+                        <option value="0">未通过</option>
+                        <option value="1">审核通过</option>
+                      </select>
+                  <% end %>
+                </div>
+                <div class="middle">
+                  <div class="comp-info">
+                  </div>
+                </div>
+                <div class="middle">
+                  <h4>队伍列表：</h4>
+
+                  <div class="team-list"></div>
+                </div>
             <% else %>
                 <!-- no exist-->
                 非教师身份，不可操作
