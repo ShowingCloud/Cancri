@@ -96,7 +96,9 @@
               <% end %>
             </div>
         <% else %>
-            <% unless has_teacher_role %>
+            <% if has_teacher_role %>
+                <h3 class="text-center">您是老师,不能报名比赛</h3>
+            <% else %>
                 <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
                 <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
                 <input type="hidden" id="gender" value="<%= @user_info.gender.to_i %>"/>

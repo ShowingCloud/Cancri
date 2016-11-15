@@ -21,7 +21,7 @@
                       <% @apply_info.each do |a| %>
                           <tr>
                             <td><%= a.name %></td>
-                            <td><%= a.end_time.strftime('%Y-%m-%d') %></td>
+                            <td><%= a.end_time.in_time_zone.strftime('%Y-%m-%d') %></td>
                             <td><%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.course_id}", class: 'btn-robodou btn-abort-lesson' do %>
                                   取消报名
                               <% end %></td>
@@ -39,13 +39,31 @@
                         <th>比赛名称</th>
                         <th>项目名称</th>
                         <th>比赛时间</th>
+                        <th>状态</th>
                         <th>下载</th>
                       </tr>
                       <% @apply_info.each do |a| %>
                           <tr>
                             <td><%= a.comp_name %></td>
                             <td><%= a.event_name %></td>
-                            <td><%= a.start_time.strftime('%Y-%m-%d') %></td>
+                            <td><%= a.start_time.in_time_zone.strftime('%Y-%m-%d') %></td>
+                            <td>
+                              <% case a.team_status when 0 %>
+                                  队长未提交
+                              <% when 1 %>
+                                  报名成功
+                              <% when 2 %>
+                                  待学校审核
+                              <% when 3 %>
+                                  待区县审核
+                              <% when -2 %>
+                                  学校审核未通过
+                              <% when -3 %>
+                                  区县审核未通过
+                              <% else %>
+                                  未知
+                              <% end %>
+                            </td>
                             <td>
                               <a class="btn btn-xs btn-primary" href="/user/export_voucher?ed=<%= a.event_id %>">下载参赛证</a>
                             </td>
@@ -74,7 +92,7 @@
                       <tr>
                         <td><%= a.name %></td>
                         <td><%= a.host_address %></td>
-                        <td><%= a.start_time.strftime('%Y-%m-%d') %></td>
+                        <td><%= a.start_time.in_time_zone.strftime('%Y-%m-%d') %></td>
                       </tr>
                   <% end %>
                 </table>
