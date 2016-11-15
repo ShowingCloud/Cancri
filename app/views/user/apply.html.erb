@@ -21,7 +21,7 @@
                       <% @apply_info.each do |a| %>
                           <tr>
                             <td><%= a.name %></td>
-                            <td><%= a.end_time.strftime('%Y-%m-%d') %></td>
+                            <td><%= a.end_time.in_time_zone.strftime('%Y-%m-%d') %></td>
                             <td><%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.course_id}", class: 'btn-robodou btn-abort-lesson' do %>
                                   取消报名
                               <% end %></td>
@@ -46,7 +46,7 @@
                           <tr>
                             <td><%= a.comp_name %></td>
                             <td><%= a.event_name %></td>
-                            <td><%= a.start_time.strftime('%Y-%m-%d') %></td>
+                            <td><%= a.start_time.in_time_zone.strftime('%Y-%m-%d') %></td>
                             <td>
                               <% case a.team_status when 0 %>
                                   队长未提交
@@ -92,7 +92,7 @@
                       <tr>
                         <td><%= a.name %></td>
                         <td><%= a.host_address %></td>
-                        <td><%= a.start_time.strftime('%Y-%m-%d') %></td>
+                        <td><%= a.start_time.in_time_zone.strftime('%Y-%m-%d') %></td>
                       </tr>
                   <% end %>
                 </table>
