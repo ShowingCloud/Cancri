@@ -116,6 +116,7 @@ Rails.application.routes.draw do
     end
     resources :events do
       collection do
+        post :update_formula
         get :teams
         post :add_score_attributes
         post :edit_event_sa_desc

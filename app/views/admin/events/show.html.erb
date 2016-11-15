@@ -107,7 +107,7 @@
     <div>
       <% if @score_attributes.present? %>
           <div class="row">
-            <div class="col-xs-12">
+            <div class="col-xs-12 col-lg-12">
               <!-- PAGE CONTENT BEGINS -->
 
               <div class="row">
@@ -124,7 +124,63 @@
                               <i class="drag-icon icon-move bigger-125"></i>
                             </div>
                             <div class="dd2-content"><%= sa[:name]+' -- '+t('write_type.write_type'+sa[:write_type].to_s) %>
+                              <%= "-- #{t('value_type.value_type'+sa[:desc])}" if sa[:desc].present? %>
+
                               <div class="pull-right action-buttons">
+                                <% if sa[:name] == '公式' %>
+                                    <a class="blue" href="<%= "#edit-formula-#{sa[:id]}" %>" data-toggle="modal">
+                                      <span title="编辑公式"><i class="icon-pencil bigger-130"></i></span>
+                                    </a>
+                                    <div id="<%= "edit-formula-#{sa[:id]}" %>" class="modal" tabindex="-1">
+                                      <div class="modal-dialog">
+                                        <div class="modal-content">
+                                          <div class="widget-header model-header">
+                                            <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+                                            <h4 class="text-center"></h4>
+                                          </div>
+
+                                          <div class="modal-body overflow-visible">
+                                            <div class="row">
+                                              <div class="col-xs-offset-1">
+                                                <select id="event-formula-select">
+                                                  <option value="0">常量</option>
+                                                  <% @score_attributes.map { |x| [x[:id], x[:name]] }.each do |s| %>
+                                                      <option value="<%= s[0] %>"><%= s[1] %></option>
+                                                  <% end %>
+                                                </select>
+                                              </div>
+
+                                            </div>
+                                            <br>
+
+                                            <div class="row">
+                                              <div class="col-xs-offset-1">
+                                                <form id="event-formula-form">
+
+                                                  <div class="event-formula-input">
+                                                    <input type="hidden" name="sa_id" value="<%= sa[:id] %>">
+                                                  </div>
+                                                </form>
+                                              </div>
+                                            </div>
+
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button class="btn btn-sm" data-dismiss="modal">
+                                              <i class="icon-remove"></i>
+                                              取消
+                                            </button>
+
+                                            <button class="btn btn-sm btn-primary update-event-formula-submit" data-id="<%= sa[:id] %>">
+                                              <i class="icon-ok"></i>
+                                              提交
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                <% end %>
                                 <a class="red">
                                   <span class="delete-event-sa" data-id="<%= sa[:id] %>" title="删除"><i class="icon-trash bigger-130"></i></span>
                                 </a>

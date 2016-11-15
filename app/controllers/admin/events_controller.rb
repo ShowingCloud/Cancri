@@ -104,6 +104,25 @@ class Admin::EventsController < AdminController
     @teams = teams.page(params[:page]).per(params[:per])
   end
 
+  def update_formula
+    formula = params
+    sa_id = formula[:sa_id]
+    event_sa = EventSaShip.find_by_id(sa_id)
+    if event_sa.present?
+      formula.delete(:sa_id)
+      formula.delete(:action)
+      formula.delete(:controller)
+      if event_sa.update(formula: formula)
+        result = [true, '操作成功']
+      else
+        result = [false, '操作失败']
+      end
+    else
+      result=[false, '不规范请求']
+    end
+    render json: {status: result[0], message: result[1]}
+  end
+
 
   def add_score_attributes
     if request.method == 'POST'
