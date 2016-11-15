@@ -13,7 +13,7 @@ class Competition < ApplicationRecord
   validates :cover, presence: true, file_size: {less_than: 1.megabyte, message: '大小不能超过1M'}
   validates :aim, :organizing_committee, :date_schedule, presence: true, length: {minimum: 5}
   validates :status, presence: true
-  validates :time_schedule, :detail_rule, file_size: {less_than: 3.megabytes, message: '大小不能超过3M'}
+  validates :time_schedule, :detail_rule, file_size: {less_than: 10.megabytes, message: '大小不能超过10M'}
   mount_uploader :time_schedule, CompPdfUploader
   mount_uploader :detail_rule, CompPdfUploader
   mount_uploader :cover, CoverUploader

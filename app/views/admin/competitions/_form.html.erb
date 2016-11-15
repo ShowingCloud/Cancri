@@ -156,7 +156,7 @@
       <div class="form-group">
         <label for="exampleInputFile">时间安排</label>
         <%= f.file_field :time_schedule, id: 'check-time-schedule' %>
-        <p class="help-block">格式: pdf zip rar; 大小: 小于3M</p>
+        <p class="help-block">格式: pdf zip rar; 大小: 小于10M</p>
       </div>
       <% if @competition.detail_rule.present? %>
           <a href="<%= @competition.detail_rule %>" target="_blank">查看详细规则</a>
@@ -164,7 +164,7 @@
       <div class="form-group">
         <label for="exampleInputFile">详细规则</label>
         <%= f.file_field :detail_rule, id: 'check-detail-rule' %>
-        <p class="help-block">格式: pdf zip rar; 大小: 小于3M</p>
+        <p class="help-block">格式: pdf zip rar; 大小: 小于10M</p>
       </div>
 
     </div>
