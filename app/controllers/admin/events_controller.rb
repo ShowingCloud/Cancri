@@ -79,26 +79,27 @@ class Admin::EventsController < AdminController
 
   def teams
     status = params[:status]
-    @event = Event.find(params[:id])
-    case status
-      when '组队中' then
-        status == 0
-      when '报名成功' then
-        status == 1
-      when '待学校审核' then
-        status == 2
-      when '待区县审核' then
-        status == 3
-      when '学校拒绝' then
-        status == -2
-      when '区县拒绝' then
-        status == -3
-      else
-        status == nil
-    end
-    teams = Team.includes(:team_user_ships, :user).where(event_id: params[:id]); false
+    event_id = params[:id]
+    @event = Event.find(event_id)
+    teams = Team.includes(:team_user_ships, :user).where(event_id: event_id)
     if status.present?
-      teams = teams.where(status: params[:status])
+      case status
+        when '组队中' then
+          status = 0
+        when '报名成功' then
+          status = 1
+        when '待学校审核' then
+          status = 2
+        when '待区县审核' then
+          status = 3
+        when '学校拒绝' then
+          status = -2
+        when '区县拒绝' then
+          status = -3
+        else
+          status = nil
+      end
+      teams = teams.where(status: status)
     end
     @teams = teams.page(params[:page]).per(params[:per])
   end

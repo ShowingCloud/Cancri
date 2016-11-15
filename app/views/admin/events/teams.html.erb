@@ -40,7 +40,22 @@
                   <div class="widget-header widget-header-small">
                     <h4 class="">
                       <i class="icon-flag-alt orange"></i>
-                      <%= team.identifier %> 待学校审核
+                      <%= team.identifier %>
+                      <% case team.status when 0 %>
+                          队长未提交
+                      <% when 1 %>
+                          报名成功
+                      <% when 2 %>
+                          待学校审核
+                      <% when 3 %>
+                          待区县审核
+                      <% when -2 %>
+                          学校审核未通过
+                      <% when -3 %>
+                          区县审核未通过
+                      <% else %>
+                          未知
+                      <% end %>
                     </h4>
 
                     <div class="widget-toolbar action-buttons">
@@ -53,7 +68,7 @@
                         <% team.team_user_ships.each do |te| %>
                             <div class="profile-activity clearfix" id="<%= "hide-player-#{te.user_id}" %>">
                               <div>
-                                <%= te.user.user_profile.username %> - <%= te.user.nickname %>
+                                <%= te.user.user_profile.username %> - <%= te.user.nickname[0..10] %>
                               </div>
                               <% if te.user_id == team.user_id %>
                                   <div class="tools">队长</div>
