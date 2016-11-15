@@ -239,6 +239,11 @@ zh-CN:
     write_type1: '手动'
     write_type2: 'app'
     write_type3: '赛道'
+  value_type:
+    integer: '整数'
+    float: '时间(s)'
+    value_type1: '整数'
+    value_type2: '时间(s)'
   activerecord:
     models:
       user: '用户'

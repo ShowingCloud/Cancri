@@ -14,7 +14,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :timeoutable, :omniauthable, :omniauth_providers => [:cas]
 
-  validates :nickname, presence: true, uniqueness: true, length: {in: 2..10}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含中文、数字、字母、下划线'}
+  validates :nickname, presence: true, uniqueness: true, length: {in: 2..20}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '昵称只能包含中文、数字、字母、下划线'}
   validates :email, uniqueness: true, allow_blank: true, format: {with: /\A[^@\s]+@[^@\s]+\z/, message: '格式不正确'}
 
 

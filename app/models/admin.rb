@@ -4,7 +4,7 @@ class Admin < ApplicationRecord
   has_secure_password
   include AccountConcern
 
-  validates :job_number, presence: true, length: {minimum: 3, maximum: 5}, uniqueness: true
+  validates :job_number, presence: true, length: {minimum: 3, maximum: 10}, uniqueness: true
   validates :password, length: {minimum: 6, maximum: 20}, allow_blank: true
   validates :password, presence: true, on: :create
   validates :name, presence: true

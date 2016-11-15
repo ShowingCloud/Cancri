@@ -39,6 +39,7 @@
                         <th>比赛名称</th>
                         <th>项目名称</th>
                         <th>比赛时间</th>
+                        <th>状态</th>
                         <th>下载</th>
                       </tr>
                       <% @apply_info.each do |a| %>
@@ -48,16 +49,23 @@
                             <td><%= a.start_time.strftime('%Y-%m-%d') %></td>
                             <td>
                               <% case a.team_status when 0 %>
-                                  还未提交队伍
+                                  队长未提交
                               <% when 1 %>
-                                  <a class="btn btn-xs btn-primary" href="/user/export_voucher?ed=<%= a.event_id %>">下载参赛证</a>
-                              <% when 2, 3 %>
-                                  待审核
-                              <% when -2, -3 %>
-                                  审核未通过
+                                  报名成功
+                              <% when 2 %>
+                                  待学校审核
+                              <% when 3 %>
+                                  待区县审核
+                              <% when -2 %>
+                                  学校审核未通过
+                              <% when -3 %>
+                                  区县审核未通过
                               <% else %>
                                   未知
                               <% end %>
+                            </td>
+                            <td>
+                              <a class="btn btn-xs btn-primary" href="/user/export_voucher?ed=<%= a.event_id %>">下载参赛证</a>
                             </td>
                           </tr>
                       <% end %>

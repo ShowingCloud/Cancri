@@ -4,8 +4,8 @@ class CompetitionService
     EventSaShip.includes(:score_attribute, :score_attribute_parent).where(event_id: event_id, is_parent: 0).order('sort asc').map { |s| {
         id: s.id,
         name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name,
-        score_type: s.score_attribute.write_type,
-        desc: s.desc.blank? ? nil : s.desc
+        score_type: s.score_attribute.try(:write_type),
+        value_type: s.score_attribute.try(:desc)
     } }
   end
 
@@ -29,10 +29,10 @@ class CompetitionService
     team_sql = Team.joins('left join user_profiles u_p on u_p.user_id = teams.user_id').joins('left join schools s on s.id = teams.school_id')
                    .joins('left join users u on u.id = teams.user_id')
                    .joins("left join scores sc on teams.id=sc.team1_id and sc.schedule_id=#{schedule_id}").where(event_id: event_id, group: group).select(:id, :teacher, :teacher_mobile, :identifier, 'u_p.username', 'u.mobile', 's.name as school_name', 'count(sc.id) as score_num').group(:id, 'u_p.username')
-    case has_score.to_i
-      when 0 then
+    case has_score
+      when '0' then
         team_sql.having('count(sc.id) = ?', 0)
-      when 1 then
+      when '1' then
         team_sql.having('count(sc.id) > ?', 0)
       else
         team_sql
@@ -59,10 +59,10 @@ class CompetitionService
   end
 
   def self.via_identifier_get_team(identifier)
-    team = Team.joins(:event).joins('left join competitions comp on comp.id = events.competition_id').where(identifier: identifier).select(:identifier, :id, :group, 'events.name as event_name', 'events.competition_id as comp_id', 'comp.name as comp_name').take
+    team = Team.joins(:event, :school).joins('left join competitions comp on comp.id = events.competition_id').where(identifier: identifier).select(:identifier, :id, :group, 'events.name as event_name', 'events.competition_id as comp_id', 'comp.name as comp_name', 'schools.name as school_name').take
     if team.present?
       players = TeamUserShip.joins('left join user_profiles up on up.user_id = team_user_ships.user_id').where(team_id: team.id).select('up.username', 'up.grade', 'up.gender')
-      result = {status: true, identifier: team.identifier, group: team.group, event_name: team.event_name, comp_name: team.comp_name, players: players}
+      result = {status: true, identifier: team.identifier, school_name: team.school_name, group: team.group, event_name: team.event_name, comp_name: team.comp_name, players: players}
     else
       result = {status: false, message: '该队伍编码不存在'}
     end

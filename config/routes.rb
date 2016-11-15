@@ -123,6 +123,7 @@ Rails.application.routes.draw do
         post :update_score_attrs_sort
       end
     end
+    resources :teams
     resources :event_schedules
     resources :news
     resources :activities do

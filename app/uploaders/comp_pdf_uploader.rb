@@ -15,12 +15,12 @@ class CompPdfUploader < CarrierWave::Uploader::Base
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   def extension_white_list
-    %w(pdf)
+    %w(pdf zip rar)
   end
 
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
   def filename
-    'comp_attr.pdf' if original_filename
+    "comp_attr.#{file.extension}" if original_filename
   end
 end

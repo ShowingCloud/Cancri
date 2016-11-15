@@ -417,12 +417,12 @@ $(function () {
     var time_schedule = $('#check-time-schedule');
     if (rule_detail.length > 0) {
         rule_detail.bind('change', function () {
-            multiple_check_type_size(rule_detail, ['pdf'], 3);
+            multiple_check_type_size(rule_detail, ['pdf', 'zip', 'rar'], 3);
         });
     }
     if (time_schedule.length > 0) {
         time_schedule.bind('change', function () {
-            multiple_check_type_size(time_schedule, ['pdf'], 3);
+            multiple_check_type_size(time_schedule, ['pdf', 'zip', 'rar'], 3);
         });
     }
 });
