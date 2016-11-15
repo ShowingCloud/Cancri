@@ -2161,3 +2161,15 @@ select {
   outline: none;
   color: #88D5EC;
 }
+
+.pager li{
+  a{
+    padding: 2px;
+    font-size: 12px;
+    border-radius: 5px;
+  }
+
+  select{
+    margin: auto 5px;
+  }
+}

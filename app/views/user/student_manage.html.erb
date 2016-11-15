@@ -35,7 +35,11 @@
                         <td><a href="<%= "/user/competitions?id=#{s.nickname}" %>">查看详情</a></td>
                       </tr>
                   <% end %>
+
                 </table>
+                <nav>
+                  <%= paginate @students %>
+                </nav>
             <% else %>
             <% end %>
           </div>
@@ -44,5 +48,3 @@
     </div>
   </div>
 </div>
-
-
