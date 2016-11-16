@@ -125,9 +125,20 @@
                             </div>
                             <div class="dd2-content"><%= sa[:name]+' -- '+t('write_type.write_type'+sa[:write_type].to_s) %>
                               <%= "-- #{t('value_type.value_type'+sa[:desc])}" if sa[:desc].present? %>
-
+                              <% if sa[:formula].present? %>
+                                  <% str = '' %>
+                                  <% sa[:formula].to_a.each do |f| %>
+                                      <% if f[0]=='0' %>
+                                          <% str += "#{f[1]["symbol"]=='1' ? '+' : '-'} #{(f[1]["molecule"]==f[1]["denominator"]) ? "1" : ((Float(f[1]["molecule"].to_i)/f[1]["denominator"].to_i).round(2))} " %>
+                                      <% else %>
+                                          <% str += "#{f[1]["symbol"]=='1' ? '+' : '-'} (#{f[1]["molecule"]}/#{f[1]["denominator"]})#{f[1]["name"]} " %>
+                                      <% end %>
+                                  <% end %>
+                                  <span title="<%= str[1..-1] %>"><%= str[1..30] %></span>
+                              <% end %>
                               <div class="pull-right action-buttons">
-                                <% if sa[:name] == '公式' %>
+                                <% if sa[:name].include?('是否') %>
+
                                     <a class="blue" href="<%= "#edit-formula-#{sa[:id]}" %>" data-toggle="modal">
                                       <span title="编辑公式"><i class="icon-pencil bigger-130"></i></span>
                                     </a>
@@ -142,9 +153,11 @@
                                           <div class="modal-body overflow-visible">
                                             <div class="row">
                                               <div class="col-xs-offset-1">
+                                                <% score_attrs = @score_attributes.map { |x| [x[:id], x[:name]] } %>
+                                                <% score_attrs.delete_at(index) %>
                                                 <select id="event-formula-select">
                                                   <option value="0">常量</option>
-                                                  <% @score_attributes.map { |x| [x[:id], x[:name]] }.each do |s| %>
+                                                  <% score_attrs.each do |s| %>
                                                       <option value="<%= s[0] %>"><%= s[1] %></option>
                                                   <% end %>
                                                 </select>
@@ -156,9 +169,25 @@
                                             <div class="row">
                                               <div class="col-xs-offset-1">
                                                 <form id="event-formula-form">
-
                                                   <div class="event-formula-input">
                                                     <input type="hidden" name="sa_id" value="<%= sa[:id] %>">
+                                                    <% if sa[:formula].present? %>
+                                                        <% sa[:formula].to_a.each do |formula| %>
+                                                            <% sa_id = formula[0] %>
+                                                            <p id="formula-<%= sa_id %>">
+                                                              <select id="symbol-<%= sa_id %>" name="<%= sa_id %>[symbol]">
+                                                                <option value="">请选择符号</option>
+                                                                <option value="1" selected>加号</option>
+                                                                <option value="0">减号</option>
+                                                              </select>&nbsp;&nbsp;
+                                                              <input style="width:90px" id="molecule-<%= sa_id %>" type="text" value="<%= formula[1]["molecule"] %>" placeholder="分子(正整数)" name="<%= sa_id %>[molecule]"/>&nbsp;&nbsp;
+                                                              <input style="width:90px" id="denominator-<%= sa_id %>" type="text" value="<%= formula[1]["denominator"] %>" placeholder="分母(正整数)" name="<%= sa_id %>[denominator]"/>
+                                                              <input type="hidden" name="<%= sa_id %>[name]" value="<%= formula[1]["name"] %>"/>
+                                                              <%= formula[1]["name"] %>
+                                                              <button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(<%= sa_id %>)">x</button>
+                                                            </p>
+                                                        <% end %>
+                                                    <% end %>
                                                   </div>
                                                 </form>
                                               </div>
