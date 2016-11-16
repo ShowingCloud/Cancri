@@ -241,9 +241,11 @@ zh-CN:
     write_type3: '赛道'
   value_type:
     integer: '整数'
-    float: '时间(s)'
+    float: '浮点型'
+    boolean: '是/否(布尔)'
     value_type1: '整数'
-    value_type2: '时间(s)'
+    value_type2: '浮点型'
+    value_type3: '是/否'
   activerecord:
     models:
       user: '用户'
