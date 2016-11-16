@@ -5,7 +5,8 @@ class CompetitionService
         id: s.id,
         name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name,
         score_type: s.score_attribute.try(:write_type),
-        value_type: s.score_attribute.try(:desc)
+        value_type: s.score_attribute.try(:desc),
+        formula: s.formula
     } }
   end
 
@@ -39,17 +40,17 @@ class CompetitionService
     end
   end
 
-  def self.post_team_scores(event_id, schedule_id, kind, th, team1_id, score1, last_score, note, device_no, confirm_sign, operator_id)
-    score = Score.where(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id).take
-    if score.present?
-      if score.update_attributes(score_attribute: score1, last_score: last_score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
+  def self.post_team_scores(event_id, schedule_id, kind, th, team1_id, score1, score, note, device_no, confirm_sign, operator_id)
+    score_row = Score.where(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id).take
+    if score_row.present?
+      if score_row.update_attributes(score_attribute: score1, score: score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
         result = {status: true, message: '成绩更新成功'}
       else
         result = {status: false, message: '成绩更新失败'}
       end
     else
-      score = Score.create(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id, score_attribute: score1, last_score: last_score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
-      if score.save
+      score_row = Score.create(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id, score_attribute: score1, score: score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
+      if score_row.save
         result = {status: true, message: '成绩保存成功'}
       else
         result = {status: false, message: '成绩保存失败'}

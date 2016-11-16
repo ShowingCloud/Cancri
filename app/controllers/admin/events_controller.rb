@@ -42,7 +42,8 @@ class Admin::EventsController < AdminController
         name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name,
         write_type: s.score_attribute.write_type,
         desc: s.score_attribute.try(:desc),
-        sort: s.sort
+        sort: s.sort,
+        formula: s.formula
     } }
   end
 
@@ -104,6 +105,25 @@ class Admin::EventsController < AdminController
     @teams = teams.page(params[:page]).per(params[:per])
   end
 
+  def update_formula
+    formula = params
+    sa_id = formula[:sa_id]
+    event_sa = EventSaShip.find_by_id(sa_id)
+    if event_sa.present?
+      formula.delete(:sa_id)
+      formula.delete(:action)
+      formula.delete(:controller)
+      if event_sa.update(formula: formula)
+        result = [true, '操作成功']
+      else
+        result = [false, '操作失败']
+      end
+    else
+      result=[false, '不规范请求']
+    end
+    render json: {status: result[0], message: result[1]}
+  end
+
 
   def add_score_attributes
     if request.method == 'POST'
@@ -139,17 +159,36 @@ class Admin::EventsController < AdminController
   end
 
   def delete_score_attribute
-    if params[:sa_id].present?
-      sa = EventSaShip.find(params[:sa_id])
-      if sa.is_parent && EventSaShip.where(['id = :sa_id OR parent_id = :value', {:sa_id => params[:sa_id], :value => sa.score_attribute_id}]).delete_all
-        result = [true, '删除成功']
-      elsif EventSaShip.delete(params[:sa_id])
-        result = [true, '删除成功']
+    sa_id = params[:sa_id]
+    if sa_id.present?
+      sa = EventSaShip.find_by_id(sa_id)
+      if sa.present?
+        formulas = EventSaShip.where(event_id: sa.event_id).pluck(:formula)
+        puts '===0==='
+        has_use = []
+        formulas.each do |f|
+          if f.present? && f.is_a?(Hash)
+            f.to_a.each do |f_attr|
+              if f_attr[0] == sa_id
+                has_use << true
+              end
+            end
+          end
+        end
+        if has_use.include?(true)
+          result = [false, '该属性在公式里,无法删除']
+        else
+          if EventSaShip.delete(sa_id)
+            result = [true, '删除成功']
+          else
+            result = [false, '删除失败']
+          end
+        end
       else
-        result = [false, '删除失败']
+        result = [false, '对象不存在']
       end
     else
-      result = [false, '不规范请求']
+      result = [false, '参数不完整']
     end
     render json: result
   end

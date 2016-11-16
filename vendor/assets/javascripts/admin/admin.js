@@ -425,6 +425,66 @@ $(function () {
             multiple_check_type_size(time_schedule, ['pdf', 'zip', 'rar'], 10);
         });
     }
+    $('#event-formula-select').on('change', function () {
+        var event_formula = document.getElementById("event-formula-select");
+        var sa_value = event_formula.options[event_formula.selectedIndex].text;
+        var sa_id = $(this).val();
+        var input_symbol = $('<p id="formula-' + sa_id + '"><select id="symbol-' + sa_id + '" name="' + sa_id + '[symbol]"><option value="">请选择符号</option><option value="1" selected>加号</option><option value="0">减号</option></select>&nbsp;&nbsp;&nbsp;' + '' +
+            '<input  style="width:90px" id="molecule-' + sa_id + '" type="text" placeholder="分子(正整数)" name="' + sa_id + '[molecule]" />&nbsp;&nbsp;&nbsp;' +
+            '<input  style="width:90px" id="denominator-' + sa_id + '" type="text" placeholder="分母(正整数)" name="' + sa_id + '[denominator]" /><input type="hidden" name="' + sa_id + '[name]" value="' + sa_value + '" />&nbsp;' + sa_value + '&nbsp;<button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(' + sa_id + ')">x</button></p>');
+        $('.event-formula-input').append(input_symbol);
+
+    });
+    $('.update-event-formula-submit').on('click', function () {
+        var form = $("#event-formula-form");
+        var data = form.serializeArray();
+        var formula_sa_id = data[0].value;
+        var has_no_error = true;
+        $.each(data, function (k, v) {
+            var input_name = v.name;
+            var input_id = v.name.split('[')[0];
+            var input_value = parseInt(v.value);
+            if (input_name.indexOf("symbol") >= 0 && input_value != 1 && input_value != 0) {
+                admin_gritter_notice(false, '请正确选择符号');
+                $("#symbol-" + input_id).focus();
+                has_no_error = false;
+                return has_no_error;
+            }
+
+            if (input_name.indexOf("molecule") >= 0 && (input_value == 0 || isNaN(input_value))) {
+                admin_gritter_notice(false, '分子不能为空或0');
+                $('#molecule-' + input_id).focus();
+                has_no_error = false;
+                return has_no_error;
+            }
+            if (input_name.indexOf("denominator") >= 0 && (input_value == 0 || isNaN(input_value))) {
+                admin_gritter_notice(false, '分母不能为空或0');
+                $('#denominator-' + input_id).focus();
+                has_no_error = false;
+                return has_no_error;
+            }
+        });
+        if (!has_no_error) {
+            return false;
+        }
+        if (data.length > 1) {
+            $.ajax({
+                url: '/admin/events/update_formula',
+                type: 'post',
+                dataType: "JSON",
+                data: data,
+                success: function (data) {
+                    admin_gritter_notice(data["status"], data["message"]);
+                    window.location.reload();
+                }
+            });
+        } else {
+            admin_gritter_notice(false, '公式内容不能为空')
+        }
+
+    });
+
+
 });
 function trim(str) {
     return str.replace(/(^\s*)|(\s*$)/g, "");
@@ -464,4 +524,8 @@ function multiple_check_type_size(obj, limit_type, limit_size) {
         }
     });
     return !has_no_error;
+}
+
+function cancel_formula_element(formula_id) {
+    $('#formula-' + formula_id).remove();
 }
