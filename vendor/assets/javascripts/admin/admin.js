@@ -443,18 +443,18 @@ $(function () {
             var input_name = v.name;
             var input_value = parseInt(v.value);
             if (input_name.indexOf("symbol") >= 0 && input_value != 1 && input_value != 0) {
-                alert('请正确选择符号');
+                admin_gritter_notice(false, '请正确选择符号');
                 has_no_error = false;
                 return has_no_error;
             }
 
             if (input_name.indexOf("molecule") >= 0 && (input_value == 0 || isNaN(input_value))) {
-                alert('分子不能为空或0');
+                admin_gritter_notice(false, '分子不能为空或0');
                 has_no_error = false;
                 return has_no_error;
             }
             if (input_name.indexOf("denominator") >= 0 && (input_value == 0 || isNaN(input_value))) {
-                alert('分母不能为空或0');
+                admin_gritter_notice(false, '分母不能为空或0');
                 has_no_error = false;
                 return has_no_error;
             }
@@ -462,15 +462,20 @@ $(function () {
         if (!has_no_error) {
             return false;
         }
-        $.ajax({
-            url: '/admin/events/update_formula',
-            type: 'post',
-            dataType: "JSON",
-            data: data,
-            success: function (data) {
-                admin_gritter_notice(data["status"], data["message"])
-            }
-        });
+        if (data.length > 1) {
+            $.ajax({
+                url: '/admin/events/update_formula',
+                type: 'post',
+                dataType: "JSON",
+                data: data,
+                success: function (data) {
+                    admin_gritter_notice(data["status"], data["message"])
+                }
+            });
+        } else {
+            admin_gritter_notice(false, '请编辑公式')
+        }
+
     });
 
 
