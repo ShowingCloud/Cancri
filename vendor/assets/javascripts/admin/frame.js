@@ -1,7 +1,21 @@
 $(function () {
 
     var chosen_select = $(".chosen-select");
-    chosen_select.chosen();
+    // chosen_select.chosen();
+    chosen_select.chosen({
+        max_selected_options: 3
+    });
+    $('.edit-event-formula').on('shown.bs.modal', function () {
+        $(this).find('.chosen-container').each(function () {
+            var self = $(this);
+            self.find('a:first-child').css('width', '320px');
+            self.find('.chosen-drop').css('width', '320px');
+            self.find('.chosen-search input').css('width', '310px');
+
+        });
+        $(this).find('.chosen-container-multi').css('width', '320px');
+    });
+
     $('.open-add-player').on('click', function () {
         var event_id = $(this).attr('data-id');
         var event_name = $(this).attr('data-name');
