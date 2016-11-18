@@ -572,7 +572,7 @@ class UserController < ApplicationController
     if @notification.present?
       ## 队长邀请队员
       if @notification.message_type==1 && @notification.team_id.present?
-        @t_u = Event.left_joins(:team_user_ships, :teams, :competition).where('team_user_ships.team_id = ?', @notification.team_id).where('team_user_ships.user_id = ?', @notification.user_id).select(:id, 'team_user_ships.status as t_u_status', 'teams.status as team_status', 'team_user_ships.id as t_u_id', 'competitions.apply_end_time').take
+        @t_u = TeamUserShip.joins(:team, :event).joins('left join competitions c on c.id = events.competition_id').where(team_id: @notification.team_id, user_id: @notification.user_id).select('events.id as id', 'team_user_ships.status as t_u_status', 'teams.status as team_status', 'c.apply_end_time').take
         if @t_u.present? && (@t_u.apply_end_time>Time.now) && (@t_u.team_status == 0) && (@t_u.t_u_status==0)
           user_info = UserProfile.left_joins(:school, :district).where(user_id: @notification.user_id).select('user_profiles.*', 'schools.name as school_name', 'districts.name as district_name').take; false
           @user_info = user_info ||= current_user.build_user_profile
@@ -581,12 +581,12 @@ class UserController < ApplicationController
 
       ## 申请加入队伍
       if @notification.message_type==2 && @notification.team_id.present? && @notification.reply_to.present? && @notification.t_u_id.present?
-        @t_u = Event.left_joins(:team_user_ships, :teams, :competition).where('team_user_ships.team_id = ?', @notification.team_id).where('team_user_ships.user_id = ?', @notification.reply_to).select(:id, 'team_user_ships.status as t_u_status', 'teams.status as team_status', 'team_user_ships.id as t_u_id', 'competitions.apply_end_time').take
+        @t_u = TeamUserShip.joins(:team, :event).joins('left join competitions c on c.id = events.competition_id').where(team_id: @notification.team_id, user_id: @notification.reply_to).select('events.id as id', 'team_user_ships.status as t_u_status', 'teams.status as team_status', 'c.apply_end_time').take
       end
 
       ## 申请退出比赛
       if @notification.message_type==3 && @notification.team_id.present? && @notification.reply_to.present?
-        @t_u = TeamUserShip.joins(:event).where(team_id: @notification.team_id, user_id: @notification.reply_to).select(:id, :status, 'events.apply_end_time', :event_id).take
+        @t_u = TeamUserShip.joins(:event).joins('left join competitions c on c.id = events.competition_id').where(team_id: @notification.team_id, user_id: @notification.reply_to).select(:id, :status, 'c.apply_end_time', :event_id).take
         if @t_u.present?
           @has_agree = false # 未处理或已拒绝退出
         else
