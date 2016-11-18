@@ -25,7 +25,7 @@ module Api
         requires! :team1_id, type: Integer, desc: '队伍1'
         requires! :score_attribute, type: Hash, desc: '成绩属性'
         # requires! :last_score, values: %w(0 1), desc: '是否是最终成绩'
-        requires! :score, type: Float, desc: '最终成绩'
+        # requires! :score, type: Float, desc: '最终成绩'
         optional! :note, type: String, desc: '备注'
         requires! :device_no, type: String, desc: '设备号'
         requires! :confirm_sign, type: File, desc: '确认签名'

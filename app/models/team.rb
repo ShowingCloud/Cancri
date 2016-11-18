@@ -42,7 +42,7 @@ class Team < ApplicationRecord
         else
           identity = 'G'
       end
-      ('000'+(id+128).to_s)[-6..-1].each_byte do |c|
+      ((id+128000).to_s)[-6..-1].each_byte do |c|
         if c != 48
           identity.concat((c.to_i + 16).chr)
         else

@@ -5,6 +5,17 @@
     float: left
 }
 
+.profile-info-value span {
+    display: inline-block;
+    height: 13px
+}
+
+.show-row-margin {
+    min-height: 30px;
+    padding-top: 6px;
+    margin-left: 135px
+}
+
 .add-score-attribute {
     list-style-type: none;
     display: none;

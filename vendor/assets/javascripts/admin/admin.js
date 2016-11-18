@@ -466,6 +466,14 @@ $(function () {
             admin_gritter_notice(false, '请选择排序');
             return false;
         }
+        var orders_attr = [];
+        for (var i = 0; i < orders.length; i++) {
+            orders_attr[i] = (orders[i].indexOf("最终成绩") >= 0);
+        }
+        if (orders_attr.indexOf(true) == -1) {
+            admin_gritter_notice(false, '成绩排序中要包含最终成绩的排序');
+            return false;
+        }
         var ls_by_name = $('#last-score-by').find('option:selected').text();
         var trigger_attr_name = $('#trigger-formula-id').find('option:selected').text();
         $('#last-score-name').val(ls_by_name);
