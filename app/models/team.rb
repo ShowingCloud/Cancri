@@ -38,15 +38,17 @@ class Team < ApplicationRecord
         when 2 then
           identity = 'Z'
         when 3 then
-          identity = 'C'
+          identity = 'J'
+        when 4 then
+          identity = 'S'
         else
-          identity = 'G'
+          identity = 'W'
       end
-      ((id+128000).to_s)[-6..-1].each_byte do |c|
+      ((id+128000).to_s).each_byte do |c|
         if c != 48
           identity.concat((c.to_i + 16).chr)
         else
-          identity.concat('H')
+          identity.concat('O')
         end
       end
       self.identifier = identity
