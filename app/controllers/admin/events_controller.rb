@@ -107,19 +107,33 @@ class Admin::EventsController < AdminController
 
   def update_formula
     formula = params
-    sa_id = formula[:sa_id]
-    event_sa = EventSaShip.find_by_id(sa_id)
-    if event_sa.present?
-      formula.delete(:sa_id)
-      formula.delete(:action)
-      formula.delete(:controller)
-      if event_sa.update(formula: formula)
-        result = [true, '操作成功']
+    sa_id = params[:sa_id]
+    order = params[:order]
+    if order.present? && order.is_a?(Array) && sa_id.present?
+      # new_order = Array.new(order.length, {})
+      # order.each_with_index do |o, index|
+      #   split_order = o.split('++')
+      #   new_order[index][:id] = split_order[0].to_i
+      #   new_order[index][:sort] = split_order[1].to_i
+      #   new_order[index][:name] = split_order[2]
+      # end
+
+      event_sa = EventSaShip.find_by_id(sa_id)
+      if event_sa.present?
+        formula.delete(:sa_id)
+        formula.delete(:action)
+        formula.delete(:controller)
+        # formula[:order] = new_order
+        if event_sa.update(formula: formula)
+          result = [true, '操作成功']
+        else
+          result = [false, '操作失败']
+        end
       else
-        result = [false, '操作失败']
+        result=[false, '不规范请求']
       end
     else
-      result=[false, '不规范请求']
+      result=[false, '参数不完整']
     end
     render json: {status: result[0], message: result[1]}
   end
