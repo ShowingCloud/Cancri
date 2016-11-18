@@ -183,13 +183,13 @@
                                                     </select>&nbsp;&nbsp;
                                                     成绩排序:
                                                     <select multiple="" name="order[]" id="selected-orders" class="chosen-select tag-input-style" data-placeholder="请选择排序...">
-                                                      <option value="0++0++最终成绩" <%= "selected" if (sa[:formula] && sa[:formula]["order"].include?('0++0++最终成绩')) %> >最终成绩-降序</option>
-                                                      <option value="0++1++最终成绩" <%= "selected" if (sa[:formula] && sa[:formula]["order"].include?('0++1++最终成绩')) %> >最终成绩-升序</option>
+                                                      <option value="0++0++最终成绩" <%= "selected" if (sa[:formula].present? && sa[:formula] && sa[:formula]["order"].include?('0++0++最终成绩')) %> >最终成绩-降序</option>
+                                                      <option value="0++1++最终成绩" <%= "selected" if (sa[:formula].present? && sa[:formula]["order"].include?('0++1++最终成绩')) %> >最终成绩-升序</option>
                                                       <% score_attrs.each do |s| %>
-                                                          <option value="<%= s[0] %>++0++<%= s[1] %>" <%= "selected" if (sa[:formula] && sa[:formula]["order"].include?("#{s[0]}++0++#{s[1]}")) %>><%= s[1] %>
+                                                          <option value="<%= s[0] %>++0++<%= s[1] %>" <%= "selected" if (sa[:formula].present? && sa[:formula]["order"].include?("#{s[0]}++0++#{s[1]}")) %>><%= s[1] %>
                                                             -降序
                                                           </option>
-                                                          <option value="<%= s[0] %>++1++<%= s[1] %>" <%= "selected" if (sa[:formula] && sa[:formula]["order"].include?("#{s[0]}++1++#{s[1]}")) %>><%= s[1] %>
+                                                          <option value="<%= s[0] %>++1++<%= s[1] %>" <%= "selected" if (sa[:formula].present? && sa[:formula]["order"].include?("#{s[0]}++1++#{s[1]}")) %>><%= s[1] %>
                                                             -升序
                                                           </option>
                                                       <% end %>
