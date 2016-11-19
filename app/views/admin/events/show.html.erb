@@ -127,27 +127,30 @@
                               <%= "-- #{t('value_type.value_type'+sa[:desc])}" if sa[:desc].present? %>
                               <% if sa[:formula].present? %>
                                   <% str = '' %>
-                                  <% sa[:formula].to_a.each do |f| %>
+                                  <% sa[:formula]["formula"].to_a.each do |f| %>
+                                      <% formula_symbol = f[1]["symbol"].gsub(/[1-4]/, '1' => '+', '2' => '-', '3' => 'x', '4' => '/') %>
                                       <% if f[0]=='0' %>
-                                          <% str += "#{f[1]["symbol"]=='1' ? '+' : '-'} #{(f[1]["molecule"]==f[1]["denominator"]) ? "1" : ((Float(f[1]["molecule"].to_i)/f[1]["denominator"].to_i).round(2))} " %>
+                                          <% str += "#{formula_symbol} #{(f[1]["molecule"]==f[1]["denominator"]) ? "1" : ((Float(f[1]["molecule"].to_i)/f[1]["denominator"].to_i).round(2))} " %>
                                       <% else %>
-                                          <% str += "#{f[1]["symbol"]=='1' ? '+' : '-'} (#{f[1]["molecule"]}/#{f[1]["denominator"]})#{f[1]["name"]} " %>
+                                          <% str += "#{formula_symbol} #{"(#{f[1]["molecule"]}/#{f[1]["denominator"]})" if f[1]["molecule"] != f[1]["denominator"]}#{f[1]["name"]} " %>
                                       <% end %>
                                   <% end %>
+                                  <span>轮数:<%= sa[:formula]["rounds"] %>,</span>
                                   <span title="<%= str[1..-1] %>"><%= str[1..30] %></span>
                               <% end %>
+
                               <div class="pull-right action-buttons">
-                                <% if sa[:name].include?('是否') %>
+                                <% if sa[:name].include?('最终成绩') %>
 
                                     <a class="blue" href="<%= "#edit-formula-#{sa[:id]}" %>" data-toggle="modal">
                                       <span title="编辑公式"><i class="icon-pencil bigger-130"></i></span>
                                     </a>
-                                    <div id="<%= "edit-formula-#{sa[:id]}" %>" class="modal" tabindex="-1">
-                                      <div class="modal-dialog">
+                                    <div id="<%= "edit-formula-#{sa[:id]}" %>" class="modal edit-event-formula" tabindex="-1">
+                                      <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                           <div class="widget-header model-header">
                                             <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
-                                            <h4 class="text-center">编辑公式</h4>
+                                            <h4 class="text-center"><%= @event.name %>--最终成绩计算过程</h4>
                                           </div>
 
                                           <div class="modal-body overflow-visible">
@@ -155,6 +158,7 @@
                                               <div class="col-xs-offset-1">
                                                 <% score_attrs = @score_attributes.map { |x| [x[:id], x[:name]] } %>
                                                 <% score_attrs.delete_at(index) %>
+                                                选择属性添加公式&nbsp;
                                                 <select id="event-formula-select">
                                                   <option value="0">常量</option>
                                                   <% score_attrs.each do |s| %>
@@ -171,18 +175,69 @@
                                                 <form id="event-formula-form">
                                                   <div class="event-formula-input">
                                                     <input type="hidden" name="sa_id" value="<%= sa[:id] %>">
+                                                    轮数:
+                                                    <select id="formula-rounds" style="width: 100px" name="rounds">
+                                                      <option value="">请选择轮数</option>
+                                                      <% [1, 2, 3].each do |round| %>
+                                                          <option value="<%= round %>" <%= "selected" if (sa[:formula] && sa[:formula]["rounds"].to_i == round) %> ><%= round %></option>
+                                                      <% end %>
+                                                    </select>&nbsp;&nbsp;
+                                                    成绩排序:
+                                                    <select multiple="" name="order[]" id="selected-orders" class="chosen-select tag-input-style" data-placeholder="请选择排序...">
+                                                      <option value="0++0++最终成绩" <%= "selected" if (sa[:formula].present? && "#{sa[:formula]["order"]["0"]}".present? && "#{sa[:formula]["order"]["0"]["sort"]}"=='0') %> >最终成绩-降序</option>
+                                                      <option value="0++1++最终成绩" <%= "selected" if (sa[:formula].present? && "#{sa[:formula]["order"]["0"]}".present? && "#{sa[:formula]["order"]["0"]["sort"]}"=='1') %> >最终成绩-升序</option>
+                                                      <% score_attrs.each do |s| %>
+                                                          <option value="<%= s[0] %>++0++<%= s[1] %>" <%= "selected" if (sa[:formula].present? && "#{sa[:formula]["order"]["#{s[0]}"]}".present? && "#{sa[:formula]["order"]["#{s[0]}"]["sort"]}"=='0') %>><%= s[1] %>
+                                                            -降序
+                                                          </option>
+                                                          <option value="<%= s[0] %>++1++<%= s[1] %>" <%= "selected" if (sa[:formula].present? && "#{sa[:formula]["order"]["#{s[0]}"]}".present? && "#{sa[:formula]["order"]["#{s[0]}"]["sort"]}"=='1') %>><%= s[1] %>
+                                                            -升序
+                                                          </option>
+                                                      <% end %>
+                                                    </select>&nbsp;降序 (值越大名次越高) , 升序反之
+                                                    <br><br>
+
+                                                    最终成绩属性(公式未触发):&nbsp;
+                                                    <select id="last-score-by" name="last-score-by[id]">
+                                                      <option value="0">无(公式计算)</option>
+                                                      <% score_attrs.each do |s| %>
+                                                          <option value="<%= s[0] %>"><%= s[1] %></option>
+                                                      <% end %>
+                                                    </select>
+                                                    <input type="hidden" id="last-score-name" name="last-score-by[name]"/>
+
+                                                    &nbsp;触发公式的属性:&nbsp;
+                                                    <select id="trigger-attr-id" name="trigger-attr[id]">
+                                                      <option value="">请选择触发属性</option>
+                                                      <% score_attrs.each do |s| %>
+                                                          <option value="<%= s[0] %>"><%= s[1] %></option>
+                                                      <% end %>
+                                                    </select>
+                                                    <input type="hidden" id="trigger-attr-name" name="trigger-attr[name]"/>
+
+                                                    &nbsp;属性值:&nbsp;
+                                                    <select id="trigger-attr-val" name="trigger-attr[val]" style="width:120px">
+                                                      <option value="">请选择属性值</option>
+                                                      <option value="1">是</option>
+                                                      <option value="0">否</option>
+                                                    </select>
+                                                    <br><br>
+
                                                     <% if sa[:formula].present? %>
-                                                        <% sa[:formula].to_a.each do |formula| %>
+                                                        <% sa[:formula]["formula"].to_a.each do |formula| %>
                                                             <% sa_id = formula[0] %>
+                                                            <% symbol = formula[1]["symbol"] %>
                                                             <p id="formula-<%= sa_id %>">
-                                                              <select id="symbol-<%= sa_id %>" name="<%= sa_id %>[symbol]">
+                                                              <select id="symbol-<%= sa_id %>" name="formula[<%= sa_id %>][symbol]">
                                                                 <option value="">请选择符号</option>
-                                                                <option value="1" selected>加号</option>
-                                                                <option value="0">减号</option>
+                                                                <option value="1" <%= "selected" if symbol == '1' %>>加</option>
+                                                                <option value="2" <%= "selected" if symbol == '2' %>>减</option>
+                                                                <option value="3" <%= "selected" if symbol == '3' %>>乘</option>
+                                                                <option value="4" <%= "selected" if symbol == '4' %>>除</option>
                                                               </select>&nbsp;&nbsp;
-                                                              <input style="width:90px" id="molecule-<%= sa_id %>" type="text" value="<%= formula[1]["molecule"] %>" placeholder="分子(正整数)" name="<%= sa_id %>[molecule]"/>&nbsp;&nbsp;
-                                                              <input style="width:90px" id="denominator-<%= sa_id %>" type="text" value="<%= formula[1]["denominator"] %>" placeholder="分母(正整数)" name="<%= sa_id %>[denominator]"/>
-                                                              <input type="hidden" name="<%= sa_id %>[name]" value="<%= formula[1]["name"] %>"/>
+                                                              <input style="width:90px" id="molecule-<%= sa_id %>" type="text" value="<%= formula[1]["molecule"] %>" placeholder="分子(正整数)" name="formula[<%= sa_id %>][molecule]"/>&nbsp;&nbsp;
+                                                              <input style="width:90px" id="denominator-<%= sa_id %>" type="text" value="<%= formula[1]["denominator"] %>" placeholder="分母(正整数)" name="formula[<%= sa_id %>][denominator]"/>
+                                                              <input type="hidden" name="formula[<%= sa_id %>][name]" value="<%= formula[1]["name"] %>"/>
                                                               <%= formula[1]["name"] %>
                                                               <button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(<%= sa_id %>)">x</button>
                                                             </p>

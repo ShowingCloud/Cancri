@@ -429,45 +429,88 @@ $(function () {
         var event_formula = document.getElementById("event-formula-select");
         var sa_value = event_formula.options[event_formula.selectedIndex].text;
         var sa_id = $(this).val();
-        var input_symbol = $('<p id="formula-' + sa_id + '"><select id="symbol-' + sa_id + '" name="' + sa_id + '[symbol]"><option value="">请选择符号</option><option value="1" selected>加号</option><option value="0">减号</option></select>&nbsp;&nbsp;&nbsp;' + '' +
-            '<input  style="width:90px" id="molecule-' + sa_id + '" type="text" placeholder="分子(正整数)" name="' + sa_id + '[molecule]" />&nbsp;&nbsp;&nbsp;' +
-            '<input  style="width:90px" id="denominator-' + sa_id + '" type="text" placeholder="分母(正整数)" name="' + sa_id + '[denominator]" /><input type="hidden" name="' + sa_id + '[name]" value="' + sa_value + '" />&nbsp;' + sa_value + '&nbsp;<button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(' + sa_id + ')">x</button></p>');
+        var input_symbol = $('<p id="formula-' + sa_id + '"><select id="symbol-' + sa_id + '" name="formula[' + sa_id + '][symbol]"><option value="">请选择符号</option><option value="1" selected>加</option><option value="2">减</option><option value="3">乘</option><option value="4">除</option></select>&nbsp;&nbsp;&nbsp;' + '' +
+            '<input  style="width:90px" id="molecule-' + sa_id + '" type="text" value="1" placeholder="分子(正整数)" name="formula[' + sa_id + '][molecule]" />&nbsp;&nbsp;&nbsp;' +
+            '<input  style="width:90px" id="denominator-' + sa_id + '" type="text" value="1" placeholder="分母(正整数)" name="formula[' + sa_id + '][denominator]" /><input type="hidden" name="formula[' + sa_id + '][name]" value="' + sa_value + '" />&nbsp;' + sa_value + '&nbsp;<button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(' + sa_id + ')">x</button></p>');
         $('.event-formula-input').append(input_symbol);
 
+    });
+    $('#selected-orders').on('change', function () {
+        var select_orders = $('#selected-orders');
+        var orders = select_orders.val();
+        if (orders != null && orders.length > 1) {
+            var selected_option = [];
+            for (var i = 0; i < orders.length; i++) {
+                selected_option[i] = orders[i].split('++')[0];
+            }
+            if (is_repeat_array(selected_option)) {
+                admin_gritter_notice(false, '同一属性的(升序/降序)只能选择一个');
+                select_orders.find('option:selected').removeAttr('selected');
+                select_orders.trigger('chosen:updated');
+                return false;
+            }
+        }
     });
     $('.update-event-formula-submit').on('click', function () {
         var form = $("#event-formula-form");
         var data = form.serializeArray();
-        var formula_sa_id = data[0].value;
+        // var formula_sa_id = data[0].value;
+        var rounds = $('#formula-rounds');
+        var orders = $('#selected-orders').val();
+        if (['1', '2', '3'].indexOf(rounds.val()) == -1) {
+            admin_gritter_notice(false, '请选择轮数');
+            rounds.focus();
+            return false;
+        }
+        if (orders == null) {
+            admin_gritter_notice(false, '请选择排序');
+            return false;
+        }
+        var orders_attr = [];
+        for (var i = 0; i < orders.length; i++) {
+            orders_attr[i] = (orders[i].indexOf("最终成绩") >= 0);
+        }
+        if (orders_attr.indexOf(true) == -1) {
+            admin_gritter_notice(false, '成绩排序中要包含最终成绩的排序');
+            return false;
+        }
+        var ls_by_name = $('#last-score-by').find('option:selected').text();
+        var trigger_attr_name = $('#trigger-formula-id').find('option:selected').text();
+        $('#last-score-name').val(ls_by_name);
+        $('#trigger-attr-name').val(trigger_attr_name);
         var has_no_error = true;
+        var orders_length = orders.length;
         $.each(data, function (k, v) {
-            var input_name = v.name;
-            var input_id = v.name.split('[')[0];
-            var input_value = parseInt(v.value);
-            if (input_name.indexOf("symbol") >= 0 && input_value != 1 && input_value != 0) {
-                admin_gritter_notice(false, '请正确选择符号');
-                $("#symbol-" + input_id).focus();
-                has_no_error = false;
-                return has_no_error;
+            if (k > (orders_length + 2)) {
+                var input_name = v.name;
+                var input_id = v.name.split(']')[0].substr(8);
+                var input_value = parseInt(v.value);
+                if (input_name.indexOf("symbol") >= 0 && ([1, 2, 3, 4].indexOf(input_value)) == -1) {
+                    admin_gritter_notice(false, '请正确选择符号');
+                    $("#symbol-" + input_id).focus();
+                    has_no_error = false;
+                    return has_no_error;
+                }
+
+                if (input_name.indexOf("molecule") >= 0 && (input_value == 0 || isNaN(input_value))) {
+                    admin_gritter_notice(false, '分子不能为空或0');
+                    $('#molecule-' + input_id).focus();
+                    has_no_error = false;
+                    return has_no_error;
+                }
+                if (input_name.indexOf("denominator") >= 0 && (input_value == 0 || isNaN(input_value))) {
+                    admin_gritter_notice(false, '分母不能为空或0');
+                    $('#denominator-' + input_id).focus();
+                    has_no_error = false;
+                    return has_no_error;
+                }
             }
 
-            if (input_name.indexOf("molecule") >= 0 && (input_value == 0 || isNaN(input_value))) {
-                admin_gritter_notice(false, '分子不能为空或0');
-                $('#molecule-' + input_id).focus();
-                has_no_error = false;
-                return has_no_error;
-            }
-            if (input_name.indexOf("denominator") >= 0 && (input_value == 0 || isNaN(input_value))) {
-                admin_gritter_notice(false, '分母不能为空或0');
-                $('#denominator-' + input_id).focus();
-                has_no_error = false;
-                return has_no_error;
-            }
         });
         if (!has_no_error) {
             return false;
         }
-        if (data.length > 1) {
+        if (data.length > (2 + orders_length)) {
             $.ajax({
                 url: '/admin/events/update_formula',
                 type: 'post',
@@ -528,4 +571,16 @@ function multiple_check_type_size(obj, limit_type, limit_size) {
 
 function cancel_formula_element(formula_id) {
     $('#formula-' + formula_id).remove();
+}
+// 判断数组是否有重复元素
+function is_repeat_array(arr) {
+    var hash = {};
+    for (var i in arr) {
+        if (hash[arr[i]]) {
+            return true;
+        }
+        // 不存在该元素，则赋值为true，可以赋任意值，相应的修改if判断条件即可
+        hash[arr[i]] = true;
+    }
+    return false;
 }

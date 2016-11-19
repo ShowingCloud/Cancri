@@ -107,19 +107,34 @@ class Admin::EventsController < AdminController
 
   def update_formula
     formula = params
-    sa_id = formula[:sa_id]
-    event_sa = EventSaShip.find_by_id(sa_id)
-    if event_sa.present?
-      formula.delete(:sa_id)
-      formula.delete(:action)
-      formula.delete(:controller)
-      if event_sa.update(formula: formula)
-        result = [true, '操作成功']
+    sa_id = params[:sa_id]
+    order = params[:order]
+    if order.present? && order.is_a?(Array) && sa_id.present?
+      new_order = {}
+      order.each do |o|
+        split_order = o.split('++')
+        new_order[split_order[0].to_i] = {sort: split_order[1].to_i, name: split_order[2]}
+      end
+      if new_order[0].nil?
+        result = [false, '成绩排序中要包含最终成绩排序']
       else
-        result = [false, '操作失败']
+        event_sa = EventSaShip.find_by_id(sa_id)
+        if event_sa.present?
+          formula.delete(:sa_id)
+          formula.delete(:action)
+          formula.delete(:controller)
+          formula[:order] = new_order
+          if event_sa.update(formula: formula)
+            result = [true, '操作成功']
+          else
+            result = [false, '操作失败']
+          end
+        else
+          result=[false, '不规范请求']
+        end
       end
     else
-      result=[false, '不规范请求']
+      result=[false, '参数不完整']
     end
     render json: {status: result[0], message: result[1]}
   end
@@ -269,7 +284,7 @@ class Admin::EventsController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def event_params
-    params.require(:event).permit(:name, :is_father, :parent_id, :competition_id, :level, :description, :body_html, :status, :against, :team_min_num, :team_max_num, :apply_start_time, :apply_end_time, :start_time, :end_time, {group: []}).tap do |e|
+    params.require(:event).permit(:name, :is_father, :parent_id, :competition_id, :level, :cover, :description, :body_html, :status, :against, :team_min_num, :team_max_num, :apply_start_time, :apply_end_time, :start_time, :end_time, {group: []}).tap do |e|
       if params[:event][:group].present?
         e[:group] = params[:event][:group].join(',')
       else
