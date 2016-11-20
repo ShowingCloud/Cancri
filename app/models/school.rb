@@ -6,7 +6,7 @@ class School < ApplicationRecord
   has_many :teams
   has_many :team_user_ships
   has_many :user_roles
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
   validates :district_id, presence: true
   # validates :school_type, presence: true
 end
