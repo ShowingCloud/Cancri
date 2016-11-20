@@ -1042,7 +1042,7 @@ $(function() {
                     alert_r(result[1]);
                 }
 
-                var page_size = 1;
+                var page_size = 10;
                 var total_count = result[2];
                 var page_count;
                 if (total_count > page_size) {
