@@ -111,27 +111,44 @@ class Admin::EventsController < AdminController
     order = params[:order]
     if order.present? && order.is_a?(Array) && sa_id.present?
       new_order = {}
-      order.each do |o|
+      order.each_with_index do |o, index|
         split_order = o.split('++')
-        new_order[split_order[0].to_i] = {sort: split_order[1].to_i, name: split_order[2]}
+        new_order[index+1] = {id: split_order[0].to_i, sort: split_order[1].to_i, name: split_order[2]}
       end
-      if new_order[0].nil?
-        result = [false, '成绩排序中要包含最终成绩排序']
-      else
-        event_sa = EventSaShip.find_by_id(sa_id)
-        if event_sa.present?
-          formula.delete(:sa_id)
-          formula.delete(:action)
-          formula.delete(:controller)
-          formula[:order] = new_order
-          if event_sa.update(formula: formula)
-            result = [true, '操作成功']
+      new_order[:num] = order.length
+      gs = formula["formula"]
+
+      if gs.is_a?(Array) && gs.length>0
+        gs.each do |g|
+          if g[:molecule].to_i !=0 && g[:denominator].to_i !=0
+            g[:xishu] = (g[:molecule].to_f/g[:denominator].to_f).round(2)
           else
-            result = [false, '操作失败']
+            result = [false, '公式格式不规范']
+            render json: {status: result[0], message: result[1]}
+            return false
           end
-        else
-          result=[false, '不规范请求']
         end
+
+        if new_order[1][:id] != 0
+          result = [false, '成绩排序中要包含最终成绩排序']
+        else
+          event_sa = EventSaShip.find_by_id(sa_id)
+          if event_sa.present?
+            formula.delete(:sa_id)
+            formula.delete(:action)
+            formula.delete(:controller)
+            formula[:order] = new_order
+            if event_sa.update(formula: formula)
+              result = [true, '操作成功']
+            else
+              result = [false, '操作失败']
+            end
+          else
+            result=[false, '不规范请求']
+          end
+        end
+      else
+        result = [false, '公式不能为空']
       end
     else
       result=[false, '参数不完整']
@@ -179,7 +196,6 @@ class Admin::EventsController < AdminController
       sa = EventSaShip.find_by_id(sa_id)
       if sa.present?
         formulas = EventSaShip.where(event_id: sa.event_id).pluck(:formula)
-        puts '===0==='
         has_use = []
         formulas.each do |f|
           if f.present? && f.is_a?(Hash)

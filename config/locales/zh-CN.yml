@@ -271,6 +271,7 @@ zh-CN:
       course: '课程'
       course_score_attribute: '评分标准'
       school: '学校'
+      notification: '消息'
   views:
     pagination:
         first: "首页"

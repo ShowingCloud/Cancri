@@ -29,6 +29,15 @@ module Api
         render json: {ok: 1}
       end
 
+      # 裁判获取比赛相关消息
+      # POST /api/v1/notifications/comp_notify
+
+      def comp_notify
+        notifications = Notification.where(message_type: 6).where(['created_at > ?', Time.now.beginning_of_day]).select(:content)
+        render json: {notifications: notifications}
+      end
+
+
       ##
       # 获得未读通知数量
       #

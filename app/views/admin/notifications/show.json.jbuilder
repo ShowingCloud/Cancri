@@ -1,0 +1,1 @@
+json.extract! @notification, :content, :created_at, :updated_at

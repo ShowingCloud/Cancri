@@ -144,6 +144,7 @@ Rails.application.routes.draw do
     resources :videos
     resources :consults
     resources :schools
+    resources :notifications
   end
 
   namespace :api do
@@ -166,6 +167,7 @@ Rails.application.routes.draw do
           post :update_read
           get :unread_num
           delete :all
+          get :comp_notify
         end
       end
       resources :scores do

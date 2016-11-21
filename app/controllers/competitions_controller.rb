@@ -122,7 +122,7 @@ class CompetitionsController < ApplicationController
 
     if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present? && teacher.present? && group.present?
       if has_teacher_role
-        result = [false, '不规范请求']
+        result = [false, '您是老师,不能报名比赛']
       else
         user = current_user.user_profile ||= current_user.build_user_profile
         if user.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
@@ -134,7 +134,8 @@ class CompetitionsController < ApplicationController
             else
               team = Team.create(group: group, district_id: district_id, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: school_id)
               if team.save
-                if TeamUserShip.create(team_id: team.id, user_id: team.user_id, event_id: ed, district_id: district_id, school_id: school_id, grade: grade, status: true).save
+                team_user = TeamUserShip.create(team_id: team.id, user_id: team.user_id, event_id: ed, district_id: district_id, school_id: school_id, grade: grade, status: true)
+                if team_user.save
                   result = [true, ' 队伍创建成功! ']
                 else
                   team.delete

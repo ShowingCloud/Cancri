@@ -429,9 +429,9 @@ $(function () {
         var event_formula = document.getElementById("event-formula-select");
         var sa_value = event_formula.options[event_formula.selectedIndex].text;
         var sa_id = $(this).val();
-        var input_symbol = $('<p id="formula-' + sa_id + '"><select id="symbol-' + sa_id + '" name="formula[' + sa_id + '][symbol]"><option value="">请选择符号</option><option value="1" selected>加</option><option value="2">减</option><option value="3">乘</option><option value="4">除</option></select>&nbsp;&nbsp;&nbsp;' + '' +
-            '<input  style="width:90px" id="molecule-' + sa_id + '" type="text" value="1" placeholder="分子(正整数)" name="formula[' + sa_id + '][molecule]" />&nbsp;&nbsp;&nbsp;' +
-            '<input  style="width:90px" id="denominator-' + sa_id + '" type="text" value="1" placeholder="分母(正整数)" name="formula[' + sa_id + '][denominator]" /><input type="hidden" name="formula[' + sa_id + '][name]" value="' + sa_value + '" />&nbsp;' + sa_value + '&nbsp;<button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(' + sa_id + ')">x</button></p>');
+        var input_symbol = $('<p id="formula-' + sa_id + '"><select id="symbol-' + sa_id + '" name="formula[][symbol]"><option value="">请选择符号</option><option value="1" selected>加</option><option value="2">减</option><option value="3">乘</option><option value="4">除</option></select>&nbsp;&nbsp;&nbsp;' + '' +
+            '<input  style="width:90px" id="molecule-' + sa_id + '" type="text" value="1" placeholder="分子(正整数)" name="formula[][molecule]" />&nbsp;&nbsp;&nbsp;' +
+            '<input  style="width:90px" id="denominator-' + sa_id + '" type="text" value="1" placeholder="分母(正整数)" name="formula[][denominator]" /><input type="hidden" name="formula[][id]" value="' + sa_id + '" /><input type="hidden" name="formula[][name]" value="' + sa_value + '" />&nbsp;' + sa_value + '&nbsp;<button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(' + sa_id + ')">x</button></p>');
         $('.event-formula-input').append(input_symbol);
 
     });
@@ -466,12 +466,9 @@ $(function () {
             admin_gritter_notice(false, '请选择排序');
             return false;
         }
-        var orders_attr = [];
-        for (var i = 0; i < orders.length; i++) {
-            orders_attr[i] = (orders[i].indexOf("最终成绩") >= 0);
-        }
-        if (orders_attr.indexOf(true) == -1) {
-            admin_gritter_notice(false, '成绩排序中要包含最终成绩的排序');
+
+        if (!(orders[0].indexOf("最终成绩") >= 0)) {
+            admin_gritter_notice(false, '成绩排序中最终成绩的排序要放在第一位');
             return false;
         }
         var ls_by_name = $('#last-score-by').find('option:selected').text();

@@ -206,6 +206,12 @@
             <span class="menu-text"> 项目 </span>
           </a>
         </li>
+        <li class="<%= params[:controller] == 'admin/notifications' ? 'active' : '' %>">
+          <a href="<%= admin_notifications_path %>">
+            <i class="icon-bell"></i>
+            <span class="menu-text"> 比赛消息 </span>
+          </a>
+        </li>
         <li class="<%= params[:controller] == 'admin/score_attributes' ? 'active' : '' %>">
           <a href="<%= admin_score_attributes_path %>">
             <i class="icon-hdd"></i>
