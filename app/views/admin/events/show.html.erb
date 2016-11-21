@@ -123,20 +123,24 @@
 
                               <i class="drag-icon icon-move bigger-125"></i>
                             </div>
-                            <div class="dd2-content"><%= sa[:name]+' -- '+t('write_type.write_type'+sa[:write_type].to_s) %>
-                              <%= "-- #{t('value_type.value_type'+sa[:desc])}" if sa[:desc].present? %>
+                            <div class="dd2-content"><%= sa[:name] %>
+                              <%= " -- #{t('write_type.write_type'+sa[:write_type].to_s)} -- #{t('value_type.value_type'+sa[:desc])}" if sa[:name] != '最终成绩' && sa[:desc].present? %>
                               <% if sa[:formula].present? %>
                                   <% str = '' %>
-                                  <% sa[:formula]["formula"].to_a.each do |f| %>
-                                      <% formula_symbol = f["symbol"].gsub(/[1-4]/, '1' => '+', '2' => '-', '3' => 'x', '4' => '/') %>
-                                      <% if f["id"]=='0' %>
-                                          <% str += " #{formula_symbol} #{f["xishu"]} " %>
-                                      <% else %>
-                                          <% str += " #{formula_symbol} #{f["xishu"] if f["xishu"]!=1}#{f["name"]}" %>
+                                  <% if sa[:formula]["formula"].present? %>
+                                      <% sa[:formula]["formula"].to_a.each do |f| %>
+                                          <% formula_symbol = f["symbol"].gsub(/[1-4]/, '1' => '+', '2' => '-', '3' => 'x', '4' => '/') %>
+                                          <% if f["id"]=='0' %>
+                                              <% str += " #{formula_symbol} #{f["xishu"]} " %>
+                                          <% else %>
+                                              <% str += " #{formula_symbol} #{f["xishu"] if f["xishu"]!=1}#{f["name"]}" %>
+                                          <% end %>
                                       <% end %>
                                   <% end %>
                                   <span>轮数:<%= sa[:formula]["rounds"] %>,</span>
-                                  <span title="<%= str[2..-1] %>"><%= str[2..30] %></span>
+                                  <% str += "排序: #{sa[:formula]["last_score_by"]["name"]} - #{sa[:formula]["order"]["1"]["sort"] ==1 ? '升序' : '降序'}" %>
+                                  <% str += ", #{sa[:formula]["order"]["2"]["name"]} - #{sa[:formula]["order"]["2"]["sort"] ==1 ? '升序' : '降序'}" if sa[:formula]["order"]["num"]==2 %>
+                                  <span title="<%= str %>"><%= str[0..30] %></span>
                               <% end %>
 
                               <div class="pull-right action-buttons">
@@ -229,7 +233,7 @@
                                                     </select>
                                                     <br><br>
 
-                                                    <% if sa[:formula].present? %>
+                                                    <% if sa[:formula].present? && sa[:formula]["formula"].present? %>
                                                         <% sa[:formula]["formula"].each do |formula| %>
                                                             <% sa_id = formula["id"] %>
                                                             <% symbol = formula["symbol"] %>

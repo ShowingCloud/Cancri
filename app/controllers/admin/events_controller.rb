@@ -128,27 +128,25 @@ class Admin::EventsController < AdminController
             return false
           end
         end
+      end
 
-        if new_order[1][:id] != 0
-          result = [false, '成绩排序中要包含最终成绩排序']
-        else
-          event_sa = EventSaShip.find_by_id(sa_id)
-          if event_sa.present?
-            formula.delete(:sa_id)
-            formula.delete(:action)
-            formula.delete(:controller)
-            formula[:order] = new_order
-            if event_sa.update(formula: formula)
-              result = [true, '操作成功']
-            else
-              result = [false, '操作失败']
-            end
-          else
-            result=[false, '不规范请求']
-          end
-        end
+      if new_order[1][:id] != 0
+        result = [false, '成绩排序中要包含最终成绩排序']
       else
-        result = [false, '公式不能为空']
+        event_sa = EventSaShip.find_by_id(sa_id)
+        if event_sa.present?
+          formula.delete(:sa_id)
+          formula.delete(:action)
+          formula.delete(:controller)
+          formula[:order] = new_order
+          if event_sa.update(formula: formula)
+            result = [true, '操作成功']
+          else
+            result = [false, '操作失败']
+          end
+        else
+          result=[false, '不规范请求']
+        end
       end
     else
       result=[false, '参数不完整']
