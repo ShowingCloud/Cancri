@@ -452,6 +452,10 @@ $(function () {
         }
     });
     $('.update-event-formula-submit').on('click', function () {
+        var ls_by_name = $('#last-score-by').find('option:selected').text();
+        var trigger_attr_name = $('#trigger-formula-id').find('option:selected').text();
+        $('#last-score-name').val(ls_by_name);
+        $('#trigger-attr-name').val(trigger_attr_name);
         var form = $("#event-formula-form");
         var data = form.serializeArray();
         // var formula_sa_id = data[0].value;
@@ -471,10 +475,6 @@ $(function () {
             admin_gritter_notice(false, '成绩排序中最终成绩的排序要放在第一位');
             return false;
         }
-        var ls_by_name = $('#last-score-by').find('option:selected').text();
-        var trigger_attr_name = $('#trigger-formula-id').find('option:selected').text();
-        $('#last-score-name').val(ls_by_name);
-        $('#trigger-attr-name').val(trigger_attr_name);
         var has_no_error = true;
         var orders_length = orders.length;
         $.each(data, function (k, v) {
@@ -491,7 +491,6 @@ $(function () {
 
                 if (input_name.indexOf("molecule") >= 0 && (input_value == 0 || isNaN(input_value))) {
                     admin_gritter_notice(false, '分子不能为空或0');
-                    console.log();
                     // $('#molecule-' + input_id).focus();
                     has_no_error = false;
                     return has_no_error;
