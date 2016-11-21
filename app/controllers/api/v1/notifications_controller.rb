@@ -33,7 +33,7 @@ module Api
       # POST /api/v1/notifications/comp_notify
 
       def comp_notify
-        notifications = Notification.where(message_type: 6).where(['created_at > ?', Time.now.beginning_of_day]).select(:content)
+        notifications = Notification.where(message_type: 6).where(['created_at > ?', 1.days.ago]).select(:id, :content)
         render json: {notifications: notifications}
       end
 

@@ -480,24 +480,25 @@ $(function () {
         $.each(data, function (k, v) {
             if (k > (orders_length + 2)) {
                 var input_name = v.name;
-                var input_id = v.name.split(']')[0].substr(8);
+                // var input_id = v.name.split(']')[0].substr(8);
                 var input_value = parseInt(v.value);
                 if (input_name.indexOf("symbol") >= 0 && ([1, 2, 3, 4].indexOf(input_value)) == -1) {
                     admin_gritter_notice(false, '请正确选择符号');
-                    $("#symbol-" + input_id).focus();
+                    // $("#symbol-" + input_id).focus();
                     has_no_error = false;
                     return has_no_error;
                 }
 
                 if (input_name.indexOf("molecule") >= 0 && (input_value == 0 || isNaN(input_value))) {
                     admin_gritter_notice(false, '分子不能为空或0');
-                    $('#molecule-' + input_id).focus();
+                    console.log();
+                    // $('#molecule-' + input_id).focus();
                     has_no_error = false;
                     return has_no_error;
                 }
                 if (input_name.indexOf("denominator") >= 0 && (input_value == 0 || isNaN(input_value))) {
                     admin_gritter_notice(false, '分母不能为空或0');
-                    $('#denominator-' + input_id).focus();
+                    // $('#denominator-' + input_id).focus();
                     has_no_error = false;
                     return has_no_error;
                 }

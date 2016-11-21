@@ -129,14 +129,14 @@
                                   <% str = '' %>
                                   <% sa[:formula]["formula"].to_a.each do |f| %>
                                       <% formula_symbol = f["symbol"].gsub(/[1-4]/, '1' => '+', '2' => '-', '3' => 'x', '4' => '/') %>
-                                      <% if f[:id]=='0' %>
-                                          <% str += "#{formula_symbol} #{(f["molecule"]==f["denominator"]) ? "1" : ((Float(f["molecule"].to_i)/f["denominator"].to_i).round(2))} " %>
+                                      <% if f["id"]=='0' %>
+                                          <% str += " #{formula_symbol} #{f["xishu"]} " %>
                                       <% else %>
-                                          <% str += "#{formula_symbol} #{"(#{f["molecule"]}/#{f["denominator"]})" if f["molecule"] != f["denominator"]}#{f["name"]} " %>
+                                          <% str += " #{formula_symbol} #{f["xishu"] if f["xishu"]!=1}#{f["name"]}" %>
                                       <% end %>
                                   <% end %>
                                   <span>轮数:<%= sa[:formula]["rounds"] %>,</span>
-                                  <span title="<%= str[1..-1] %>"><%= str[1..30] %></span>
+                                  <span title="<%= str[2..-1] %>"><%= str[2..30] %></span>
                               <% end %>
 
                               <div class="pull-right action-buttons">
@@ -160,10 +160,10 @@
                                                 <% score_attrs.delete_at(index) %>
                                                 选择属性添加公式&nbsp;
                                                 <select id="event-formula-select">
-                                                  <option value="0">常量</option>
                                                   <% score_attrs.each do |s| %>
                                                       <option value="<%= s[0] %>"><%= s[1] %></option>
                                                   <% end %>
+                                                  <option value="0">常量</option>
                                                 </select>
                                               </div>
 
