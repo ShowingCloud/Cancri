@@ -122,6 +122,11 @@ Rails.application.routes.draw do
         post :edit_event_sa_desc
         post :delete_score_attribute
         post :update_score_attrs_sort
+        post :update_team_player
+        post :add_team_player
+        post :delete_team_player
+        post :delete_team
+        post :create_team
       end
     end
     resources :teams
@@ -145,6 +150,7 @@ Rails.application.routes.draw do
     resources :consults
     resources :schools
     resources :notifications
+    resources :vouchers
   end
 
   namespace :api do
