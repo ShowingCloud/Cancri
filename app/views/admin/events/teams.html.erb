@@ -1,8 +1,11 @@
 <h1 class="page-header">
   <%= @event.name %>
-  <span class="hidden team-max-num"> <%= @event.team_max_num %></span>
-  <span class="hidden event-id"><%= @event.id %></span>
-  <div class="col-xs-12 col-sm-2 form-group pull-right">
+  <small class="pull-right">
+    <a href="#add-team-form" role="button" title="添加队伍" class="open-add-team btn btn-default" data-toggle="modal">
+      <i class="icon-plus icon-only"></i></a>
+  </small>
+  <input type="hidden" class="event-id" value="<%= @event.id %>">
+  <div class="col-xs-12 col-sm-2 form-group pull-right" style="margin-top: 6px">
     <select id="select-team-status" class="form-control">
       <option value="">
         &nbsp;全部
@@ -40,7 +43,8 @@
                   <div class="widget-header widget-header-small">
                     <h4 class="">
                       <i class="icon-flag-alt orange"></i>
-                      <%= team.identifier %>
+                      <span class="badge" id="<%= team.id %>" style="font-size: 15px;padding: 3px 6px 3px 6px"><%= team.players %></span>
+                      <%= team.try(:identifier) %>
                       <% case team.status when 0 %>
                           队长未提交
                       <% when 1 %>
@@ -59,7 +63,21 @@
                     </h4>
 
                     <div class="widget-toolbar action-buttons">
-                      <span class="badge" id="<%= team.id %>" style="font-size: 15px;padding: 1px 6px 2px 6px"><%= team.players %></span>
+                      <% if @event.team_max_num > team.players %>
+                          <a href="#add-team-player" role="button" class="open-add-player" data-id="<%= team.id %>" data-user-id="<%= team.user_id %>" data-name="<%= team.try(:identifier) %>" data-toggle="modal">
+                            <i class="icon-plus" title="添加队员"></i>
+                          </a>
+                      <% else %>
+                          <span class="hidden" id="after-delete-player-show">
+                            <a href="#add-team-player" role="button" class="open-add-player" data-id="<%= team.id %>" data-user-id="<%= team.user_id %>" data-name="<%= team.try(:identifier) %>" data-toggle="modal">
+                              <i class="icon-plus" title="添加队员"></i>
+                            </a>
+                          </span>
+                      <% end %>
+                      &nbsp;
+                      <a class="pink admin-delete-team" style="cursor: pointer" data-id="<%= team.id %>" data-name="<%= team.name %>">
+                        <i class="icon-trash" title="删除队伍"></i>
+                      </a>
                     </div>
                   </div>
                   <div class="widget-body">
@@ -70,8 +88,23 @@
                               <div>
                                 <%= te.user.user_profile.username %> - <%= te.user.nickname[0..10] %>
                               </div>
+
                               <% if te.user_id == team.user_id %>
-                                  <div class="tools">队长</div>
+                                  <div class="tools action-buttons">
+                                    队长
+                                    <a href="#update-team-player" role="button" data-toggle="modal" class="blue update-team-player" style="cursor: pointer" title="换人" data-id="<%= team.id %>" data-user-id="<%= te.user_id %>" data-text="<%= te.user.user_profile.username %>" data-name="<%= team.try(:identifier) %>">
+                                      <i class="icon-pencil bigger-125"></i>
+                                    </a>
+                                  </div>
+                              <% else %>
+                                  <div class="tools action-buttons">
+                                    <a href="#update-team-player" role="button" data-toggle="modal" class="blue update-team-player" style="cursor: pointer" title="换人" data-id="<%= team.id %>" data-user-id="<%= te.user_id %>" data-text="<%= te.user.user_profile.username %>" data-name="<%= team.try(:identifier) %>">
+                                      <i class="icon-pencil bigger-125"></i>
+                                    </a>
+                                    <a class="red delete-team-player" title="删除队员" style="cursor: pointer" data-id="<%= team.id %>" data-text="<%= te.user.user_profile.username %>" data-name="<%= te.user_id %>">
+                                      <i class="icon-remove bigger-125"></i>
+                                    </a>
+                                  </div>
                               <% end %>
                             </div>
                         <% end %>
@@ -88,5 +121,161 @@
         </nav>
     <% end %>
 
+  </div>
+</div>
+
+<input type="hidden" id="add-player-team-id" value=""/>
+<input type="hidden" id="player-old-user-id" value=""/>
+<div id="add-team-player" class="modal" tabindex="-1">
+  <div class="modal-dialog" style="width: 360px">
+    <div class="modal-content">
+      <div class="widget-header model-header" style="height: 30px;background-color: #f7f7f7">
+        <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+        <h4 class="blue smaller">请为 <strong><span class="team-name"></span></strong> 选择队员</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12 ">
+            <div class="form-group">
+
+              <div>
+                <label for="select-team-player">此列表为未报名此项目的用户</label>
+
+                <br/>
+                <select class="width-80 chosen-select" id="select-team-player" data-placeholder="选择一名队员...">
+                  <option value="">请选择一名队员</option>
+                  <% @users.each do |user| %>
+                      <option value="<%= user.id %>"><%= "#{user.user_profile.username} - #{user.nickname}" %></option>
+                  <% end %>
+
+                </select>
+              </div>
+            </div>
+
+            <div class="space-4"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-sm" data-dismiss="modal">
+          <i class="icon-remove"></i>
+          取消
+        </button>
+
+        <button class="btn btn-sm btn-primary add-player-submit">
+          <i class="icon-ok"></i>
+          提交
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="update-team-player" class="modal" tabindex="-1">
+  <div class="modal-dialog" style="width: 360px">
+    <div class="modal-content">
+      <div class="widget-header model-header" style="height: 30px;background-color: #f7f7f7">
+        <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+        <h4 class="blue smaller">请为 <strong><span class="team-name"></span></strong> 更换队员</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12 ">
+            <div class="form-group">
+
+              <div>
+                <label for="select-team-player">此列表为未报名此项目的用户</label>
+
+                <br/>
+                <select class="width-80 chosen-select" id="select-update-team-player" data-placeholder="选择一名队员...">
+                  <option value="">请选择一名队员</option>
+                  <% @users.each do |user| %>
+                      <option value="<%= user.id %>"><%= "#{user.user_profile.username} - #{user.nickname}" %></option>
+                  <% end %>
+
+                </select>
+              </div>
+            </div>
+
+            <div class="space-4"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-sm" data-dismiss="modal">
+          <i class="icon-remove"></i>
+          取消
+        </button>
+
+        <button class="btn btn-sm btn-primary update-team-player-submit">
+          <i class="icon-ok"></i>
+          提交
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="add-team-form" class="modal" tabindex="-1">
+  <div class="modal-dialog" style="">
+    <div class="modal-content">
+      <div class="widget-header model-header" style="height: 30px;background-color: #f7f7f7">
+        <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+        <h4 class="blue smaller">创建队伍</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row team-info">
+
+          <div class="col-xs-12 col-md-10 col-sm-4">
+
+            <p><input type="text" placeholder='请输入指导教师' class="form-control team-info-input" name="team-teacher"></p>
+            <div>
+              <select class="width-25qw" id="select-team-group" data-placeholder="请选择组别" style="width:470px">
+                <option value="">请选择组别</option>
+                <option value="1">小学</option>
+                <option value="2">中学</option>
+                <option value="3">初中</option>
+                <option value="4">高中</option>
+
+              </select>
+              <br><br>
+            </div>
+
+            <div class="form-group">
+              <div>
+                <select class="width-25 chosen-select" id="select-create-team-leader" data-placeholder="请选择队长">
+                  <option value=""></option>
+                  <% @users.each do |user| %>
+                      <option value="<%= user.id %>"><%= "#{user.user_profile.username} - #{user.nickname}" %></option>
+                  <% end %>
+                </select>
+              </div>
+            </div>
+
+
+            <div class="space-4"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-sm" data-dismiss="modal">
+          <i class="icon-remove"></i>
+          取消
+        </button>
+
+        <button class="btn btn-sm btn-primary create-team-submit"  type="submit">
+          <i class="icon-ok"></i>
+          提交
+        </button>
+      </div>
+    </div>
   </div>
 </div>

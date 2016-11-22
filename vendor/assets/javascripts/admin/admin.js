@@ -524,6 +524,157 @@ $(function () {
 
     });
 
+    // 添加队员
+    $('.open-add-player,.update-team-player').on('click', function () {
+        var team_id = $(this).attr('data-id');
+        var team_name = $(this).attr('data-name');
+        var user_id = $(this).attr('data-user-id');
+        $('#add-player-team-id').val(team_id);
+        $('.team-name').text(team_name);
+        $('#player-old-user-id').val(user_id);
+    });
+
+    $('.add-player-submit').on('click', function () {
+        var user_id = $("#select-team-player").val();
+        var team_id = $('#add-player-team-id').val();
+        var event_id = $('.event-id').val();
+        $.ajax({
+            url: '/admin/events/add_team_player',
+            type: 'post',
+            data: {
+                "team_id": team_id,
+                "user_id": user_id,
+                "event_id": event_id
+            },
+            success: function (data) {
+                admin_gritter_notice(data[0], data[1]);
+                if (data[0]) {
+                    window.location.reload();
+                }
+            }
+        });
+    });
+
+    // 更换队员
+    $('.update-team-player-submit').on('click', function () {
+        var old_user_id = $('#player-old-user-id').val();
+        var new_user_id = $("#select-update-team-player").val();
+        var team_id = $('#add-player-team-id').val();
+        var event_id = $('.event-id').val();
+        $.ajax({
+            url: '/admin/events/update_team_player',
+            type: 'post',
+            data: {
+                "team_id": team_id,
+                "new_user_id": new_user_id,
+                "old_user_id": old_user_id,
+                "event_id": event_id
+            },
+            success: function (data) {
+                admin_gritter_notice(data[0], data[1]);
+                if (data[0]) {
+                    window.location.reload();
+                }
+            }
+        });
+    });
+
+    //删除队员
+    $('.delete-team-player').on('click', function () {
+        var player = $(this).attr('data-text');
+        var user_id = $(this).attr('data-name');
+        var team_id = $(this).attr('data-id');
+        bootbox.confirm('确认删除队员 —— ' + player + '?', function (result) {
+            if (result) {
+
+                $.ajax({
+                    url: '/admin/events/delete_team_player',
+                    type: 'post',
+                    data: {
+                        "team_id": team_id,
+                        "user_id": user_id
+                    },
+                    success: function (data) {
+                        admin_gritter_notice(data[0], data[1]);
+                        if (data[0]) {
+                            $('#after-delete-player-show').removeClass('hidden');
+                            $("#hide-player-" + user_id).addClass('hide');
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    //删除队伍
+    $('.admin-delete-team').on('click', function () {
+        var team_name = $(this).attr('data-name');
+        var team_id = $(this).attr('data-id');
+        bootbox.confirm('确认删除' + team_name + '?', function (result) {
+            if (result) {
+
+                $.ajax({
+                    url: '/admin/events/delete_team',
+                    type: 'post',
+                    data: {
+                        "team_id": team_id
+                    },
+                    success: function (data) {
+                        if (data[0]) {
+                            $("#hide-team-" + team_id).addClass('hide');
+                            bootbox.dialog({
+
+                                message: data[1],
+                                buttons: {
+                                    "success": {
+                                        "label": "OK",
+                                        "className": "btn-sm btn-primary"
+                                    }
+                                }
+                            });
+                        } else {
+                            alert(data[1]);
+                        }
+                    }
+                });
+            }
+        });
+    });
+    // 创建队伍
+    $('.create-team-submit').on('click', function () {
+        var event_id = $('.event-id').val();
+        var group = $('#select-team-group').val();
+        var teacher = trim($(".team-info [name='team-teacher']").val());
+        var user_id = $("#select-create-team-leader option:selected").val();
+
+        if (user_id == '') {
+            alert('请选择队长');
+            $("＃select-create-team-leader").focus();
+            return false;
+        }
+        console.log(teacher);
+        console.log(user_id);
+        console.log(event_id);
+        console.log(group);
+        if (event_id != null) {
+            $.ajax({
+                url: '/admin/events/create_team',
+                type: 'post',
+                data: {
+                    "event_id": event_id,
+                    "group": group,
+                    "user_id": user_id,
+                    "teacher": teacher
+                },
+                success: function (data) {
+                    admin_gritter_notice(data[0], data[1]);
+                    if (data[0]) {
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+    });
 
 });
 function trim(str) {

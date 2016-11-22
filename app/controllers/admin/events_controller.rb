@@ -103,6 +103,131 @@ class Admin::EventsController < AdminController
       teams = teams.where(status: status)
     end
     @teams = teams.page(params[:page]).per(params[:per])
+    @users = User.includes(:user_profile).where.not(id: TeamUserShip.where(event_id: params[:id]).pluck(:user_id)).select(:id, :nickname)
+  end
+
+  def add_team_player
+    user_id = params[:user_id]
+    team_id = params[:team_id]
+    event_id = params[:event_id]
+    if user_id.present? && team_id.present? && event_id.present?
+      if TeamUserShip.where(user_id: user_id, event_id: event_id, team_id: team_id).exists?
+        result = [false, '该队员已报名该项目,不能添加']
+      else
+        user_profile = UserProfile.find_by_user_id(user_id)
+        if user_profile.present? && user_profile.school_id.to_i !=0 && user_profile.district_id.to_i !=0 && user_profile.grade.to_i !=0
+          team_user = TeamUserShip.create(user_id: user_id, event_id: event_id, team_id: team_id, school_id: user_profile.school_id, district_id: user_profile.district_id, grade: user_profile.grade, status: true)
+          if team_user.save
+            result = [true, '添加成功']
+          else
+            result = [false, '添加失败']
+          end
+        else
+          result = [false, '该队员还没有添加学校和年级']
+        end
+      end
+    else
+      result = [false, '参数不完整']
+    end
+    render json: result
+  end
+
+  def update_team_player
+    new_user_id = params[:new_user_id]
+    old_user_id = params[:old_user_id]
+    team_id = params[:team_id]
+    event_id = params[:event_id]
+    if new_user_id.to_i !=0 && old_user_id.to_i !=0 && team_id.to_i !=0 && event_id.to_i !=0
+      if TeamUserShip.where(user_id: new_user_id, event_id: event_id, team_id: team_id).exists?
+        result = [false, '新队员已报名该项目,无法替换']
+      else
+        user_profile = UserProfile.find_by_user_id(new_user_id)
+        if user_profile.present? && user_profile.school_id.to_i !=0 && user_profile.district_id.to_i !=0 && user_profile.grade.to_i !=0
+          leader = Team.where(user_id: old_user_id, id: team_id).take
+          t_u = TeamUserShip.where(team_id: team_id, user_id: old_user_id).take
+          if leader.present?
+            if leader.update(user_id: new_user_id)
+              if t_u.update(user_id: new_user_id)
+                result = [true, '更换成功']
+              else
+                leader.update(user_id: old_user_id)
+                result = [false, '更换失败']
+              end
+            else
+              result = [false, '更换失败']
+            end
+          else
+            if t_u.update(user_id: new_user_id)
+              result = [true, '更换成功']
+            else
+              result = [false, '更换失败']
+            end
+          end
+        else
+          result = [false, '该队员还没有添加学校和年级']
+        end
+      end
+    else
+      result = [false, '参数不完整']
+    end
+    render json: result
+  end
+
+  def delete_team_player
+    user_id = params[:user_id]
+    team_id = params[:team_id]
+    player = TeamUserShip.where(user_id: user_id, team_id: team_id).take
+    player.destroy
+    if player.destroy
+      result = [true, '删除成功']
+    else
+      result = [false, '删除失败']
+    end
+    render json: result
+  end
+
+  def create_team
+    user_id = params[:user_id]
+    event_id = params[:event_id]
+    group = params[:group]
+    teacher = params[:teacher]
+    if teacher.present? && group.to_i !=0 && event_id.to_i !=0 && user_id.to_i !=0
+      t = TeamUserShip.where(user_id: user_id, event_id: event_id).take
+      if t.present?
+        result = [false, '该队员已经报名该项目,无法创建']
+      else
+        u_p = UserProfile.find_by_user_id(user_id)
+        if u_p.present? && u_p.school_id.to_i !=0 && u_p.district_id.to_i !=0 && u_p.grade.to_i !=0
+          team = Team.create(user_id: user_id, event_id: event_id, teacher: teacher, school_id: u_p.school_id, district_id: u_p.district_id, group: group, status: 1)
+          if team.save
+            t_u = TeamUserShip.create(team_id: team.id, user_id: user_id, event_id: event_id, status: true, school_id: u_p.school_id, district_id: u_p.district_id, grade: u_p.grade)
+            if t_u.save
+              result = [true, '队伍创建成功']
+            end
+          else
+            team.destroy
+            result = [false, team.error.full_messages.first]
+          end
+        else
+          result = [false, '该队员还没有添加学校和班级']
+        end
+      end
+    else
+      result = [false, '参数不完整']
+    end
+    render json: result
+  end
+
+  def delete_team
+    Team.delete(params[:team_id])
+    players = TeamUserShip.where(team_id: params[:team_id])
+    players.delete_all
+    if players.delete_all
+      result = [true, '删除成功']
+    else
+      result = [false, '删除失败']
+    end
+    render json: result
   end
 
   def update_formula
