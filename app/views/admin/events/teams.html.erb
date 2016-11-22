@@ -86,22 +86,22 @@
                         <% team.team_user_ships.each do |te| %>
                             <div class="profile-activity clearfix" id="<%= "hide-player-#{te.user_id}" %>">
                               <div>
-                                <%= te.user.user_profile.username %> - <%= te.user.nickname[0..10] %>
+                                <%= te.user.user_profile.try(:username) %> - <%= te.user.nickname[0..10] %>
                               </div>
 
                               <% if te.user_id == team.user_id %>
                                   <div class="tools action-buttons">
                                     队长
-                                    <a href="#update-team-player" role="button" data-toggle="modal" class="blue update-team-player" style="cursor: pointer" title="换人" data-id="<%= team.id %>" data-user-id="<%= te.user_id %>" data-text="<%= te.user.user_profile.username %>" data-name="<%= team.try(:identifier) %>">
+                                    <a href="#update-team-player" role="button" data-toggle="modal" class="blue update-team-player" style="cursor: pointer" title="换人" data-id="<%= team.id %>" data-user-id="<%= te.user_id %>" data-text="<%= te.user.user_profile.try(:username) %>" data-name="<%= team.try(:identifier) %>">
                                       <i class="icon-pencil bigger-125"></i>
                                     </a>
                                   </div>
                               <% else %>
                                   <div class="tools action-buttons">
-                                    <a href="#update-team-player" role="button" data-toggle="modal" class="blue update-team-player" style="cursor: pointer" title="换人" data-id="<%= team.id %>" data-user-id="<%= te.user_id %>" data-text="<%= te.user.user_profile.username %>" data-name="<%= team.try(:identifier) %>">
+                                    <a href="#update-team-player" role="button" data-toggle="modal" class="blue update-team-player" style="cursor: pointer" title="换人" data-id="<%= team.id %>" data-user-id="<%= te.user_id %>" data-text="<%= te.user.user_profile.try(:username) %>" data-name="<%= team.try(:identifier) %>">
                                       <i class="icon-pencil bigger-125"></i>
                                     </a>
-                                    <a class="red delete-team-player" title="删除队员" style="cursor: pointer" data-id="<%= team.id %>" data-text="<%= te.user.user_profile.username %>" data-name="<%= te.user_id %>">
+                                    <a class="red delete-team-player" title="删除队员" style="cursor: pointer" data-id="<%= team.id %>" data-text="<%= te.user.user_profile.try(:username) %>" data-name="<%= te.user_id %>">
                                       <i class="icon-remove bigger-125"></i>
                                     </a>
                                   </div>
@@ -147,7 +147,7 @@
                 <select class="width-80 chosen-select" id="select-team-player" data-placeholder="选择一名队员...">
                   <option value="">请选择一名队员</option>
                   <% @users.each do |user| %>
-                      <option value="<%= user.id %>"><%= "#{user.user_profile.username} - #{user.nickname}" %></option>
+                      <option value="<%= user.id %>"><%= "#{user.user_profile.try(:username)} - #{user.nickname}" %></option>
                   <% end %>
 
                 </select>
@@ -195,7 +195,7 @@
                 <select class="width-80 chosen-select" id="select-update-team-player" data-placeholder="选择一名队员...">
                   <option value="">请选择一名队员</option>
                   <% @users.each do |user| %>
-                      <option value="<%= user.id %>"><%= "#{user.user_profile.username} - #{user.nickname}" %></option>
+                      <option value="<%= user.id %>"><%= "#{user.user_profile.try(:username)} - #{user.nickname}" %></option>
                   <% end %>
 
                 </select>
@@ -253,7 +253,7 @@
                 <select class="width-25 chosen-select" id="select-create-team-leader" data-placeholder="请选择队长">
                   <option value=""></option>
                   <% @users.each do |user| %>
-                      <option value="<%= user.id %>"><%= "#{user.user_profile.username} - #{user.nickname}" %></option>
+                      <option value="<%= user.id %>"><%= "#{user.user_profile.try(:username)} - #{user.nickname}" %></option>
                   <% end %>
                 </select>
               </div>
@@ -271,7 +271,7 @@
           取消
         </button>
 
-        <button class="btn btn-sm btn-primary create-team-submit"  type="submit">
+        <button class="btn btn-sm btn-primary create-team-submit" type="submit">
           <i class="icon-ok"></i>
           提交
         </button>
