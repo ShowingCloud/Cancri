@@ -1,4 +1,5 @@
 class CompetitionSchedule < ApplicationRecord
+  default_scope { order('start_time ASC') }
   belongs_to :competition
   validates :name, :competition_id, :start_time, presence: true
   after_validation :check_time

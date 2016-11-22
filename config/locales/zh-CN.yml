@@ -236,9 +236,11 @@ zh-CN:
     sd: '手动输入'
     app: 'app计时'
     saidao: '赛道计时'
+    admin: '后台计算'
     write_type1: '手动'
     write_type2: 'app'
     write_type3: '赛道'
+    write_type4: '后台计算'
   value_type:
     integer: '整数'
     float: '浮点型'
@@ -271,6 +273,7 @@ zh-CN:
       course: '课程'
       course_score_attribute: '评分标准'
       school: '学校'
+      notification: '消息'
   views:
     pagination:
         first: "首页"

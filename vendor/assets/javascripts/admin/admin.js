@@ -429,9 +429,9 @@ $(function () {
         var event_formula = document.getElementById("event-formula-select");
         var sa_value = event_formula.options[event_formula.selectedIndex].text;
         var sa_id = $(this).val();
-        var input_symbol = $('<p id="formula-' + sa_id + '"><select id="symbol-' + sa_id + '" name="formula[' + sa_id + '][symbol]"><option value="">请选择符号</option><option value="1" selected>加</option><option value="2">减</option><option value="3">乘</option><option value="4">除</option></select>&nbsp;&nbsp;&nbsp;' + '' +
-            '<input  style="width:90px" id="molecule-' + sa_id + '" type="text" value="1" placeholder="分子(正整数)" name="formula[' + sa_id + '][molecule]" />&nbsp;&nbsp;&nbsp;' +
-            '<input  style="width:90px" id="denominator-' + sa_id + '" type="text" value="1" placeholder="分母(正整数)" name="formula[' + sa_id + '][denominator]" /><input type="hidden" name="formula[' + sa_id + '][name]" value="' + sa_value + '" />&nbsp;' + sa_value + '&nbsp;<button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(' + sa_id + ')">x</button></p>');
+        var input_symbol = $('<p id="formula-' + sa_id + '"><select id="symbol-' + sa_id + '" name="formula[][symbol]"><option value="">请选择符号</option><option value="1" selected>加</option><option value="2">减</option><option value="3">乘</option><option value="4">除</option></select>&nbsp;&nbsp;&nbsp;' + '' +
+            '<input  style="width:90px" id="molecule-' + sa_id + '" type="text" value="1" placeholder="分子(正整数)" name="formula[][molecule]" />&nbsp;&nbsp;&nbsp;' +
+            '<input  style="width:90px" id="denominator-' + sa_id + '" type="text" value="1" placeholder="分母(正整数)" name="formula[][denominator]" /><input type="hidden" name="formula[][id]" value="' + sa_id + '" /><input type="hidden" name="formula[][name]" value="' + sa_value + '" />&nbsp;' + sa_value + '&nbsp;<button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(' + sa_id + ')">x</button></p>');
         $('.event-formula-input').append(input_symbol);
 
     });
@@ -452,6 +452,10 @@ $(function () {
         }
     });
     $('.update-event-formula-submit').on('click', function () {
+        var ls_by_name = $('#last-score-by').find('option:selected').text();
+        var trigger_attr_name = $('#trigger-formula-id').find('option:selected').text();
+        $('#last-score-name').val(ls_by_name);
+        $('#trigger-attr-name').val(trigger_attr_name);
         var form = $("#event-formula-form");
         var data = form.serializeArray();
         // var formula_sa_id = data[0].value;
@@ -466,41 +470,34 @@ $(function () {
             admin_gritter_notice(false, '请选择排序');
             return false;
         }
-        var orders_attr = [];
-        for (var i = 0; i < orders.length; i++) {
-            orders_attr[i] = (orders[i].indexOf("最终成绩") >= 0);
-        }
-        if (orders_attr.indexOf(true) == -1) {
-            admin_gritter_notice(false, '成绩排序中要包含最终成绩的排序');
+
+        if (!(orders[0].indexOf("最终成绩") >= 0)) {
+            admin_gritter_notice(false, '成绩排序中最终成绩的排序要放在第一位');
             return false;
         }
-        var ls_by_name = $('#last-score-by').find('option:selected').text();
-        var trigger_attr_name = $('#trigger-formula-id').find('option:selected').text();
-        $('#last-score-name').val(ls_by_name);
-        $('#trigger-attr-name').val(trigger_attr_name);
         var has_no_error = true;
         var orders_length = orders.length;
         $.each(data, function (k, v) {
             if (k > (orders_length + 2)) {
                 var input_name = v.name;
-                var input_id = v.name.split(']')[0].substr(8);
+                // var input_id = v.name.split(']')[0].substr(8);
                 var input_value = parseInt(v.value);
                 if (input_name.indexOf("symbol") >= 0 && ([1, 2, 3, 4].indexOf(input_value)) == -1) {
                     admin_gritter_notice(false, '请正确选择符号');
-                    $("#symbol-" + input_id).focus();
+                    // $("#symbol-" + input_id).focus();
                     has_no_error = false;
                     return has_no_error;
                 }
 
                 if (input_name.indexOf("molecule") >= 0 && (input_value == 0 || isNaN(input_value))) {
                     admin_gritter_notice(false, '分子不能为空或0');
-                    $('#molecule-' + input_id).focus();
+                    // $('#molecule-' + input_id).focus();
                     has_no_error = false;
                     return has_no_error;
                 }
                 if (input_name.indexOf("denominator") >= 0 && (input_value == 0 || isNaN(input_value))) {
                     admin_gritter_notice(false, '分母不能为空或0');
-                    $('#denominator-' + input_id).focus();
+                    // $('#denominator-' + input_id).focus();
                     has_no_error = false;
                     return has_no_error;
                 }

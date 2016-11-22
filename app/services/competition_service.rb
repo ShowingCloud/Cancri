@@ -40,23 +40,86 @@ class CompetitionService
     end
   end
 
-  def self.post_team_scores(event_id, schedule_id, kind, th, team1_id, score1, score, note, device_no, confirm_sign, operator_id)
-    score_row = Score.where(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id).take
-    if score_row.present?
-      if score_row.update_attributes(score_attribute: score1, score: score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
-        result = {status: true, message: '成绩更新成功'}
+  def self.post_team_scores(event_id, schedule_id, kind, th, team1_id, score_attribute, formula, note, device_no, confirm_sign, operator_id)
+    score_gs = JSON.parse(formula.strip)
+    score_attribute = JSON.parse(score_attribute.strip)
+
+    if score_gs.is_a?(Hash)
+      rounds = score_gs['rounds'].to_i
+      order = score_gs['order']
+      order_num = order['num']
+      first_sort = order['1']['sort']
+      formula = score_gs['formula']
+      score_length = score_attribute.length
+      if order_num == 2
+        second_sort_by = order['2']['id']
+      end
+      if rounds == score_length # 成绩轮数与规定相同
+        rounds_score =[] # 多轮最终成绩的集合
+        score_attribute.each do |val|
+          if val['valid']
+            last_score_by_id = score_gs['last_score_by']['id']
+
+            if last_score_by_id =='0' || ((score_gs['trigger_attr']['id'].length >0) && (val[:"#{score_gs['trigger_attr']['id']}"]['val'] == score_gs['trigger_attr']['val']))
+              one_round_score = 0.0
+              formula.each do |f|
+                if f['id'] == '0'
+                  formula_ele = f['xishu']
+                else
+                  formula_ele = (val["#{f['id']}"]['val']).to_f*f['xishu']
+                end
+
+                case f['symbol'].to_i
+                  when 1
+                    one_round_score+=formula_ele
+                  when 2
+                    one_round_score-=formula_ele
+                  when 3
+                    one_round_score*=formula_ele
+                  when 4
+                    one_round_score/=formula_ele
+                  else
+                    one_round_score
+                end
+              end
+              rounds_score << [one_round_score.round(2), (order_num == 2) ? val["#{second_sort_by}"]['val'].to_f : 0]
+            else ## 不用公式
+              rounds_score << [val[:"#{last_score_by_id}"]['val'].to_f.round(2), (order_num == 2) ? val[:"#{second_sort_by}"]['val'].to_f : 0]
+            end
+          else
+            rounds_score << 'invalid'
+          end
+        end
+
+        last_score = rounds_score - ['invalid']
+        if last_score ==[]
+          last_score = [[-100, 0]]
+        else
+          last_score = last_score.sort_by { |h| ["#{(first_sort == 1) ? h[0] : -h[0]}".to_f, "#{ (order_num == 2 && order['2']['sort'] ==1) ? h[1] : -h[1]}".to_f] }
+        end
+        score_attribute << {rounds_score: rounds_score}
+        score_row = Score.where(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id).take
+        if score_row.present?
+          if score_row.update_attributes(score_attribute: score_attribute, score: last_score[0][0], order_score: last_score[0][1], note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
+            result = [true, '成绩更新成功']
+          else
+            result = [false, '成绩更新失败']
+          end
+        else
+          score_row = Score.create(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id, score_attribute: score_attribute, score: last_score[0][0], order_score: last_score[0][1], note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id, last_score: true)
+          if score_row.save
+            result =[true, '成绩保存成功']
+          else
+            result =[false, '成绩保存失败']
+          end
+        end
       else
-        result = {status: false, message: '成绩更新失败'}
+        result = [false, '成绩轮数为'+rounds.to_s+',您传了'+score_length.to_s+' 轮']
       end
     else
-      score_row = Score.create(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id, score_attribute: score1, score: score, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
-      if score_row.save
-        result = {status: true, message: '成绩保存成功'}
-      else
-        result = {status: false, message: '成绩保存失败'}
-      end
+      result = [false, '公式不存在,请联系工作人员']
     end
-    result
+    {status: result[0], message: result[1]}
   end
 
   def self.via_identifier_get_team(identifier)
