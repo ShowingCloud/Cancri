@@ -84,7 +84,7 @@ class CompetitionService
               end
               rounds_score << [one_round_score.round(2), (order_num == 2) ? val["#{second_sort_by}"]['val'].to_f : 0]
             else ## 不用公式
-              rounds_score << [val[:"#{last_score_by_id}"]['val'].to_f.round(2), (order_num == 2) ? val[:"#{second_sort_by}"]['val'].to_f : 0]
+              rounds_score << [val["#{last_score_by_id}"]['val'].to_f.round(2), (order_num == 2) ? val["#{second_sort_by}"]['val'].to_f : 0]
             end
           else
             rounds_score << 'invalid'
