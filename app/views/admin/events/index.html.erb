@@ -76,6 +76,9 @@
               <%= link_to "#{teams_admin_events_path}?id=#{event.id}", title: '队伍', class: 'btn btn-xs btn-primary' do %>
                   <i class="icon-flag-alt bigger-120"></i>
               <% end %>
+              <%= link_to "#{scores_admin_events_path}?id=#{event.id}&group=中学", title: '成绩', class: 'btn btn-xs btn-warning' do %>
+                  <i class="icon-list-ol bigger-120"></i>
+              <% end %>
           <% end %>
           <%= link_to edit_admin_event_path(event), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>

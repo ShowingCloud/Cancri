@@ -1,5 +1,5 @@
 class Admin::EventsController < AdminController
-  before_action :set_event, only: [:show, :edit, :update, :destroy]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :scores]
 
   before_action do
     authenticate_permissions(['editor', 'admin'])
@@ -76,6 +76,24 @@ class Admin::EventsController < AdminController
 
   # GET /admin/events/1/edit
   def edit
+  end
+
+  def scores
+    event_id = params[:id]
+    group = params[:group]
+    case group
+      when '小学'
+        group = 1
+      when '中学'
+        group = 2
+      when '初中'
+        group = 3
+      when '高中'
+        group = 4
+      else
+        render_optional_error(404)
+    end
+    @scores = Team.joins('left join user_profiles u_p on u_p.user_id = teams.user_id').joins('left join scores s on teams.id = s.team1_id').where(event_id: event_id, group: group).select('s.score', 's.score_attribute', 's.order_score', 'u_p.username', 'teams.group', 'teams.identifier')
   end
 
   def teams

@@ -1,7 +1,7 @@
 module Api
   module V1
     class ScoresController < Api::V1::ApplicationController
-
+      before_action :authenticate!
       ##
       # 获取成绩属性列表
       #

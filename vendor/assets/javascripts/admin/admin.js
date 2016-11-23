@@ -332,6 +332,18 @@ $(function () {
         }
         window.location = '/admin/events/teams?id=' + event_id + status_params;
     });
+    // 选择队伍组别成绩
+    $('#team-score-group').on('change', function () {
+        var event_id = $('.event-id').val();
+        var group = $(this).val();
+        var group_params;
+        if (group == '') {
+            group_params = ''
+        } else {
+            group_params = '&group=' + group
+        }
+        window.location = '/admin/events/scores?id=' + event_id + group_params;
+    });
 
     // 编辑赛程评分／对抗
     $(".edit-event-schedule-submit").on('click', function (e) {
