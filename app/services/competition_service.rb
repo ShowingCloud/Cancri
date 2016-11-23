@@ -60,7 +60,7 @@ class CompetitionService
           if val['valid']
             last_score_by_id = score_gs['last_score_by']['id']
 
-            if last_score_by_id =='0' || ((score_gs['trigger_attr']['id'].length >0) && (val[:"#{score_gs['trigger_attr']['id']}"]['val'] == score_gs['trigger_attr']['val']))
+            if last_score_by_id =='0' || ((score_gs['trigger_attr']['id'].length >0) && (val["#{score_gs['trigger_attr']['id']}"]['val'] == score_gs['trigger_attr']['val']))
               one_round_score = 0.0
               formula.each do |f|
                 if f['id'] == '0'
