@@ -96,7 +96,7 @@ class Admin::EventsController < AdminController
         render_optional_error(404)
     end
     if sort.to_i == 1
-      event_sa = EventSaShip.where(event_id: event_id, score_attribute_id: 9).take
+      event_sa = EventSaShip.where(event_id: event_id, score_attribute_id: 19).take
       if event_sa.present? && event_sa.formula.present?
         order = event_sa.formula['order']
         order_num = order['num']
