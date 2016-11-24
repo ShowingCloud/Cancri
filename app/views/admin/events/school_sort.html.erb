@@ -1,0 +1,58 @@
+<h1 class="page-header">
+  <%= @event.name %> 学校排名 <%= "#{params[:group]}" if params[:group].present? %>
+  <input type="hidden" class="event-id" value="<%= @event.id %>"/>
+  <small class="pull-right">
+    <% @event.group.split(',').each do |group| %>
+
+        <% case group.to_i when 1 %>
+            <% g = '小学组' %>
+        <% else %>
+            <% g = '中学组' %>
+        <% end %>
+        <a href="/admin/events/school_sort?id=<%= params[:id] %>&group=<%= g %>" role="button" title="" class="btn <%= 'btn-primary' if params[:group] == g %>" data-toggle="modal">
+          <%= g %>
+        </a>
+    <% end %>
+  </small>
+
+  <input type="hidden" class="event-id" value="<%= @event.id %>">
+</h1>
+
+<% is_father = @event.is_father %>
+
+<div class="row">
+  <div class="col-xs-12">
+    <% if @schools.present? %>
+        <table class="table table-bordered table-hover table-striped">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>学校</th>
+            <th> <%= is_father ? '参加项目数' : '参加队伍数' %></th>
+            <th><%= is_father ? '项目排名' : '队伍排名' %></th>
+            <th>积分</th>
+            <th>排名</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <% @school_array.each do |school| %>
+              <tr>
+                <td><%= school[:id] %></td>
+                <td><%= school[:school_name] %></td>
+                <td><%= school[:join_event_num] %></td>
+                <td><%= school[:ranks] %></td>
+                <td><%= school[:points] %></td>
+                <th><%= @all_points.count { |s| s<="#{school[:points]}".to_i } %></th>
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+    <% else %>
+        <div class="alert alert-info">没有学校参加该项目</div>
+    <% end %>
+
+
+  </div>
+</div>
+

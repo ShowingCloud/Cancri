@@ -1,5 +1,5 @@
 class Admin::EventsController < AdminController
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :scores]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :scores, :school_sort]
 
   before_action do
     authenticate_permissions(['editor', 'admin'])
@@ -80,20 +80,112 @@ class Admin::EventsController < AdminController
 
   def scores
     event_id = params[:id]
-    group = params[:group]
-    case group
-      when '小学'
+    params_group = params[:group]
+    sort = params[:sort]
+    group = 0
+    case params_group
+      when '小学组'
         group = 1
-      when '中学'
+      when '中学组'
         group = 2
-      when '初中'
+      when '初中组'
         group = 3
-      when '高中'
+      when '高中组'
         group = 4
       else
         render_optional_error(404)
     end
-    @scores = Team.joins('left join user_profiles u_p on u_p.user_id = teams.user_id').joins('left join scores s on teams.id = s.team1_id').where(event_id: event_id, group: group).select('s.score', 's.score_attribute', 's.order_score', 'u_p.username', 'teams.group', 'teams.identifier')
+    if sort.to_i == 1
+      event_sa = EventSaShip.where(event_id: event_id, score_attribute_id: 9).take
+      if event_sa.present? && event_sa.formula.present?
+        order = event_sa.formula['order']
+        order_num = order['num']
+        first_order = (order['1']['sort'].to_i == 0) ? '>' : '<'
+        if order_num == 2
+          second_order = order['2']['sort'].to_i
+          teams = Team.joins('inner join scores s on s.team1_id = teams.id').where(event_id: event_id, group: group).where('s.score > ?', 0).select('teams.*', 's.score', 's.order_score').order("s.score #{(first_order == '>') ? 'asc' : 'desc'}").order("s.order_score #{(second_order == 0) ? 'asc' : 'desc'}")
+          if teams.present?
+            teams.each_with_index do |team, index|
+              team.update(rank: index+1)
+            end
+            flash[:notice] = '排名成功'
+          end
+        else
+          # 单一排序
+          sql = "rank = (select count(*) from (select distinct score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group=#{group} and s.score > 0) dist_score where dist_score.score #{first_order}=scores.score)"
+          if Team.joins('inner join scores on scores.team1_id = teams.id').where(event_id: event_id, group: group).where('scores.score > ?', 0).update_all(sql)
+            flash[:notice] = '排名成功'
+          else
+            flash[:notice] = '排名失败'
+          end
+        end
+      else
+        flash[:notice] = '公式不存在'
+        redirect_to "/admin/events/scores?id=#{event_id}&group=#{params_group}"
+        return false
+      end
+    end
+    @scores = Team.left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').joins('left join scores s on teams.id = s.team1_id').where(event_id: event_id, group: group).select(:id, 'schools.name as school_name', 's.score', 's.score_attribute', 's.order_score', 'u_p.username', 'teams.rank', 'teams.group', 'teams.identifier').order('teams.rank asc')
+  end
+
+  def school_sort
+    event_id = params[:id]
+    params_group = params[:group]
+    group = 0
+    if params_group.present?
+      case params_group
+        when '小学组'
+          group = '(1)'
+        when '中学组'
+          group = '(2, 3, 4)'
+        else
+          render_optional_error(404)
+      end
+    end
+
+    if @event.is_father
+      event_ids = @event.child_events.pluck(:id)
+      if event_ids.present?
+        events_num = event_ids.length
+        event_ids = '('+event_ids.join(',')+')'
+        @schools = Team.find_by_sql("select s.id,s.name as school_name,count(distinct t.event_id) as join_event_num,GROUP_CONCAT(distinct t.event_id) as event_ids from teams t left join schools s on t.school_id = s.id where t.event_id in #{event_ids} and t.group in #{group} GROUP BY t.school_id")
+        if @schools.present?
+          @school_array = @schools.map { |school| {
+              id: school.id,
+              school_name: school.school_name,
+              join_event_num: school.join_event_num,
+              event_ids: school.event_ids,
+              ranks: school_first_ranks(school.id, school.event_ids, group)
+          } }.map { |s| {
+              id: s[:id],
+              school_name: s[:school_name],
+              join_event_num: s[:join_event_num],
+              event_ids: s[:event_ids],
+              points: (events_num-s[:join_event_num])*100+s[:ranks][0],
+              ranks: s[:ranks][1]
+          } }.sort_by { |h| [h[:points], -h[:join_event_num]] }
+          @all_points = @school_array.pluck(:points).uniq
+        else
+          flash[:notice] = '没有学校参加该项目'
+        end
+      else
+        flash[:notice] = '没有子项目'
+      end
+    else
+      @schools = Team.find_by_sql("select s.id,s.name as school_name,count(t.id) as join_event_num,GROUP_CONCAT(t.rank) as ranks from teams t left join schools s on t.school_id = s.id where t.event_id = #{event_id} and t.group in #{group} GROUP BY t.school_id")
+      if @schools.present?
+        @school_array = @schools.map { |s| {
+            id: s.id,
+            school_name: s.school_name,
+            join_event_num: s.join_event_num,
+            ranks: s.ranks,
+            points: ((s.ranks.to_s.split(',')[0].to_i == 0 ? 100 : s.ranks.to_s.split(',')[0].to_i)+(s.ranks.to_s.split(',')[1].to_i == 0 ? 100 : s.ranks.to_s.split(',')[1].to_i)+(s.ranks.to_s.split(',')[2].to_i == 0 ? 100 : s.ranks.to_s.split(',')[2].to_i))
+        } }.sort_by { |h| [h[:points], -h[:join_event_num]] }
+        @all_points = @school_array.pluck(:points).uniq
+      else
+        flash[:notice] = '没有学校参加该项目'
+      end
+    end
   end
 
   def teams
@@ -450,4 +542,15 @@ class Admin::EventsController < AdminController
     end
   end
 
+  def school_first_ranks(school_id, event_ids, group)
+    event_ranks = Team.find_by_sql("select GROUP_CONCAT(rank) as ranks from teams where school_id = #{school_id} and teams.group in #{group} and event_id in #{'('+event_ids+')'} GROUP BY teams.event_id")
+    round_ranks = 0
+    ranks = []
+    event_ranks.each_with_index do |er, index|
+      rank_num = er.ranks.to_s.split(',').sort[0].to_i
+      round_ranks += (rank_num == 0 ? 100 : rank_num)
+      ranks << rank_num
+    end
+    [round_ranks, ranks.join(',')]
+  end
 end

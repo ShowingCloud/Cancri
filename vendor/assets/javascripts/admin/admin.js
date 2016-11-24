@@ -332,18 +332,6 @@ $(function () {
         }
         window.location = '/admin/events/teams?id=' + event_id + status_params;
     });
-    // 选择队伍组别成绩
-    $('#team-score-group').on('change', function () {
-        var event_id = $('.event-id').val();
-        var group = $(this).val();
-        var group_params;
-        if (group == '') {
-            group_params = ''
-        } else {
-            group_params = '&group=' + group
-        }
-        window.location = '/admin/events/scores?id=' + event_id + group_params;
-    });
 
     // 编辑赛程评分／对抗
     $(".edit-event-schedule-submit").on('click', function (e) {
@@ -465,7 +453,7 @@ $(function () {
     });
     $('.update-event-formula-submit').on('click', function () {
         var ls_by_name = $('#last-score-by').find('option:selected').text();
-        var trigger_attr_name = $('#trigger-formula-id').find('option:selected').text();
+        var trigger_attr_name = $('#trigger-attr-id').find('option:selected').text();
         $('#last-score-name').val(ls_by_name);
         $('#trigger-attr-name').val(trigger_attr_name);
         var form = $("#event-formula-form");
@@ -664,10 +652,6 @@ $(function () {
             $("＃select-create-team-leader").focus();
             return false;
         }
-        console.log(teacher);
-        console.log(user_id);
-        console.log(event_id);
-        console.log(group);
         if (event_id != null) {
             $.ajax({
                 url: '/admin/events/create_team',
