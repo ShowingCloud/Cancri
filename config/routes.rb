@@ -127,6 +127,8 @@ Rails.application.routes.draw do
         post :delete_team_player
         post :delete_team
         post :create_team
+        get :scores
+        get :school_sort
       end
     end
     resources :teams
