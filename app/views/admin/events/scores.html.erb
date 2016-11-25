@@ -37,6 +37,7 @@
             <th>编号</th>
             <th>队长</th>
             <th>学校</th>
+            <th>指导老师</th>
             <th>成绩属性</th>
             <th>最终成绩</th>
             <th>辅助排序</th>
@@ -52,6 +53,7 @@
                 <td><%= score.identifier %></td>
                 <td><%= score.username %></td>
                 <td><%= score.school_name %></td>
+                <td><%= score.teacher %></td>
                 <% score_attribute = (score.score_attribute).force_encoding 'utf-8' if score.score_attribute %>
                 <td title="<%= score_attribute if score.score_attribute %>"><%= score_attribute[1..20] if score.score_attribute %></td>
                 <td><%= score.score %></td>
