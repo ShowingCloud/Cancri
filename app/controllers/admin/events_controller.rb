@@ -125,7 +125,7 @@ class Admin::EventsController < AdminController
         return false
       end
     end
-    @scores = Team.left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').joins('left join scores s on teams.id = s.team1_id').where(event_id: event_id, group: group).select(:id, 'schools.name as school_name', 's.score', 's.score_attribute', 's.order_score', 'u_p.username', 'teams.rank', 'teams.group', 'teams.identifier').order('teams.rank asc')
+    @scores = Team.left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').joins('left join scores s on teams.id = s.team1_id').where(event_id: event_id, group: group).select(:id, 'schools.name as school_name', 's.score', 's.score_attribute', 's.order_score', 'u_p.username', 'teams.teacher', 'teams.rank', 'teams.group', 'teams.identifier').order('teams.rank asc')
   end
 
   def school_sort
