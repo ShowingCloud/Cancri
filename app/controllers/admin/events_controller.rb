@@ -103,7 +103,7 @@ class Admin::EventsController < AdminController
         first_order = (order['1']['sort'].to_i == 0) ? '>' : '<'
         if order_num == 2
           second_order = order['2']['sort'].to_i
-          teams = Team.joins('inner join scores s on s.team1_id = teams.id').where(event_id: event_id, group: group).where('s.score > ?', 0).select('teams.*', 's.score', 's.order_score').order("s.score #{(first_order == '>') ? 'asc' : 'desc'}").order("s.order_score #{(second_order == 0) ? 'asc' : 'desc'}")
+          teams = Team.joins('inner join scores s on s.team1_id = teams.id').where(event_id: event_id, group: group).where('s.score > ?', 0).select('teams.*', 's.score', 's.order_score').order("s.score #{(first_order == '>') ? 'desc' : 'asc'}").order("s.order_score #{(second_order == 1) ? 'asc' : 'desc'}")
           if teams.present?
             teams.each_with_index do |team, index|
               team.update(rank: index+1)
