@@ -112,7 +112,7 @@ class Admin::EventsController < AdminController
           end
         else
           # 单一排序
-          sql = "rank = (select count(*) from (select distinct score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group=#{group} and s.score > 0) dist_score where dist_score.score #{first_order}=scores.score)"
+          sql = "rank = (select count(*)+1 from (select score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group=#{group} and s.score > 0) dist_score where dist_score.score #{first_order} scores.score)"
           if Team.joins('inner join scores on scores.team1_id = teams.id').where(event_id: event_id, group: group).where('scores.score > ?', 0).update_all(sql)
             flash[:notice] = '排名成功'
           else

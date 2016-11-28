@@ -58,7 +58,7 @@
         <td><%= event.id %></td>
         <td><%= event.name %></td>
         <td><%= event.comp_name %></td>
-        <td><%= event.parent_event.name if event.level==2 %></td>
+        <td><%= event.parent_event.try(:name) if event.level==2 %></td>
         <td><%= show_status(event.is_father) if event.is_father %></td>
         <td><%= event.group.gsub(/[1-4]/, '1' => '小', '2' => '中', '3' => '初', '4' => '高') %></td>
         <td><%= t('status.status'+event.status.to_s) %></td>
