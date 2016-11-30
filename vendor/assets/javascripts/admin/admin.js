@@ -671,6 +671,30 @@ $(function () {
             });
         }
     });
+    // 比赛change后选择对应分组
+    $('#event_competition_id').on('change', function () {
+        var comp_id = $(this).val();
+        if (comp_id) {
+            $.ajax({
+                url: '/api/v1/competitions/get_parent_group',
+                data: {comp_id: comp_id},
+                type: 'get',
+                success: function (data) {
+                    var event_parent_select = $('#event_parent_id');
+                    event_parent_select.empty();
+                    var first_option = $('<option value=""> &nbsp;请选择所属项目</option>');
+                    event_parent_select.append(first_option);
+                    $.each(data, function (k, v) {
+                        var option = $('<option value="' + v.id + '">' + v.comp_name + ' -- ' + v.name + '</option>');
+                        event_parent_select.append(option);
+                    })
+                }
+            })
+        }
+
+        // $('#event_parent_id')
+
+    });
 
 });
 function trim(str) {

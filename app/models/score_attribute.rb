@@ -1,7 +1,7 @@
 class ScoreAttribute < ApplicationRecord
   has_many :event_sa_ships, foreign_key: :score_attribute_id
   has_many :events, through: :event_sa_ships
-  WRITE_TYPE = {sd: 1, app: 2, saidao: 3, admin: 4} # 1 手动
+  WRITE_TYPE = {sd: 1, miaobiao: 2, admin: 3, saidao1: 4, saidao2: 5} # 1 手动
   VALUE_TYPE = {integer: 1, float: 2, boolean: 3}
 
   validates :name, presence: true

@@ -8,6 +8,7 @@ class UserProfile < ApplicationRecord
   validates :school_id, numericality: {only_integer: true}, allow_blank: true
   validates :grade, numericality: {only_integer: true}, allow_blank: true
   validates :district_id, numericality: {only_integer: true}, allow_blank: true
+  validates :student_code, allow_blank: true, uniqueness: true, length: {is: 19}, numericality: {only_integer: true}
 
   GENDER = {male: 1, female: 2}
   mount_uploader :certificate, CoverUploader

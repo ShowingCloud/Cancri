@@ -63,7 +63,7 @@ module AccountConcern
       end
 
       time = Time.now
-      if u.last_activity_at.to_datetime > time - 25.minutes
+      if u.last_activity_at.to_datetime > time - 50.minutes
         if u.last_activity_at.to_datetime < time - 5.minutes
           u.last_activity_at = time
           u.save

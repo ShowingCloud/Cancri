@@ -20,6 +20,15 @@ module Api
         render json: @events
       end
 
+      # 获取特定比赛下分组
+      # GET /api/v1/get_events
+
+      def get_parent_group
+        requires! :comp_id
+        comp_groups = Event.joins(:competition).where(competition_id: params[:comp_id], is_father: true).select(:id, :name, 'competitions.name as comp_name')
+        render json: comp_groups
+      end
+
     end
   end
 end
