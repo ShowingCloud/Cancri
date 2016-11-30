@@ -14,7 +14,7 @@ class NewsController < ApplicationController
           id: n.id,
           name: n.name,
           desc: n.desc,
-          cover: n.cover_url(:middle),
+          cover: n.cover_url,
           type: NewsType.find(n.news_type.split(',')).pluck(:name).join(' '),
           created_at: n.created_at
       } }
