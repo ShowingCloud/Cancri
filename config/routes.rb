@@ -129,6 +129,7 @@ Rails.application.routes.draw do
         post :create_team
         get :scores
         get :school_sort
+        get :export_team_info
       end
     end
     resources :teams
@@ -160,6 +161,7 @@ Rails.application.routes.draw do
       resources :competitions do
         collection do
           get :get_events
+          get :get_parent_group
         end
       end
       resources :events do

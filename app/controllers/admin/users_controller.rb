@@ -14,6 +14,9 @@ class Admin::UsersController < AdminController
   # GET /admin/users/1
   # GET /admin/users/1.json
   def show
+    unless @user.user_profile.present?
+      @user.user_profile = @user.build_user_profile
+    end
   end
 
   # GET /admin/users/new
@@ -44,8 +47,9 @@ class Admin::UsersController < AdminController
   # PATCH/PUT /admin/users/1
   # PATCH/PUT /admin/users/1.json
   def update
+    @user_profile = @user.user_profile ||= @user.build_user_profile
     respond_to do |format|
-      if @user.update(user_params)
+      if @user.update(user_params) && @user_profile.update(user_profile_params)
         format.html { redirect_to [:admin, @user], notice: t('activerecord.models.user') + ' 已成功更新.' }
         format.json { head :no_content }
       else
@@ -74,5 +78,9 @@ class Admin::UsersController < AdminController
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
     params.require(:user).permit(:username, :nickname, :mobile, :email)
+  end
+
+  def user_profile_params
+    params.require(:user_profile).permit(:username, :birthday, :gender, :grade, :student_code, :bj)
   end
 end

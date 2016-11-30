@@ -19,7 +19,9 @@ class Event < ApplicationRecord
   before_save :update_level
 
   def update_level
-    unless self.level == 2
+    if self.level == 2 && self.parent_id.blank?
+      self.level = 1
+    else
       if self.parent_id.present? && self.parent_id != self.id
         self.level = 2
       end
