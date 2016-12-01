@@ -41,7 +41,7 @@
           <%= f.input :district_id, collection: District.all %>
           <%= f.input :run_address %>
           <label class="select required control-label" for="courses_desc">描述:</label>
-          <%= f.kindeditor :desc, :window_onload => true, :owner_id => @course.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'media', 'insertfile', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
+          <%= f.kindeditor :desc, :window_onload => true, :owner_id => @course.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', 'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'media', 'insertfile', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
           <br>
           <%= f.input :run_time, label: '每天上课时间', placeholder: '例如:9:30-10:30  14:00-15:30' %>
           <%= f.input :status, collection: Course::STATUS.map { |key, val| [t('status.'+key.to_s), val] } %>
