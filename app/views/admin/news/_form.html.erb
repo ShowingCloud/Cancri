@@ -45,7 +45,7 @@
               </div>
           <% end %>
           <%= f.input :desc %>
-          <%= f.input :district_id, collection: District.select(:id, :name)%>
+          <%= f.input :district_id, collection: District.select(:id, :name) %>
           <%= f.input :status, label: '显示' %>
           <%= f.input :is_hot, label: '热门' %>
           <div class="form-group">
@@ -59,7 +59,7 @@
           </div>
 
           <label class="select required control-label" for="news_content"><abbr title="必填字段">*</abbr>内容:</label>
-          <%= f.kindeditor :content, :window_onload => true, :owner_id => @new.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'media', 'insertfile', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
+          <%= f.kindeditor :content, :window_onload => true, :owner_id => @new.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', 'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'media', 'insertfile', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
           <%= f.hidden_field :admin_id, :value => @current_admin.id %>
         </div>
 
