@@ -15,14 +15,12 @@
                 <th>比赛名称</th>
                 <th>项目名称</th>
                 <th>比赛时间</th>
-                <th>成绩</th>
               </tr>
               <% @competitions.each do |c| %>
                 <tr>
                   <td><%= c.comp_name %></td>
                   <td><%= c.event_name %></td>
                   <td><%= c.start_time.strftime('%Y-%m-%d') %></td>
-                  <td></td>
                 </tr>
               <% end %>
             </table>
@@ -33,7 +31,3 @@
     </div>
   </div>
 </div>
-
-
-
-
