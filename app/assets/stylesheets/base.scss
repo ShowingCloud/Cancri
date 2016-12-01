@@ -141,6 +141,8 @@ a:hover {
 #main {
   position: relative;
   padding-bottom: 26px;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 #footer {
@@ -1856,10 +1858,6 @@ select {
       }
     }
   }
-}
-
-.news-main{
-  background-color: black;
 }
 
 #news-list {
