@@ -17,26 +17,81 @@
 <% end %>
 
 
-<div class="panel panel-info">
-  <div class="panel-heading">
-    <%= t('activerecord.models.user') %>
+<div class="profile-user-info profile-user-info-striped">
+  <div class="profile-info-row">
+    <div class="profile-info-name"> <%= t('simple_form.labels.defaults.nickname') %></div>
+
+    <div class="profile-info-value">
+      <span class="editable" id="username"><%= @user.nickname %></span>
+    </div>
   </div>
-  <ul class="list-group">
-    <li class="list-group-item">
-      <h4><%= t('simple_form.labels.defaults.nickname') %>:</h4>
 
-      <p><%= @user.nickname %></p>
-    </li>
-    <li class="list-group-item">
-      <h4><%= t('simple_form.labels.defaults.mobile') %>:</h4>
 
-      <p><%= @user.mobile %></p>
-    </li>
-    <li class="list-group-item">
-      <h4><%= t('simple_form.labels.defaults.email') %>:</h4>
+  <div class="profile-info-row">
+    <div class="profile-info-name"> <%= t('simple_form.labels.defaults.mobile') %> </div>
 
-      <p><%= @user.email %></p>
-    </li>
+    <div class="profile-info-value">
+      <span><%= @user.mobile %></span>
+    </div>
+  </div>
 
-  </ul>
+
+  <div class="profile-info-row">
+    <div class="profile-info-name"> <%= t('simple_form.labels.defaults.email') %> </div>
+
+    <div class="profile-info-value">
+      <span><%= @user.email %></span>
+    </div>
+  </div>
+
+  <div class="profile-info-row">
+    <div class="profile-info-name"> <%= t('simple_form.labels.defaults.username') %> </div>
+
+    <div class="profile-info-value">
+      <span><%= @user.username %></span>
+    </div>
+  </div>
+  <div class="profile-info-row">
+    <div class="profile-info-name"> <%= t('simple_form.labels.defaults.gender') %> </div>
+
+    <div class="profile-info-value">
+      <span>
+        <% case @user.gender %>
+        <% when 1 %>
+            男
+        <% when 2 %>
+            女
+        <% else %>
+        <% end %>
+      </span>
+    </div>
+  </div>
+  <div class="profile-info-row">
+    <div class="profile-info-name"> <%= t('simple_form.labels.defaults.birthday') %> </div>
+
+    <div class="profile-info-value">
+      <span><%= @user.birthday %></span>
+    </div>
+  </div>
+  <div class="profile-info-row">
+    <div class="profile-info-name"> <%= t('simple_form.labels.defaults.student_code') %> </div>
+
+    <div class="profile-info-value">
+      <span><%= @user.student_code %></span>
+    </div>
+  </div>
+  <div class="profile-info-row">
+    <div class="profile-info-name"> <%= t('simple_form.labels.defaults.grade') %> </div>
+
+    <div class="profile-info-value">
+      <span><%= @user.grade %></span>
+    </div>
+  </div>
+  <div class="profile-info-row">
+    <div class="profile-info-name"> <%= t('simple_form.labels.defaults.bj') %> </div>
+
+    <div class="profile-info-value">
+      <span><%= @user.bj %></span>
+    </div>
+  </div>
 </div>

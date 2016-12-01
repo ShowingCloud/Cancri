@@ -1,4 +1,4 @@
-$('#user-apply-course').on('click', function () {
+$('#user-apply-course').on('click', function() {
     var username = $('#user-info-username').val();
     var district = $('#user-info-district').val();
     var school = $('#user-info-school').val();
@@ -8,20 +8,31 @@ $('#user-apply-course').on('click', function () {
     $.ajax({
         url: '/courses/apply',
         type: 'post',
-        data: {"username": username, "district": district, "school": school, "grade": grade, "cd": cd},
-        success: function (data) {
+        data: {
+            "username": username,
+            "district": district,
+            "school": school,
+            "grade": grade,
+            "cd": cd
+        },
+        success: function(data) {
             if (data[0]) {
                 $('#course-user-info').modal('hide');
                 alert(data[1]);
                 window.location.reload();
-            }
-            else {
-                alert(data[1]);
+            } else {
+                if (data[1] === '请先在个人中心添加手机') {
+                    alert_r(data[1], function() {
+                        window.location = '/user/mobile';
+                    });
+                } else {
+                    alert(data[1]);
+                }
             }
         }
-    })
+    });
 });
-$('.alert-add-mobile').on('click', function () {
+$('.alert-add-mobile').on('click', function() {
     alert('请先在个人中心添加手机');
     window.location = '/user/mobile';
 });

@@ -1,4 +1,7 @@
 /* jason */
+.list-group li{
+    margin: 0 0 0 -25px;
+}
 .show-span-width {
     width: 70px;
     display: block;

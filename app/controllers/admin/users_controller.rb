@@ -1,5 +1,5 @@
 class Admin::UsersController < AdminController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: [:edit, :update, :destroy]
 
   # GET /admin/users
   # GET /admin/users.json
@@ -14,9 +14,7 @@ class Admin::UsersController < AdminController
   # GET /admin/users/1
   # GET /admin/users/1.json
   def show
-    unless @user.user_profile.present?
-      @user.user_profile = @user.build_user_profile
-    end
+    @user = User.left_joins(:user_profile).where(id: params[:id]).select(:id, :nickname, :mobile, :email, 'user_profiles.*').take!
   end
 
   # GET /admin/users/new
@@ -26,6 +24,9 @@ class Admin::UsersController < AdminController
 
   # GET /admin/users/1/edit
   def edit
+    unless @user.user_profile.present?
+      @user.user_profile = @user.build_user_profile
+    end
   end
 
   # POST /admin/users
@@ -47,9 +48,8 @@ class Admin::UsersController < AdminController
   # PATCH/PUT /admin/users/1
   # PATCH/PUT /admin/users/1.json
   def update
-    @user_profile = @user.user_profile ||= @user.build_user_profile
     respond_to do |format|
-      if @user.update(user_params) && @user_profile.update(user_profile_params)
+      if @user.update(user_params) && @user.user_profile.update(user_profile_params)
         format.html { redirect_to [:admin, @user], notice: t('activerecord.models.user') + ' 已成功更新.' }
         format.json { head :no_content }
       else
