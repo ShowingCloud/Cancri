@@ -94,7 +94,7 @@
                     </div>
                     <!-- select date end-->
                     <label class="select required control-label" for="courses_desc">描述:</label> (请点击最右边的全屏显示按钮)
-                    <%= f.kindeditor :desc, :window_onload => true, :owner_id => @course.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
+                    <%= f.kindeditor :desc, :window_onload => true, :owner_id => @course.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', 'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
                     <br>
 
                     <div class="form-actions">
