@@ -311,3 +311,6 @@ zh-CN:
      grade: '年级:'
      role_type: '角色类型:'
      end_time: '结束时间'
+     schedule_id: '赛程'
+     group: '组别'
+     kind: '模式/种类'
