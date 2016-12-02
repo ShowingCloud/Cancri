@@ -38,7 +38,7 @@
                   <ul class="dropdown-menu dropdown-menu-robodou">
                     <li><a href="<%= user_preview_path %>">个人中心</a></li>
                     <li><a href="<%= user_notification_path %>">我的消息</a></li>
-                    <li><%= link_to '退出登录', destroy_user_session_path, method: :delete, data: {confirm: '确认退出登录吗?'} %></li>
+                    <li><%= link_to '退出登录', destroy_user_session_path, id:"logout", method: :delete, data: {confirm: '确认退出登录吗?'} %></li>
                   </ul>
                 </div>
               </div>
@@ -65,7 +65,7 @@
           <li><a class="un-do" href="">荣誉榜</a></li>
           <li><a href="<%= activities_path %>">活动</a></li>
           <li><a class="" href="/demeanor">风采</a></li>
-          <li><a class="" href="/downloads">下载</a></li>
+          <li><a class="un-do" href="">下载</a></li>
         </ul>
       </div>
     </div>

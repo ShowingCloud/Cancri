@@ -2,6 +2,10 @@ $(function() {
     $(".btn-login-link,.btn-register-link").click(function() {
         $(".loading").removeClass('hidden');
     });
+
+    $('#logout').on('confirm:complete', function(e, response) {
+        $(".loading").removeClass('hidden');
+    });
     var lazyload = {
         init: function() {
             var tag = $('[data-src]');
