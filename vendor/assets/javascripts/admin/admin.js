@@ -2,6 +2,32 @@
  * Created by huaxiukun on 16/2/25.
  */
 $(function () {
+    // add event schedule score attrs
+    $('.add-schedule-attrs-modal').on('click', function () {
+        var _self = $(this);
+        var schedule_name = _self.attr('data-name');
+        var event_id = _self.attr('data-event');
+        var schedule_id = _self.attr('data-schedule');
+        $('.added-schedule-name').text(schedule_name);
+        $('.add-schedule-sa-submit').on('click', function () {
+            var added_sa_ids = $('#event-schedule-sa-values').val();
+            if (event_id != null && schedule_id != null && added_sa_ids != null) {
+                $.ajax({
+                    url: '/admin/events/add_score_attributes',
+                    type: 'post',
+                    data: {"ed": ed, "schedule_id": schedule_id, "sa_ids": added_sa_ids},
+                    success: function (data) {
+                        admin_gritter_notice(data["status"], data["message"]);
+                        if (data["status"]) {
+                            window.location.reload();
+                        }
+                    }
+                });
+            } else {
+                admin_gritter_notice(false, '参数不齐全');
+            }
+        });
+    });
 
     // 活动打分
     $('.create-activity-score,.update-activity-score').on('click', function () {
@@ -425,8 +451,10 @@ $(function () {
             multiple_check_type_size(time_schedule, ['pdf', 'zip', 'rar'], 10);
         });
     }
-    $('#event-formula-select').on('change', function () {
-        var event_formula = document.getElementById("event-formula-select");
+    $('.event-formula-select').change(function () {
+        var _self = $(this);
+        var index = _self.attr('data-index');
+        var event_formula = document.getElementById("selected-formula-element-" + index);
         var sa_value = event_formula.options[event_formula.selectedIndex].text;
         var sa_id = $(this).val();
         var input_symbol = $('<p id="formula-' + sa_id + '"><select id="symbol-' + sa_id + '" name="formula[][symbol]"><option value="">请选择符号</option><option value="1" selected>加</option><option value="2">减</option><option value="3">乘</option><option value="4">除</option></select>&nbsp;&nbsp;&nbsp;' + '' +

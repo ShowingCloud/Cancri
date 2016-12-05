@@ -38,7 +38,14 @@ class Admin::EventsController < AdminController
   # GET /admin/events/1.json
   def show
     unless @event.is_father
-      @event_schedules = EventSchedule.joins(:schedule).where(event_id: @event.id, group: @event.group.split(',')[0]).select(:id, :event_id, :schedule_id, 'schedules.name as schedule_name')
+      @event_schedules = EventSchedule.joins(:schedule).where(event_id: @event.id, group: @event.group.split(',')[0]).select(:id, :event_id, :schedule_id, 'schedules.name as schedule_name').map { |x| {
+          id: x.id,
+          event_id: x.event_id,
+          schedule_id: x.schedule_id,
+          schedule_name: x.schedule_name,
+          score_attrs: EventSaShip.joins(:score_attribute).where(event_id: x.event_id, schedule_id: x.schedule_id).select(:id, 'score_attributes.name', :formula, :desc)
+      } }
+      EventSaShip.joins(:score_attribute).where(event_id: 35, schedule_id: 13).select(:id, 'score_attributes.name', :formula)
       @score_attributes = EventSaShip.includes(:score_attribute, :score_attribute_parent).where(event_id: params[:id], is_parent: 0).where.not(score_attribute_id: 0).order('sort asc').map { |s| {
           id: s.id,
           name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name,
@@ -397,32 +404,43 @@ class Admin::EventsController < AdminController
     if request.method == 'POST'
       ed = params[:ed]
       sa_ids = params[:sa_ids]
-      parent_id = params[:parent_id]
-      if sa_ids.present? && parent_id.present?
-        parent_sa = EventSaShip.where(event_id: ed, score_attribute_id: parent_id, level: 1).take
-        if parent_sa.present?
-          unless parent_sa.is_parent
-            parent_sa.update_attributes(is_parent: 1)
+      schedule_id = params[:schedule_id]
+      # parent_id = params[:parent_id]
+      # if sa_ids.present? && parent_id.present?
+      #   parent_sa = EventSaShip.where(event_id: ed, score_attribute_id: parent_id, level: 1).take
+      #   if parent_sa.present?
+      #     unless parent_sa.is_parent
+      #       parent_sa.update_attributes(is_parent: 1)
+      #     end
+      #   else
+      #     EventSaShip.create!(event_id: ed, score_attribute_id: parent_id, is_parent: 1)
+      #   end
+      #   sa_ids.each do |sa_id|
+      #     esa = EventSaShip.where(event_id: ed, score_attribute_id: sa_id, parent_id: parent_id).take
+      #     unless esa.present?
+      #       EventSaShip.create!(event_id: ed, score_attribute_id: sa_id, parent_id: parent_id, level: 2)
+      #     end
+      #   end
+      if sa_ids.present? && sa_ids.is_a?(Array) && ed.present? && schedule_id.present?
+        all_result = []
+        sa_ids.each do |sa_id|
+          esa = EventSaShip.where(event_id: ed, score_attribute_id: sa_id, schedule_id: schedule_id, level: 1).take
+          unless esa.present?
+            new_row = EventSaShip.create(event_id: ed, schedule_id: schedule_id, score_attribute_id: sa_id, is_parent: false)
+            unless new_row.save
+              all_result << false
+            end
           end
+        end
+        if all_result.include?(false)
+          result = [true, '有未添加成功的属性']
         else
-          EventSaShip.create!(event_id: ed, score_attribute_id: parent_id, is_parent: 1)
+          result = [true, '添加成功']
         end
-        sa_ids.each do |sa_id|
-          esa = EventSaShip.where(event_id: ed, score_attribute_id: sa_id, parent_id: parent_id).take
-          unless esa.present?
-            EventSaShip.create!(event_id: ed, score_attribute_id: sa_id, parent_id: parent_id, level: 2)
-          end
-        end
-      elsif sa_ids.present?
-        sa_ids.each do |sa_id|
-          esa = EventSaShip.where(event_id: ed, score_attribute_id: sa_id, level: 1, is_parent: 0).take
-          unless esa.present?
-            EventSaShip.create!(event_id: ed, score_attribute_id: sa_id)
-          end
-        end
+      else
+        result = [false, '参数不规范']
       end
-      flash[:notice]= '所选属性已成功添加'
-      render json: true
+      render json: {status: result[0], message: result[1]}
     end
   end
 
