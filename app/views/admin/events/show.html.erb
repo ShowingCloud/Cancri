@@ -75,43 +75,13 @@
 
 
 <% unless @event.is_father %>
-    <% if 1==2 %>
-        <div class="panel panel-info">
-          <div class="panel-heading">
-            成绩属性
-            <button class="open-add-score-attribute btn btn-xs btn-primary pull-right">显示属性</button>
-          </div>
-
-
-          <div class="add-score-attribute panel-body">
-            <div class="form-group">
-              <div class="selected-info">
-              </div>
-              <div class="clearfix"></div>
-              <div id="score-attribute">
-                <label style="margin:0 5px;font-size: 22px" id="select-all-score-attribute"><input type="checkbox" name="select_all" class="select-all-score-attribute" autocomplete="off">
-                  <b>全选</b></label>
-                <button class="select-tl-sa btn btn-xs btn-success hidden">添加其子属性</button>
-                <button class="add-all-score-attribute btn btn-xs btn-primary hidden">添加所选属性</button>
-              </div>
-
-              <div id="two-level-sa" class="hidden">
-                <label id="select-all-tl-sa"><input type="checkbox" name="select_all" class="select-all-tl-sa" autocomplete="off">
-                  <b>全选</b></label>
-                <button class="add-selected-sa btn btn-xs btn-primary hidden">添加所选属性</button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-    <% end %>
 
     <% if @event_schedules.present? %>
         <% @event_schedules.each do |schedule| %>
             <div class="col-xs-12 col-sm-12">
               <div class="widget-box">
                 <div class="widget-header">
-                  <h4 class="widget-title"><%= schedule[:schedule_name] %></h4>
+                  <h4 class="widget-title"><span class="red"><%= schedule[:schedule_name] %></span></h4>
                   <span class="widget-toolbar">
                     <a class="blue add-schedule-attrs-modal" href="<%= '#add-schedule-score-attrs' %>" data-schedule="<%= schedule[:schedule_id] %>" data-name="<%= schedule[:schedule_name] %>" data-event="<%= schedule[:event_id] %>" data-toggle="modal">
                       <span class="" title="添加成绩属性"><i class="icon-plus bigger-130"></i></span>
@@ -123,7 +93,9 @@
                   <% if schedule[:score_attrs].present? %>
                       <div class="widget-main">
                         <div>
-                          <span id="update-event-score-sort" class="btn btn-xs btn-primary pull-right">更新排序</span>
+                          <% if 1==2 %>
+                              <span id="update-event-score-sort" class="btn btn-xs btn-primary pull-right">更新排序</span>
+                          <% end %>
                           <div class="dd dd-draghandle">
                             <ol class="dd-list">
                               <% schedule[:score_attrs].each_with_index do |sa, index| %>
@@ -190,11 +162,11 @@
 
                                                     <div class="row">
                                                       <div class="col-xs-offset-1">
-                                                        <form id="event-formula-form">
+                                                        <form id="event-formula-form-<%= sa[:id] %>">
                                                           <div class="event-formula-input">
                                                             <input type="hidden" name="sa_id" value="<%= sa[:id] %>">
                                                             轮数:
-                                                            <select id="formula-rounds" style="width: 100px" name="rounds">
+                                                            <select id="formula-rounds-<%= sa[:id] %>" style="width: 100px" name="rounds">
                                                               <option value="">请选择轮数</option>
                                                               <% [1, 2, 3].each do |round| %>
                                                                   <option value="<%= round %>" <%= "selected" if (sa_formula && sa_formula["rounds"].to_i == round) %> ><%= round %></option>
@@ -207,7 +179,7 @@
                                                                 <% formula_array=[] %>
                                                             <% end %>
 
-                                                            <select multiple="" name="order[]" id="selected-orders" class="chosen-select tag-input-style" data-placeholder="请选择排序...">
+                                                            <select multiple="" name="order[]" id="selected-orders-<%= sa[:id] %>" class="chosen-select tag-input-style" data-placeholder="请选择排序...">
                                                               <option value="0++0++最终成绩" <%= "selected" if formula_array.include?('0++0++最终成绩') %> >最终成绩-降序</option>
                                                               <option value="0++1++最终成绩" <%= "selected" if formula_array.include?('0++1++最终成绩') %> >最终成绩-升序</option>
                                                               <% score_attrs.each do |s| %>
@@ -222,25 +194,25 @@
                                                             <br><br>
 
                                                             最终成绩属性(公式未触发):&nbsp;
-                                                            <select id="last-score-by" name="last_score_by[id]">
+                                                            <select id="last-score-by-<%= sa[:id] %>" name="last_score_by[id]">
                                                               <option value="0" <%= "selected" if (sa_formula.present? && sa_formula["last_score_by"].present? && sa_formula["last_score_by"]["id"].to_i == 0) %>>无(公式计算)</option>
                                                               <% score_attrs.each do |s| %>
                                                                   <option value="<%= s[0] %>" <%= "selected" if (sa_formula.present? && sa_formula["last_score_by"].present? && sa_formula["last_score_by"]["id"].to_i == s[0]) %>><%= s[1] %></option>
                                                               <% end %>
                                                             </select>
-                                                            <input type="hidden" id="last-score-name" name="last_score_by[name]"/>
+                                                            <input type="hidden" id="last-score-name-<%= sa[:id] %>" name="last_score_by[name]"/>
 
                                                             &nbsp;触发公式的属性:&nbsp;
-                                                            <select id="trigger-attr-id" name="trigger_attr[id]">
+                                                            <select id="trigger-attr-id-<%= sa[:id] %>" name="trigger_attr[id]">
                                                               <option value="">请选择触发属性</option>
                                                               <% score_attrs.each do |s| %>
                                                                   <option value="<%= s[0] %>" <%= "selected" if (sa_formula.present? && sa_formula["trigger_attr"].present? && sa_formula["trigger_attr"]["id"].to_i == s[0]) %>><%= s[1] %></option>
                                                               <% end %>
                                                             </select>
-                                                            <input type="hidden" id="trigger-attr-name" name="trigger_attr[name]"/>
+                                                            <input type="hidden" id="trigger-attr-name-<%= sa[:id] %>" name="trigger_attr[name]"/>
 
                                                             &nbsp;属性值:&nbsp;
-                                                            <select id="trigger-attr-val" name="trigger_attr[val]" style="width:120px">
+                                                            <select id="trigger-attr-val-<%= sa[:id] %>" name="trigger_attr[val]" style="width:120px">
                                                               <option value="">请选择属性值</option>
                                                               <option value="1" <%= "selected" if (sa_formula.present? && sa_formula["trigger_attr"].present? && sa_formula["trigger_attr"]["val"] == '1') %>>是</option>
                                                               <option value="0" <%= "selected" if (sa_formula.present? && sa_formula["trigger_attr"].present? && sa_formula["trigger_attr"]["val"] == '0') %>>否</option>
@@ -249,22 +221,22 @@
 
                                                             <% if sa_formula.present? && sa_formula["formula"].present? %>
                                                                 <% sa_formula["formula"].each do |formula| %>
-                                                                    <% sa_id = formula["id"] %>
+                                                                    <% formula_sa_id = formula["id"] %>
                                                                     <% symbol = formula["symbol"] %>
-                                                                    <p id="formula-<%= sa_id %>">
-                                                                      <select id="symbol-<%= sa_id %>" name="formula[][symbol]">
+                                                                    <p id="formula-<%= formula_sa_id %>">
+                                                                      <select id="symbol-<%= formula_sa_id %>" name="formula[][symbol]">
                                                                         <option value="">请选择符号</option>
                                                                         <option value="1" <%= "selected" if symbol == '1' %>>加</option>
                                                                         <option value="2" <%= "selected" if symbol == '2' %>>减</option>
                                                                         <option value="3" <%= "selected" if symbol == '3' %>>乘</option>
                                                                         <option value="4" <%= "selected" if symbol == '4' %>>除</option>
                                                                       </select>&nbsp;&nbsp;
-                                                                      <input style="width:90px" id="molecule-<%= sa_id %>" type="text" value="<%= formula["molecule"] %>" placeholder="分子(正整数)" name="formula[][molecule]"/>&nbsp;&nbsp;
-                                                                      <input style="width:90px" id="denominator-<%= sa_id %>" type="text" value="<%= formula["denominator"] %>" placeholder="分母(正整数)" name="formula[][denominator]"/>
+                                                                      <input style="width:90px" id="molecule-<%= formula_sa_id %>" type="text" value="<%= formula["molecule"] %>" placeholder="分子(正整数)" name="formula[][molecule]"/>&nbsp;&nbsp;
+                                                                      <input style="width:90px" id="denominator-<%= formula_sa_id %>" type="text" value="<%= formula["denominator"] %>" placeholder="分母(正整数)" name="formula[][denominator]"/>
                                                                       <input type="hidden" name="formula[][id]" value="<%= formula["id"] %>"/>
                                                                       <input type="hidden" name="formula[][name]" value="<%= formula["name"] %>"/>
                                                                       <%= formula["name"] %>
-                                                                      <button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(<%= sa_id %>)">x</button>
+                                                                      <button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(<%= formula_sa_id %>)">x</button>
                                                                     </p>
                                                                 <% end %>
                                                             <% end %>
@@ -316,7 +288,7 @@
 
     <!-- add event schedule score attrs start -->
     <div>
-      <div id="<%= 'add-schedule-score-attrs' %>" class="modal" tabindex="-1">
+      <div id="add-schedule-score-attrs" class="modal" tabindex="-1">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="widget-header model-header">
