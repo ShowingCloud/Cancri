@@ -72,15 +72,27 @@
           <%= link_to [:admin, event], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>
           <% end %>
+          <% first_group = event.group.split(',')[0] %>
+          <% case first_group when 1 %>
+              <% first_group = '小学组' %>
+          <% when 2 %>
+              <% first_group = '中学组' %>
+          <% when 3 %>
+              <% first_group = '初中组' %>
+          <% when 4 %>
+              <% first_group = '高中组' %>
+          <% else %>
+              <% first_group = '中学组' %>
+          <% end %>
           <% unless event.is_father %>
               <%= link_to "#{teams_admin_events_path}?id=#{event.id}", title: '队伍', class: 'btn btn-xs btn-primary' do %>
                   <i class="icon-flag-alt bigger-120"></i>
               <% end %>
-              <%= link_to "#{scores_admin_events_path}?id=#{event.id}&group=中学组", title: '成绩', class: 'btn btn-xs btn-warning' do %>
+              <%= link_to "#{scores_admin_events_path}?id=#{event.id}&schedule=决赛&group=#{first_group}", title: '成绩', class: 'btn btn-xs btn-warning' do %>
                   <i class="icon-list-ol bigger-120"></i>
               <% end %>
           <% end %>
-          <%= link_to "#{school_sort_admin_events_path}?id=#{event.id}&group=中学组", title: '学校排名', class: 'btn btn-xs btn-warn' do %>
+          <%= link_to "#{school_sort_admin_events_path}?id=#{event.id}&schedule=决赛&group=#{first_group}", title: '学校排名', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-home bigger-120"></i>
           <% end %>
           <%= link_to edit_admin_event_path(event), title: '编辑', class: 'btn btn-xs btn-info' do %>

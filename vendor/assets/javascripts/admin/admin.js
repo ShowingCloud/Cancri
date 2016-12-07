@@ -2,6 +2,7 @@
  * Created by huaxiukun on 16/2/25.
  */
 $(function () {
+    // ============================== events start ==============================
     // add event schedule score attrs
     $('.add-schedule-attrs-modal').on('click', function () {
         var _self = $(this);
@@ -29,6 +30,26 @@ $(function () {
             }
         });
     });
+
+    // score_attr is in rounds
+    $('.update-sa-in-rounds').on('click', function () {
+        var _self = $(this);
+        var value = _self.is(':checked');
+        var sa_id = _self.attr('data-id');
+        if (value == true || value == false) {
+            $.ajax({
+                url: '/admin/events/update_sa_in_rounds',
+                type: 'post',
+                data: {"value": value, "sa_id": sa_id},
+                success: function (data) {
+                    admin_gritter_notice(data["status"], data["message"]);
+                }
+            });
+        } else {
+            admin_gritter_notice(false, '值不规范')
+        }
+    });
+    // ============================== events end ==============================
 
     // 活动打分
     $('.create-activity-score,.update-activity-score').on('click', function () {
@@ -390,9 +411,11 @@ $(function () {
     if (dd.length > 0) {
         dd.nestable();
 
-        $('#update-event-score-sort').on('click', function () {
+        $('.update-event-score-sort').on('click', function () {
+            var schedule_id = $(this).attr('data-id');
             var event_id = $('#event-id').val();
-            var serialize_json = $('.dd').nestable('serialize');
+            var schedule_attr_target_dds = '#update-event-score-sort-' + schedule_id + ' .dd';
+            var serialize_json = $(schedule_attr_target_dds).nestable('serialize');
             var ids = [];
             $.each(serialize_json, function (k, v) {
                 ids.push(v["id"]);
@@ -402,7 +425,7 @@ $(function () {
                     url: '/admin/events/update_score_attrs_sort',
                     type: 'post',
                     data: {
-                        ids: ids, event_id: event_id
+                        ids: ids, event_id: event_id, schedule_id: schedule_id
                     },
                     success: function (data) {
                         admin_gritter_notice(data["status"], data["message"]);

@@ -43,18 +43,29 @@ class Admin::EventsController < AdminController
           event_id: x.event_id,
           schedule_id: x.schedule_id,
           schedule_name: x.schedule_name,
-          score_attrs: EventSaShip.joins(:score_attribute).where(event_id: x.event_id, schedule_id: x.schedule_id).select(:id, 'score_attributes.name', :formula, :desc)
-      } }
-      EventSaShip.joins(:score_attribute).where(event_id: 35, schedule_id: 13).select(:id, 'score_attributes.name', :formula)
-      @score_attributes = EventSaShip.includes(:score_attribute, :score_attribute_parent).where(event_id: params[:id], is_parent: 0).where.not(score_attribute_id: 0).order('sort asc').map { |s| {
-          id: s.id,
-          name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name,
-          write_type: s.score_attribute.write_type,
-          desc: s.score_attribute.try(:desc),
-          sort: s.sort,
-          formula: s.formula
+          score_attrs: EventSaShip.joins(:score_attribute).where(event_id: x.event_id, schedule_id: x.schedule_id).select(:id, 'score_attributes.name', 'score_attributes.write_type', 'score_attributes.desc as sa_desc', :formula, :desc, :in_rounds, :sort).order(sort: :asc)
       } }
     end
+  end
+
+  def update_sa_in_rounds
+    in_rounds = params[:value]
+    sa_id = params[:sa_id]
+    if in_rounds && sa_id
+      sa = EventSaShip.find_by_id(sa_id)
+      if sa.present?
+        if sa.update_attributes(in_rounds: in_rounds)
+          result= [true, '更新成功']
+        else
+          result = [false, '更新失败']
+        end
+      else
+        result = [false, '不规范请求']
+      end
+    else
+      result = [false, '参数不完整']
+    end
+    render json: {status: result[0], message: result[1]}
   end
 
   def edit_event_sa_desc
@@ -90,6 +101,7 @@ class Admin::EventsController < AdminController
 
   def scores
     event_id = params[:id]
+    schedule_name = params[:schedule]
     params_group = params[:group]
     sort = params[:sort]
     group = 0
@@ -105,6 +117,20 @@ class Admin::EventsController < AdminController
       else
         render_optional_error(404)
     end
+    @group_schedule = EventSchedule.event_group_schedules(group, @event.id)
+    schedule_id = -1
+    if @group_schedule.present?
+      @group_schedule.each do |g_s|
+        if g_s.name == schedule_name
+          schedule_id = g_s.schedule_id
+        end
+      end
+    end
+
+    if schedule_id == -1
+      render_optional_error(404)
+    end
+
     if sort.to_i == 1
       event_sa = EventSaShip.where(event_id: event_id, score_attribute_id: 19).take
       if event_sa.present? && event_sa.formula.present?
@@ -131,11 +157,11 @@ class Admin::EventsController < AdminController
         end
       else
         flash[:notice] = '公式不存在'
-        redirect_to "/admin/events/scores?id=#{event_id}&group=#{params_group}"
+        redirect_to "/admin/events/scores?id=#{event_id}&group=#{params_group}&schedule=#{schedule_name}"
         return false
       end
     end
-    @scores = Team.left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').joins('left join scores s on teams.id = s.team1_id').where(event_id: event_id, group: group).select(:id, 'schools.name as school_name', 's.score', 's.score_attribute', 's.order_score', 'u_p.username', 'teams.teacher', 'teams.rank', 'teams.group', 'teams.identifier').order('teams.rank asc')
+    @scores = Team.left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').joins("left join scores s on teams.id = s.team1_id and s.schedule_id = #{schedule_id}").where(event_id: event_id, group: group).select(:id, 'schools.name as school_name', 's.score', 's.score_attribute', 's.order_score', 'u_p.username', 'teams.teacher', 'teams.rank', 'teams.group', 'teams.identifier').order('teams.rank asc')
   end
 
   def school_sort
@@ -481,16 +507,17 @@ class Admin::EventsController < AdminController
   def update_score_attrs_sort
     ids = params[:ids]
     event_id = params[:event_id]
+    schedule_id = params[:schedule_id]
 
     if event_id && ids && ids.is_a?(Array)
-      event_sas = EventSaShip.where(event_id: event_id)
+      event_sas = EventSaShip.where(event_id: event_id, schedule_id: schedule_id)
       if event_sas && ((event_sas.pluck(:id).map { |x| x.to_s } & ids).count == ids.length)
         update_attrs_json = {}
         ids.each_with_index do |id, index|
           update_attrs_json[id.to_i] ={sort: index+1}
         end
         EventSaShip.update(update_attrs_json.keys, update_attrs_json.values)
-        result ={status: true, message: '更新成功'}
+        result ={status: true, message: '排序更新成功'}
       else
         result ={status: false, message: '不规范请求'}
       end
