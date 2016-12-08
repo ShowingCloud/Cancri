@@ -8,7 +8,12 @@ class Admin::EventsController < AdminController
   # GET /admin/events
   # GET /admin/events.json
   def index
-    events = Event.includes(:parent_event).joins(:competition).order('competition_id desc,is_father desc, parent_id'); false
+    comp_name = params[:comp_name]
+    @comps = Competition.select(:id, :name).order('created_at desc')
+    events = Event.includes(:parent_event).joins(:competition).order('competition_id desc,is_father desc, parent_id')
+    if comp_name.present?
+      events = events.where('competitions.name=?', comp_name)
+    end
     if params[:field].present? && params[:keyword].present?
       if params[:field] == 'competition'
         events = events.where(["competitions.name like ?", "%#{params[:keyword]}%"])
@@ -16,7 +21,7 @@ class Admin::EventsController < AdminController
         events = events.where(["events.#{params[:field]} like ?", "%#{params[:keyword]}%"])
       end
     end
-    @events= events.select('events.*', 'competitions.name as comp_name').page(params[:page]).per(params[:per])
+    @events= events.select('events.*', 'competitions.name as comp_name', 'competitions.start_time as comp_start_time').page(params[:page]).per(params[:per])
 
     respond_to do |format|
       format.html
@@ -129,12 +134,13 @@ class Admin::EventsController < AdminController
 
     if schedule_id == -1
       render_optional_error(404)
+    else
+      @event_sa = EventSaShip.where(event_id: event_id, schedule_id: schedule_id, score_attribute_id: 19).take
     end
 
     if sort.to_i == 1
-      event_sa = EventSaShip.where(event_id: event_id, score_attribute_id: 19).take
-      if event_sa.present? && event_sa.formula.present?
-        order = event_sa.formula['order']
+      if @event_sa.present? && @event_sa.formula.present?
+        order = @event_sa.formula['order']
         order_num = order['num']
         first_order = (order['1']['sort'].to_i == 0) ? '>' : '<'
         if order_num == 2

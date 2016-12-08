@@ -3,35 +3,56 @@
   <small class="pull-right">
     <a href="#add-team-form" role="button" title="添加队伍" class="open-add-team btn btn-default" data-toggle="modal">
       <i class="icon-plus icon-only"></i></a>
+    <a href="/admin/events/<%= @event.id %>" role="button" title="查看项目" class="btn btn-default">
+      <i class="icon-eye-open icon-only"></i></a>
+    <% first_group = @event.group.split(',')[0] %>
+    <% case first_group when 1 %>
+        <% first_group = '小学组' %>
+    <% when 2 %>
+        <% first_group = '中学组' %>
+    <% when 3 %>
+        <% first_group = '初中组' %>
+    <% when 4 %>
+        <% first_group = '高中组' %>
+    <% else %>
+        <% first_group = '中学组' %>
+    <% end %>
+    <% unless @event.is_father %>
+        <a href="<%= "#{scores_admin_events_path}?id=#{@event.id}&group=#{first_group}&schedule=决赛" %>" role="button" title="成绩" class="btn btn-default">
+          <i class="icon-list-ol icon-only"></i></a>
+    <% end %>
   </small>
   <input type="hidden" class="event-id" value="<%= @event.id %>">
-  <div class="col-xs-12 col-sm-2 form-group pull-right" style="margin-top: 6px">
-    <select id="select-team-status" class="form-control">
-      <option value="">
-        &nbsp;全部
-      </option>
-      <option <%= 'selected' if params[:status] == '组队中' %> value="组队中">
-        组队中
-      </option>
-      <option <%= 'selected' if params[:status] == '报名成功' %> value="报名成功">
-        报名成功
-      </option>
-      <option <%= 'selected' if params[:status] == '待学校审核' %> value="待学校审核">
-        待学校审核
-      </option>
-      <option <%= 'selected' if params[:status] == '待区县审核' %> value="待区县审核">
-        待区县审核
-      </option>
-      <option <%= 'selected' if params[:status] == '学校拒绝' %> value="学校拒绝">
-        学校拒绝
-      </option>
-      <option <%= 'selected' if params[:status] == '区县拒绝' %> value="区县拒绝">
-        区县拒绝
-      </option>
-    </select>
-  </div>
+  <% if @teams.present? %>
+      <div class="col-xs-12 col-sm-2 form-group pull-right" style="margin-top: 6px">
+        <select id="select-team-status" class="form-control">
+          <option value="">
+            &nbsp;全部
+          </option>
+          <option <%= 'selected' if params[:status] == '组队中' %> value="组队中">
+            组队中
+          </option>
+          <option <%= 'selected' if params[:status] == '报名成功' %> value="报名成功">
+            报名成功
+          </option>
+          <option <%= 'selected' if params[:status] == '待学校审核' %> value="待学校审核">
+            待学校审核
+          </option>
+          <option <%= 'selected' if params[:status] == '待区县审核' %> value="待区县审核">
+            待区县审核
+          </option>
+          <option <%= 'selected' if params[:status] == '学校拒绝' %> value="学校拒绝">
+            学校拒绝
+          </option>
+          <option <%= 'selected' if params[:status] == '区县拒绝' %> value="区县拒绝">
+            区县拒绝
+          </option>
+        </select>
+      </div>
+  <% end %>
 </h1>
 
+<input type="hidden" id="team-players-max" value="<%= @event.team_max_num %>">
 <div class="row">
   <div class="col-xs-12">
     <% if @teams.present? %>
@@ -237,12 +258,22 @@
 
             <p><input type="text" placeholder='请输入指导教师' class="form-control team-info-input" name="team-teacher"></p>
             <div>
-              <select class="width-25qw" id="select-team-group" data-placeholder="请选择组别" style="width:470px">
+              <select id="select-team-group" data-placeholder="请选择组别" style="width:470px">
                 <option value="">请选择组别</option>
-                <option value="1">小学</option>
-                <option value="2">中学</option>
-                <option value="3">初中</option>
-                <option value="4">高中</option>
+                <% @event.group.split(',').each do |group| %>
+                    <option value="<%= group %>">
+                      <% case group.to_i when 1 %>
+                          小学
+                      <% when 2 %>
+                          中学
+                      <% when 3 %>
+                          初中
+                      <% when 4 %>
+                          高中
+                      <% else %>
+                      <% end %>
+                    </option>
+                <% end %>
 
               </select>
               <br><br>

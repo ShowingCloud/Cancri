@@ -31,7 +31,22 @@
       <% end %>
   <% end %>
 </small>
+<% unless @event.is_father %>
+    <a href="<%= "#{teams_admin_events_path}?id=#{@event.id}" %>" role="button" title="队伍" class="btn btn-primary">
+      <i class="icon-flag-alt icon-only"></i></a>
+<% end %>
+<a href="/admin/events/<%= @event.id %>" role="button" title="查看项目" class="btn btn-warning">
+  <i class="icon-eye-open icon-only"></i></a>
 <a href="/admin/events/scores?id=<%= params[:id] %>&group=<%= params[:group] %>&sort=1" class="btn btn-danger">成绩排名</a>
+<% if @event_sa.present? %>
+    <% if @event_sa.formula.present? %>
+        <label class="">
+          <%= @event_sa.formula["compute_type"] == '1' ? '手动计算' : '自动计算' %>
+        </label>
+    <% end %>
+<% else %>
+    公式不存在
+<% end %>
 <hr>
 
 

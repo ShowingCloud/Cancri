@@ -193,6 +193,33 @@ $(function () {
         }
     });
 
+    // team players max num slimScroll height
+    var team_players_max = $('#team-players-max');
+    if (team_players_max.length > 0) {
+        var players_max_num = parseInt(team_players_max.val());
+        if (players_max_num == 1) {
+            $('.event-team').slimScroll({
+                height: '45px'
+            });
+        }
+        if (players_max_num == 2) {
+            $('.event-team').slimScroll({
+                height: '85px'
+            });
+        }
+        if (players_max_num == 3) {
+            $('.event-team').slimScroll({
+                height: '125px'
+            });
+        }
+        if (players_max_num > 3) {
+            $('.event-team').slimScroll({
+                height: '165'
+            });
+        }
+    }
+
+
     //multi_select
     $('.multiselect').multiselect({
         enableFiltering: true,

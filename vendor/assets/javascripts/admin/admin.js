@@ -31,6 +31,18 @@ $(function () {
         });
     });
 
+    // 选择相应比赛的项目
+    $('#select-competition-events').on('change', function () {
+        var comp_name = $(this).val();
+        var params;
+        if (comp_name == '') {
+            params = ''
+        } else {
+            params = '?comp_name=' + comp_name
+        }
+        window.location = '/admin/events' + params;
+    });
+
     // score_attr is in rounds
     $('.update-sa-in-rounds').on('click', function () {
         var _self = $(this);
@@ -478,13 +490,12 @@ $(function () {
     $('.event-formula-select').change(function () {
         var _self = $(this);
         var index = _self.attr('data-index');
-        var event_formula = document.getElementById("selected-formula-element-" + index);
-        var sa_value = event_formula.options[event_formula.selectedIndex].text;
+        var sa_value = $("#selected-formula-element-" + index).find("option:selected").text();
         var sa_id = $(this).val();
-        var input_symbol = $('<p id="formula-' + sa_id + '"><select id="symbol-' + sa_id + '" name="formula[][symbol]"><option value="">请选择符号</option><option value="1" selected>加</option><option value="2">减</option><option value="3">乘</option><option value="4">除</option></select>&nbsp;&nbsp;&nbsp;' + '' +
-            '<input  style="width:90px" id="molecule-' + sa_id + '" type="text" value="1" placeholder="分子(正整数)" name="formula[][molecule]" />&nbsp;&nbsp;&nbsp;' +
-            '<input  style="width:90px" id="denominator-' + sa_id + '" type="text" value="1" placeholder="分母(正整数)" name="formula[][denominator]" /><input type="hidden" name="formula[][id]" value="' + sa_id + '" /><input type="hidden" name="formula[][name]" value="' + sa_value + '" />&nbsp;' + sa_value + '&nbsp;<button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(' + sa_id + ')">x</button></p>');
-        $('.event-formula-input').append(input_symbol);
+        var input_symbol = $('<p class="formula-' + sa_id + '"><select class="symbol-' + sa_id + '" name="formula[][symbol]"><option value="">请选择符号</option><option value="1" selected>加</option><option value="2">减</option><option value="3">乘</option><option value="4">除</option></select>&nbsp;&nbsp;&nbsp;' + '' +
+            '<input  style="width:90px" class="molecule-' + sa_id + '" type="text" value="1" placeholder="分子(正整数)" name="formula[][molecule]" />&nbsp;&nbsp;&nbsp;' +
+            '<input  style="width:90px" class="denominator-' + sa_id + '" type="text" value="1" placeholder="分母(正整数)" name="formula[][denominator]" /><input type="hidden" name="formula[][id]" value="' + sa_id + '" /><input type="hidden" name="formula[][name]" value="' + sa_value + '" />&nbsp;' + sa_value + '&nbsp;<button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(' + sa_id + ',' + index + ')">x</button></p>');
+        $('#event-formula-input-' + index).append(input_symbol);
 
     });
     $('#selected-orders').on('change', function () {
@@ -541,7 +552,7 @@ $(function () {
         var orders_length = orders.length;
         var use_formula = false;
         $.each(data, function (k, v) {
-            if (k > (orders_length + 1)) {
+            if (k > (orders_length + 2)) {
                 var input_name = v.name;
                 // var input_id = v.name.split(']')[0].substr(8);
                 var input_value = parseInt(v.value);
@@ -811,8 +822,9 @@ function multiple_check_type_size(obj, limit_type, limit_size) {
     return !has_no_error;
 }
 
-function cancel_formula_element(formula_id) {
-    $('#formula-' + formula_id).remove();
+function cancel_formula_element(formula_id, score_attr_id) {
+    var selector = "#event-formula-form-" + score_attr_id + ' ' + ".formula-" + formula_id;
+    $(selector).remove();
 }
 // 判断数组是否有重复元素
 function is_repeat_array(arr) {
