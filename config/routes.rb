@@ -130,6 +130,7 @@ Rails.application.routes.draw do
         get :scores
         get :school_sort
         get :export_team_info
+        post :update_sa_in_rounds
       end
     end
     resources :teams
@@ -153,6 +154,7 @@ Rails.application.routes.draw do
     resources :consults
     resources :schools
     resources :notifications
+    get '/vouchers/to_image', to: 'vouchers#to_image'
     resources :vouchers
   end
 

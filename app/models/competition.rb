@@ -1,8 +1,8 @@
 class Competition < ApplicationRecord
-  has_many :events
+  has_many :events, :dependent => :destroy
   belongs_to :district
-  has_many :photos
-  has_many :videos
+  has_many :photos, :dependent => :destroy
+  has_many :videos, :dependent => :destroy
   has_many :competition_schedules, :dependent => :destroy
 
   before_validation :validate_datetime

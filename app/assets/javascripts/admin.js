@@ -1,5 +1,6 @@
 //= require jquery
 //= require bootstrap.min
+//= require admin/bootstrap-multiselect.min
 //= require admin/ace.min
 //= require admin/ace-elements.min
 //= require admin/ace-extra.min

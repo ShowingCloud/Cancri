@@ -11,7 +11,7 @@
     <div id="notice"><%= notice %></div>
 <% end %>
 <% if alert.present? %>
-    <div id="alert"><%= alert %></div>
+    <div id="alert-error" class="hide"><%= alert %></div>
 <% end %>
 <div class="navbar navbar-default" id="navbar">
   <div class="navbar-container" id="navbar-container">
@@ -200,7 +200,7 @@
             <span class="menu-text"> 比赛 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/events' ? 'active' : '' %>">
+        <li class="<%= (params[:controller] == 'admin/events' || params[:controller] == 'admin/event_schedules') ? 'active' : '' %>">
           <a href="<%= admin_events_path %>">
             <i class="icon-hand-right"></i>
             <span class="menu-text"> 项目 </span>
@@ -255,6 +255,7 @@
           </a>
         </li>
 
+
         <% if 2==1 %>
             <li class="<%= params[:controller] == 'admin/schedules' ? 'active' : '' %>">
               <a href="<%= admin_schedules_path %>">
@@ -272,6 +273,12 @@
               <a href="<%= admin_volunteers_path %>">
                 <i class="icon-glass"></i>
                 <span class="menu-text"> 志愿者 </span>
+              </a>
+            </li>
+            <li class="<%= params[:controller] == 'admin/vouchers' ? 'active' : '' %>">
+              <a href="<%= admin_vouchers_path %>">
+                <i class="icon-comment-alt"></i>
+                <span class="menu-text"> 参赛证 </span>
               </a>
             </li>
 

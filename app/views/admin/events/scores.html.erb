@@ -1,5 +1,6 @@
 <h1 class="page-header">
-  <%= @event.name %> 成绩排名 <%= "#{params[:group]}" if params[:group].present? %>
+  <%= @event.name %>
+  成绩排名 <%= "#{params[:group]}" if params[:group].present? %>  <%= "#{params[:schedule]}" if params[:schedule].present? %>
   <input type="hidden" class="event-id" value="<%= @event.id %>"/>
   <small class="pull-right">
     <% @event.group.split(',').each do |group| %>
@@ -15,7 +16,7 @@
         <% else %>
             <% g = '' %>
         <% end %>
-        <a href="/admin/events/scores?id=<%= params[:id] %>&group=<%= g %>" role="button" title="" class="btn <%= 'btn-primary' if params[:group] == g %>" data-toggle="modal">
+        <a href="/admin/events/scores?id=<%= params[:id] %>&group=<%= g %>&schedule=<%= params[:schedule] %>" role="button" title="" class="btn <%= 'btn-info' if params[:group] == g %>" data-toggle="modal">
           <%= g %>
         </a>
     <% end %>
@@ -23,7 +24,29 @@
 
   <input type="hidden" class="event-id" value="<%= @event.id %>">
 </h1>
+<small class="pull-right">
+  <% if @group_schedule.present? %>
+      <% @group_schedule.each do |g_s| %>
+          <a href="/admin/events/scores?id=<%= params[:id] %>&group=<%= params[:group] %>&schedule=<%= g_s.name %>" class="btn <%= 'btn-info' if params[:schedule] == g_s.name %>"><%= g_s.name %></a>
+      <% end %>
+  <% end %>
+</small>
+<% unless @event.is_father %>
+    <a href="<%= "#{teams_admin_events_path}?id=#{@event.id}" %>" role="button" title="队伍" class="btn btn-primary">
+      <i class="icon-flag-alt icon-only"></i></a>
+<% end %>
+<a href="/admin/events/<%= @event.id %>" role="button" title="查看项目" class="btn btn-warning">
+  <i class="icon-eye-open icon-only"></i></a>
 <a href="/admin/events/scores?id=<%= params[:id] %>&group=<%= params[:group] %>&sort=1" class="btn btn-danger">成绩排名</a>
+<% if @event_sa.present? %>
+    <% if @event_sa.formula.present? %>
+        <label class="">
+          <%= @event_sa.formula["compute_type"] == '1' ? '手动计算' : '自动计算' %>
+        </label>
+    <% end %>
+<% else %>
+    公式不存在
+<% end %>
 <hr>
 
 
@@ -68,7 +91,7 @@
 
 
     <% else %>
-        <div class="alert alert-info">暂无队伍有成绩</div>
+        <div class="alert alert-info">该组别的赛程无队伍参加比赛</div>
     <% end %>
 
 

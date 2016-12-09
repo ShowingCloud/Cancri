@@ -1,5 +1,6 @@
 /*
 *= require bootstrap.min
+*= require admin/bootstrap-multiselect.min
 *= require font-awesome.min
 *= require admin/jquery.gritter
 *= require admin/chosen

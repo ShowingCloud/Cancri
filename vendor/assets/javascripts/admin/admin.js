@@ -2,6 +2,66 @@
  * Created by huaxiukun on 16/2/25.
  */
 $(function () {
+    // ============================== events start ==============================
+    // add event schedule score attrs
+    $('.add-schedule-attrs-modal').on('click', function () {
+        var _self = $(this);
+        var schedule_name = _self.attr('data-name');
+        var event_id = _self.attr('data-event');
+        var schedule_id = _self.attr('data-schedule');
+        $('.added-schedule-name').text(schedule_name);
+        $('.add-schedule-sa-submit').on('click', function () {
+            var added_sa_ids = $('#event-schedule-sa-values').val();
+            if (event_id != null && schedule_id != null && added_sa_ids != null) {
+                $.ajax({
+                    url: '/admin/events/add_score_attributes',
+                    type: 'post',
+                    data: {"ed": event_id, "schedule_id": schedule_id, "sa_ids": added_sa_ids},
+                    success: function (data) {
+                        admin_gritter_notice(data["status"], data["message"]);
+                        if (data["status"]) {
+                            $('#add-schedule-score-attrs').modal('hide');
+                            window.location.reload();
+                        }
+                    }
+                });
+            } else {
+                admin_gritter_notice(false, '参数不齐全');
+            }
+        });
+    });
+
+    // 选择相应比赛的项目
+    $('#select-competition-events').on('change', function () {
+        var comp_name = $(this).val();
+        var params;
+        if (comp_name == '') {
+            params = ''
+        } else {
+            params = '?comp_name=' + comp_name
+        }
+        window.location = '/admin/events' + params;
+    });
+
+    // score_attr is in rounds
+    $('.update-sa-in-rounds').on('click', function () {
+        var _self = $(this);
+        var value = _self.is(':checked');
+        var sa_id = _self.attr('data-id');
+        if (value == true || value == false) {
+            $.ajax({
+                url: '/admin/events/update_sa_in_rounds',
+                type: 'post',
+                data: {"value": value, "sa_id": sa_id},
+                success: function (data) {
+                    admin_gritter_notice(data["status"], data["message"]);
+                }
+            });
+        } else {
+            admin_gritter_notice(false, '值不规范')
+        }
+    });
+    // ============================== events end ==============================
 
     // 活动打分
     $('.create-activity-score,.update-activity-score').on('click', function () {
@@ -363,9 +423,11 @@ $(function () {
     if (dd.length > 0) {
         dd.nestable();
 
-        $('#update-event-score-sort').on('click', function () {
+        $('.update-event-score-sort').on('click', function () {
+            var schedule_id = $(this).attr('data-id');
             var event_id = $('#event-id').val();
-            var serialize_json = $('.dd').nestable('serialize');
+            var schedule_attr_target_dds = '#update-event-score-sort-' + schedule_id + ' .dd';
+            var serialize_json = $(schedule_attr_target_dds).nestable('serialize');
             var ids = [];
             $.each(serialize_json, function (k, v) {
                 ids.push(v["id"]);
@@ -375,7 +437,7 @@ $(function () {
                     url: '/admin/events/update_score_attrs_sort',
                     type: 'post',
                     data: {
-                        ids: ids, event_id: event_id
+                        ids: ids, event_id: event_id, schedule_id: schedule_id
                     },
                     success: function (data) {
                         admin_gritter_notice(data["status"], data["message"]);
@@ -425,14 +487,15 @@ $(function () {
             multiple_check_type_size(time_schedule, ['pdf', 'zip', 'rar'], 10);
         });
     }
-    $('#event-formula-select').on('change', function () {
-        var event_formula = document.getElementById("event-formula-select");
-        var sa_value = event_formula.options[event_formula.selectedIndex].text;
+    $('.event-formula-select').change(function () {
+        var _self = $(this);
+        var index = _self.attr('data-index');
+        var sa_value = $("#selected-formula-element-" + index).find("option:selected").text();
         var sa_id = $(this).val();
-        var input_symbol = $('<p id="formula-' + sa_id + '"><select id="symbol-' + sa_id + '" name="formula[][symbol]"><option value="">请选择符号</option><option value="1" selected>加</option><option value="2">减</option><option value="3">乘</option><option value="4">除</option></select>&nbsp;&nbsp;&nbsp;' + '' +
-            '<input  style="width:90px" id="molecule-' + sa_id + '" type="text" value="1" placeholder="分子(正整数)" name="formula[][molecule]" />&nbsp;&nbsp;&nbsp;' +
-            '<input  style="width:90px" id="denominator-' + sa_id + '" type="text" value="1" placeholder="分母(正整数)" name="formula[][denominator]" /><input type="hidden" name="formula[][id]" value="' + sa_id + '" /><input type="hidden" name="formula[][name]" value="' + sa_value + '" />&nbsp;' + sa_value + '&nbsp;<button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(' + sa_id + ')">x</button></p>');
-        $('.event-formula-input').append(input_symbol);
+        var input_symbol = $('<p class="formula-' + sa_id + '"><select class="symbol-' + sa_id + '" name="formula[][symbol]"><option value="">请选择符号</option><option value="1" selected>加</option><option value="2">减</option><option value="3">乘</option><option value="4">除</option></select>&nbsp;&nbsp;&nbsp;' + '' +
+            '<input  style="width:90px" class="molecule-' + sa_id + '" type="text" value="1" placeholder="分子(正整数)" name="formula[][molecule]" />&nbsp;&nbsp;&nbsp;' +
+            '<input  style="width:90px" class="denominator-' + sa_id + '" type="text" value="1" placeholder="分母(正整数)" name="formula[][denominator]" /><input type="hidden" name="formula[][id]" value="' + sa_id + '" /><input type="hidden" name="formula[][name]" value="' + sa_value + '" />&nbsp;' + sa_value + '&nbsp;<button title="取消该项" class="btn btn-xs btn-info" style="line-height: 10px" onclick="cancel_formula_element(' + sa_id + ',' + index + ')">x</button></p>');
+        $('#event-formula-input-' + index).append(input_symbol);
 
     });
     $('#selected-orders').on('change', function () {
@@ -452,15 +515,16 @@ $(function () {
         }
     });
     $('.update-event-formula-submit').on('click', function () {
-        var ls_by_name = $('#last-score-by').find('option:selected').text();
-        var trigger_attr_name = $('#trigger-attr-id').find('option:selected').text();
-        $('#last-score-name').val(ls_by_name);
-        $('#trigger-attr-name').val(trigger_attr_name);
-        var form = $("#event-formula-form");
+        var sa_id = $(this).attr('data-id');
+        var ls_by_name = $('#last-score-by-' + sa_id).find('option:selected').text();
+        var trigger_attr_name = $('#trigger-attr-id-' + sa_id).find('option:selected').text();
+        $('#last-score-name-' + sa_id).val(ls_by_name);
+        $('#trigger-attr-name-' + sa_id).val(trigger_attr_name);
+        var form = $("#event-formula-form-" + sa_id);
         var data = form.serializeArray();
         // var formula_sa_id = data[0].value;
-        var rounds = $('#formula-rounds');
-        var orders = $('#selected-orders').val();
+        var rounds = $('#formula-rounds-' + sa_id);
+        var orders = $('#selected-orders-' + sa_id).val();
         if (['1', '2', '3'].indexOf(rounds.val()) == -1) {
             admin_gritter_notice(false, '请选择轮数');
             rounds.focus();
@@ -475,8 +539,18 @@ $(function () {
             admin_gritter_notice(false, '成绩排序中最终成绩的排序要放在第一位');
             return false;
         }
+
+        var orders_elements = [];
+        for (var i = 0; i < orders.length; i++) {
+            orders_elements[i] = orders[i].split('++')[0];
+        }
+        if (is_repeat_array(orders_elements)) {
+            admin_gritter_notice(false, '成绩排序中有同一属性出现两次');
+            return false;
+        }
         var has_no_error = true;
         var orders_length = orders.length;
+        var use_formula = false;
         $.each(data, function (k, v) {
             if (k > (orders_length + 2)) {
                 var input_name = v.name;
@@ -501,9 +575,17 @@ $(function () {
                     has_no_error = false;
                     return has_no_error;
                 }
+                if (input_name == "last_score_by[id]" && input_value == '0') {
+                    use_formula = true;
+                }
             }
 
         });
+
+        if (use_formula == true && data[data.length - 1].name != 'formula[][name]') {
+            admin_gritter_notice(false, '用公式计算为最终成绩时,公式内容不能为空');
+            return false;
+        }
         if (!has_no_error) {
             return false;
         }
@@ -515,7 +597,10 @@ $(function () {
                 data: data,
                 success: function (data) {
                     admin_gritter_notice(data["status"], data["message"]);
-                    window.location.reload();
+                    if (data["status"]) {
+                        $('#edit-formula-' + sa_id).modal('hide');
+                        window.location.reload();
+                    }
                 }
             });
         } else {
@@ -737,8 +822,9 @@ function multiple_check_type_size(obj, limit_type, limit_size) {
     return !has_no_error;
 }
 
-function cancel_formula_element(formula_id) {
-    $('#formula-' + formula_id).remove();
+function cancel_formula_element(formula_id, score_attr_id) {
+    var selector = "#event-formula-form-" + score_attr_id + ' ' + ".formula-" + formula_id;
+    $(selector).remove();
 }
 // 判断数组是否有重复元素
 function is_repeat_array(arr) {

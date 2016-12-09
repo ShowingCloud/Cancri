@@ -6,4 +6,5 @@ class ScoreAttribute < ApplicationRecord
 
   validates :name, presence: true
   validates :write_type, presence: true, uniqueness: {scope: :name, message: '同一属性计分方式不能重复'}
+  validates :desc, presence: true, :inclusion => {in: ['1', '2', '3']}
 end

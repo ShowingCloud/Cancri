@@ -66,7 +66,7 @@ $(function () {
     });
 
 
-    add_score_attribute_init();
+    // add_score_attribute_init();
 
     $('.select-tl-sa').on("click", function () {
         var checked_score_attribute = $("#score-attribute [name='score-attribute']:checked");
@@ -170,6 +170,16 @@ $(function () {
             time: '5000'
         });
     }
+    var alert_error_div = $('#alert-error');
+    if (alert_error_div.length > 0) {
+        $.gritter.add({
+            title: '操作状态:',
+            text: alert_error_div.text(),
+            time: '5000',
+            class_name: 'gritter-error'
+        });
+        alert_error_div.remove();
+    }
     if ($.cookie('menu-min') == 1) {
         $('.sidebar').addClass('menu-min');
     } else {
@@ -181,6 +191,53 @@ $(function () {
         } else {
             $.cookie('menu-min', 0, {path: '/'});
         }
+    });
+
+    // team players max num slimScroll height
+    var team_players_max = $('#team-players-max');
+    if (team_players_max.length > 0) {
+        var players_max_num = parseInt(team_players_max.val());
+        if (players_max_num == 1) {
+            $('.event-team').slimScroll({
+                height: '45px'
+            });
+        }
+        if (players_max_num == 2) {
+            $('.event-team').slimScroll({
+                height: '85px'
+            });
+        }
+        if (players_max_num == 3) {
+            $('.event-team').slimScroll({
+                height: '125px'
+            });
+        }
+        if (players_max_num > 3) {
+            $('.event-team').slimScroll({
+                height: '165'
+            });
+        }
+    }
+
+
+    //multi_select
+    $('.multiselect').multiselect({
+        enableFiltering: true,
+        enableHTML: true,
+        buttonClass: 'btn btn-white btn-primary',
+        templates: {
+            button: '<button type="button" class="multiselect dropdown-toggle" style="background-color: #eaf2f8 !important;" data-toggle="dropdown"><span class="multiselect-selected-text"></span> &nbsp;<b class="fa fa-caret-down"></b></button>',
+            ul: '<ul class="multiselect-container dropdown-menu"></ul>',
+            filter: '<li class="multiselect-item filter"><div class="input-group"><span class="input-group-addon"><i class="icon icon-search"></i></span><input class="form-control multiselect-search" type="text"></div></li>',
+            filterClearBtn: '<span class="input-group-btn"><button class="btn btn-default btn-white btn-grey multiselect-clear-filter" title="清除搜索内容" type="button"><i class="icon icon-remove-circle red" style="line-height: 21px"></i></button></span>',
+            li: '<li><a tabindex="0"><label></label></a></li>',
+            divider: '<li class="multiselect-item divider"></li>',
+            liGroup: '<li class="multiselect-item multiselect-group"><label></label></li>'
+        }
+    });
+
+    $(document).one('ajaxloadstart.page', function (e) {
+        $('.multiselect').multiselect('destroy');
     });
 
 
@@ -235,200 +292,200 @@ $(function () {
     }
 });
 // event_show
-var score_attribute = $('#score-attribute');
-var two_level_sa = $('#two-level-sa');
-var select_all_tl_sa = $('#select-all-tl-sa');
-var sa_ids = [];
-var two_level_sa_ids = [];
-var ed = $("input[name='event-identifier']").val();
-function list_score_attributes_init() {
-    $.ajax({
-        url: '/api/v1/scores',
-        type: 'get',
-        dataType: 'json',
-        success: function (result) {
-            var select_tl_sa = $('.select-tl-sa');
-            var add_all_score_attribute = $('.add-all-score-attribute');
-            var select_all_score_attribute = $('#select-all-score-attribute');
-            score_attribute.before(select_all_score_attribute, add_all_score_attribute, select_tl_sa);
-            $.each(result, function (key, val) {
-                var list = $('<label class="brand-li">' + ' ' + '<input type="checkbox" name="score-attribute"  class="sa-label" value="' + val.id + '" data-id="' + val.name + '" autocomplete="off">' + '  ' + val.name + '--' + (val.write_type == 1 ? '手动' : val.write_type == 2 ? 'app' : '赛道' ) + '</label>');
-                list.on("mouseover", function () {
-                    $(this).css({color: "#5bc0de"})
-                });
-                list.on("mouseout", function () {
-                    $(this).removeAttr("style");
-                });
-                score_attribute.append(list);
-            });
+// var score_attribute = $('#score-attribute');
+// var two_level_sa = $('#two-level-sa');
+// var select_all_tl_sa = $('#select-all-tl-sa');
+// var sa_ids = [];
+// var two_level_sa_ids = [];
+// var ed = $("input[name='event-identifier']").val();
+// function list_score_attributes_init() {
+//     $.ajax({
+//         url: '/api/v1/scores',
+//         type: 'get',
+//         dataType: 'json',
+//         success: function (result) {
+//             var select_tl_sa = $('.select-tl-sa');
+//             var add_all_score_attribute = $('.add-all-score-attribute');
+//             var select_all_score_attribute = $('#select-all-score-attribute');
+//             score_attribute.before(select_all_score_attribute, add_all_score_attribute, select_tl_sa);
+//             $.each(result, function (key, val) {
+//                 var list = $('<label class="brand-li">' + ' ' + '<input type="checkbox" name="score-attribute"  class="sa-label" value="' + val.id + '" data-id="' + val.name + '" autocomplete="off">' + '  ' + val.name + '--' + (val.write_type == 1 ? '手动' : val.write_type == 2 ? 'app' : '赛道' ) + '</label>');
+//                 list.on("mouseover", function () {
+//                     $(this).css({color: "#5bc0de"})
+//                 });
+//                 list.on("mouseout", function () {
+//                     $(this).removeAttr("style");
+//                 });
+//                 score_attribute.append(list);
+//             });
+//
+//             $('.select-all-score-attribute').on("click", function () {
+//
+//                 if ($(this).is(':checked')) {
+//                     $('.sa-label').prop("checked", true);
+//                     select_tl_sa.addClass('hidden');
+//                     add_all_score_attribute.removeClass('hidden');
+//                 } else {
+//                     $('.sa-label').prop("checked", false);
+//                     add_all_score_attribute.addClass('hidden');
+//                 }
+//             });
+//
+//             score_attribute.on('change', function () {
+//                 var sa_checked_num = $("#score-attribute [name = 'score-attribute']:checked").length;
+//                 var brand_all = $("#score-attribute [name = 'score-attribute']").length;
+//                 if (sa_checked_num == 1) {
+//
+//                     select_tl_sa.removeClass('hidden');
+//                     add_all_score_attribute.removeClass('hidden');
+//                 } else if (sa_checked_num == 0) {
+//                     select_tl_sa.addClass('hidden');
+//                     add_all_score_attribute.addClass('hidden');
+//                 } else if (sa_checked_num > 1 && sa_checked_num != brand_all) {
+//                     select_tl_sa.addClass('hidden');
+//                     add_all_score_attribute.removeClass('hidden');
+//                     $('.select-all-score-attribute').prop("checked", false);
+//                 } else if (sa_checked_num == brand_all) {
+//                     $('.select-all-score-attribute').prop("checked", true);
+//                 }
+//             });
+//         }
+//     });
+// }
+//
+// function back_select(show) {
+//     if (show == 0) {
+//         $('.selected-mark').remove();
+//         $('.selected-mark:gt(0)').css('display', 'none');
+//         select_all_tl_sa.remove();
+//         $('#select-all-score-attribute').removeClass('hidden');
+//         $("#score-attribute [name='score-attribute']").attr('checked', false);//返回时默认选中0个
+//         $("#two-level-sa [name='two-level-sa']").attr('checked', false);
+//         $('.select-all-tl-sa').attr('checked', false);
+//         score_attribute.removeClass('hidden');
+//         $('#two-level-sa').empty();
+//         $('.add-selected-sa').addClass('hidden');
+//     }
+// }
 
-            $('.select-all-score-attribute').on("click", function () {
+// function get_tl_sa(esd, sa_name) {
+//
+//     $.ajax({
+//         url: '/api/v1/scores?except=' + esd,
+//         type: 'get',
+//         dataType: 'json',
+//         success: function (result) {
+//             var brand_show = $('<span class="selected-mark" data-id="' + esd + '">' + sa_name + '<span onclick="back_select(0);" title="返回上一级" >x</span></span>');
+//
+//             $('.selected-info').append(brand_show);
+//             var add_selected_sa = $('.add-selected-sa');
+//
+//             two_level_sa.before(select_all_tl_sa, add_selected_sa);
+//             $.each(result, function (key, val) {
+//                 var list = $('<label class="series-li">' + '<input type="checkbox" name="two-level-sa" class="tl-sa-label" autocomplete="off" value="' + val.id + '">' + ' ' + val.name + '</label>');
+//                 list.on("mouseover", function () {
+//                     $(this).css({color: "lightskyblue"})
+//                 });
+//                 list.on("mouseout", function () {
+//                     $(this).removeAttr("style");
+//                 });
+//
+//                 two_level_sa.append(list);
+//             });
+//
+//             $('.select-all-tl-sa').on("click", function () {
+//
+//                 if ($(this).is(':checked')) {
+//                     $('.tl-sa-label').prop("checked", true);
+//                     add_selected_sa.removeClass('hidden');
+//                 } else {
+//                     $('.tl-sa-label').prop("checked", false);
+//                     add_selected_sa.addClass('hidden');
+//                 }
+//             });
+//             two_level_sa.on('change', function () {
+//                 var tl_sa_checked_num = $("#two-level-sa [name = 'two-level-sa']:checked").length;
+//                 var sa_all = $("#two-level-sa [name = 'two-level-sa']").length;
+//                 if (tl_sa_checked_num == 1) {
+//                     add_selected_sa.removeClass('hidden');
+//                     if (sa_all == 1) {
+//                         $('.select-all-tl-sa').prop("checked", true);
+//                     } else {
+//                         $('.select-all-tl-sa').prop("checked", false);
+//                     }
+//                 } else if (tl_sa_checked_num == 0) {
+//                     add_selected_sa.addClass('hidden');
+//                     if (sa_all == 1) {
+//                         $('.select-all-tl-sa').prop("checked", false);
+//                     }
+//                 } else if (tl_sa_checked_num > 1) {
+//                     add_selected_sa.removeClass('hidden');
+//                     if (sa_all == 2) {
+//                         $('.select-all-tl-sa').prop("checked", true);
+//                     }
+//                     else {
+//                         if (tl_sa_checked_num != sa_all) {
+//                             $('.select-all-tl-sa').prop("checked", false);
+//                         } else {
+//                             $('.select-all-tl-sa').prop("checked", true);
+//                         }
+//                     }
+//                 }
+//             });
+//         }
+//     });
+// }
 
-                if ($(this).is(':checked')) {
-                    $('.sa-label').prop("checked", true);
-                    select_tl_sa.addClass('hidden');
-                    add_all_score_attribute.removeClass('hidden');
-                } else {
-                    $('.sa-label').prop("checked", false);
-                    add_all_score_attribute.addClass('hidden');
-                }
-            });
-
-            score_attribute.on('change', function () {
-                var sa_checked_num = $("#score-attribute [name = 'score-attribute']:checked").length;
-                var brand_all = $("#score-attribute [name = 'score-attribute']").length;
-                if (sa_checked_num == 1) {
-
-                    select_tl_sa.removeClass('hidden');
-                    add_all_score_attribute.removeClass('hidden');
-                } else if (sa_checked_num == 0) {
-                    select_tl_sa.addClass('hidden');
-                    add_all_score_attribute.addClass('hidden');
-                } else if (sa_checked_num > 1 && sa_checked_num != brand_all) {
-                    select_tl_sa.addClass('hidden');
-                    add_all_score_attribute.removeClass('hidden');
-                    $('.select-all-score-attribute').prop("checked", false);
-                } else if (sa_checked_num == brand_all) {
-                    $('.select-all-score-attribute').prop("checked", true);
-                }
-            });
-        }
-    });
-}
-
-function back_select(show) {
-    if (show == 0) {
-        $('.selected-mark').remove();
-        $('.selected-mark:gt(0)').css('display', 'none');
-        select_all_tl_sa.remove();
-        $('#select-all-score-attribute').removeClass('hidden');
-        $("#score-attribute [name='score-attribute']").attr('checked', false);//返回时默认选中0个
-        $("#two-level-sa [name='two-level-sa']").attr('checked', false);
-        $('.select-all-tl-sa').attr('checked', false);
-        score_attribute.removeClass('hidden');
-        $('#two-level-sa').empty();
-        $('.add-selected-sa').addClass('hidden');
-    }
-}
-
-function get_tl_sa(esd, sa_name) {
-
-    $.ajax({
-        url: '/api/v1/scores?except=' + esd,
-        type: 'get',
-        dataType: 'json',
-        success: function (result) {
-            var brand_show = $('<span class="selected-mark" data-id="' + esd + '">' + sa_name + '<span onclick="back_select(0);" title="返回上一级" >x</span></span>');
-
-            $('.selected-info').append(brand_show);
-            var add_selected_sa = $('.add-selected-sa');
-
-            two_level_sa.before(select_all_tl_sa, add_selected_sa);
-            $.each(result, function (key, val) {
-                var list = $('<label class="series-li">' + '<input type="checkbox" name="two-level-sa" class="tl-sa-label" autocomplete="off" value="' + val.id + '">' + ' ' + val.name + '</label>');
-                list.on("mouseover", function () {
-                    $(this).css({color: "lightskyblue"})
-                });
-                list.on("mouseout", function () {
-                    $(this).removeAttr("style");
-                });
-
-                two_level_sa.append(list);
-            });
-
-            $('.select-all-tl-sa').on("click", function () {
-
-                if ($(this).is(':checked')) {
-                    $('.tl-sa-label').prop("checked", true);
-                    add_selected_sa.removeClass('hidden');
-                } else {
-                    $('.tl-sa-label').prop("checked", false);
-                    add_selected_sa.addClass('hidden');
-                }
-            });
-            two_level_sa.on('change', function () {
-                var tl_sa_checked_num = $("#two-level-sa [name = 'two-level-sa']:checked").length;
-                var sa_all = $("#two-level-sa [name = 'two-level-sa']").length;
-                if (tl_sa_checked_num == 1) {
-                    add_selected_sa.removeClass('hidden');
-                    if (sa_all == 1) {
-                        $('.select-all-tl-sa').prop("checked", true);
-                    } else {
-                        $('.select-all-tl-sa').prop("checked", false);
-                    }
-                } else if (tl_sa_checked_num == 0) {
-                    add_selected_sa.addClass('hidden');
-                    if (sa_all == 1) {
-                        $('.select-all-tl-sa').prop("checked", false);
-                    }
-                } else if (tl_sa_checked_num > 1) {
-                    add_selected_sa.removeClass('hidden');
-                    if (sa_all == 2) {
-                        $('.select-all-tl-sa').prop("checked", true);
-                    }
-                    else {
-                        if (tl_sa_checked_num != sa_all) {
-                            $('.select-all-tl-sa').prop("checked", false);
-                        } else {
-                            $('.select-all-tl-sa').prop("checked", true);
-                        }
-                    }
-                }
-            });
-        }
-    });
-}
-
-function add_score_attribute_init() {
-    $(".open-add-score-attribute").on('click', function () {
-        $(".add-score-attribute").slideToggle();
-        var checkbox_num = $("#score-attribute [name='score-attribute']").length;
-        if (checkbox_num == 0) {
-            list_score_attributes_init();
-        }
-        $('.add-all-score-attribute').on("click", function () {
-            var checked_num = $("#score-attribute [name='score-attribute']:checked");
-            if (score_attribute) {
-                for (var i = 0; i < checked_num.length; i++) {
-                    sa_ids[i] = checked_num[i].value;
-                }
-                $.ajax({
-                    url: '/admin/events/add_score_attributes',
-                    type: 'post',
-                    data: {"ed": ed, "sa_ids": sa_ids},
-                    success: function (data) {
-                        if (data) {
-                            window.location.reload();
-                        }
-                        else {
-                            alert('添加失败');
-                        }
-                    }
-                });
-            }
-        });
-        $('.add-selected-sa').on("click", function () {
-            var parent_sa_id = $(".selected-mark").attr('data-id');
-            var checked_num = $("#two-level-sa [name='two-level-sa']:checked");
-            for (var i = 0; i < checked_num.length; i++) {
-                two_level_sa_ids[i] = checked_num[i].value;
-            }
-            $.ajax({
-                url: '/admin/events/add_score_attributes',
-                type: 'post',
-                data: {"sa_ids": two_level_sa_ids, "parent_id": parent_sa_id, "ed": ed},
-                success: function (data) {
-                    if (data) {
-                        window.location.reload();
-                    }
-                    else {
-                        alert('添加失败');
-                    }
-                }
-            });
-        });
-    });
-}
+// function add_score_attribute_init() {
+//     $(".open-add-score-attribute").on('click', function () {
+//         $(".add-score-attribute").slideToggle();
+//         var checkbox_num = $("#score-attribute [name='score-attribute']").length;
+//         if (checkbox_num == 0) {
+//             list_score_attributes_init();
+//         }
+//         $('.add-all-score-attribute').on("click", function () {
+//             var checked_num = $("#score-attribute [name='score-attribute']:checked");
+//             if (score_attribute) {
+//                 for (var i = 0; i < checked_num.length; i++) {
+//                     sa_ids[i] = checked_num[i].value;
+//                 }
+//                 $.ajax({
+//                     url: '/admin/events/add_score_attributes',
+//                     type: 'post',
+//                     data: {"ed": ed, "sa_ids": sa_ids},
+//                     success: function (data) {
+//                         if (data) {
+//                             window.location.reload();
+//                         }
+//                         else {
+//                             alert('添加失败');
+//                         }
+//                     }
+//                 });
+//             }
+//         });
+//         $('.add-selected-sa').on("click", function () {
+//             var parent_sa_id = $(".selected-mark").attr('data-id');
+//             var checked_num = $("#two-level-sa [name='two-level-sa']:checked");
+//             for (var i = 0; i < checked_num.length; i++) {
+//                 two_level_sa_ids[i] = checked_num[i].value;
+//             }
+//             $.ajax({
+//                 url: '/admin/events/add_score_attributes',
+//                 type: 'post',
+//                 data: {"sa_ids": two_level_sa_ids, "parent_id": parent_sa_id, "ed": ed},
+//                 success: function (data) {
+//                     if (data) {
+//                         window.location.reload();
+//                     }
+//                     else {
+//                         alert('添加失败');
+//                     }
+//                 }
+//             });
+//         });
+//     });
+// }
 
 function delete_event_worker(ud, ed) {
     if (ud && ed) {
