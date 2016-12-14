@@ -6,6 +6,7 @@ class CompetitionService
         name: s.level==1 ? s.score_attribute.name : s.score_attribute_parent.name+': '+ s.score_attribute.name,
         score_type: s.score_attribute.try(:write_type),
         value_type: s.score_attribute.try(:desc),
+        in_rounds: s.in_rounds,
         formula: s.formula
     } }
   end

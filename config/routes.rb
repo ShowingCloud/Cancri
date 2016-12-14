@@ -134,7 +134,11 @@ Rails.application.routes.draw do
       end
     end
     resources :teams
-    resources :event_schedules
+    resources :event_schedules do
+      collection do
+        post :update_is_show
+      end
+    end
     resources :news
     resources :activities do
       collection do
@@ -154,7 +158,8 @@ Rails.application.routes.draw do
     resources :consults
     resources :schools
     resources :notifications
-    get '/vouchers/to_image', to: 'vouchers#to_image'
+    # get '/vouchers/to_image', to: 'vouchers#to_image'
+    # get '/vouchers/export_voucher', to: 'vouchers#export_voucher'
     resources :vouchers
   end
 
