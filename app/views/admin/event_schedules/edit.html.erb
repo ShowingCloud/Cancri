@@ -15,6 +15,7 @@
           <th>组别</th>
           <th>赛程名称</th>
           <th>对抗／评分</th>
+          <th>ipad显示</th>
           <th>操作</th>
         </tr>
         </thead>
@@ -39,6 +40,13 @@
               <td><%= cs.schedule_name %></td>
               <td>
                 <label class="label <%= cs.kind==1 ? 'label-info' : 'label-warning' %>"><%= cs.kind==1 ? '评分' : '对抗' %></label>
+              </td>
+              <td>
+                <% if can_edit %>
+                    <input type="checkbox" <%= "checked" if cs.is_show %> title="是否显示" data-id="<%= cs.id %>" class="ace ace-switch ace-switch-5 update-es-is-show"/><span class="lbl"></span>
+                <% else %>
+                    <%= show_status(cs.is_show) %>
+                <% end %>
               </td>
               <td>
                 <% if can_edit %>

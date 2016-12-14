@@ -18,7 +18,7 @@ module Api
       def group_schedules
         requires! :event_id, type: Integer
         requires! :group, type: Integer, values: 1..4
-        es = EventSchedule.joins(:schedule).where(event_id: params[:event_id], group: params[:group]).select(:id, :schedule_id, :sort, :kind, 'schedules.name as schedule_name').order('sort asc')
+        es = EventSchedule.joins(:schedule).where(event_id: params[:event_id], group: params[:group], is_show: true).select(:id, :schedule_id, :sort, :kind, 'schedules.name as schedule_name').order('sort asc')
         render json: {group_schedules: es}
       end
 

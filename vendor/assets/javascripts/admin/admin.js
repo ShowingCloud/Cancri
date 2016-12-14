@@ -61,6 +61,26 @@ $(function () {
             admin_gritter_notice(false, '值不规范')
         }
     });
+
+    // update event schedule is show or not in ipad
+    $('.update-es-is-show').on('click', function () {
+        var _self = $(this);
+        var value = _self.is(':checked');
+        var es_id = _self.attr('data-id');
+        if (value == true || value == false) {
+            $.ajax({
+                url: '/admin/event_schedules/update_is_show',
+                type: 'post',
+                data: {"value": value, "esd": es_id},
+                success: function (data) {
+                    admin_gritter_notice(data["status"], data["message"]);
+                }
+            });
+        } else {
+            admin_gritter_notice(false, '值不规范')
+        }
+    });
+
     // ============================== events end ==============================
 
     // 活动打分
