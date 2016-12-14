@@ -8,7 +8,8 @@ module Api
 
       def score_attrs
         requires! :event_id, type: Integer
-        esa = CompetitionService.get_event_score_attrs(params[:event_id])
+        requires! :schedule_id, type: Integer
+        esa = CompetitionService.get_event_score_attrs(params[:event_id],params[:schedule_id])
         render json: esa
       end
 
