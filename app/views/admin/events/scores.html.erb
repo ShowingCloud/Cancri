@@ -44,7 +44,12 @@
           <%= @event_sa.formula["compute_type"] == '1' ? '手动计算' : '自动计算' %>
           <% order = @event_sa.formula["order"] %>
           <%= order['1']['name'] %>-<%= order['1']['sort'] == 1 ? '升序;' : '降序;' %>
-          <%= "#{order['2']['name']}-#{order['2']['sort'] == 1 ? '升序;' : '降序;'}" %>
+          <% if order['num'] >1 %>
+              <%= "#{order['2']['name']}-#{order['2']['sort'] == 1 ? '升序;' : '降序;'}" %>
+              <% if order['num'] == 3 %>
+                  <%= "#{order['3']['name']}-#{order['3']['sort'] == 1 ? '升序;' : '降序;'}" %>
+              <% end %>
+          <% end %>
         </label>
     <% end %>
 <% else %>
@@ -56,9 +61,9 @@
 <div class="row">
   <div class="col-xs-12">
     <% if @scores.present? %>
-            <nav>
-            <%= paginate @scores %>
-            </nav>
+        <nav>
+          <%= paginate @scores %>
+        </nav>
         <table class="table table-bordered table-hover table-striped">
           <thead>
           <tr>
