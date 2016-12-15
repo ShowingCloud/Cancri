@@ -62,6 +62,31 @@ $(function () {
         }
     });
 
+    //
+    var score_attribute_td = $('.score-attribute-td');
+    score_attribute_td.mouseover(function (data) {
+        $(this).css('background', '#ffb752');
+        var tooltip = '<div class="tooltip-score-attribute" style="border-radius: 10px;width:400px;height:auto;background:#9fe1e7;position:absolute;z-index:10001;padding:0 10px ; line-height: 200%;">'
+            + $(this).attr('data-title') + '</br>' +
+            '</div>';
+        $("body").append(tooltip);
+        var tooltip_score_attribute = $('.tooltip-score-attribute');
+        $(this).mouseover(function (e) {
+            $(this).css('z-index', 10000);
+
+            var topic_event = tooltip_score_attribute;
+            topic_event.fadeIn('500');
+            topic_event.fadeTo('10', 1.9);
+        }).mousemove(function (e) {
+            tooltip_score_attribute.css('top', e.pageY - 150);
+            tooltip_score_attribute.css('left', e.pageX - 160);
+        });
+    });
+    score_attribute_td.mouseout(function () {
+        $(this).css('z-index', 8);
+        $('.tooltip-score-attribute').remove();
+        $(this).removeAttr('style');
+    });
     // update event schedule is show or not in ipad
     $('.update-es-is-show').on('click', function () {
         var _self = $(this);
