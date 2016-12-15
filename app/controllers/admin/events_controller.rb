@@ -135,7 +135,7 @@ class Admin::EventsController < AdminController
     if schedule_id == -1
       render_optional_error(404)
     else
-      @event_sa = EventSaShip.where(event_id: event_id, schedule_id: schedule_id, score_attribute_id: 19).take
+      @event_sa = EventSaShip.where(event_id: event_id, schedule_id: schedule_id, score_attribute_id: 19).take # 19 最终成绩
     end
 
     if sort.to_i == 1
@@ -145,16 +145,11 @@ class Admin::EventsController < AdminController
         first_order = (order['1']['sort'].to_i == 0) ? '>' : '<'
         if order_num == 2
           second_order = order['2']['sort'].to_i
-          teams = Team.joins('inner join scores s on s.team1_id = teams.id').where(event_id: event_id, group: group).where('s.score > ?', 0).select('teams.*', 's.score', 's.order_score').order("s.score #{(first_order == '>') ? 'desc' : 'asc'}").order("s.order_score #{(second_order == 1) ? 'asc' : 'desc'}")
-          if teams.present?
-            teams.each_with_index do |team, index|
-              team.update(rank: index+1)
-            end
-            flash[:notice] = '排名成功'
-          end
+          sql = "s.schedule_rank = (select order_rank from (SELECT s2.id,s2.score,s2.order_score,IF((score=@_last_score and order_score=@_last_order_score),@Rank:=@Rank,@Rank:=@_sequence) AS order_rank,@_sequence:=@_sequence+1,@_last_score:=score,@_last_order_score:=order_score FROM scores s2 inner join teams t2 on t2.id = s2.team1_id, (SELECT @Rank:= 1, @_sequence:=1, @_last_score:=0,@_last_order_score:=0) r WHERE s2.event_id = #{event_id} and s2.schedule_id = #{schedule_id} and t2.group = #{group} and s2.score > 0 ORDER BY 2 #{first_order == '>' ? 'desc' : 'asc'},3 #{second_order == 0 ? 'desc' : 'asc'}) s3 where s.id = s3.id)"
+          Team.joins('inner join scores s on s.team1_id = teams.id').where(event_id: event_id, group: group).where('s.schedule_id =?', schedule_id).where('s.score > ?', 0).update_all(sql)
         else
           # 单一排序
-          sql = "rank = (select count(*)+1 from (select score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group=#{group} and s.score > 0) dist_score where dist_score.score #{first_order} scores.score)"
+          sql = "scores.rank = (select count(*)+1 from (select score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group=#{group} and s.score > 0) dist_score where dist_score.score #{first_order} scores.score)"
           if Team.joins('inner join scores on scores.team1_id = teams.id').where(event_id: event_id, group: group).where('scores.score > ?', 0).update_all(sql)
             flash[:notice] = '排名成功'
           else
