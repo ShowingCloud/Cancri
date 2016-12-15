@@ -78,8 +78,8 @@ $(function () {
             topic_event.fadeIn('500');
             topic_event.fadeTo('10', 1.9);
         }).mousemove(function (e) {
-            tooltip_score_attribute.css('top', e.pageY - 150);
-            tooltip_score_attribute.css('left', e.pageX - 160);
+            tooltip_score_attribute.css('top', e.pageY - 100);
+            tooltip_score_attribute.css('left', e.pageX - 435);
         });
     });
     score_attribute_td.mouseout(function () {

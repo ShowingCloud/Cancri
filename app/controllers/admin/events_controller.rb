@@ -156,14 +156,11 @@ class Admin::EventsController < AdminController
             redirect_to "/admin/events/scores?id=#{event_id}&group=#{params_group}&schedule=#{schedule_name}"
             return false
           end
-          # Team.joins('inner join scores s on s.team1_id = teams.id').where(event_id: event_id, group: group).where('s.schedule_id =?', schedule_id).where('s.score > ?', 0).update_all(sql)
-          update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: schedule_id).where('scores.score > ?', 0).where('t.group =?', group).update_all(sql)
         else
           # 单一排序
           sql = "scores.schedule_rank = (select count(*)+1 from (select score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group=#{group} and s.schedule_id = #{schedule_id} and s.score > 0) dist_score where dist_score.score #{first_order} scores.score)"
-          # update_result = Team.joins('inner join scores on scores.team1_id = teams.id').where(event_id: event_id, group: group).where('scores.schedule_id=?', schedule_id).where('scores.score > ?', 0).update_all(sql)
-          update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: schedule_id).where('scores.score > ?', 0).where('t.group =?', group).update_all(sql)
         end
+        update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: schedule_id).where('scores.score > ?', 0).where('t.group =?', group).update_all(sql)
         if update_result
           flash[:notice] = '排名成功'
         else
@@ -175,7 +172,7 @@ class Admin::EventsController < AdminController
         return false
       end
     end
-    @scores = Team.joins("left join scores s on teams.id = s.team1_id and s.schedule_id = #{schedule_id}").left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').where(event_id: event_id, group: group).select(:id, :teacher, :identifier, :group, 'schools.name as school_name', 's.score', 's.score_attribute', 's.order_score', 's.sort_score', 'u_p.username', 's.schedule_rank').order('s.score IS NULL,s.score desc').order('s.schedule_rank asc').page(params[:page]).per(100)
+    @scores = Team.joins("left join scores s on teams.id = s.team1_id and s.schedule_id = #{schedule_id}").left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').where(event_id: event_id, group: group).select(:id, :teacher, :identifier, :group, 'schools.name as school_name', 's.score', 's.score_attribute', 's.order_score', 's.sort_score', 'u_p.username', 's.schedule_rank').order('s.schedule_rank IS NULL ASC').order('s.schedule_rank asc').page(params[:page]).per(100)
   end
 
   def school_sort

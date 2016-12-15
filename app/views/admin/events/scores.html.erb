@@ -43,7 +43,8 @@
         <label class="">
           <%= @event_sa.formula["compute_type"] == '1' ? '手动计算' : '自动计算' %>
           <% order = @event_sa.formula["order"] %>
-          <%= order['1']['name'] %>:<%= order['1']['sort'] == '1' ? '升序' : '降序' %>
+          <%= order['1']['name'] %>-<%= order['1']['sort'] == 1 ? '升序;' : '降序;' %>
+          <%= "#{order['2']['name']}-#{order['2']['sort'] == 1 ? '升序;' : '降序;'}" %>
         </label>
     <% end %>
 <% else %>
