@@ -160,7 +160,7 @@ class Admin::EventsController < AdminController
           update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: schedule_id).where('scores.score > ?', 0).where('t.group =?', group).update_all(sql)
         else
           # 单一排序
-          sql = "scores.schedule_rank = (select count(*)+1 from (select score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group=#{group} and scores.schedule_id = #{schedule_id} and s.score > 0) dist_score where dist_score.score #{first_order} scores.score)"
+          sql = "scores.schedule_rank = (select count(*)+1 from (select score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group=#{group} and s.schedule_id = #{schedule_id} and s.score > 0) dist_score where dist_score.score #{first_order} scores.score)"
           # update_result = Team.joins('inner join scores on scores.team1_id = teams.id').where(event_id: event_id, group: group).where('scores.schedule_id=?', schedule_id).where('scores.score > ?', 0).update_all(sql)
           update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: schedule_id).where('scores.score > ?', 0).where('t.group =?', group).update_all(sql)
         end
