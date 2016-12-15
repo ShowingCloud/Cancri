@@ -71,7 +71,7 @@ class CompetitionService
               one_round_score = 0.0
               formula.each do |f|
                 if f['id'] == '0'
-                  formula_ele = (event_id == 27 && val['76'].present? && (val['76']['val'].to_f > 100)) ? 30 : f['xishu']
+                  formula_ele = (event_id == '27' && val['76'].present? && (val['76']['val'].to_f > 100)) ? 30 : f['xishu']
                 else
                   formula_ele = (val["#{f['id']}"]['val']).to_f*f['xishu']
                 end
