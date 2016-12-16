@@ -90,6 +90,12 @@ class CompetitionService
                     one_round_score+=formula_ele
                 end
               end
+
+              one_round_score = one_round_score.round(2)
+              if event_id.to_i == 30 # 云霄飞车
+                one_round_score = one_round_score.abs
+              end
+
               case order_num
                 when 1
                   rounds_score << [one_round_score.round(2), 0, 0]
