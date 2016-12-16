@@ -147,7 +147,7 @@ class Admin::EventsController < AdminController
       @event_sa = EventSaShip.where(event_id: event_id, schedule_id: schedule_id, score_attribute_id: 19).take # 19 最终成绩
     end
 
-    if sort.to_i == 1
+    if sort.to_i == 1 && !['29', '31'].include?(event_id)
       if @event_sa.present? && @event_sa.formula.present?
         order = @event_sa.formula['order']
         order_num = order['num']
@@ -203,6 +203,76 @@ class Admin::EventsController < AdminController
       }
     end
 
+  end
+
+  def compute_last_score
+    event_id = params[:id]
+    schedule_name = params[:schedule]
+    params_group = params[:group]
+    case params_group
+      when '小学组'
+        ac_group = 1
+        sql_group = '(1)'
+      when '中学组'
+        ac_group = 2
+        sql_group = '(2)'
+      when '初中组'
+        ac_group = 3
+        sql_group = '(3)'
+      when '高中组'
+        ac_group = 4
+        sql_group = '(4)'
+      when '不分组别'
+        ac_group = [1, 2, 3, 4]
+        sql_group = '(1,2,3,4)'
+      else
+        render_optional_error(404)
+        return false
+    end
+    if event_id.to_i == 29 && schedule_name == '决赛' #承重结构
+      sql = "scores.score = (select b.he from (select s1.team1_id,sum(score) as he from scores s1 inner join teams t1 on t1.id = s1.team1_id
+         where s1.schedule_id in (2,3) and s1.event_id = 29 and t1.group in #{sql_group}  GROUP BY s1.team1_id
+			 ) b where scores.team1_id = b.team1_id and b.he > 0)"
+      update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: 1).where('t.group' => ac_group).update_all(sql)
+      if update_result
+        result = [true, '排名成功']
+      else
+        result = [false, '排名失败']
+      end
+    else
+      result = [false, '不规范请求']
+    end
+    render json: [result[0], result[1]]
+  end
+
+  def create_last_score
+    event_id = params[:id]
+    if ['29', '31'].include?(event_id) #承重,F1
+      team_ids = Team.where(event_id: event_id).pluck(:id)
+      if team_ids.present?
+        score_team_ids = Score.where(event_id: event_id, schedule_id: 1).pluck(:team1_id)
+        new_score_team_ids = team_ids - score_team_ids
+        if new_score_team_ids.present? && new_score_team_ids.is_a?(Array)
+          save_num = 0
+          new_score_team_ids.each do |team1_id|
+            score_row = Score.create(event_id: event_id, schedule_id: 1, team1_id: team1_id, kind: 1, th: 1, score: 0, last_score: true)
+            if score_row.save
+              save_num+=1
+            end
+          end
+          if save_num == new_score_team_ids.length
+            result = [true, '全部创建成功']
+          else
+            result = [false, '未全部创建成功']
+          end
+        else
+          result = [true, '已全部存在']
+        end
+      end
+    else
+      result = [false, '不规范请求']
+    end
+    render json: result
   end
 
   def school_sort

@@ -64,6 +64,11 @@
     <% end %>
 <% else %>
     <% if @group_schedule.present? && @group_schedule.length >1 %>
+        <button class="btn check-last-score-exist" data-event="<%= @event.id %>" title="创建决赛纪录">
+          <i class="icon-info icon-only"></i></button>
+        <button class="btn btn-danger compute-last-score" data-event="<%= @event.id %>" data-schedule="<%= params[:schedule] %>" data-group="<%= params[:group] %>" title="成绩排名">
+          计算决赛成绩
+        </button>
         赛制成绩运算 (需比赛全部完成)
     <% else %>
         公式不存在,请补全

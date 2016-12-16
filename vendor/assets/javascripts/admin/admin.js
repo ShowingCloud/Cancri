@@ -43,6 +43,41 @@ $(function () {
         window.location = '/admin/events' + params;
     });
 
+    // 创建特定项目决赛成绩纪录
+    $('.check-last-score-exist').on('click', function () {
+        var event_id = $(this).attr('data-event');
+        if (event_id) {
+            $.ajax({
+                url: '/admin/events/create_last_score',
+                type: 'post',
+                data: {"id": event_id},
+                success: function (data) {
+                    admin_gritter_notice(data[0], data[1]);
+                }
+            });
+        }
+    });
+    //计算特定项目决赛成绩
+    $('.compute-last-score').on('click', function () {
+        var event_id = $(this).attr('data-event');
+        var schedule = $(this).attr('data-schedule');
+        var group = $(this).attr('data-group');
+        if (event_id && schedule && group) {
+            $.ajax({
+                url: '/admin/events/compute_last_score',
+                type: 'post',
+                data: {"id": event_id, "schedule": schedule, "group": group},
+                success: function (data) {
+                    admin_gritter_notice(data[0], data[1]);
+                    if (data[0]) {
+                        window.location = "/admin/events/scores?id=" + event_id + "&schedule=" + schedule + "&group=" + group + "&sort=1"
+                    }
+                }
+            });
+        }
+    });
+
+
     // score_attr is in rounds
     $('.update-sa-in-rounds').on('click', function () {
         var _self = $(this);
