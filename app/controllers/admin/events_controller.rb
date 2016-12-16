@@ -106,6 +106,7 @@ class Admin::EventsController < AdminController
 
   def scores
     event_id = params[:id]
+    event_name = params[:event_name]
     schedule_name = params[:schedule]
     params_group = params[:group]
     sort = params[:sort]
@@ -180,6 +181,28 @@ class Admin::EventsController < AdminController
       end
     end
     @scores = Team.joins("left join scores s on teams.id = s.team1_id and s.schedule_id = #{schedule_id}").left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').where(event_id: event_id, group: ac_group).select(:id, :teacher, :identifier, :group, 'schools.name as school_name', 's.score', 's.score_attribute', 's.order_score', 's.sort_score', 'u_p.username', 's.schedule_rank').order('s.schedule_rank IS NULL ASC').order('s.schedule_rank asc').page(params[:page]).per(100)
+
+    respond_to do |format|
+      format.html
+      format.xls {
+        data = @scores.where('s.schedule_rank > ?', 0)
+        if data.length > 0
+          data = data.map { |score| {
+              编号: score.identifier,
+              队长: score.username,
+              学校: score.school_name,
+              老师: score.teacher,
+              名次: score.schedule_rank
+          } }
+          filename = "#{event_name}_#{params_group}_#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+          send_data(data.to_xls, :type => "text/xls;charset=utf-8,header=present", :filename => filename)
+        else
+          flash[:notice] = '暂无有效成绩'
+          redirect_to "/admin/events/scores?id=#{event_id}&group=#{params_group}&schedule=#{schedule_name}"
+        end
+      }
+    end
+
   end
 
   def school_sort
