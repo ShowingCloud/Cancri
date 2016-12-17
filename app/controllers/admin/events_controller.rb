@@ -235,9 +235,9 @@ class Admin::EventsController < AdminController
 			 ) b where scores.team1_id = b.team1_id and b.he > 0)"
       update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: 1).where('t.group' => ac_group).update_all(sql)
       if update_result
-        result = [true, '排名成功']
+        result = [true, '计算成功']
       else
-        result = [false, '排名失败']
+        result = [false, '计算失败']
       end
     else
       result = [false, '不规范请求']
