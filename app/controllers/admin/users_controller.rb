@@ -6,10 +6,12 @@ class Admin::UsersController < AdminController
   def index
     field = params[:field]
     keyword = params[:keyword]
-    users = User.left_joins(:user_profile).order('id asc').select(:id, :nickname, :mobile, :email, :sign_in_count, :current_sign_in_at, 'user_profiles.username'); false
+    users = User.joins('left join user_profiles on user_profiles.user_id = users.id').joins('left join schools s on s.id = user_profiles.school_id').order('id asc').select(:id, :nickname, :mobile, :email, :sign_in_count, :current_sign_in_at, 'user_profiles.username', 's.name as school_name'); false
     if field.present? && keyword.present?
       if field == 'username'
         users = users.where('user_profiles.username like ?', "%#{keyword}%")
+      elsif field == 'school_name'
+        users = users.where('s.name like ?', "%#{keyword}%")
       else
         users = users.where(["#{field} like ?", "%#{keyword}%"])
       end
