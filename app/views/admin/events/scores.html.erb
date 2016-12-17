@@ -48,7 +48,7 @@
 <a href="/admin/events/scores?id=<%= params[:id] %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" class="btn btn-danger">成绩排名</a>
 <% order_info = {} %>
 
-<% if [31, 29].include?(@event.id) %>
+<% if [31, 29].include?(@event.id) && params[:schedule] == '决赛' %>
     <button class="btn check-last-score-exist" data-event="<%= @event.id %>" title="创建决赛纪录">
       <i class="icon-info icon-only"></i></button>
     <button class="btn btn-danger compute-last-score" data-event="<%= @event.id %>" data-schedule="<%= params[:schedule] %>" data-group="<%= params[:group] %>" title="成绩排名">
