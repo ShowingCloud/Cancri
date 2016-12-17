@@ -70,7 +70,7 @@ $(function () {
                 success: function (data) {
                     admin_gritter_notice(data[0], data[1]);
                     if (data[0]) {
-                        window.location = "/admin/events/scores?id=" + event_id + "&schedule=" + schedule + "&group=" + group + "&sort=1"
+                        window.location = "/admin/events/scores?id=" + event_id + "&schedule=" + schedule + "&group=" + group
                     }
                 }
             });

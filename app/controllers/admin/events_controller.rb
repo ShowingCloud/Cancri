@@ -147,7 +147,7 @@ class Admin::EventsController < AdminController
       @event_sa = EventSaShip.where(event_id: event_id, schedule_id: schedule_id, score_attribute_id: 19).take # 19 最终成绩
     end
 
-    if sort.to_i == 1 && !['29', '31'].include?(event_id)
+    if sort.to_i == 1
       if @event_sa.present? && @event_sa.formula.present?
         order = @event_sa.formula['order']
         order_num = order['num']
@@ -235,9 +235,24 @@ class Admin::EventsController < AdminController
 			 ) b where scores.team1_id = b.team1_id and b.he > 0)"
       update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: 1).where('t.group' => ac_group).update_all(sql)
       if update_result
-        result = [true, '排名成功']
+        result = [true, '计算成功']
       else
-        result = [false, '排名失败']
+        result = [false, '计算失败']
+      end
+    elsif event_id.to_i == 31 && schedule_name == '决赛'
+      zt_sql = "scores.operate_score = (select b.min_score from (select min(s1.score) as min_score from scores s1 inner join teams t1 on t1.id=s1.team1_id where s1.event_id = #{event_id} and s1.schedule_id= 5 and s1.score > 0 and t1.group in #{sql_group}) b)/scores.score"
+      Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: 5).where('scores.score>?', 0).where('t.group' => ac_group).update_all(zt_sql)
+      nl_sql = "scores.operate_score = (select b.min_score from (select min(s1.score) as min_score from scores s1 inner join teams t1 on t1.id=s1.team1_id where s1.event_id = #{event_id} and s1.schedule_id= 4 and s1.score > 0 and t1.group in #{sql_group}) b)/scores.score"
+      Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: 4).where('scores.score>?', 0).where('t.group' => ac_group).update_all(nl_sql)
+
+      sql = "scores.score = (select b.he from (select s1.team1_id,sum(operate_score) as he from scores s1 inner join teams t1 on t1.id = s1.team1_id
+         where s1.schedule_id in (4,5) and s1.event_id = #{event_id} and t1.group in #{sql_group} GROUP BY s1.team1_id
+			 ) b where scores.team1_id = b.team1_id and b.he > 0),th=3"
+      update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: 1).where('t.group' => ac_group).update_all(sql)
+      if update_result
+        result = [true, '计算成功']
+      else
+        result = [false, '计算失败']
       end
     else
       result = [false, '不规范请求']

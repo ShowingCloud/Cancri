@@ -47,6 +47,16 @@
   <i class="icon-external-link icon-only"></i></a>
 <a href="/admin/events/scores?id=<%= params[:id] %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" class="btn btn-danger">成绩排名</a>
 <% order_info = {} %>
+
+<% if [31, 29].include?(@event.id) && params[:schedule] == '决赛' %>
+    <button class="btn check-last-score-exist" data-event="<%= @event.id %>" title="创建决赛纪录">
+      <i class="icon-info icon-only"></i></button>
+    <button class="btn btn-danger compute-last-score" data-event="<%= @event.id %>" data-schedule="<%= params[:schedule] %>" data-group="<%= params[:group] %>" title="成绩排名">
+      计算决赛成绩
+    </button>
+    赛制成绩运算 (需比赛全部完成)&nbsp;&nbsp;
+<% end %>
+
 <% if @event_sa.present? %>
     <% if @event_sa.formula.present? %>
         <%= @event_sa.formula["compute_type"] == '1' ? '手动' : '自动计算' %>
@@ -63,16 +73,7 @@
         <% end %>
     <% end %>
 <% else %>
-    <% if @group_schedule.present? && @group_schedule.length >1 %>
-        <button class="btn check-last-score-exist" data-event="<%= @event.id %>" title="创建决赛纪录">
-          <i class="icon-info icon-only"></i></button>
-        <button class="btn btn-danger compute-last-score" data-event="<%= @event.id %>" data-schedule="<%= params[:schedule] %>" data-group="<%= params[:group] %>" title="成绩排名">
-          计算决赛成绩
-        </button>
-        赛制成绩运算 (需比赛全部完成)
-    <% else %>
-        公式不存在,请补全
-    <% end %>
+    公式或排序不存在,请补全
 <% end %>
 <hr>
 
