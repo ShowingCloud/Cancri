@@ -21,13 +21,14 @@
               <span data-search-text class="admin-search-field"><%= t('simple_form.labels.defaults.nickname') %></span>
               <span class="caret"></span></button>
             <ul class="dropdown-width dropdown-menu">
+              <li data-search-option="username"><a><%= t('simple_form.labels.defaults.username') %></a></li>
               <li data-search-option="nickname"><a><%= t('simple_form.labels.defaults.nickname') %></a></li>
               <li data-search-option="mobile"><a><%= t('simple_form.labels.defaults.mobile') %></a></li>
               <li data-search-option="email"><a><%= t('simple_form.labels.defaults.email') %></a></li>
               <li data-search-option="id"><a>ID</a></li>
             </ul>
           </div>
-          <input type="hidden" name="field" value="<%= params[:field].present? ? params[:field] : 'nickname' %>"/>
+          <input type="hidden" name="field" value="<%= params[:field].present? ? params[:field] : 'username' %>"/>
           <input placeholder="输入关键字，按回车键提交" value="<%= params[:keyword] %>" name="keyword" type="text" class="form-control" aria-label="...">
         </div>
       </form>

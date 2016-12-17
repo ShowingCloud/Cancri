@@ -4,9 +4,15 @@ class Admin::UsersController < AdminController
   # GET /admin/users
   # GET /admin/users.json
   def index
+    field = params[:field]
+    keyword = params[:keyword]
     users = User.left_joins(:user_profile).order('id asc').select(:id, :nickname, :mobile, :email, :sign_in_count, :current_sign_in_at, 'user_profiles.username'); false
-    if params[:field].present? && params[:keyword].present?
-      users = users.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"])
+    if field.present? && keyword.present?
+      if field == 'username'
+        users = users.where('user_profiles.username like ?', "%#{keyword}%")
+      else
+        users = users.where(["#{field} like ?", "%#{keyword}%"])
+      end
     end
     @users = users.page(params[:page]).per(params[:per])
   end
