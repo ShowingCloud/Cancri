@@ -106,23 +106,31 @@ class Admin::EventsController < AdminController
 
   def scores
     event_id = params[:id]
+    event_name = params[:event_name]
     schedule_name = params[:schedule]
     params_group = params[:group]
     sort = params[:sort]
-    group = 0
     case params_group
       when '小学组'
-        group = 1
+        ac_group = 1
+        sql_group = '(1)'
       when '中学组'
-        group = 2
+        ac_group = 2
+        sql_group = '(2)'
       when '初中组'
-        group = 3
+        ac_group = 3
+        sql_group = '(3)'
       when '高中组'
-        group = 4
+        ac_group = 4
+        sql_group = '(4)'
+      when '不分组别'
+        ac_group = [1, 2, 3, 4]
+        sql_group = '(1,2,3,4)'
       else
         render_optional_error(404)
+        return false
     end
-    @group_schedule = EventSchedule.event_group_schedules(group, @event.id)
+    @group_schedule = EventSchedule.event_group_schedules(ac_group, @event.id)
     schedule_id = -1
     if @group_schedule.present?
       @group_schedule.each do |g_s|
@@ -134,32 +142,37 @@ class Admin::EventsController < AdminController
 
     if schedule_id == -1
       render_optional_error(404)
+      return false
     else
-      @event_sa = EventSaShip.where(event_id: event_id, schedule_id: schedule_id, score_attribute_id: 19).take
+      @event_sa = EventSaShip.where(event_id: event_id, schedule_id: schedule_id, score_attribute_id: 19).take # 19 最终成绩
     end
 
-    if sort.to_i == 1
+    if sort.to_i == 1 && !['29', '31'].include?(event_id)
       if @event_sa.present? && @event_sa.formula.present?
         order = @event_sa.formula['order']
         order_num = order['num']
         first_order = (order['1']['sort'].to_i == 0) ? '>' : '<'
-        if order_num == 2
+        if order_num > 1
           second_order = order['2']['sort'].to_i
-          teams = Team.joins('inner join scores s on s.team1_id = teams.id').where(event_id: event_id, group: group).where('s.score > ?', 0).select('teams.*', 's.score', 's.order_score').order("s.score #{(first_order == '>') ? 'desc' : 'asc'}").order("s.order_score #{(second_order == 1) ? 'asc' : 'desc'}")
-          if teams.present?
-            teams.each_with_index do |team, index|
-              team.update(rank: index+1)
-            end
-            flash[:notice] = '排名成功'
+          if order_num == 2
+            sql = "scores.schedule_rank = (select order_rank from (SELECT s2.id,s2.score,s2.order_score,IF((score=@_last_score and order_score=@_last_order_score),@rank:=@rank,@rank:=@_sequence) AS order_rank,@_sequence:=@_sequence+1,@_last_score:=score,@_last_order_score:=order_score FROM scores s2 inner join teams t2 on t2.id = s2.team1_id, (SELECT @rank:= 1, @_sequence:=1, @_last_score:=0,@_last_order_score:=0) r WHERE s2.event_id = #{event_id} and s2.schedule_id = #{schedule_id} and t2.group in #{sql_group} and s2.score > 0 ORDER BY 2 #{first_order == '>' ? 'desc' : 'asc'},3 #{second_order == 0 ? 'desc' : 'asc'}) s3 where scores.id = s3.id)"
+          elsif order_num == 3
+            third_order = order['3']['sort'].to_i
+            sql = "scores.schedule_rank = (select order_rank from (SELECT s2.id,s2.score,s2.order_score,s2.sort_score,IF((score=@_last_score and order_score=@_last_order_score and sort_score=@_last_sort_score),@rank:=@rank,@rank:=@_sequence) AS order_rank,@_sequence:=@_sequence+1,@_last_score:=score,@_last_order_score:=order_score,@_last_sort_score:=sort_score FROM scores s2 inner join teams t2 on t2.id = s2.team1_id, (SELECT @rank:= 1, @_sequence:=1, @_last_score:=0,@_last_order_score:=0,@_last_sort_score:=0) r WHERE s2.event_id = #{event_id} and s2.schedule_id = #{schedule_id} and t2.group in #{sql_group} and s2.score > 0 ORDER BY 2 #{first_order == '>' ? 'desc' : 'asc'},3 #{second_order == 0 ? 'desc' : 'asc'},4 #{third_order == 0 ? 'desc' : 'asc'}) s3 where scores.id = s3.id)"
+          else
+            flash[:notice] = '排序超过3个'
+            redirect_to "/admin/events/scores?id=#{event_id}&group=#{params_group}&schedule=#{schedule_name}"
+            return false
           end
         else
           # 单一排序
-          sql = "rank = (select count(*)+1 from (select score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group=#{group} and s.score > 0) dist_score where dist_score.score #{first_order} scores.score)"
-          if Team.joins('inner join scores on scores.team1_id = teams.id').where(event_id: event_id, group: group).where('scores.score > ?', 0).update_all(sql)
-            flash[:notice] = '排名成功'
-          else
-            flash[:notice] = '排名失败'
-          end
+          sql = "scores.schedule_rank = (select count(*)+1 from (select score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.score > 0) dist_score where dist_score.score #{first_order} scores.score)"
+        end
+        update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: schedule_id).where('scores.score > ?', 0).where('t.group' => ac_group).update_all(sql)
+        if update_result
+          flash[:notice] = '排名成功'
+        else
+          flash[:notice] = '排名失败'
         end
       else
         flash[:notice] = '公式不存在'
@@ -167,7 +180,99 @@ class Admin::EventsController < AdminController
         return false
       end
     end
-    @scores = Team.left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').joins("left join scores s on teams.id = s.team1_id and s.schedule_id = #{schedule_id}").where(event_id: event_id, group: group).select(:id, 'schools.name as school_name', 's.score', 's.score_attribute', 's.order_score', 'u_p.username', 'teams.teacher', 'teams.rank', 'teams.group', 'teams.identifier').order('teams.rank asc')
+    @scores = Team.joins("left join scores s on teams.id = s.team1_id and s.schedule_id = #{schedule_id}").left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').where(event_id: event_id, group: ac_group).select(:id, :teacher, :identifier, :group, 'schools.name as school_name', 's.score', 's.score_attribute', 's.order_score', 's.sort_score', 'u_p.username', 's.schedule_rank').order('s.schedule_rank IS NULL ASC').order('s.schedule_rank asc').page(params[:page]).per(100)
+
+    respond_to do |format|
+      format.html
+      format.xls {
+        data = @scores.where('s.schedule_rank > ?', 0)
+        if data.length > 0
+          data = data.map { |score| {
+              编号: score.identifier,
+              队长: score.username,
+              学校: score.school_name,
+              老师: score.teacher,
+              名次: score.schedule_rank
+          } }
+          filename = "#{event_name}_#{params_group}_#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+          send_data(data.to_xls, :type => "text/xls;charset=utf-8,header=present", :filename => filename)
+        else
+          flash[:notice] = '暂无有效成绩'
+          redirect_to "/admin/events/scores?id=#{event_id}&group=#{params_group}&schedule=#{schedule_name}"
+        end
+      }
+    end
+
+  end
+
+  def compute_last_score
+    event_id = params[:id]
+    schedule_name = params[:schedule]
+    params_group = params[:group]
+    case params_group
+      when '小学组'
+        ac_group = 1
+        sql_group = '(1)'
+      when '中学组'
+        ac_group = 2
+        sql_group = '(2)'
+      when '初中组'
+        ac_group = 3
+        sql_group = '(3)'
+      when '高中组'
+        ac_group = 4
+        sql_group = '(4)'
+      when '不分组别'
+        ac_group = [1, 2, 3, 4]
+        sql_group = '(1,2,3,4)'
+      else
+        render_optional_error(404)
+        return false
+    end
+    if event_id.to_i == 29 && schedule_name == '决赛' #承重结构
+      sql = "scores.score = (select b.he from (select s1.team1_id,sum(score) as he from scores s1 inner join teams t1 on t1.id = s1.team1_id
+         where s1.schedule_id in (2,3) and s1.event_id = 29 and t1.group in #{sql_group}  GROUP BY s1.team1_id
+			 ) b where scores.team1_id = b.team1_id and b.he > 0)"
+      update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: 1).where('t.group' => ac_group).update_all(sql)
+      if update_result
+        result = [true, '排名成功']
+      else
+        result = [false, '排名失败']
+      end
+    else
+      result = [false, '不规范请求']
+    end
+    render json: [result[0], result[1]]
+  end
+
+  def create_last_score
+    event_id = params[:id]
+    if ['29', '31'].include?(event_id) #承重,F1
+      team_ids = Team.where(event_id: event_id).pluck(:id)
+      if team_ids.present?
+        score_team_ids = Score.where(event_id: event_id, schedule_id: 1).pluck(:team1_id)
+        new_score_team_ids = team_ids - score_team_ids
+        if new_score_team_ids.present? && new_score_team_ids.is_a?(Array)
+          save_num = 0
+          new_score_team_ids.each do |team1_id|
+            score_row = Score.create(event_id: event_id, schedule_id: 1, team1_id: team1_id, kind: 1, th: 1, score: 0, last_score: true)
+            if score_row.save
+              save_num+=1
+            end
+          end
+          if save_num == new_score_team_ids.length
+            result = [true, '全部创建成功']
+          else
+            result = [false, '未全部创建成功']
+          end
+        else
+          result = [true, '已全部存在']
+        end
+      end
+    else
+      result = [false, '不规范请求']
+    end
+    render json: result
   end
 
   def school_sort
@@ -182,6 +287,7 @@ class Admin::EventsController < AdminController
           group = '(2, 3, 4)'
         else
           render_optional_error(404)
+          return false
       end
     end
 

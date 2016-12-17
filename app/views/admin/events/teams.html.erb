@@ -6,7 +6,7 @@
     <a href="/admin/events/<%= @event.id %>" role="button" title="查看项目" class="btn btn-default">
       <i class="icon-eye-open icon-only"></i></a>
     <% first_group = @event.group.split(',')[0] %>
-    <% case first_group when 1 %>
+    <% case first_group.to_i when 1 %>
         <% first_group = '小学组' %>
     <% when 2 %>
         <% first_group = '中学组' %>

@@ -1,15 +1,13 @@
 <h1 class="page-header">
   显示<%= t('activerecord.models.event') %>
   <small class="pull-right">
-      <%= link_to "/admin/event_schedules/#{@event.id}/edit", title: '赛程', class: 'btn btn-default' do %>
-          <i class="icon-filter icon-only"></i>
-      <% end %>
+    <%= link_to "/admin/event_schedules/#{@event.id}/edit", title: '赛程', class: 'btn btn-default' do %>
+        <i class="icon-filter icon-only"></i>
+    <% end %>
     <a href="<%= new_admin_event_path %>" title="添加项目" class="btn btn-default">
       <i class="icon-plus icon-only"></i></a>
     <a href="<%= edit_admin_event_path(@event) %>" title="编辑" class="btn btn-default">
       <i class="icon-edit icon-only"></i></a>
-    <a href="<%= admin_events_path %>" title="列表" class="btn btn-default">
-      <i class="icon-list icon-only"></i></a>
   </small>
 </h1>
 <% if notice %>
@@ -124,7 +122,8 @@
                                             <% end %>
                                             <span>轮数:<%= sa_formula["rounds"] %>,</span>
                                             <% str += " 排序: #{sa_formula["last_score_by"]["name"]} - #{sa_formula["order"]["1"]["sort"] ==1 ? '升序' : '降序'}" %>
-                                            <% str += ", #{sa_formula["order"]["2"]["name"]} - #{sa_formula["order"]["2"]["sort"] ==1 ? '升序' : '降序'}" if sa_formula["order"]["num"]==2 %>
+                                            <% str += ", #{sa_formula["order"]["2"]["name"]} - #{sa_formula["order"]["2"]["sort"] ==1 ? '升序' : '降序'}" if sa_formula["order"]["num"]>1 %>
+                                            <% str += ", #{sa_formula["order"]["3"]["name"]} - #{sa_formula["order"]["3"]["sort"] ==1 ? '升序' : '降序'}" if sa_formula["order"]["num"]==3 %>
                                             <% str += " 触发属性: #{sa_formula["trigger_attr"]["id"].present? ? "#{sa_formula["trigger_attr"]["name"].to_s + " 触发值:#{sa_formula["trigger_attr"]["val"]}"}" : "无" }," %>
                                             <span title="<%= str %>"><%= str[0..40] %></span>
                                         <% end %>
@@ -173,12 +172,12 @@
                                                                 <% end %>
                                                               </select>&nbsp;&nbsp;
                                                               成绩排序:
+                                                              <% formula_array=[] %>
                                                               <% if sa_formula.present? %>
-                                                                  <% formula_array = ["#{sa_formula["order"]["1"]["id"]}++#{sa_formula["order"]["1"]["sort"]}++#{sa_formula["order"]["1"]["name"]}", (sa_formula["order"]["num"] == 2) ? "#{sa_formula["order"]["2"]["id"]}++#{sa_formula["order"]["2"]["sort"]}++#{sa_formula["order"]["2"]["name"]}" : nil] %>
-                                                              <% else %>
-                                                                  <% formula_array=[] %>
+                                                                  <% Array.new(sa_formula["order"]['num']).each_index do |order_index| %>
+                                                                      <% formula_array << "#{sa_formula["order"]["#{order_index+1}"]["id"]}++#{sa_formula["order"]["#{order_index+1}"]["sort"]}++#{sa_formula["order"]["#{order_index+1}"]["name"]}" %>
+                                                                  <% end %>
                                                               <% end %>
-
                                                               <select multiple="" name="order[]" id="selected-orders-<%= sa[:id] %>" class="chosen-select tag-input-style" data-placeholder="请选择排序... (降序 (值越大名次越高) , 升序反之)">
                                                                 <option value="0++0++最终成绩" <%= "selected" if formula_array.include?('0++0++最终成绩') %> >最终成绩-降序</option>
                                                                 <option value="0++1++最终成绩" <%= "selected" if formula_array.include?('0++1++最终成绩') %> >最终成绩-升序</option>

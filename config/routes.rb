@@ -131,6 +131,8 @@ Rails.application.routes.draw do
         get :school_sort
         get :export_team_info
         post :update_sa_in_rounds
+        post :create_last_score
+        post :compute_last_score
       end
     end
     resources :teams

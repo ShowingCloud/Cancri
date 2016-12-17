@@ -3,7 +3,8 @@
   成绩排名 <%= "#{params[:group]}" if params[:group].present? %>  <%= "#{params[:schedule]}" if params[:schedule].present? %>
   <input type="hidden" class="event-id" value="<%= @event.id %>"/>
   <small class="pull-right">
-    <% @event.group.split(',').each do |group| %>
+    <% event_groups = @event.group.split(',') %>
+    <% event_groups.each do |group| %>
 
         <% case group.to_i when 1 %>
             <% g = '小学组' %>
@@ -18,6 +19,11 @@
         <% end %>
         <a href="/admin/events/scores?id=<%= params[:id] %>&group=<%= g %>&schedule=<%= params[:schedule] %>" role="button" title="" class="btn <%= 'btn-info' if params[:group] == g %>" data-toggle="modal">
           <%= g %>
+        </a>
+    <% end %>
+    <% if event_groups.length > 1 %>
+        <a href="/admin/events/scores?id=<%= params[:id] %>&group=不分组别&schedule=<%= params[:schedule] %>" role="button" title="" class="btn <%= 'btn-info' if params[:group] == '不分组别' %>" data-toggle="modal">
+          不分组别
         </a>
     <% end %>
   </small>
@@ -37,15 +43,36 @@
 <% end %>
 <a href="/admin/events/<%= @event.id %>" role="button" title="查看项目" class="btn btn-warning">
   <i class="icon-eye-open icon-only"></i></a>
-<a href="/admin/events/scores?id=<%= params[:id] %>&group=<%= params[:group] %>&sort=1" class="btn btn-danger">成绩排名</a>
+<a href="/admin/events/scores.xls?id=<%= params[:id] %>&event_name=<%= @event.name %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" role="button" title="导出成绩" class="btn">
+  <i class="icon-external-link icon-only"></i></a>
+<a href="/admin/events/scores?id=<%= params[:id] %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" class="btn btn-danger">成绩排名</a>
+<% order_info = {} %>
 <% if @event_sa.present? %>
     <% if @event_sa.formula.present? %>
-        <label class="">
-          <%= @event_sa.formula["compute_type"] == '1' ? '手动计算' : '自动计算' %>
-        </label>
+        <%= @event_sa.formula["compute_type"] == '1' ? '手动' : '自动计算' %>
+        <% order = @event_sa.formula["order"] %>
+        <%= order['1']['name'] %>-<%= order['1']['sort'] == 1 ? '升序;' : '降序;' %>
+        <% order_info['num'] = order['num'].to_i %>
+        <% if order_info['num'] > 1 %>
+            <% order_info['2_name'] = order['2']['name'] %>
+            <%= "#{order_info['2_name']}-#{order['2']['sort'] == 1 ? '升序;' : '降序;'}" %>
+            <% if order_info['num'] == 3 %>
+                <% order_info['3_name'] = order['3']['name'] %>
+                <%= "#{order_info['3_name']}-#{order['3']['sort'] == 1 ? '升序;' : '降序;'}" %>
+            <% end %>
+        <% end %>
     <% end %>
 <% else %>
-    公式不存在
+    <% if @group_schedule.present? && @group_schedule.length >1 %>
+        <button class="btn check-last-score-exist" data-event="<%= @event.id %>" title="创建决赛纪录">
+          <i class="icon-info icon-only"></i></button>
+        <button class="btn btn-danger compute-last-score" data-event="<%= @event.id %>" data-schedule="<%= params[:schedule] %>" data-group="<%= params[:group] %>" title="成绩排名">
+          计算决赛成绩
+        </button>
+        赛制成绩运算 (需比赛全部完成)
+    <% else %>
+        公式不存在,请补全
+    <% end %>
 <% end %>
 <hr>
 
@@ -53,6 +80,9 @@
 <div class="row">
   <div class="col-xs-12">
     <% if @scores.present? %>
+        <nav>
+          <%= paginate @scores %>
+        </nav>
         <table class="table table-bordered table-hover table-striped">
           <thead>
           <tr>
@@ -63,9 +93,15 @@
             <th>指导老师</th>
             <th>成绩属性</th>
             <th>最终成绩</th>
-            <th>辅助排序</th>
+            <% if @event_sa.present? %>
+                <% if order_info['num'] > 1 %>
+                    <th><%= order_info['2_name'] %></th>
+                <% end %>
+                <% if order_info['num'] == 3 %>
+                    <th><%= order_info['3_name'] %></th>
+                <% end %>
+            <% end %>
             <th>排名</th>
-            <th>操作</th>
           </tr>
           </thead>
 
@@ -77,13 +113,19 @@
                 <td><%= score.username %></td>
                 <td><%= score.school_name %></td>
                 <td><%= score.teacher %></td>
-                <% score_attribute = (score.score_attribute).force_encoding 'utf-8' if score.score_attribute %>
-                <td title="<%= score_attribute if score.score_attribute %>"><%= score_attribute[1..20] if score.score_attribute %></td>
+                <% has_score_attribute = score.score_attribute %>
+                <% score_attribute = has_score_attribute.force_encoding('utf-8') if has_score_attribute %>
+                <td class="<%= 'score-attribute-td' if has_score_attribute %>" data-title="<%= score_attribute if has_score_attribute %>"><%= score_attribute[1..20] if has_score_attribute %></td>
                 <td><%= score.score %></td>
-                <td><%= score.order_score %></td>
-                <td><%= score.rank %></td>
-                <td>
-                </td>
+                <% if @event_sa.present? %>
+                    <% if order_info['num'] >1 %>
+                        <td><%= score.order_score %></td>
+                    <% end %>
+                    <% if order_info['num'] == 3 %>
+                        <td><%= score.sort_score %></td>
+                    <% end %>
+                <% end %>
+                <td><%= score.schedule_rank %></td>
               </tr>
           <% end %>
           </tbody>

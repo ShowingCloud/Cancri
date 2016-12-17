@@ -89,7 +89,7 @@
                   <i class="icon-eye-open bigger-120"></i>
               <% end %>
               <% first_group = event.group.split(',')[0] %>
-              <% case first_group when 1 %>
+              <% case first_group.to_i when 1 %>
                   <% first_group = '小学组' %>
               <% when 2 %>
                   <% first_group = '中学组' %>

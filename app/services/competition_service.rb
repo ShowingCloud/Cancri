@@ -44,16 +44,17 @@ class CompetitionService
   def self.post_team_scores(event_id, schedule_id, kind, th, team1_id, score_attribute, formula, note, device_no, confirm_sign, operator_id)
     score_gs = JSON.parse(formula.strip)
     score_attribute = JSON.parse(score_attribute.strip)
+    score_process = score_attribute['process']
     # score_gs = formula
     # score_attribute = score_attribute
 
-    if score_gs.is_a?(Hash)
+    if score_gs.is_a?(Hash) && score_process.present?
       rounds = score_gs['rounds'].to_i
       order = score_gs['order']
       order_num = order['num']
       first_sort = order['1']['sort']
       formula = score_gs['formula']
-      score_length = score_attribute.length
+      score_length = score_process.length
       if order_num == 2
         second_sort_by = order['2']['id']
       end
@@ -63,7 +64,7 @@ class CompetitionService
       end
       if rounds == score_length # 成绩轮数与规定相同
         rounds_score =[] # 多轮最终成绩的集合
-        score_attribute.each do |val|
+        score_process.each do |val|
           if val['valid']
             last_score_by_id = score_gs['last_score_by']['id']
 
@@ -71,7 +72,7 @@ class CompetitionService
               one_round_score = 0.0
               formula.each do |f|
                 if f['id'] == '0'
-                  formula_ele = (event_id == 27 && val['8'].present? && (val['8']['val'] > 100)) ? 30 : f['xishu']
+                  formula_ele = (event_id == '27' && val['76'].present? && (val['76']['val'].to_f > 100)) ? 30 : f['xishu']
                 else
                   formula_ele = (val["#{f['id']}"]['val']).to_f*f['xishu']
                 end
@@ -89,6 +90,12 @@ class CompetitionService
                     one_round_score+=formula_ele
                 end
               end
+
+              one_round_score = one_round_score.round(2)
+              if event_id.to_i == 30 # 云霄飞车
+                one_round_score = one_round_score.abs
+              end
+
               case order_num
                 when 1
                   rounds_score << [one_round_score.round(2), 0, 0]
@@ -131,7 +138,7 @@ class CompetitionService
               last_score = last_score.sort_by { |h| ["#{(first_sort == 1) ? h[0] : -h[0]}".to_f] }
           end
         end
-        score_attribute << {rounds_score: rounds_score}
+        score_attribute['rounds_scores'] = rounds_score
         score_row = Score.where(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id).take
         if score_row.present?
           if score_row.update_attributes(score_attribute: score_attribute, score: last_score[0][0], order_score: last_score[0][1], sort_score: last_score[0][2], note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
@@ -151,7 +158,7 @@ class CompetitionService
         result = [false, '成绩轮数为'+rounds.to_s+',您传了'+score_length.to_s+' 轮']
       end
     else
-      result = [false, '公式不存在,请联系工作人员']
+      result = [false, '公式或成绩不存在,请联系工作人员']
     end
     {status: result[0], message: result[1]}
   end
