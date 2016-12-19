@@ -462,7 +462,7 @@ $(function () {
 
     // 选择队伍状态
     $('#select-team-status').on('change', function () {
-        var event_id = $('.event-id').text();
+        var event_id = $('.event-id').val();
         var status = $(this).val();
         var status_params;
         if (status == '') {
