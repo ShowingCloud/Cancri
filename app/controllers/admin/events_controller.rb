@@ -352,10 +352,32 @@ class Admin::EventsController < AdminController
   end
 
   def teams
+    field = params[:field]
+    keyword = params[:keyword]
     status = params[:status]
     event_id = params[:id]
     @event = Event.find(event_id)
     teams = Team.includes(:team_user_ships, :user).where(event_id: event_id)
+    if field.present? && keyword.present?
+      if field == 'identifier'
+        keyword = keyword.upcase
+      end
+      if field == 'group'
+        case keyword
+          when '小学'
+            keyword = 1
+          when '中学'
+            keyword = 2
+          when '初中'
+            keyword = 3
+          when '高中'
+            keyword = 4
+          else
+        end
+      end
+      teams = teams.where("teams.#{field} like ?", "%#{keyword}%")
+    end
+
     if status.present?
       case status
         when '组队中' then
@@ -373,7 +395,7 @@ class Admin::EventsController < AdminController
         else
           status = nil
       end
-      teams = teams.where(status: status)
+      teams = teams.where('teams.status = ?', status)
     end
     @teams = teams.page(params[:page]).per(params[:per])
     @users = User.includes(:user_profile).where.not(id: TeamUserShip.where(event_id: params[:id]).pluck(:user_id)).select(:id, :nickname)

@@ -3,6 +3,9 @@
   <small class="pull-right">
     <a href="#add-team-form" role="button" title="添加队伍" class="open-add-team btn btn-default" data-toggle="modal">
       <i class="icon-plus icon-only"></i></a>
+    <a class="btn btn-default btn-search-toggle" title="搜索">
+      <i class="icon-search icon-only"></i>
+    </a>
     <a href="/admin/events/<%= @event.id %>" role="button" title="查看项目" class="btn btn-default">
       <i class="icon-eye-open icon-only"></i></a>
     <% first_group = @event.group.split(',')[0] %>
@@ -23,34 +26,60 @@
     <% end %>
   </small>
   <input type="hidden" class="event-id" value="<%= @event.id %>">
-  <% if @teams.present? %>
-      <div class="col-xs-12 col-sm-2 form-group pull-right" style="margin-top: 6px">
-        <select id="select-team-status" class="form-control">
-          <option value="">
-            &nbsp;全部
-          </option>
-          <option <%= 'selected' if params[:status] == '组队中' %> value="组队中">
-            组队中
-          </option>
-          <option <%= 'selected' if params[:status] == '报名成功' %> value="报名成功">
-            报名成功
-          </option>
-          <option <%= 'selected' if params[:status] == '待学校审核' %> value="待学校审核">
-            待学校审核
-          </option>
-          <option <%= 'selected' if params[:status] == '待区县审核' %> value="待区县审核">
-            待区县审核
-          </option>
-          <option <%= 'selected' if params[:status] == '学校拒绝' %> value="学校拒绝">
-            学校拒绝
-          </option>
-          <option <%= 'selected' if params[:status] == '区县拒绝' %> value="区县拒绝">
-            区县拒绝
-          </option>
-        </select>
-      </div>
-  <% end %>
+  <div class="col-xs-12 col-sm-2 form-group pull-right" style="margin-top: 6px">
+    <select id="select-team-status" class="form-control">
+      <option value="">
+        &nbsp;全部
+      </option>
+      <option <%= 'selected' if params[:status] == '组队中' %> value="组队中">
+        组队中
+      </option>
+      <option <%= 'selected' if params[:status] == '报名成功' %> value="报名成功">
+        报名成功
+      </option>
+      <option <%= 'selected' if params[:status] == '待学校审核' %> value="待学校审核">
+        待学校审核
+      </option>
+      <option <%= 'selected' if params[:status] == '待区县审核' %> value="待区县审核">
+        待区县审核
+      </option>
+      <option <%= 'selected' if params[:status] == '学校拒绝' %> value="学校拒绝">
+        学校拒绝
+      </option>
+      <option <%= 'selected' if params[:status] == '区县拒绝' %> value="区县拒绝">
+        区县拒绝
+      </option>
+    </select>
+  </div>
 </h1>
+<div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
+  <div class="widget-header widget-header-small">
+    <h5 class="lighter">搜索</h5>
+  </div>
+  <div class="widget-body">
+    <div class="widget-main">
+      <form class="form" role="form" method="get">
+        <div class="input-group" data-search="field">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+              <span data-search-text class="admin-search-field">编号</span>
+              <span class="caret"></span></button>
+            <ul class="dropdown-width dropdown-menu">
+              <li data-search-option="identifier"><a>编号</a></li>
+              <li data-search-option="group"><a>组别</a></li>
+              <li data-search-option="id"><a>ID</a></li>
+            </ul>
+          </div>
+          <input type="hidden" name="field" value="<%= params[:field].present? ? params[:field] : 'identifier' %>"/>
+          <input type="hidden" name="id" value="<%= params[:id].present? ? params[:id] : 21 %>"/>
+          <input placeholder="输入关键字，按回车键提交" value="<%= params[:keyword] %>" name="keyword" type="text" class="form-control" aria-label="...">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
 
 <input type="hidden" id="team-players-max" value="<%= @event.team_max_num %>">
 <div class="row">
