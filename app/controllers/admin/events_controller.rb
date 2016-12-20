@@ -110,6 +110,7 @@ class Admin::EventsController < AdminController
     schedule_name = params[:schedule]
     params_group = params[:group]
     sort = params[:sort]
+    export_type = params[:export_type]
     case params_group
       when '小学组'
         ac_group = 1
@@ -168,7 +169,7 @@ class Admin::EventsController < AdminController
           # 单一排序
           sql = "scores.schedule_rank = (select count(*)+1 from (select score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.score > 0) dist_score where dist_score.score #{first_order} scores.score)"
         end
-        update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: schedule_id).where('scores.score > ?', 0).where('t.group' => ac_group).update_all(sql)
+        update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: schedule_id).where('scores.score >= ?', 0).where('t.group' => ac_group).update_all(sql)
         if update_result
           flash[:notice] = '排名成功'
         else
@@ -180,21 +181,40 @@ class Admin::EventsController < AdminController
         return false
       end
     end
-    @scores = Team.joins("left join scores s on teams.id = s.team1_id and s.schedule_id = #{schedule_id}").left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').where(event_id: event_id, group: ac_group).select(:id, :teacher, :identifier, :group, 'schools.name as school_name', 's.score', 's.score_attribute', 's.order_score', 's.sort_score', 'u_p.username', 's.schedule_rank').order('s.schedule_rank IS NULL ASC').order('s.schedule_rank asc').page(params[:page]).per(100)
+    @scores = Team.joins("left join scores s on teams.id = s.team1_id and s.schedule_id = #{schedule_id}").left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = teams.user_id').where(event_id: event_id, group: ac_group).select(:id, :teacher, :identifier, :group, 'schools.name as school_name', 's.id as score_id', 's.score', 's.score_attribute', 's.order_score', 's.sort_score', 'u_p.username', 's.schedule_rank').order('s.schedule_rank IS NULL ASC').order('s.schedule_rank asc').page(params[:page]).per(100)
 
     respond_to do |format|
       format.html
       format.xls {
         data = @scores.where('s.schedule_rank > ?', 0)
         if data.length > 0
-          data = data.map { |score| {
-              编号: score.identifier,
-              队长: score.username,
-              学校: score.school_name,
-              老师: score.teacher,
-              名次: score.schedule_rank
-          } }
-          filename = "#{event_name}_#{params_group}_#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+          if export_type == '1'
+            data = Team.find_by_sql("select t.identifier,school.name as school_name, u_p.username,t.teacher,s.schedule_rank,u_p.student_code,u_p.grade,u_p.bj from team_user_ships t_u INNER join teams t on t.id = t_u.team_id left join user_profiles u_p on u_p.user_id = t_u.user_id left join scores s on s.team1_id = t.id left join schools school on school.id = t.school_id where t.event_id = #{event_id} and t.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.schedule_rank > 0 order by s.schedule_rank")
+            data = data.map { |score| {
+                项目: event_name,
+                组别: params_group,
+                编号: score.identifier,
+                队员: score.username,
+                学校: score.school_name,
+                老师: score.teacher,
+                名次: score.schedule_rank,
+                学籍号: score.student_code,
+                年级: score.grade,
+                班级: score.bj
+            } }
+          else
+            data = Team.find_by_sql("select t.identifier,school.name as school_name,t.teacher, GROUP_CONCAT(u_p.username) as username,s.schedule_rank from team_user_ships t_u INNER join teams t on t.id = t_u.team_id left join user_profiles u_p on u_p.user_id = t_u.user_id left join schools school on school.id = t.school_id left join scores s on s.team1_id = t_u.team_id where t.event_id = #{event_id} and s.schedule_id = #{schedule_id} and s.schedule_rank > 0 group by t_u.team_id,s.schedule_rank order by s.schedule_rank")
+            data = data.map { |score| {
+                项目: event_name,
+                组别: params_group,
+                编号: score.identifier,
+                队员: score.username,
+                学校: score.school_name,
+                老师: score.teacher,
+                名次: score.schedule_rank
+            } }
+          end
+          filename = "#{event_name}_#{params_group}_#{export_type.present? ? '多行' : '单行'}_#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
           send_data(data.to_xls, :type => "text/xls;charset=utf-8,header=present", :filename => filename)
         else
           flash[:notice] = '暂无有效成绩'
@@ -290,6 +310,25 @@ class Admin::EventsController < AdminController
     render json: result
   end
 
+  def delete_score
+    sd = params[:sd]
+    if sd.present?
+      score = Score.find_by_id(sd)
+      if score.present?
+        if score.destroy
+          result =[true, '删除成功']
+        else
+          result = [false, '删除失败']
+        end
+      else
+        result = [false, '成绩不存在']
+      end
+    else
+      result = [false, '参数不存在']
+    end
+    render json: result
+  end
+
   def school_sort
     event_id = params[:id]
     params_group = params[:group]
@@ -352,10 +391,32 @@ class Admin::EventsController < AdminController
   end
 
   def teams
+    field = params[:field]
+    keyword = params[:keyword]
     status = params[:status]
     event_id = params[:id]
     @event = Event.find(event_id)
     teams = Team.includes(:team_user_ships, :user).where(event_id: event_id)
+    if field.present? && keyword.present?
+      if field == 'identifier'
+        keyword = keyword.upcase
+      end
+      if field == 'group'
+        case keyword
+          when '小学'
+            keyword = 1
+          when '中学'
+            keyword = 2
+          when '初中'
+            keyword = 3
+          when '高中'
+            keyword = 4
+          else
+        end
+      end
+      teams = teams.where("teams.#{field} like ?", "%#{keyword}%")
+    end
+
     if status.present?
       case status
         when '组队中' then
@@ -373,7 +434,7 @@ class Admin::EventsController < AdminController
         else
           status = nil
       end
-      teams = teams.where(status: status)
+      teams = teams.where('teams.status = ?', status)
     end
     @teams = teams.page(params[:page]).per(params[:per])
     @users = User.includes(:user_profile).where.not(id: TeamUserShip.where(event_id: params[:id]).pluck(:user_id)).select(:id, :nickname)

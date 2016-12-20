@@ -133,6 +133,7 @@ Rails.application.routes.draw do
         post :update_sa_in_rounds
         post :create_last_score
         post :compute_last_score
+        post :delete_score
       end
     end
     resources :teams
@@ -162,6 +163,7 @@ Rails.application.routes.draw do
     resources :notifications
     # get '/vouchers/to_image', to: 'vouchers#to_image'
     # get '/vouchers/export_voucher', to: 'vouchers#export_voucher'
+    get '/vouchers/export_xls', to: 'vouchers#export_xls'
     resources :vouchers
   end
 
