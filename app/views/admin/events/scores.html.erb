@@ -30,6 +30,7 @@
 
   <input type="hidden" class="event-id" value="<%= @event.id %>">
 </h1>
+<% current_admin = @current_admin.id %>
 <small class="pull-right">
   <% if @group_schedule.present? %>
       <% @group_schedule.each do |g_s| %>
@@ -43,8 +44,10 @@
 <% end %>
 <a href="/admin/events/<%= @event.id %>" role="button" title="查看项目" class="btn btn-warning">
   <i class="icon-eye-open icon-only"></i></a>
-<a href="/admin/events/scores.xls?id=<%= params[:id] %>&event_name=<%= @event.name %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" role="button" title="导出成绩" class="btn">
+<a href="/admin/events/scores.xls?id=<%= params[:id] %>&event_name=<%= @event.name %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" role="button" title="导出成绩(单行)" class="btn">
   <i class="icon-external-link icon-only"></i></a>
+<a href="/admin/events/scores.xls?export_type=1&id=<%= params[:id] %>&event_name=<%= @event.name %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" role="button" title="导出成绩(多行)" class="btn">
+  多行 <i class="icon-external-link icon-only"></i></a>
 <a href="/admin/events/scores?id=<%= params[:id] %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" class="btn btn-danger">成绩排名</a>
 <% order_info = {} %>
 
@@ -103,12 +106,15 @@
                 <% end %>
             <% end %>
             <th>排名</th>
+            <% if current_admin == 3 %>
+                <th>操作</th>
+            <% end %>
           </tr>
           </thead>
 
           <tbody>
           <% @scores.each_with_index do |score, index| %>
-              <tr>
+              <tr class="score-identifier-<%= score.score_id %>">
                 <td><%= score.id %></td>
                 <td><%= score.identifier %></td>
                 <td><%= score.username %></td>
@@ -127,6 +133,11 @@
                     <% end %>
                 <% end %>
                 <td><%= score.schedule_rank %></td>
+                <% if score.score_id.present? && current_admin == 3 %>
+                    <td>
+                      <span class="btn btn-xs btn-danger delete-team-score" data-score="<%= score.score_id %>"><i class="icon-trash bigger-120"></i></span>
+                    </td>
+                <% end %>
               </tr>
           <% end %>
           </tbody>

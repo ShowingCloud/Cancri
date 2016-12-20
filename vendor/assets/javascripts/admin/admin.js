@@ -141,6 +141,26 @@ $(function () {
         }
     });
 
+    $('.delete-team-score').on('click', function () {
+        var sd = $(this).attr('data-score');
+        if (sd && confirm('确认删除该成绩?')) {
+            $.ajax({
+                url: '/admin/events/delete_score',
+                type: 'post',
+                data: {"sd": sd},
+                success: function (data) {
+                    admin_gritter_notice(data[0], data[1]);
+                    if (data[0]) {
+                        $('.score-identifier-' + sd).addClass('hide');
+                    }
+                }
+            });
+        } else {
+            admin_gritter_notice(false, '成绩不存在')
+        }
+
+    });
+
     // ============================== events end ==============================
 
     // 活动打分
