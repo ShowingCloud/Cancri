@@ -396,7 +396,7 @@ class Admin::EventsController < AdminController
     status = params[:status]
     event_id = params[:id]
     @event = Event.find(event_id)
-    teams = Team.includes(:team_user_ships, :user).where(event_id: event_id)
+    teams = TeamUserShip.joins(:team).joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').where('teams.event_id=?', event_id)
     if field.present? && keyword.present?
       if field == 'identifier'
         keyword = keyword.upcase
@@ -436,8 +436,8 @@ class Admin::EventsController < AdminController
       end
       teams = teams.where('teams.status = ?', status)
     end
-    @teams = teams.page(params[:page]).per(params[:per])
-    @users = User.includes(:user_profile).where.not(id: TeamUserShip.where(event_id: params[:id]).pluck(:user_id)).select(:id, :nickname)
+    @teams = teams.select("GROUP_CONCAT(u_p.username,'--',team_user_ships.user_id,IF(team_user_ships.status,'','--未确认')) as players_info", 'teams.id','teams.user_id as leader_user_id', 'teams.identifier', 'teams.status as team_status', 'teams.players').group(:team_id).page(params[:page]).per(params[:per])
+    @users = User.left_joins(:user_profile).where.not(id: TeamUserShip.where(event_id: params[:id]).pluck(:user_id)).select(:id, :nickname, 'user_profiles.username')
   end
 
   def add_team_player
