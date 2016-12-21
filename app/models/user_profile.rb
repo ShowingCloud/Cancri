@@ -5,10 +5,11 @@ class UserProfile < ApplicationRecord
   has_many :user_roles, through: :user
   before_validation :validate_data
   validates :gender, inclusion: [1, 2], allow_blank: true
-  validates :school_id, numericality: {only_integer: true}, allow_blank: true
-  validates :grade, numericality: {only_integer: true}, allow_blank: true
-  validates :district_id, numericality: {only_integer: true}, allow_blank: true
+  validates :school_id, numericality: {:greater_than => 0}, allow_blank: true
+  validates :grade, allow_blank: true, numericality: {:greater_than => 0}
+  validates :district_id, numericality: {:greater_than => 0}, allow_blank: true
   validates :student_code, allow_blank: true, uniqueness: true, length: {is: 19}, numericality: {only_integer: true}
+  validates :bj, allow_blank: true, :numericality => {:greater_than => 0}
 
   GENDER = {male: 1, female: 2}
   mount_uploader :certificate, CoverUploader
