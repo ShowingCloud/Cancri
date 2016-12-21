@@ -82,98 +82,103 @@
 
 
 <input type="hidden" id="team-players-max" value="<%= @event.team_max_num %>">
-<div class="row">
-  <div class="col-xs-12">
-    <% if @teams.present? %>
-        <div class="row">
-          <% @teams.each do |team| %>
-              <div class="col-xs-12 col-sm-6 col-md-4" id="<%= "hide-team-#{team.id}" %>">
+<% if 1==1 %>
+    <div class="row">
+      <div class="col-xs-12">
+        <% if @teams.present? %>
+            <div class="row">
+              <% @teams.each do |team| %>
+                  <div class="col-xs-12 col-sm-6 col-md-4" id="<%= "hide-team-#{team.id}" %>">
 
-                <div class="widget-box">
-                  <div class="widget-header widget-header-small">
-                    <h4 class="">
-                      <i class="icon-flag-alt orange"></i>
-                      <span class="badge" id="<%= team.id %>" style="font-size: 15px;padding: 3px 6px 3px 6px"><%= team.players %></span>
-                      <%= team.try(:identifier) %>
-                      <% case team.status when 0 %>
-                          队长未提交
-                      <% when 1 %>
-                          报名成功
-                      <% when 2 %>
-                          待学校审核
-                      <% when 3 %>
-                          待区县审核
-                      <% when -2 %>
-                          学校审核未通过
-                      <% when -3 %>
-                          区县审核未通过
-                      <% else %>
-                          未知
-                      <% end %>
-                    </h4>
+                    <div class="widget-box">
+                      <div class="widget-header widget-header-small">
+                        <h4 class="">
+                          <i class="icon-flag-alt orange"></i>
+                          <span class="badge" id="<%= team.id %>" style="font-size: 15px;padding: 3px 6px 3px 6px"><%= team.players %></span>
+                          <%= team.identifier %>
+                          <% case team.team_status when 0 %>
+                              队长未提交
+                          <% when 1 %>
+                              报名成功
+                          <% when 2 %>
+                              待学校审核
+                          <% when 3 %>
+                              待区县审核
+                          <% when -2 %>
+                              学校审核未通过
+                          <% when -3 %>
+                              区县审核未通过
+                          <% else %>
+                              未知
+                          <% end %>
+                        </h4>
 
-                    <div class="widget-toolbar action-buttons">
-                      <% if @event.team_max_num > team.players %>
-                          <a href="#add-team-player" role="button" class="open-add-player" data-id="<%= team.id %>" data-user-id="<%= team.user_id %>" data-name="<%= team.try(:identifier) %>" data-toggle="modal">
-                            <i class="icon-plus" title="添加队员"></i>
-                          </a>
-                      <% else %>
+                        <div class="widget-toolbar action-buttons">
+                          <% if @event.team_max_num > team.players %>
+                              <a href="#add-team-player" role="button" class="open-add-player" data-id="<%= team.id %>" data-user-id="<%= team.leader_user_id %>" data-name="<%= team.try(:identifier) %>" data-toggle="modal">
+                                <i class="icon-plus" title="添加队员"></i>
+                              </a>
+                          <% else %>
                           <span class="hidden" id="after-delete-player-show">
-                            <a href="#add-team-player" role="button" class="open-add-player" data-id="<%= team.id %>" data-user-id="<%= team.user_id %>" data-name="<%= team.try(:identifier) %>" data-toggle="modal">
+                            <a href="#add-team-player" role="button" class="open-add-player" data-id="<%= team.id %>" data-user-id="<%= team.leader_user_id %>" data-name="<%= team.try(:identifier) %>" data-toggle="modal">
                               <i class="icon-plus" title="添加队员"></i>
                             </a>
                           </span>
-                      <% end %>
-                      &nbsp;
-                      <a class="pink admin-delete-team" style="cursor: pointer" data-id="<%= team.id %>" data-name="<%= team.name %>">
-                        <i class="icon-trash" title="删除队伍"></i>
-                      </a>
-                    </div>
-                  </div>
-                  <div class="widget-body">
-                    <div class="widget-main padding-8">
-                      <div class="event-team profile-feed">
-                        <% team.team_user_ships.each do |te| %>
-                            <div class="profile-activity clearfix" id="<%= "hide-player-#{te.user_id}" %>">
-                              <div>
-                                <%= te.user.user_profile.try(:username) %> - <%= te.user.nickname[0..10] %>
-                              </div>
-
-                              <% if te.user_id == team.user_id %>
-                                  <div class="tools action-buttons">
-                                    队长
-                                    <a href="#update-team-player" role="button" data-toggle="modal" class="blue update-team-player" style="cursor: pointer" title="换人" data-id="<%= team.id %>" data-user-id="<%= te.user_id %>" data-text="<%= te.user.user_profile.try(:username) %>" data-name="<%= team.try(:identifier) %>">
-                                      <i class="icon-pencil bigger-125"></i>
-                                    </a>
-                                  </div>
-                              <% else %>
-                                  <div class="tools action-buttons">
-                                    <a href="#update-team-player" role="button" data-toggle="modal" class="blue update-team-player" style="cursor: pointer" title="换人" data-id="<%= team.id %>" data-user-id="<%= te.user_id %>" data-text="<%= te.user.user_profile.try(:username) %>" data-name="<%= team.try(:identifier) %>">
-                                      <i class="icon-pencil bigger-125"></i>
-                                    </a>
-                                    <a class="red delete-team-player" title="删除队员" style="cursor: pointer" data-id="<%= team.id %>" data-text="<%= te.user.user_profile.try(:username) %>" data-name="<%= te.user_id %>">
-                                      <i class="icon-remove bigger-125"></i>
-                                    </a>
-                                  </div>
-                              <% end %>
-                            </div>
-                        <% end %>
+                          <% end %>
+                          &nbsp;
+                          <a class="pink admin-delete-team" style="cursor: pointer" data-id="<%= team.id %>" data-name="<%= team.identifier %>">
+                            <i class="icon-trash" title="删除队伍"></i>
+                          </a>
+                        </div>
                       </div>
+                      <div class="widget-body">
+                        <div class="widget-main padding-8">
+                          <div class="event-team profile-feed">
+                            <% if team.players_info.present? %>
+                                <% team.players_info.split(',').each do |te| %>
+                                    <% t_u = te.split('--') %>
+                                    <% t_u_id = t_u[1] %>
+                                    <div class="profile-activity clearfix" id="<%= "hide-player-#{t_u_id}" %>">
+                                      <div>
+                                        <%= te %>
+                                      </div>
+
+                                      <% if t_u_id == team.leader_user_id.to_s %>
+                                          <div class="tools action-buttons">
+                                            队长
+                                            <a href="#update-team-player" role="button" data-toggle="modal" class="blue update-team-player" style="cursor: pointer" title="换人" data-id="<%= team.id %>" data-user-id="<%= t_u_id %>" data-text="<%= t_u[0] %>" data-name="<%= team.try(:identifier) %>">
+                                              <i class="icon-pencil bigger-125"></i>
+                                            </a>
+                                          </div>
+                                      <% else %>
+                                          <div class="tools action-buttons">
+                                            <a href="#update-team-player" role="button" data-toggle="modal" class="blue update-team-player" style="cursor: pointer" title="换人" data-id="<%= team.id %>" data-user-id="<%= t_u_id %>" data-text="<%= t_u[0] %>" data-name="<%= team.try(:identifier) %>">
+                                              <i class="icon-pencil bigger-125"></i>
+                                            </a>
+                                            <a class="red delete-team-player" title="删除队员" style="cursor: pointer" data-id="<%= team.id %>" data-text="<%= t_u[0] %>" data-name="<%= t_u_id %>">
+                                              <i class="icon-remove bigger-125"></i>
+                                            </a>
+                                          </div>
+                                      <% end %>
+                                    </div>
+                                <% end %>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
+              <% end %>
+            </div>
+            <nav>
+              <%= paginate @teams %>
+            </nav>
+        <% end %>
 
-                </div>
-              </div>
-          <% end %>
-        </div>
-        <nav>
-          <%= paginate @teams %>
-        </nav>
-    <% end %>
-
-  </div>
-</div>
-
+      </div>
+    </div>
+<% end %>
 <input type="hidden" id="add-player-team-id" value=""/>
 <input type="hidden" id="player-old-user-id" value=""/>
 <div id="add-team-player" class="modal" tabindex="-1">
@@ -197,7 +202,7 @@
                 <select class="width-80 chosen-select" id="select-team-player" data-placeholder="选择一名队员...">
                   <option value="">请选择一名队员</option>
                   <% @users.each do |user| %>
-                      <option value="<%= user.id %>"><%= "#{user.user_profile.try(:username)} - #{user.nickname}" %></option>
+                      <option value="<%= user.id %>"><%= "#{user.username} - #{user.nickname}" %></option>
                   <% end %>
 
                 </select>
@@ -245,7 +250,7 @@
                 <select class="width-80 chosen-select" id="select-update-team-player" data-placeholder="选择一名队员...">
                   <option value="">请选择一名队员</option>
                   <% @users.each do |user| %>
-                      <option value="<%= user.id %>"><%= "#{user.user_profile.try(:username)} - #{user.nickname}" %></option>
+                      <option value="<%= user.id %>"><%= "#{user.username} - #{user.nickname}" %></option>
                   <% end %>
 
                 </select>
@@ -313,7 +318,7 @@
                 <select class="width-25 chosen-select" id="select-create-team-leader" data-placeholder="请选择队长">
                   <option value=""></option>
                   <% @users.each do |user| %>
-                      <option value="<%= user.id %>"><%= "#{user.user_profile.try(:username)} - #{user.nickname}" %></option>
+                      <option value="<%= user.id %>"><%= "#{user.username} - #{user.nickname}" %></option>
                   <% end %>
                 </select>
               </div>

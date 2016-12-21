@@ -22,12 +22,13 @@ class Admin::UsersController < AdminController
   # GET /admin/users/1
   # GET /admin/users/1.json
   def show
-    @user = User.left_joins(:user_profile).where(id: params[:id]).select(:id, :nickname, :mobile, :email, 'user_profiles.*').take!
+    @user = User.left_joins(:user_profile).where(id: params[:id]).select(:id, :nickname, :mobile, :email,'user_profiles.username', 'user_profiles.gender','user_profiles.grade','user_profiles.bj','user_profiles.student_code','user_profiles.birthday').take!
   end
 
   # GET /admin/users/new
   def new
     @user = User.new
+    @user.user_profile = @user.build_user_profile
   end
 
   # GET /admin/users/1/edit
@@ -41,9 +42,10 @@ class Admin::UsersController < AdminController
   # POST /admin/users.json
   def create
     @user = User.new(user_params)
+    @user_profile = @user.build_user_profile.update(user_profile_params)
 
     respond_to do |format|
-      if @user.save
+      if @user.save && @user_profile
         format.html { redirect_to [:admin, @user], notice: t('activerecord.models.user') + ' 已成功创建.' }
         format.json { render action: 'show', status: :created, location: @user }
       else
@@ -89,6 +91,6 @@ class Admin::UsersController < AdminController
   end
 
   def user_profile_params
-    params.require(:user_profile).permit(:username, :birthday, :gender, :grade, :student_code, :bj)
+    params.require(:user_profile).permit(:username, :birthday, :gender, :grade, :student_code, :bj, :status)
   end
 end

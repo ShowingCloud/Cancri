@@ -189,7 +189,7 @@ class Admin::EventsController < AdminController
         data = @scores.where('s.schedule_rank > ?', 0)
         if data.length > 0
           if export_type == '1'
-            data = Team.find_by_sql("select t.identifier,school.name as school_name, u_p.username,t.teacher,s.schedule_rank,u_p.student_code,u_p.grade,u_p.bj from team_user_ships t_u INNER join teams t on t.id = t_u.team_id left join user_profiles u_p on u_p.user_id = t_u.user_id left join scores s on s.team1_id = t.id left join schools school on school.id = t.school_id where t.event_id = #{event_id} and t.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.schedule_rank > 0 order by s.schedule_rank")
+            data = Team.find_by_sql("select t.identifier,school.name as school_name, u_p.username,u_p.autograph,t.teacher,s.schedule_rank,u_p.student_code,u_p.grade,u_p.bj from team_user_ships t_u INNER join teams t on t.id = t_u.team_id left join user_profiles u_p on u_p.user_id = t_u.user_id left join scores s on s.team1_id = t.id left join schools school on school.id = t.school_id where t.event_id = #{event_id} and t.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.schedule_rank > 0 order by s.schedule_rank")
             data = data.map { |score| {
                 项目: event_name,
                 组别: params_group,
@@ -198,7 +198,7 @@ class Admin::EventsController < AdminController
                 学校: score.school_name,
                 老师: score.teacher,
                 名次: score.schedule_rank,
-                学籍号: score.student_code,
+                学籍号: score.autograph ||= score.student_code,
                 年级: score.grade,
                 班级: score.bj
             } }
@@ -396,7 +396,7 @@ class Admin::EventsController < AdminController
     status = params[:status]
     event_id = params[:id]
     @event = Event.find(event_id)
-    teams = Team.includes(:team_user_ships, :user).where(event_id: event_id)
+    teams = TeamUserShip.joins(:team).joins('left join user_profiles u_p on u_p.user_id = team_user_ships.user_id').where('teams.event_id=?', event_id)
     if field.present? && keyword.present?
       if field == 'identifier'
         keyword = keyword.upcase
@@ -436,8 +436,8 @@ class Admin::EventsController < AdminController
       end
       teams = teams.where('teams.status = ?', status)
     end
-    @teams = teams.page(params[:page]).per(params[:per])
-    @users = User.includes(:user_profile).where.not(id: TeamUserShip.where(event_id: params[:id]).pluck(:user_id)).select(:id, :nickname)
+    @teams = teams.select("GROUP_CONCAT(u_p.username,'--',team_user_ships.user_id,IF(team_user_ships.status,'','--未确认')) as players_info", 'teams.id', 'teams.user_id as leader_user_id', 'teams.identifier', 'teams.status as team_status', 'teams.players').group(:team_id).page(params[:page]).per(params[:per])
+    @users = User.left_joins(:user_profile).where.not(id: TeamUserShip.where(event_id: params[:id]).pluck(:user_id)).select(:id, :nickname, 'user_profiles.username')
   end
 
   def add_team_player
