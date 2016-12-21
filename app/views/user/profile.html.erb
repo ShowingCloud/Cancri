@@ -79,7 +79,7 @@
                   <div class="form-group">
                     <label class="control-label" for="user_profile_grade">年级</label>
                     <select name="user_profile[grade]" id="user_profile_grade" class="string optional form-control">
-                      <option value="0">请选择年级</option>
+                      <option value="">请选择年级</option>
                       <option value="1" <%= 'selected="selected"' if @user_profile.grade.to_i == 1 %>>一年级</option>
                       <option value="2" <%= 'selected="selected"' if @user_profile.grade.to_i == 2 %>>二年级</option>
                       <option value="3" <%= 'selected="selected"' if @user_profile.grade.to_i == 3 %>>三年级</option>
