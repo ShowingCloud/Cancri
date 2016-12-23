@@ -1,6 +1,7 @@
 module Api
   module V1
     class ApplicationController < ActionController::API
+      include ::ActionController::Cookies
       class ParameterValueNotAllowed < ActionController::ParameterMissing
         attr_reader :values
 
@@ -65,6 +66,14 @@ module Api
 
       def authenticate!
         error!({error: '401 Unauthorized'}, 401) unless current_user
+      end
+
+      def current_admin
+        @current_admin ||= Admin.authenticated_access_token(cookies[:access_token])
+      end
+
+      def authenticate_admin
+        error!({error: '401 Unauthorized'}, 401) unless current_admin
       end
 
       def local_or_token_authenticate

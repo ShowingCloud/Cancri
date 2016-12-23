@@ -250,8 +250,8 @@ Rails.application.routes.draw do
   get 'user/student_manage' => 'user#student_manage', as: 'user_student_manage'
   get 'user/comp_student' => 'user#comp_student', as: 'user_comp_student'
   get 'user/get_comp_students' => 'user#get_comp_students', as: 'user_get_comp_students'
-  get 'user/join_voucher', to: 'user#join_voucher'
-  get 'user/export_voucher', to: 'user#export_voucher'
+  # get 'user/join_voucher', to: 'user#join_voucher'
+  # get 'user/export_voucher', to: 'user#export_voucher'
   mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
 
