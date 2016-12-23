@@ -161,7 +161,67 @@ $(function () {
 
     });
 
-    // ============================== events end ==============================
+    // =================================== events end ======================================
+
+    // =================================== users start =====================================
+    var before_select_school = $('#before-select-school');
+    var select_user_school = $("#select-user-school");
+    before_select_school.on('change', function () {
+        var district_id = $(this).val();
+        if (district_id) {
+            $.ajax({
+                url: '/api/v1/schools/get_by_district',
+                type: 'get',
+                data: {"district_id": district_id},
+                success: function (data) {
+                    var data_length = data.length;
+                    var select_school_option = select_user_school;
+                    select_school_option.empty();
+                    var first_option;
+                    if (data_length > 0) {
+                        first_option = $('<option value="">请选择学校 (' + data_length + '所)</option>');
+                        select_school_option.append(first_option);
+                        $.each(data, function (k, v) {
+                            var option = $('<option value="' + v.id + '">' + v.name + '</option>');
+                            select_school_option.append(option);
+                        });
+                        select_school_option.trigger('chosen:updated');
+                    } else {
+                        first_option = $('<option>该区县暂无学校</option>');
+                        select_school_option.append(first_option);
+                    }
+                }
+            });
+        } else {
+            admin_gritter_notice(false, '区县不存在')
+        }
+    });
+
+    select_user_school.on('change', function () {
+        var school_id = $(this).val();
+        var district_id = before_select_school.val();
+        var school_name = select_user_school.find("option:selected").text();
+        if (district_id > 0 && school_id > 0) {
+            document.getElementById("user_profile_district_id").value = district_id;
+            document.getElementById("user_profile_school_id").value = school_id;
+            document.getElementById("change_district_id").value = district_id;
+            $('.select-user-school').text(school_name);
+            $("#select-school-modal").modal('hide');
+        } else {
+            admin_gritter_notice(false, '参数不规范')
+        }
+    });
+
+    $("#user_profile_district_id").on('change', function () {
+        var district_id = $(this).val();
+        var school_district_id = document.getElementById("change_district_id").value;
+        if (district_id != school_district_id) {
+            $(".select-user-school").text('请选择学校');
+            document.getElementById("user_profile_school_id").value = null;
+        }
+    });
+
+    // =================================== users end   =====================================
 
     // 活动打分
     $('.create-activity-score,.update-activity-score').on('click', function () {
@@ -805,20 +865,9 @@ $(function () {
                         "team_id": team_id
                     },
                     success: function (data) {
+                        admin_gritter_notice(data[0], data[1]);
                         if (data[0]) {
                             $("#hide-team-" + team_id).addClass('hide');
-                            bootbox.dialog({
-
-                                message: data[1],
-                                buttons: {
-                                    "success": {
-                                        "label": "OK",
-                                        "className": "btn-sm btn-primary"
-                                    }
-                                }
-                            });
-                        } else {
-                            alert(data[1]);
                         }
                     }
                 });
@@ -830,7 +879,9 @@ $(function () {
         var event_id = $('.event-id').val();
         var group = $('#select-team-group').val();
         var teacher = trim($(".team-info [name='team-teacher']").val());
-        var user_id = $("#select-create-team-leader option:selected").val();
+        var selected_option = $("#select-create-team-leader option:selected");
+        var user_id = selected_option.val();
+        var leader_info = selected_option.text();
 
         if (user_id == '') {
             alert('请选择队长');
@@ -850,7 +901,17 @@ $(function () {
                 success: function (data) {
                     admin_gritter_notice(data[0], data[1]);
                     if (data[0]) {
-                        window.location.reload();
+                        $("#add-team-form").modal('hide');
+                        var team_max_num = $('#team-players-max').val();
+                        var team_html = $('<div class="col-xs-12 col-sm-6 col-md-4" id="hide-team-' + data[2]['id'] + '"><div class="widget-box">' +
+                            '<div class="widget-header widget-header-small"><h4><i class="icon-flag-alt orange"></i><span class="badge" id="' + data[2]['id'] + '" style="font-size: 15px;padding: 3px 6px 3px 6px">1</span>' + data[2]['identifier'] + '报名成功</h4>' +
+                            '<div class="widget-toolbar action-buttons"><a class="pink admin-delete-team" onclick="admin_delete_team(' + data[2]['identifier'] + ',' + data[2]['id'] + ')" style="cursor: pointer" data-id="' + data[2]['id'] + '" data-name="' + data[2]['identifier'] + '"><i class="icon-trash" title="删除队伍"></i></a>' +
+                            '</div></div><div class="widget-body"><div class="widget-main padding-8"><div class="event-team profile-feed"><div class="profile-activity clearfix" id="hide-player-' + data[2]['user_id'] + '"><div>' + leader_info + '</div><div class="tools action-buttons"> 队长' +
+                            '<a href="#update-team-player" role="button" data-toggle="modal" class="blue update-team-player" style="cursor: pointer" title="换人" data-id="<%= team.id %>" data-user-id="' + data[2]['id'] + '" data-name="' + data[2]['identifier'] + '"><i class="icon-pencil bigger-125"></i></a>' +
+                            '</div></div></div></div></div></div></div>');
+                        $('.team-elements').prepend(team_html);
+                        // window.location.reload();
+
                     }
                 }
             });

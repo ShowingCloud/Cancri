@@ -6,7 +6,7 @@ class Admin::UsersController < AdminController
   def index
     field = params[:field]
     keyword = params[:keyword]
-    users = User.joins('left join user_profiles on user_profiles.user_id = users.id').joins('left join schools s on s.id = user_profiles.school_id').order('id asc').select(:id, :nickname, :mobile, :email, :sign_in_count, :current_sign_in_at, 'user_profiles.username', 's.name as school_name'); false
+    users = User.joins('left join user_profiles on user_profiles.user_id = users.id').joins('left join schools s on s.id = user_profiles.school_id').order(id: :desc).select(:id, :nickname, :mobile, :email, :sign_in_count, :current_sign_in_at, 'user_profiles.username', 's.name as school_name'); false
     if field.present? && keyword.present?
       if field == 'username'
         users = users.where('user_profiles.username like ?', "%#{keyword}%")
@@ -22,7 +22,7 @@ class Admin::UsersController < AdminController
   # GET /admin/users/1
   # GET /admin/users/1.json
   def show
-    @user = User.left_joins(:user_profile).where(id: params[:id]).select(:id, :nickname, :mobile, :email,'user_profiles.username', 'user_profiles.gender','user_profiles.grade','user_profiles.bj','user_profiles.student_code','user_profiles.birthday').take!
+    @user = User.joins('left join user_profiles u_p on u_p.user_id = users.id').joins('left join districts d on d.id = u_p.district_id').joins('left join schools s on u_p.school_id = s.id').where(id: params[:id]).select(:id, :nickname, :mobile, :email, 's.name as school_name', 'd.name as district_name', 'u_p.username', 'u_p.gender', 'u_p.grade', 'u_p.bj', 'u_p.student_code', 'u_p.birthday').take!
   end
 
   # GET /admin/users/new
@@ -91,6 +91,6 @@ class Admin::UsersController < AdminController
   end
 
   def user_profile_params
-    params.require(:user_profile).permit(:username, :birthday, :gender, :grade, :student_code, :bj, :status)
+    params.require(:user_profile).permit(:username, :birthday, :gender, :district_id, :school_id, :grade, :student_code, :bj, :status)
   end
 end

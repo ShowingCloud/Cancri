@@ -3,7 +3,8 @@ $(function () {
     var chosen_select = $(".chosen-select");
     // chosen_select.chosen();
     chosen_select.chosen({
-        max_selected_options: 3
+        max_selected_options: 3,
+        search_contains: true
     });
     $('.edit-event-formula,#add-team-player,#update-team-player').on('shown.bs.modal', function () {
         $(this).find('.chosen-container').each(function () {
@@ -23,7 +24,7 @@ $(function () {
         $('.event-name').text(event_name);
     });
 
-    $('#modal-form,#add-team-form').on('shown.bs.modal', function () {
+    $('#modal-form,#add-team-form,#select-school-modal').on('shown.bs.modal', function () {
         $(this).find('.chosen-container').each(function () {
             $(this).find('a:first-child').css('width', '420px');
             $(this).find('.chosen-drop').css('width', '420px');

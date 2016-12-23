@@ -196,6 +196,11 @@ Rails.application.routes.draw do
           post :upload_scores
         end
       end
+      resources :schools do
+        collection do
+          get :get_by_district
+        end
+      end
       match '*path', via: :all, to: 'root#not_found'
     end
   end
