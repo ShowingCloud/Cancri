@@ -260,7 +260,7 @@ class Admin::EventsController < AdminController
         result = [false, '计算失败']
       end
     elsif event_id.to_i == 31 && schedule_name == '决赛'
-      zt_sql = "scores.operate_score = (select b.min_score from (select min(s1.score) as min_score from scores s1 inner join teams t1 on t1.id=s1.team1_id where s1.event_id = #{event_id} and s1.schedule_id= 5 and s1.score > 0 and t1.group in #{sql_group}) b)/scores.score"
+      zt_sql = 'scores.operate_score = scores.score'
       Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: 5).where('scores.score>?', 0).where('t.group' => ac_group).update_all(zt_sql)
       nl_sql = "scores.operate_score = (select b.min_score from (select min(s1.score) as min_score from scores s1 inner join teams t1 on t1.id=s1.team1_id where s1.event_id = #{event_id} and s1.schedule_id= 4 and s1.score > 0 and t1.group in #{sql_group}) b)/scores.score"
       Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: 4).where('scores.score>?', 0).where('t.group' => ac_group).update_all(nl_sql)
@@ -536,7 +536,7 @@ class Admin::EventsController < AdminController
           if team.save
             t_u = TeamUserShip.create(team_id: team.id, user_id: user_id, event_id: event_id, status: true, school_id: u_p.school_id, district_id: u_p.district_id, grade: u_p.grade)
             if t_u.save
-              result = [true, '队伍创建成功']
+              result = [true, '队伍创建成功', {identifier: team.identifier, status: team.status, id: team.id, user_id: team.user_id}]
             end
           else
             team.destroy
