@@ -141,7 +141,7 @@ class CompetitionService
         score_attribute['rounds_scores'] = rounds_score
         score_row = Score.where(event_id: event_id, schedule_id: schedule_id, kind: kind, th: th, team1_id: team1_id).take
         if score_row.present?
-          if score_row.update_attributes(score_attribute: score_attribute, score: last_score[0][0], order_score: last_score[0][1], sort_score: last_score[0][2], note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
+          if score_row.update_attributes(score_attribute: score_attribute, score: last_score[0][0], order_score: last_score[0][1], sort_score: last_score[0][2], schedule_rank: nil, note: note, device_no: device_no, confirm_sign: confirm_sign, user_id: operator_id)
             result = [true, '成绩更新成功']
           else
             result = [false, '成绩更新失败']
