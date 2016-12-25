@@ -1,10 +1,5 @@
 <div class="sub-menu">
-  <% if @action_preview_array.include?(action_name) %>
-      <a href="<%= user_preview_path %>">
-        <div class="sub-menu-item <%= 'active' if action_name == 'preview' or action_name == 'profile' %>">
-          基本信息
-        </div>
-      </a>
+  <% if @action_security.include?(action_name) %>
       <a href="<%= user_email_path %>">
         <div class="sub-menu-item <%= 'active' if action_name == 'email' or action_name == 'reset_email' %>">
           邮箱信息

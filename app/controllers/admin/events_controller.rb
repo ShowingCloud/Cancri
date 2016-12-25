@@ -153,13 +153,14 @@ class Admin::EventsController < AdminController
         order = @event_sa.formula['order']
         order_num = order['num']
         first_order = (order['1']['sort'].to_i == 0) ? '>' : '<'
+        has_zero = ((first_order == '>') ? '>=' : '>')
         if order_num > 1
           second_order = order['2']['sort'].to_i
           if order_num == 2
-            sql = "scores.schedule_rank = (select order_rank from (SELECT s2.id,s2.score,s2.order_score,IF((score=@_last_score and order_score=@_last_order_score),@rank:=@rank,@rank:=@_sequence) AS order_rank,@_sequence:=@_sequence+1,@_last_score:=score,@_last_order_score:=order_score FROM scores s2 inner join teams t2 on t2.id = s2.team1_id, (SELECT @rank:= 1, @_sequence:=1, @_last_score:=0,@_last_order_score:=0) r WHERE s2.event_id = #{event_id} and s2.schedule_id = #{schedule_id} and t2.group in #{sql_group} and s2.score > 0 ORDER BY 2 #{first_order == '>' ? 'desc' : 'asc'},3 #{second_order == 0 ? 'desc' : 'asc'}) s3 where scores.id = s3.id)"
+            sql = "scores.schedule_rank = (select order_rank from (SELECT s2.id,s2.score,s2.order_score,IF((score=@_last_score and order_score=@_last_order_score),@rank:=@rank,@rank:=@_sequence) AS order_rank,@_sequence:=@_sequence+1,@_last_score:=score,@_last_order_score:=order_score FROM scores s2 inner join teams t2 on t2.id = s2.team1_id, (SELECT @rank:= 1, @_sequence:=1, @_last_score:=0,@_last_order_score:=0) r WHERE s2.event_id = #{event_id} and s2.schedule_id = #{schedule_id} and t2.group in #{sql_group} and s2.score #{has_zero} 0 ORDER BY 2 #{first_order == '>' ? 'desc' : 'asc'},3 #{second_order == 0 ? 'desc' : 'asc'}) s3 where scores.id = s3.id)"
           elsif order_num == 3
             third_order = order['3']['sort'].to_i
-            sql = "scores.schedule_rank = (select order_rank from (SELECT s2.id,s2.score,s2.order_score,s2.sort_score,IF((score=@_last_score and order_score=@_last_order_score and sort_score=@_last_sort_score),@rank:=@rank,@rank:=@_sequence) AS order_rank,@_sequence:=@_sequence+1,@_last_score:=score,@_last_order_score:=order_score,@_last_sort_score:=sort_score FROM scores s2 inner join teams t2 on t2.id = s2.team1_id, (SELECT @rank:= 1, @_sequence:=1, @_last_score:=0,@_last_order_score:=0,@_last_sort_score:=0) r WHERE s2.event_id = #{event_id} and s2.schedule_id = #{schedule_id} and t2.group in #{sql_group} and s2.score > 0 ORDER BY 2 #{first_order == '>' ? 'desc' : 'asc'},3 #{second_order == 0 ? 'desc' : 'asc'},4 #{third_order == 0 ? 'desc' : 'asc'}) s3 where scores.id = s3.id)"
+            sql = "scores.schedule_rank = (select order_rank from (SELECT s2.id,s2.score,s2.order_score,s2.sort_score,IF((score=@_last_score and order_score=@_last_order_score and sort_score=@_last_sort_score),@rank:=@rank,@rank:=@_sequence) AS order_rank,@_sequence:=@_sequence+1,@_last_score:=score,@_last_order_score:=order_score,@_last_sort_score:=sort_score FROM scores s2 inner join teams t2 on t2.id = s2.team1_id, (SELECT @rank:= 1, @_sequence:=1, @_last_score:=0,@_last_order_score:=0,@_last_sort_score:=0) r WHERE s2.event_id = #{event_id} and s2.schedule_id = #{schedule_id} and t2.group in #{sql_group} and s2.score #{has_zero} 0 ORDER BY 2 #{first_order == '>' ? 'desc' : 'asc'},3 #{second_order == 0 ? 'desc' : 'asc'},4 #{third_order == 0 ? 'desc' : 'asc'}) s3 where scores.id = s3.id)"
           else
             flash[:notice] = '排序超过3个'
             redirect_to "/admin/events/scores?id=#{event_id}&group=#{params_group}&schedule=#{schedule_name}"
@@ -167,9 +168,9 @@ class Admin::EventsController < AdminController
           end
         else
           # 单一排序
-          sql = "scores.schedule_rank = (select count(*)+1 from (select score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.score > 0) dist_score where dist_score.score #{first_order} scores.score)"
+          sql = "scores.schedule_rank = (select count(*)+1 from (select score from scores s left join teams team on team.id = s.team1_id where team.event_id =#{event_id} and team.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.score #{has_zero} 0) dist_score where dist_score.score #{first_order} scores.score)"
         end
-        update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: schedule_id).where('scores.score > ?', 0).where('t.group' => ac_group).update_all(sql)
+        update_result = Score.joins('inner join teams t on scores.team1_id = t.id').where(event_id: event_id, schedule_id: schedule_id).where("scores.score #{has_zero} ?", 0).where('t.group' => ac_group).update_all(sql)
         if update_result
           flash[:notice] = '排名成功'
         else

@@ -1,8 +1,9 @@
-<% @action_preview_array = ['email', 'reset_email', 'mobile', 'preview', 'profile', 'passwd', 'reset_mobile'] %>
+<% @action_preview_array = ['preview', 'profile'] %>
 <% @action_notify_array = ['notification', 'notify_show'] %>
 <% @action_apply_array = ['apply', 'programs', 'program', 'create_program', 'program_se'] %>
 <% @action_student_manage = ['student_manage', 'comp_student'] %>
-<% @action_stu_info = ['competitions','courses','activities'] %>
+<% @action_stu_info = ['competitions', 'courses', 'activities'] %>
+<% @action_security = ['security', 'email', 'reset_email', 'mobile', 'passwd', 'reset_mobile'] %>
 
 
 <div class="sidebar">
@@ -21,6 +22,12 @@
       <div class="sidebar-item <%= 'active' if @action_preview_array.include?(action_name) %>">
         <i class="glyphicon glyphicon-user"></i>
         个人信息
+      </div>
+    </a>
+    <a href="<%= user_email_path %>">
+      <div class="sidebar-item <%= 'active' if @action_security.include?(action_name) %>">
+        <i class="glyphicon glyphicon-asterisk"></i>
+        账户安全
       </div>
     </a>
     <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>">
