@@ -25,7 +25,7 @@
     <li class="list-group-item">
       <h4><%= t('simple_form.labels.defaults.name') %>:</h4>
 
-      <%= @district.city %>--<%= @district.name %>
+      <%= @district.try(:province_name) %>--<%= @district.try(:city_name) %>--<%= @district.name %>
     </li>
   </ul>
 </div>

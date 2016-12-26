@@ -26,7 +26,7 @@
     <div class="form-inputs">
       <%= f.input :name, maxlength: 60 %>
       <%= f.input :host_year, collection: 2016..2017, prompt: '请选择举办年份' %>
-      <%= f.input :district_id, collection: District.select(:id, :name), cache: true %>
+      <%= f.input :district_id, collection: District.sh_districts, cache: true %>
       <%= f.input :aim %>
       <%= f.input :organizing_committee, placeholder: '例如: 上海市委;豆姆科技  (多个以分号隔开)' %>
       <%= f.input :date_schedule, placeholder: '例如: xxx:xxx;xxx:xxx  (多个以分号隔开)' %>

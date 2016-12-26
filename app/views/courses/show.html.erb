@@ -67,7 +67,7 @@
                     <label for="user-info-district" class=""><i class="glyphicon glyphicon-globe"></i> 区县:</label>
                     <select id="district-select" class="">
                       <option value="0">请选择区县</option>
-                      <% District.all.each do |d| %>
+                      <% District.sh_districts.each do |d| %>
                           <option value="<%= d.id %>" <%= 'selected="selected"' if @user_info.district_id == d.id %>><%= d.name %></option>
                       <% end %>
                     </select>

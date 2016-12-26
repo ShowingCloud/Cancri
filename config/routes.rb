@@ -201,6 +201,13 @@ Rails.application.routes.draw do
           get :get_by_district
         end
       end
+      resources :districts do
+        collection do
+          get :get_provinces
+          get :get_cities
+          get :get_districts
+        end
+      end
       match '*path', via: :all, to: 'root#not_found'
     end
   end
