@@ -39,7 +39,7 @@
                     <% end %>
                     <%= f.input :name %>
                     <%= f.input :target %>
-                    <%= f.input :district_id, collection: District.all %>
+                    <%= f.input :district_id, collection: District.sh_districts %>
                     <%= f.input :num, label: '接纳人数' %>
                     <%= f.input :run_address %>
                     <%= f.input :run_time, label: '每天上课时间', placeholder: '例: 9:30 - 10:30' %>

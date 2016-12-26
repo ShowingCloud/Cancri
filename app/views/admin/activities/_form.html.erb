@@ -25,7 +25,7 @@
           <%= f.input :host_address %>
           <% if @activity.level==1 %>
               <%= f.input :host_year, collection: 2016..2017 %>
-              <%= f.input :district_id, collection: District.select(:id, :name) %>
+              <%= f.input :district_id, collection: District.sh_districts %>
               <%= f.input :is_father, label: '包含子活动' %>
               <% if @activity.cover? %>
                   <div class="form-group">

@@ -672,7 +672,7 @@ class UserController < ApplicationController
   end
 
   def get_districts
-    render json: District.select(:id, :name, :city)
+    render json: District.sh_districts.select(:id, :name, :city_name)
   end
 
   def get_competitions

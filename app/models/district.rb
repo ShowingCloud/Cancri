@@ -6,6 +6,8 @@ class District < ApplicationRecord
   has_many :competitions
   has_many :activities
   has_many :news
-  validates :name, presence: true, uniqueness: {scope: :city, message: '同一城市的区县不同重复'}
-  validates :city, presence: true
+  belongs_to :city
+  validates :name, presence: true, uniqueness: {scope: :city_id, message: '同一城市的区县不能重复'}
+  validates :city_name, :province_name, presence: true
+  scope :sh_districts, -> { where(city_id: 1).select(:id, :name) }
 end

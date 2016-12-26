@@ -1,7 +1,7 @@
 <div class="panel panel-info">
   <div class="panel-heading"><%= t('activerecord.models.user') %></div>
   <div class="panel-body">
-    <% districts = District.all.select(:id, :name) %>
+    <% districts = District.sh_districts %>
     <%= simple_form_for([:admin, @user]) do |f| %>
         <%= f.error_notification %>
 

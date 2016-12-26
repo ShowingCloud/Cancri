@@ -45,7 +45,7 @@
               </div>
           <% end %>
           <%= f.input :desc %>
-          <%= f.input :district_id, collection: District.select(:id, :name) %>
+          <%= f.input :district_id, collection: District.sh_districts %>
           <%= f.input :status, label: '显示' %>
           <%= f.input :is_hot, label: '热门' %>
           <div class="form-group">
