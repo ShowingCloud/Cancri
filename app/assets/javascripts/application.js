@@ -27,6 +27,7 @@
 //= require competition
 //= require jquery.qrcode.min
 //= require comp_voucher
+//= require birthday_picker
 
 //= //require turbolinks
 //= //require_tree .
