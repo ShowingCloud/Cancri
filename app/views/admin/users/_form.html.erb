@@ -25,7 +25,14 @@
                     女</label>
                 </div>
               </div>
+
               <%= info.input :district_id, collection: districts %>
+
+              <div class="input-group">
+                <label for="user_profile[district_id]">区县</label>
+                <input type="hidden" id="user_profile_district_id" name="user_profile[district_id]" value="<%= @user.user_profile.district_id %>"/>
+                <label>&nbsp;&nbsp;&nbsp;<a href="#admin-select-district-modal" role="button" class="blue select-user-school1" data-toggle="modal"><%= @user.user_profile.district_id.present? ? @user.user_profile.district.try(:name) : '选择区县' %></a></label>
+              </div>
 
               <div class="input-group">
                 <label for="user_profile[school_id]">学校</label>
@@ -61,6 +68,53 @@
         </div>
     <% end %>
 
+  </div>
+</div>
+
+<div id="admin-select-district-modal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="blue bigger text-center">选择区县</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="col-xs-4">
+                <label>省市</label>
+                <div>
+                  <select id="admin-select-province">
+                    <option value="">请选择省市</option>
+                    <% Province.select(:id, :name).each do |p| %>
+                        <option value="<%= p.id %>"><%= p.name %></option>
+                    <% end %>
+                  </select>
+                </div>
+              </div>
+              <div class="col-xs-4"><label>城市</label>
+                <div>
+                  <select id="admin-select-city">
+                    <option value="">请选择城市</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-xs-4"><label>区县</label>
+                <div>
+                  <select id="admin-select-district">
+                    <option value="">请选择区县</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="space-12"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

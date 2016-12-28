@@ -221,6 +221,72 @@ $(function () {
         }
     });
 
+
+    var admin_districts_select = $("#admin-select-district");
+    // province option change
+    $('#admin-select-province').on('change', function () {
+        var province_id = $(this).val();
+        if (province_id != '') {
+            $.ajax({
+                url: '/api/v1/districts/get_cities',
+                type: 'get',
+                data: {"province_id": province_id},
+                success: function (data) {
+                    var data_length = data.length;
+                    var admin_cities_select = $("#admin-select-city");
+                    admin_cities_select.empty();
+                    admin_districts_select.empty();
+                    var first_option;
+                    if (data_length > 0) {
+                        first_option = $('<option value="">请选择城市</option>');
+                        admin_cities_select.append(first_option);
+                        $.each(data, function (k, v) {
+                            var option = $('<option value="' + v.id + '">' + v.name + '</option>');
+                            admin_cities_select.append(option);
+                        });
+                    } else {
+                        first_option = $('<option>该省市暂无城市</option>');
+                        admin_cities_select.append(first_option);
+                    }
+                }
+            });
+        } else {
+            admin_gritter_notice(false, '省市不存在')
+        }
+    });
+
+
+    // cities option change
+    $('#admin-select-city').on('change', function () {
+        var city_id = $(this).val();
+        if (city_id != '') {
+            $.ajax({
+                url: '/api/v1/districts/get_districts',
+                type: 'get',
+                data: {"city_id": city_id},
+                success: function (data) {
+                    var data_length = data.length;
+                    // var admin_districts_select = $("#admin-select-district");
+                    admin_districts_select.empty();
+                    var first_option;
+                    if (data_length > 0) {
+                        first_option = $('<option value="">请选择区县</option>');
+                        admin_districts_select.append(first_option);
+                        $.each(data, function (k, v) {
+                            var option = $('<option value="' + v.id + '">' + v.name + '</option>');
+                            admin_districts_select.append(option);
+                        });
+                    } else {
+                        first_option = $('<option>该省市暂无区县</option>');
+                        admin_districts_select.append(first_option);
+                    }
+                }
+            });
+        } else {
+            admin_gritter_notice(false, '城市不存在')
+        }
+    });
+
     // =================================== users end   =====================================
 
     // 活动打分

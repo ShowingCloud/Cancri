@@ -101,3 +101,7 @@ ul li {
     display: inline-block;
 }
 
+#admin-select-district-modal select{
+    width:180px
+}
+
