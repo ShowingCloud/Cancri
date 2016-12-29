@@ -605,15 +605,6 @@ $(function() {
         $(_self.attr('data-target')).val(_self.val());
     });
 
-    $('select#user_profile_grade').off('change').on('change', function() {
-        var _self = $(this);
-        if (_self.val() > 9) {
-            $('.user_profile_identity_card').addClass('active');
-        } else {
-            $('.user_profile_identity_card').removeClass('active');
-        }
-    });
-
     $('.fieldset-label>input').on('change', function() {
         var text = $(this).parent().text().trim();
         var index = $(this).prop('checked');
