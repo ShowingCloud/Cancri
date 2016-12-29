@@ -220,9 +220,7 @@ $(function() {
     });
 
     if ($('#user_profile_birthday').length > 0) {
-        $('#user_profile_birthday').datepicker({
-            format: 'yyyy-mm-dd'
-        });
+        $('#user_profile_birthday').birthdayPicker();
     }
 
     if ($('.apply-lesson').length > 0) {
