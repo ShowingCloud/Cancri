@@ -22,7 +22,7 @@ class Admin::UsersController < AdminController
   # GET /admin/users/1
   # GET /admin/users/1.json
   def show
-    @user = User.joins('left join user_profiles u_p on u_p.user_id = users.id').joins('left join districts d on d.id = u_p.district_id').joins('left join schools s on u_p.school_id = s.id').where(id: params[:id]).select(:id, :nickname, :mobile, :email, 's.name as school_name', 'd.name as district_name', 'u_p.username', 'u_p.gender', 'u_p.grade', 'u_p.bj', 'u_p.student_code', 'u_p.birthday').take!
+    @user = User.joins('left join user_profiles u_p on u_p.user_id = users.id').joins('left join districts d on d.id = u_p.district_id').joins('left join schools s on u_p.school_id = s.id').where(id: params[:id]).select(:id, :nickname, :mobile, :email, 's.name as school_name', 'd.name as district_name','d.province_name','d.city_name', 'u_p.username', 'u_p.gender', 'u_p.grade', 'u_p.bj', 'u_p.student_code', 'u_p.birthday').take!
   end
 
   # GET /admin/users/new
