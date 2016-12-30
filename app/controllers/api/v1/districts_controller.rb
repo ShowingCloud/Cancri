@@ -13,7 +13,7 @@ module Api
 
       def get_districts
         requires! :city_id, type: Integer
-        render json: City.where(city: params[:city_id]).select(:id, :name).order(:abbr)
+        render json: District.where(city_id: params[:city_id]).select(:id, :name, :abbr, :province_name, :city_name).order(:abbr)
       end
 
     end

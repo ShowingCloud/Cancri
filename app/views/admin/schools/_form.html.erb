@@ -10,7 +10,7 @@
           <% else %>
               <%= f.input :name %>
           <% end %>
-          <%= f.input :district_id, collection: District.select(:id, :name) %>
+          <%= f.input :district_id, collection: District.sh_districts %>
         </div>
 
         <div class="form-actions">

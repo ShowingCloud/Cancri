@@ -15,7 +15,11 @@
       </div>
       <%= image_tag(current_user.avatar_url(:middle), class: 'img-thumbnail avatar-img') %>
     </div>
-    <span class="username"><%= current_user.nickname %></span>
+    <div class="username">
+      <%= current_user.nickname %>
+      <!-- <i class="user-icon teacher-icon"></i>
+      <i class="user-icon maker-icon"></i> -->
+    </div>
   </div>
   <div class="sidebar-menu">
     <a href="<%= user_preview_path %>">

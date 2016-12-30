@@ -220,9 +220,7 @@ $(function() {
     });
 
     if ($('#user_profile_birthday').length > 0) {
-        $('#user_profile_birthday').datepicker({
-            format: 'yyyy-mm-dd'
-        });
+        $('#user_profile_birthday').birthdayPicker();
     }
 
     if ($('.apply-lesson').length > 0) {
@@ -605,15 +603,6 @@ $(function() {
     $('select[data-target]').off('change').on('change', function() {
         var _self = $(this);
         $(_self.attr('data-target')).val(_self.val());
-    });
-
-    $('select#user_profile_grade').off('change').on('change', function() {
-        var _self = $(this);
-        if (_self.val() > 9) {
-            $('.user_profile_identity_card').addClass('active');
-        } else {
-            $('.user_profile_identity_card').removeClass('active');
-        }
     });
 
     $('.fieldset-label>input').on('change', function() {

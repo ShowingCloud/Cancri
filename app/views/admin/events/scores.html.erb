@@ -44,10 +44,10 @@
 <% end %>
 <a href="/admin/events/<%= @event.id %>" role="button" title="查看项目" class="btn btn-warning">
   <i class="icon-eye-open icon-only"></i></a>
-<a href="/admin/events/scores.xls?id=<%= params[:id] %>&event_name=<%= @event.name %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" role="button" title="导出成绩(单行)" class="btn">
-  <i class="icon-external-link icon-only"></i></a>
-<a href="/admin/events/scores.xls?export_type=1&id=<%= params[:id] %>&event_name=<%= @event.name %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" role="button" title="导出成绩(多行)" class="btn">
-  多行 <i class="icon-external-link icon-only"></i></a>
+<a href="/admin/events/scores.xls?id=<%= params[:id] %>&event_name=<%= @event.name %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" role="button" title="导出成绩(队伍)" class="btn">
+  队伍 <i class="icon-external-link icon-only"></i></a>
+<a href="/admin/events/scores.xls?export_type=1&id=<%= params[:id] %>&event_name=<%= @event.name %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" role="button" title="导出成绩(个人)" class="btn">
+  个人 <i class="icon-external-link icon-only"></i></a>
 <a href="/admin/events/scores?id=<%= params[:id] %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" class="btn btn-danger">成绩排名</a>
 <% order_info = {} %>
 
