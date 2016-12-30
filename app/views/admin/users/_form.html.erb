@@ -31,7 +31,7 @@
               <div class="input-group">
                 <label for="user_profile[district_id]">区县</label>
                 <input type="hidden" id="user_profile_district_id" name="user_profile[district_id]" value="<%= @user.user_profile.district_id %>"/>
-                <label>&nbsp;&nbsp;&nbsp;<a href="#admin-select-district-modal" role="button" class="blue select-user-district" data-toggle="modal"><%= @user.user_profile.district_id.present? ? "#{@user.user_profile.district.try(:province_name)}--#{@user.user_profile.district.try(:city_name)}--#{@user.user_profile.district.try(:name)}" : '选择区县' %></a></label>
+                <label>&nbsp;&nbsp;&nbsp;<a href="#admin-select-district-modal" role="button" id="select-user-district" class="blue select-user-district" data-toggle="modal"><%= @user.user_profile.district_id.present? ? "#{@user.user_profile.district.try(:province_name)}--#{@user.user_profile.district.try(:city_name)}--#{@user.user_profile.district.try(:name)}" : '选择区县' %></a></label>
               </div>
 
               <div class="input-group">
@@ -133,7 +133,7 @@
             <div class="row">
               <div class="col-xs-8">
                 <label for="">区县</label>
-                <label>&nbsp;&nbsp;&nbsp;<a href="#admin-select-district-modal" role="button" class="blue select-user-district" data-toggle="modal"><%= '选择区县' %></a></label>
+                <label>&nbsp;&nbsp;&nbsp;<a href="#admin-select-district-modal" role="button" class="blue select-user-district" data-toggle="modal">选择区县</a></label>
               </div>
               <div class="col-xs-8">
                 <label>学校</label>
@@ -144,6 +144,15 @@
               </div>
             </div>
             <div class="space-12"></div>
+            <div>
+              <label>该区县没有自己的学校？在此添加</label><br>
+              <div class="row">
+                <div class="col-xs-7"><input type="text" id="added-school-name" class="form-control"/></div>
+                <div class="col-xs-2">
+                  <button class="btn btn-sm btn-info add-school-submit">提交</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
