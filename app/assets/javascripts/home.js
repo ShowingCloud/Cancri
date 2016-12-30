@@ -121,6 +121,157 @@ $(function() {
         school_handle();
     });
 
+    $("#user_profile_district_id").on('change', function () {
+        var district_id = $(this).val();
+        var school_district_id = document.getElementById("change_district_id").value;
+        if (district_id != school_district_id) {
+            $(".select-user-school").text('请选择学校');
+            document.getElementById("user_profile_school_id").value = null;
+        }
+    });
+
+    var cities_select = $("#select-city");
+    var districts_select = $("#select-district");
+    // province option change
+    $('#select-province').on('change', function () {
+        var province_id = $(this).val();
+        if (province_id != '') {
+            $.ajax({
+                url: '/api/v1/districts/get_cities',
+                type: 'get',
+                data: {"province_id": province_id},
+                success: function (data) {
+                    var data_length = data.length;
+                    cities_select.empty();
+                    districts_select.empty();
+                    districts_select.append($('<option value="">请先选择城市</option>'));
+                    var first_option;
+                    if (data_length > 0) {
+                        first_option = $('<option value="">请选择城市</option>');
+                        cities_select.append(first_option);
+                        $.each(data, function (k, v) {
+                            var option = $('<option value="' + v.id + '">' + v.name + '</option>');
+                            cities_select.append(option);
+                        });
+                    } else {
+                        first_option = $('<option>该省市暂无城市</option>');
+                        cities_select.append(first_option);
+                    }
+                }
+            });
+        } else {
+            alert_r(false, '省市不存在')
+        }
+    });
+
+
+    // cities option change
+    cities_select.on('change', function () {
+        var city_id = $(this).val();
+        if (city_id != '') {
+            $.ajax({
+                url: '/api/v1/districts/get_districts',
+                type: 'get',
+                data: {"city_id": city_id},
+                success: function (data) {
+                    var data_length = data.length;
+                    districts_select.empty();
+                    var first_option;
+                    if (data_length > 0) {
+                        first_option = $('<option value="">请选择区县</option>');
+                        districts_select.append(first_option);
+                        $.each(data, function (k, v) {
+                            var option = $('<option value="' + v.id + '" data-province="' + v.province_name + '" data-city="' + v.city_name + '">' + v.name + '</option>');
+                            districts_select.append(option);
+                        });
+                    } else {
+                        first_option = $('<option>该城市暂无区县</option>');
+                        districts_select.append(first_option);
+                    }
+                }
+            });
+        } else {
+            alert_r(false, '城市不存在')
+        }
+    });
+
+    // districts change
+    districts_select.on('change', function () {
+        var _self = $(this);
+        var selected_district = _self.find("option:selected");
+        var district_id = _self.val();
+        var province_name = selected_district.attr('data-province');
+        var city_name = selected_district.attr('data-city');
+        var district_name = selected_district.text();
+        document.getElementById("user_profile_district_id").value = district_id;
+        document.getElementById("change_district_id").value = district_id;
+        $(".select-user-district").text(province_name + ' -- ' + city_name + ' -- ' + district_name);
+        $("#select-district-modal").modal('hide');
+        if ($('#select-school-modal').hasClass('in')) {
+            if (district_id != '') {
+                $.ajax({
+                    url: '/api/v1/schools/get_by_district',
+                    type: 'get',
+                    data: {"district_id": district_id},
+                    success: function (data) {
+                        var data_length = data.length;
+                        var schools_select = $("#select-user-school");
+                        schools_select.empty();
+                        var first_option;
+                        if (data_length > 0) {
+                            first_option = $('<option value="">请选择学校</option>');
+                            schools_select.append(first_option);
+                            $.each(data, function (k, v) {
+                                var option = $('<option value="' + v.id + '">' + v.name + '</option>');
+                                schools_select.append(option);
+                            });
+                        } else {
+                            first_option = $('<option>该区县暂无学校</option>');
+                            schools_select.append(first_option);
+                        }
+                        schools_select.trigger('chosen:updated');
+                    }
+                });
+            } else {
+                alert_r(false, '非有效区县')
+            }
+        }
+
+    });
+
+    var select_user_school = $("#select-user-school");
+    select_user_school.on('change', function () {
+        var school_id = $(this).val();
+        var district_id = districts_select.val();
+        var school_name = select_user_school.find("option:selected").text();
+        if (district_id > 0 && school_id > 0) {
+            document.getElementById("user_profile_district_id").value = district_id;
+            document.getElementById("user_profile_school_id").value = school_id;
+            document.getElementById("change_district_id").value = district_id;
+            $('.select-user-school').text(school_name);
+            $("#select-school-modal").modal('hide');
+        } else {
+            alert_r(false, '参数不规范')
+        }
+    });
+
+    $('#user-profile-form').submit(function(){
+      var idcard = $('#user_profile_identity_card').val();
+      var birthday = $('#user_profile_birthday').val();
+      if(idcard){
+        if(checkIdcard(idcard)){
+          if(birthday){
+            if(birthday.replace(/-/g, "")!==idcard.substring(6,14)){
+                alert_r("生日与身份证不一致");
+                return false;
+              }
+          }
+        }else{
+          alert_r("身份证不合法");
+          return false;
+        }
+      }
+    });
 
     $('#go-apply').on('click', function(event) {
         event.preventDefault();
@@ -233,8 +384,8 @@ $(function() {
                 alert_r('请填写正确的姓名！');
                 return;
             }
-            var school = form.find('#school-id').val();
-            var district = form.find('#district-id').val();
+            var school = form.find('#user_profile_school_id').val();
+            var district = form.find('#user_profile_district_id').val();
             if (!school) {
                 alert_r('请选择学校');
                 return;
@@ -435,14 +586,13 @@ $(function() {
         $('.btn-add-school').off('click').on('click', function(event) {
             event.preventDefault();
             var _self = $(this);
-            var space = _self.parents('.school-modal-inner');
-            var dis = $('#district-select').val();
+            var dis = $('#select-district').val();
 
             if (typeof dis != 'string' || dis.length < 1) {
                 alert_r('请选择区县！');
                 return;
             }
-            var name = space.find('#add-school-input').val();
+            var name = $('#add-school-input').val();
             if (typeof name != 'string' || name.length < 1) {
                 alert_r('请填写学校全称！');
                 return;
@@ -458,14 +608,10 @@ $(function() {
                     },
                     success: function(data) {
                         if (data[0]) {
-                            var p = $('.school-panel');
-                            p.find('.selected-school').remove();
-                            p.append('<span class="selected-school">' + name + '</span>');
-                            p.find('.choice-school').text('更改学校');
-                            $('#user-info-school').val(data[2]);
-                            $('#add-school').modal('hide');
+                            $('#select-school-modal').modal('hide');
+                            alert_r(data[1]);
                         } else {
-                            alert_r(data[1])
+                            alert_r(data[1]);
                         }
                     }
                 };

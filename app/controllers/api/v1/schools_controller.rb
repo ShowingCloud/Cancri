@@ -1,7 +1,6 @@
 module Api
   module V1
     class SchoolsController < Api::V1::ApplicationController
-      before_action :authenticate_admin
 
       # 获取特定区县学校列表
       # GET /api/v1/schools/get_by_district

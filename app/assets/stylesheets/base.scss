@@ -2213,14 +2213,6 @@ select {
   background-image: image-url('maker-icon.png');
 }
 
-.birthdayPicker{
-  .birthYear::after{
-    content: "年";
-  }
-  .birthMonth::after{
-    content: "月";
-  }
-  .birthDay::after{
-    content: "日";
-  }
+.select-user-district, .select-user-school{
+  line-height: 30px;
 }
