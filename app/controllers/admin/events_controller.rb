@@ -217,7 +217,7 @@ class Admin::EventsController < AdminController
                 名次: score.schedule_rank
             } }
           end
-          filename = "#{event_name}_#{params_group}_#{export_type.present? ? '多行' : '单行'}_#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+          filename = "#{event_name}_#{params_group}_#{export_type.present? ? '个人' : '队伍'}_#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
           send_data(data.to_xls, :type => "text/xls;charset=utf-8,header=present", :filename => filename)
         else
           flash[:notice] = '暂无有效成绩'
