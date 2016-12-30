@@ -13,6 +13,7 @@
 //= require admin/bootbox.min
 //= require admin/jquery.slimscroll.min
 //= require admin/admin
+//= require admin/district_school.js
 //= require admin/chosen.jquery.min
 //= require admin/jquery.nestable.min
 //= require bootstrap-dialog

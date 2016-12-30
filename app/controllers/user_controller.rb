@@ -637,6 +637,10 @@ class UserController < ApplicationController
     redirect_to user_profile_path
   end
 
+  def role_apply
+    @user_roles = current_user.user_roles.where(role_id:1)
+  end
+
   def get_schools
     district_id = params[:district_id]
     schools = School.where(status: 1, district_id: district_id).select(:id, :name, :teacher_role)
