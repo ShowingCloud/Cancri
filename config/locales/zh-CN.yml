@@ -304,6 +304,7 @@ zh-CN:
      status3: '学校审核通过,待区县审核'
      status-3: '区县审核未通过'
   attributes:
+     name: '名称'
      username: '姓名'
      teacher: '教师姓名'
      teacher_mobile: '教师手机'
