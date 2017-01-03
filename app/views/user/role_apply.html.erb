@@ -9,10 +9,58 @@
         <div class="user-main">
           <%= render 'user/tab' %>
           <div class="sub-content">
+            <% if @user_roles.present? %>
+                <% @user_roles.each do |u_r| %>
+                    学校：<%= u_r.school_name %>
+                    <% case u_r.role_type when 1 %>
+                        市级
+                    <% when 2 %>
+                        区级（高级）
+                    <% when 3 %>
+                        校级（唯一）
+                    <% when 4 %>
+                        区级
+                    <% when 5 %>
+                        校级
+                    <% else %>
+                        未知
+                    <% end %>
+                    <%= u_r.status == 0 ? '待审核' : '审核通过' %>
+                    <br>
+                <% end %>
+            <% end %>
+
             <select>
               <option>在线</option>
               <option>外聘</option>
             </select>
+            <%= simple_form_for(current_user, html: {}, url: user_apply_teacher_path, method: :post) do |f| %>
+                <div class="input-group">
+                  <br>
+                  <label>姓名</label>
+                  <input style="color:red" name="user_username" value="<%= current_user.user_profile.try(:username) %>">
+                  <br>
+                  <label>学校</label>
+                  <input style="color:red" name="user_school_id" value="<%= current_user.user_profile.try(:school_id) %>">
+                  <br>
+                  <label>教师资格证编号</label>
+                  <input style="color:red" name="user_certificate" value="">
+                  <br>
+                  <label>级别</label>
+                  <select name="user_role_type">
+                    <option value="5">校级</option>
+                    <option value="4">区级</option>
+                    <option value="3">校级（高级）</option>
+                    <option value="2">区级（高级）</option>
+                    <option value="1">市级</option>
+                  </select>
+                </div>
+                <div class="form-actions">
+                  <%= f.submit class: 'btn-robodou', value: '提交', 'data-disable-with' => '正在提交' %>
+                </div>
+            <% end %>
+
+
           </div>
         </div>
       </div>

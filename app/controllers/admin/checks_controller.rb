@@ -5,17 +5,18 @@ class Admin::ChecksController < AdminController
   end
 
   def teachers
-    @teachers= UserRole.left_joins(:user, :school, :district).joins('left join user_profiles up on up.user_id=user_roles.user_id').where(role_id: 1, status: 0).select(:id, :cover, :user_id, 'schools.name as school_name', 'districts.name as district_name', 'users.mobile', 'up.username', 'up.gender', 'up.teacher_no').page(params[:page]).per(params[:per])
+    @teachers= UserRole.left_joins(:user).joins('left join schools s on s.id = user_roles.school_id').joins('left join districts d on d.id = s.district_id').joins('left join user_profiles up on up.user_id=user_roles.user_id').where(role_id: 1, status: 0).select(:id, :cover, :desc, :user_id, :role_type, 's.name as school_name', 'd.name as district_name', 'users.mobile', 'up.username', 'up.gender').page(params[:page]).per(params[:per])
     @teacher_array = @teachers.map { |c| {
         id: c.id,
         user_id: c.user_id,
+        role_type: c.role_type,
         district: c.district_name,
         school: c.school_name,
         mobile: c.mobile,
-        num: c.teacher_no,
+        num: c.desc,
         username: c.username,
-        gender: c.gender,
-        certificate: c.cover.present? ? ActionController::Base.helpers.asset_path(c.cover_url(:large)) : nil
+        gender: c.gender
+        # certificate: c.cover.present? ? ActionController::Base.helpers.asset_path(c.cover_url(:large)) : nil
     } }
   end
 

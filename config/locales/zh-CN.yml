@@ -315,3 +315,4 @@ zh-CN:
      schedule_id: '赛程'
      group: '组别'
      kind: '模式/种类'
+     school_id: '学校'

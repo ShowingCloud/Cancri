@@ -638,8 +638,26 @@ class UserController < ApplicationController
   end
 
   def role_apply
-    @user_roles = current_user.user_roles.where(role_id:1)
+    @user_roles = UserRole.left_joins(:school).where(role_id: 1, user_id: current_user.id).select('user_roles.*', 'schools.name as school_name')
   end
+
+  def apply_teacher
+    role_type = params[:user_role_type]
+    school_id = params[:user_school_id]
+    certificate = params[:user_certificate]
+    user_id = current_user.id
+    user_role = UserRole.create(user_id: user_id, role_id: 1, role_type: role_type, desc: certificate, school_id: school_id, status: 0)
+    respond_to do |format|
+      if user_role.save
+        format.html { redirect_to '/user/role_apply', notice: '申请成功，审核结果将消息告知您' }
+        format.json { render json: {status: true, message: '申请成功，审核结果将消息告知您'} }
+      else
+        format.html { redirect_to '/user/role_apply', notice: user_role.errors.full_messages[0] }
+        format.json { render json: {status: false, message: user_role.errors.full_messages[0]} }
+      end
+    end
+  end
+
 
   def get_schools
     district_id = params[:district_id]
