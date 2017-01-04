@@ -9,6 +9,8 @@ class User < ApplicationRecord
   has_many :course_user_scores
   has_many :teams, :dependent => :destroy
   has_many :team_user_ships, :dependent => :destroy
+  has_one :user_family, :dependent => :destroy
+  has_one :user_hacker, :dependent => :destroy
   mount_uploader :avatar, AvatarUploader
   accepts_nested_attributes_for :user_profile, allow_destroy: true
   # Include default devise modules. Others available are:

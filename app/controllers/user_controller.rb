@@ -658,6 +658,36 @@ class UserController < ApplicationController
     end
   end
 
+  def hacker_apply
+    @hacker = UserRole.left_joins(:school).where(role_id: 2, user_id: current_user.id).select('user_roles.*', 'schools.name as school_name').take
+    unless @hacker.present?
+      profile = current_user.user_profile ||= current_user.build_user_profile
+      hacker = current_user.user_hacker ||= current_user.build_user_hacker
+      family = current_user.user_family ||= current_user.build_user_family
+      @user_hacker = {profile: profile, hacker: hacker, family: family}
+    end
+
+  end
+
+  def hacker_apply_post
+    profile = params[:user_profile]
+    family = params[:user_family]
+    hacker = params[:hacker]
+    role_type = params[:hacker_type].to_i
+    school_id = profile[:school_id]
+    UserRole.transaction do
+      current_user.user_profile.update(school_id: school_id, username: profile[:username], birthday: profile[:birthday], gender: profile[:gender])
+      current_user.build_user_family.update(father_name: family[:father_name], mother_name: family[:mother_name], address: family[:address], wx: family[:wx], qq: family[:qq], email: family[:email])
+      current_user.build_user_hacker.update(create_date: hacker[:create_date], square: hacker[:square], situation: hacker[:situation], partake: hacker[:partake], active_weekly: hacker[:active_weekly], family_hobbies: hacker[:family_hobbies], create_way: hacker[:create_way], create_with: hacker[:create_with])
+      if current_user.user_roles.build.update(role_id: 2, role_type: role_type, school_id: school_id, status: 0)
+        flash[:notice] = '申请成功，结果将通过消息告知您'
+      else
+        flash[:notice] = '申请失败，结果将通过消息告知您'
+      end
+    end
+    redirect_to '/user/hacker_apply'
+  end
+
 
   def get_schools
     district_id = params[:district_id]
