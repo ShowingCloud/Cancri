@@ -67,7 +67,7 @@
                           <div class="teacher-apply-level hide">
                             <h3>级别</h3>
                             <% [[1, '市级'], [2, '区级（高级）'], [3, '校级（高级）'], [4, '区级'], [5, '校级'], [6, '外聘']].each do |teacher_role| %>
-                                <label><input name="teacher-apply-level" value="<%= teacher_role[1] %>" <%= 'checked' if teacher_role[0] == th[:role_type] %> type="radio"/><%= teacher_role[1] %>
+                                <label><input name="teacher-apply-level" value="<%= teacher_role[0] %>" <%= 'checked' if teacher_role[0] == th[:role_type] %> type="radio"/><%= teacher_role[1] %>
                                 </label><br>
                             <% end %>
                           </div>

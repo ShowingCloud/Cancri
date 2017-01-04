@@ -21,14 +21,14 @@ class Admin::ChecksController < AdminController
   end
 
   def review_teacher
-    level = params[:level]
+    level = params[:level].to_i
     status = params[:status].to_i
     ud = params[:ud]
     if status.present? && ud.present?
-      ur = UserRole.where(user_id: ud, role_id: 1, status: 0).take
+      ur = UserRole.where(user_id: ud, role_id: 1, role_type: level, status: 0).take
       if ur.present?
         if status == 1
-          if ([level.to_i] & [1, 2, 3, 4, 5]).length>0
+          if ([level] & [1, 2, 3, 4, 5, 6]).length>0
             ur.role_type = level
             ur.status = 1
             if ur.save
