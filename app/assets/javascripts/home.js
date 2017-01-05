@@ -200,6 +200,7 @@ $(function() {
         var _self = $(this);
         var selected_district = _self.find("option:selected");
         var district_id = _self.val();
+        console.log("district_id:"+district_id);
         var province_name = selected_district.attr('data-province');
         var city_name = selected_district.attr('data-city');
         var district_name = selected_district.text();
@@ -207,8 +208,7 @@ $(function() {
         document.getElementById("change_district_id").value = district_id;
         $(".select-user-district").text(province_name + ' -- ' + city_name + ' -- ' + district_name);
         $("#select-district-modal").modal('hide');
-        if ($('#select-school-modal').hasClass('in')) {
-            if (district_id != '') {
+            if (district_id) {
                 $.ajax({
                     url: '/api/v1/schools/get_by_district',
                     type: 'get',
@@ -233,9 +233,8 @@ $(function() {
                     }
                 });
             } else {
-                alert_r(false, '非有效区县')
+                alert_r(false, '非有效区县');
             }
-        }
 
     });
 
@@ -872,6 +871,28 @@ $(function() {
             ajax_handle(option)
         });
     }
+
+    //教师创客认证申请
+    $(".edit_role_btn").click(function(){
+      $(".role_form").removeClass('hidden');
+      $(this).parents(".user_role").addClass('hidden');
+    });
+
+    $('#teacher_role_type').change(function(){
+      var role_type = $(this).val();
+      var user_certificate = $("#user_certificate");
+      var user_role_type = $("#user_role_type");
+      var user_role_type_hidden = $('#user_role_type_hidden');
+      if(role_type === 'zb'){
+        user_certificate.prop( "disabled", false ).parents(".form-group").removeClass('hidden');
+        user_role_type.prop( "disabled", false ).parents(".form-group").removeClass('hidden');
+        user_role_type_hidden.prop( "disabled", true );
+      }else{
+        user_certificate.prop( "disabled", true ).parents(".form-group").addClass('hidden');
+        user_role_type.prop( "disabled", true ).parents(".form-group").addClass('hidden');
+        user_role_type_hidden.prop( "disabled", false );
+      }
+    });
 
     //参赛学生列表
 
