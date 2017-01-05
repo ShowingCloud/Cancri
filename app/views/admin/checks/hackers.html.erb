@@ -15,8 +15,7 @@
         <th>性别</th>
         <th>区县</th>
         <th>学校</th>
-        <th>描述</th>
-        <th>图片</th>
+        <th>角色</th>
         <th>操作</th>
       </tr>
       </thead>
@@ -28,9 +27,9 @@
             <td><%= th[:gender]==1 ? '男' : '女' %></td>
             <td><%= th[:district] %></td>
             <td><%= th[:school] %></td>
-            <td title="<%= th[:desc] %>"><%= th[:desc][0..9] %></td>
+            <td><%= th[:role_type]==1 ? '中小学' : '社会' %></td>
             <td>
-              <% if th[:cover].present? %>
+              <% if th[:cover].nil? %>
                   <a href="<%= "#modal-form-#{th[:id]}" %>" role="button" data-toggle="modal" class="btn btn-xs btn-warning">
                     审核
                   </a>
@@ -47,9 +46,13 @@
                         <div class="modal-body overflow-visible">
                           <div class="row">
                             <div class="col-xs-12 col-sm-8 col-md-8 ace-thumbnails">
-                              <a href="<%= th[:cover] %>" title="<%= th[:username] %>" data-rel="colorbox">
-                                <img class="img-thumbnail" src="<%= th[:cover] %>">
-                              </a>
+                              <% if th[:cover].present? %>
+                                  <a href="<%= th[:cover] %>" title="<%= th[:username] %>" data-rel="colorbox">
+                                    <img class="img-thumbnail" src="<%= th[:cover] %>">
+                                  </a>
+                              <% else %>
+                                  没有上传图片
+                              <% end %>
 
                             </div>
                             <div class="col-xs-12 col-sm-3 col-md-3 hacker-apply-status">

@@ -659,33 +659,57 @@ class UserController < ApplicationController
   end
 
   def hacker_apply
-    @hacker = UserRole.left_joins(:school).where(role_id: 2, user_id: current_user.id).select('user_roles.*', 'schools.name as school_name').take
-    unless @hacker.present?
+    hacker = UserRole.joins(:user).left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').where(role_id: 2, user_id: current_user.id).select('user_roles.*', 'users.mobile', 'u_p.username', 'u_p.gender', 'u_p.birthday', 'u_p.position', 'u_p.identity_card', 'u_p.address', 'schools.name as school_name').take
+    if hacker.present?
+      @hacker = {status: hacker.status, mobile: hacker.mobile, profile: {username: hacker.username, gender: hacker.gender, birthday: hacker.birthday, school_name: hacker.school_name, school_id: hacker.school_id, position: hacker.position, identity_card: hacker.identity_card, address: hacker.address}, hacker: hacker.user_hacker, family: hacker.user_family, role_type: hacker.role_type, not_update: true}
+    else
       profile = current_user.user_profile ||= current_user.build_user_profile
-      hacker = current_user.user_hacker ||= current_user.build_user_hacker
-      family = current_user.user_family ||= current_user.build_user_family
-      @user_hacker = {profile: profile, hacker: hacker, family: family}
+      hacker = current_user.build_user_hacker
+      family = current_user.build_user_family
+      @hacker = {profile: profile, hacker: hacker, family: family}
     end
-
   end
 
   def hacker_apply_post
     profile = params[:user_profile]
     family = params[:user_family]
     hacker = params[:hacker]
-    role_type = params[:hacker_type].to_i
+    role_type = params[:hacker_type]
     school_id = profile[:school_id]
-    UserRole.transaction do
-      current_user.user_profile.update(school_id: school_id, username: profile[:username], birthday: profile[:birthday], gender: profile[:gender])
-      current_user.build_user_family.update(father_name: family[:father_name], mother_name: family[:mother_name], address: family[:address], wx: family[:wx], qq: family[:qq], email: family[:email])
-      current_user.build_user_hacker.update(create_date: hacker[:create_date], square: hacker[:square], situation: hacker[:situation], partake: hacker[:partake], active_weekly: hacker[:active_weekly], family_hobbies: hacker[:family_hobbies], create_way: hacker[:create_way], create_with: hacker[:create_with])
-      if current_user.user_roles.build.update(role_id: 2, role_type: role_type, school_id: school_id, status: 0)
-        flash[:notice] = '申请成功，结果将通过消息告知您'
+    update = params[:update]
+    if update == 'true'
+      return_url = '/user/hacker_apply?update=true'
+    else
+      return_url = '/user/hacker_apply'
+    end
+    @hacker = {family: family, role_type: role_type, profile: profile, hacker: hacker}
+    if role_type == '2' && current_user.mobile.nil?
+      flash[:notice] = '申请社会创客时需认证手机！'
+      redirect_to '/user/mobile'
+    else
+      if profile[:username].present? && profile[:birthday].present? && school_id.present? && profile[:gender].present?
+        begin
+          UserHacker.transaction do
+            user_profile = current_user.user_profile ||= current_user.build_user_profile
+            user_profile.update!(user_profile_params)
+            user_role = current_user.user_roles.where(role_id: 2).take || current_user.user_roles.build
+            user_role.update!(role_id: 2, role_type: role_type, school_id: school_id, status: 0)
+            user_family = user_role.user_family || user_role.build_user_family
+            user_hacker = user_role.user_hacker || user_role.build_user_hacker
+            user_family.update!(user_id: user_role.user_id, father_name: family[:father_name], mother_name: family[:mother_name], address: family[:address], wx: family[:wx], qq: family[:qq], email: family[:email])
+            user_hacker.update!(create_date: hacker[:create_date], user_id: user_role.user_id, square: hacker[:square], situation: hacker[:situation], partake: hacker[:partake], active_weekly: hacker[:active_weekly], family_hobbies: hacker[:family_hobbies], create_way: hacker[:create_way], create_with: hacker[:create_with])
+          end
+          flash[:notice] = '申请成功，审核结果将通过消息告知您！'
+          redirect_to return_url
+        rescue Exception => ex
+          flash[:notice] = ex.message[5..-1]
+          render return_url
+        end
       else
-        flash[:notice] = '申请失败，结果将通过消息告知您'
+        flash[:notice] = '请将姓名、性别、生日、学校填写完整！'
+        render return_url
       end
     end
-    redirect_to '/user/hacker_apply'
   end
 
 
@@ -802,6 +826,14 @@ class UserController < ApplicationController
     unless @user
       render_optional_error(404)
     end
+  end
+
+  def user_profile_params
+    params.require(:user_profile).permit(:username, :birthday, :gender, :school_id, :identity_card, :position)
+  end
+
+  def user_family_params
+    params.require(:user_family).permit(:username, :birthday, :gender, :school_id, :identity_card, :position)
   end
 
   def params_program
