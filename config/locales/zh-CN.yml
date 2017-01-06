@@ -312,7 +312,7 @@ zh-CN:
      partake2: '以家长为主'
      partake3: '以亲子为主'
      situation1: '专用工作台'
-     situation1: '专用工作间'
+     situation2: '专用工作间'
   attributes:
      name: '名称'
      username: '姓名'

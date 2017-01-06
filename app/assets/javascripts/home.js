@@ -894,6 +894,48 @@ $(function() {
       }
     });
 
+    $("#role-nav .sub-menu-item").click(function(){
+      var _this = $(this);
+      var role = _this.data("role");
+      var items = $("#role-nav .sub-menu-item");
+      items.removeClass("active");
+      _this.addClass("active");
+      $("#hacker_type").val(role);
+      role_form_switch(role);
+    });
+
+    $("#hacker_create_way").change(function(){
+      if($(this).val() === "1"){
+        $(".hacker_create_with").addClass("hidden");
+      }else{
+        $(".hacker_create_with").removeClass("hidden");
+      }
+    });
+
+    var role = $("#hacker_type").val();
+    if(role){
+      role_form_switch(role);
+    }
+
+    function role_form_switch(role){
+      if(role == "1"){
+        $(".only-role1").removeClass("hidden");
+        $(".only-role2").addClass("hidden");
+      }else{
+        var mobile = $("#user-mobile").text();
+        if(!mobile.length){
+          alert_r("请先去认证手机号",function(){
+            window.location = '/user/mobile';
+          });
+          return;
+        }else{
+          $("#user_family_mobile").val(mobile);
+        }
+        $(".only-role2").removeClass("hidden");
+        $(".only-role1").addClass("hidden");
+      }
+    }
+
     //参赛学生列表
 
     if ($('#comp-stu').length > 0) {

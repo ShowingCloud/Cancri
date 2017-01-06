@@ -829,7 +829,7 @@ class UserController < ApplicationController
   end
 
   def user_profile_params
-    params.require(:user_profile).permit(:username, :birthday, :gender, :school_id, :identity_card, :position)
+    params.require(:user_profile).permit(:username, :birthday, :gender, :school_id, :identity_card, :position, :address)
   end
 
   def user_family_params

@@ -571,6 +571,11 @@ a:hover {
   border-bottom: 1px solid #FFFFFF;
 }
 
+#role-nav{
+  overflow: auto;
+  border-bottom: none;
+}
+
 .user-center .user-main .sub-menu .sub-menu-item {
   padding: 10px 20px;
   font-size: 14px;
