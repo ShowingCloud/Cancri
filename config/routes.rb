@@ -261,6 +261,8 @@ Rails.application.routes.draw do
   post 'user/apply_teacher', to: 'user#apply_teacher', as: 'user_apply_teacher'
   get 'user/hacker_apply', to: 'user#hacker_apply', as: 'user_hacker_apply'
   post 'user/hacker_apply_post', to: 'user#hacker_apply_post', as: 'user_hacker_apply_post'
+  get 'user/teacher_audit', to: 'user#teacher_audit', as: 'user_teacher_audit'
+  get 'user/hacker_audit', to: 'user#hacker_audit', as: 'user_hacker_audit'
   # get 'user/join_voucher', to: 'user#join_voucher'
   # get 'user/export_voucher', to: 'user#export_voucher'
   mount ActionCable.server => '/cable'

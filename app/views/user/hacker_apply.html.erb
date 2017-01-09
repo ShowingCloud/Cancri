@@ -9,7 +9,7 @@
         <div class="user-main">
           <%= render 'user/tab' %>
           <div class="sub-content">
-            <span id="user-mobile" class="hidden"><%= @hacker[:mobile] %></span>
+            <span id="user-mobile" class="hidden"><%= current_user.mobile %></span>
             <% hacker = @hacker[:hacker] %>
             <% hacker_profile = @hacker[:profile] %>
             <% hacker_family = @hacker[:family] %>
@@ -310,4 +310,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>
