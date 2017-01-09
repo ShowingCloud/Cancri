@@ -6,6 +6,7 @@ a {
 }
 
 a:hover {
+  color: #add0f0;
   text-decoration: none;
 }
 
@@ -2219,5 +2220,7 @@ select {
 }
 
 .select-user-district, .select-user-school{
+  color: #5ba4e4;
+  text-decoration:underline;
   line-height: 30px;
 }

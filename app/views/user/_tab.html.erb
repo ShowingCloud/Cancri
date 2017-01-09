@@ -78,7 +78,7 @@
         </div>
       </a>
   <% end %>
-  <% if action_name == 'role_apply' || action_name == 'hacker_apply' %>
+  <% if action_name == 'role_apply' || action_name == 'hacker_apply' || action_name == 'hacker_apply_post' %>
 
         <a href="<%= user_role_apply_path %>">
           <div class="sub-menu-item <%= 'active' if action_name == 'role_apply' %>">
@@ -86,7 +86,7 @@
           </div>
         </a>
         <a href="<%= user_hacker_apply_path %>">
-          <div class="sub-menu-item <%= 'active' if action_name == 'hacker_apply' %>">
+          <div class="sub-menu-item <%= 'active' if action_name == 'hacker_apply' || action_name == 'hacker_apply_post' %>">
             创客
           </div>
         </a>
