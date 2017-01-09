@@ -642,24 +642,33 @@ class UserController < ApplicationController
   end
 
   def apply_teacher
+    username = params[:user_username]
     role_type = params[:user_role_type]
     school_id = params[:user_school_id]
     certificate = params[:user_certificate]
     user_id = current_user.id
-    user_role = UserRole.where(user_id: user_id, role_id: 1).take
-    if user_role.present?
-      user_role.update_attributes(role_type: role_type, desc: certificate, school_id: school_id, status: 0)
-    else
-      user_role = UserRole.create(user_id: user_id, role_id: 1, role_type: role_type, desc: certificate, school_id: school_id, status: 0)
-    end
-    respond_to do |format|
-      if user_role.save
-        format.html { redirect_to '/user/role_apply', notice: '申请成功，审核结果将消息告知您' }
-        format.json { render json: {status: true, message: '申请成功，审核结果将消息告知您'} }
+    user_profile = current_user.user_profile || current_user.build_user_profile
+
+    if user_profile.update_attributes(username: username, school_id: school_id)
+      user_role = UserRole.where(user_id: user_id, role_id: 1).take
+      if user_role.present?
+        user_role.update_attributes(role_type: role_type, desc: certificate, school_id: school_id, status: 0)
       else
-        format.html { redirect_to '/user/role_apply', notice: user_role.errors.full_messages[0] }
-        format.json { render json: {status: false, message: user_role.errors.full_messages[0]} }
+        user_role = UserRole.create(user_id: user_id, role_id: 1, role_type: role_type, desc: certificate, school_id: school_id, status: 0)
       end
+      if user_role.save
+        result = [true, '申请成功，审核结果将消息告知您']
+      else
+        result = [false, user_role.errors.full_messages[0]]
+      end
+    else
+      result = [false, user_profile.errors.full_messages[0]]
+    end
+    flash[:notice] = result[1]
+    if result[0]
+      redirect_to '/user/role_apply'
+    else
+      render '/user/role_apply'
     end
   end
 
@@ -715,6 +724,14 @@ class UserController < ApplicationController
         render return_url
       end
     end
+  end
+
+  def teacher_audit
+    @teachers = UserRole.joins('left join user_profile u_p on u_p.user_id = user_roles.user_id').where(role_type: 1, status: 0).select('user_role.*', 'u_p.username')
+  end
+
+  def hacker_audit
+    @teachers = UserRole.joins('left join user_profile u_p on u_p.user_id = user_roles.user_id').joins(:school).where(role_type: 2, status: 0).select('user_role.*', 'u_p.username', 'schools.name as school_name')
   end
 
 
