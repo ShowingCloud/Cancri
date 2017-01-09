@@ -646,7 +646,12 @@ class UserController < ApplicationController
     school_id = params[:user_school_id]
     certificate = params[:user_certificate]
     user_id = current_user.id
-    user_role = UserRole.create(user_id: user_id, role_id: 1, role_type: role_type, desc: certificate, school_id: school_id, status: 0)
+    user_role = UserRole.where(user_id: user_id, role_id: 1).take
+    if user_role.present?
+      user_role.update_attributes(role_type: role_type, desc: certificate, school_id: school_id, status: 0)
+    else
+      user_role = UserRole.create(user_id: user_id, role_id: 1, role_type: role_type, desc: certificate, school_id: school_id, status: 0)
+    end
     respond_to do |format|
       if user_role.save
         format.html { redirect_to '/user/role_apply', notice: '申请成功，审核结果将消息告知您' }
