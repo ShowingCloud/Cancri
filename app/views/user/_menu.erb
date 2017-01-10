@@ -4,7 +4,7 @@
 <% @action_student_manage = ['student_manage', 'comp_student'] %>
 <% @action_stu_info = ['competitions', 'courses', 'activities'] %>
 <% @action_security = ['security', 'email', 'reset_email', 'mobile', 'passwd', 'reset_mobile'] %>
-
+<% @action_role_apple_array = ['role_apply', 'hacker_apply_post', 'hacker_apply'] %>
 
 <div class="sidebar">
   <div class="sidebar-top">
@@ -33,6 +33,12 @@
       <div class="sidebar-item <%= 'active' if @action_security.include?(action_name) %>">
         <i class="glyphicon glyphicon-asterisk"></i>
         账户安全
+      </div>
+    </a>
+    <a href="<%= user_role_apply_path %>">
+      <div class="sidebar-item <%= 'active' if @action_role_apple_array.include?(action_name) %>">
+        <i class="glyphicon glyphicon-asterisk"></i>
+        身份认证
       </div>
     </a>
     <a href="<%= is_teacher ? user_programs_path : user_apply_path %>">
