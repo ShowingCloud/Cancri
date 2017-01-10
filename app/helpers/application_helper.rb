@@ -19,4 +19,23 @@ module ApplicationHelper
       else
     end
   end
+
+  def show_teacher_type(role_type)
+    case role_type when 1
+                     '市级'
+      when 2
+        '区级（高级）'
+      when 3
+        '校级（高级）'
+      when 4
+        '区级'
+      when 5
+        '校级'
+      when 6
+        '外聘'
+      else
+        '未知'
+    end
+  end
+
 end

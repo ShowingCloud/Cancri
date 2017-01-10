@@ -2,6 +2,7 @@ class UserController < ApplicationController
   before_action :authenticate_user!
   before_action :set_user, only: [:competitions, :courses, :activities]
   before_action :is_teacher, only: [:programs, :program, :program_se, :create_program, :course_score]
+  before_action :super_district_teacher, only: [:teachers, :teacher_audit, :hacker_audit]
 
   # 个人信息概览
   def preview
@@ -727,11 +728,54 @@ class UserController < ApplicationController
   end
 
   def teacher_audit
-    @teachers = UserRole.joins('left join user_profile u_p on u_p.user_id = user_roles.user_id').where(role_type: 1, status: 0).select('user_role.*', 'u_p.username')
+    if request.method == 'POST'
+      status = params[:status]
+      role_type = params[:role_type]
+      user_role_id = params[:id]
+      audit_role = UserRole.where(id: user_role_id).take
+      if audit_role.present?
+        if audit_role.status == 0
+          if current_user.user_roles.where(role_id: 1, role_type: 1, status: 1).exists? || UserRole.user_role_info([current_user.id, audit_role.user_id]).uniq.length == 1
+            if status == '1'
+              if audit_role.update_attributes(status: 1, role_type: role_type)
+                result = [true, '审核成功!']
+                Notification.create(user_id: audit_role.user_id, message_type: 0, content: '您申请的老师身份审核通过!')
+              else
+                result = [false, '审核出现意外!']
+              end
+            elsif status == '0'
+              if audit_role.destroy
+                result = [true, '审核成功']
+                Notification.create(user_id: audit_role.user_id, message_type: 0, content: '您申请的老师身份审核未通过!')
+              else
+                result = [false, '审核出现意外!']
+              end
+            else
+              result = [false, '请选择审核结果!']
+            end
+          else
+            result = [false, '您没有权限审核该角色!']
+          end
+          audit_role.update_attributes(role_type: role_type)
+        else
+          result = [false, '该角色不是待审核状态']
+        end
+      else
+        result = [false, '对象不存在']
+      end
+      render json: {status: result[0], message: result[1]}
+    else
+      @teachers = UserRole.left_join_u_p.left_joins(:school).where(role_id: 1, role_type: [3, 5, 6], status: 0).select('user_roles.*', 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
+    end
+  end
+
+  def teachers
+    district_id = UserRole.user_role_info([current_user.id])[0]
+    @teachers = UserRole.left_join_u_p.left_joins(:school).where(role_id: 1, status: 1).where('schools.district_id=?', district_id).select('user_roles.*', 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
   end
 
   def hacker_audit
-    @teachers = UserRole.joins('left join user_profile u_p on u_p.user_id = user_roles.user_id').joins(:school).where(role_type: 2, status: 0).select('user_role.*', 'u_p.username', 'schools.name as school_name')
+    @hackers = UserRole.joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').joins(:school).where(role_type: 2, status: 0).select('user_roles.*', 'u_p.username', 'schools.name as school_name')
   end
 
 
