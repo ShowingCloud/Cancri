@@ -190,7 +190,7 @@ class Admin::EventsController < AdminController
         data = @scores.where('s.schedule_rank > ?', 0)
         if data.length > 0
           if export_type == '1'
-            data = Team.find_by_sql("select t.identifier,school.name as school_name,d.name as district_name, u_p.username,u_p.autograph,t.teacher,s.schedule_rank,u_p.student_code,u_p.grade,u_p.bj from team_user_ships t_u INNER join teams t on t.id = t_u.team_id left join user_profiles u_p on u_p.user_id = t_u.user_id left join scores s on s.team1_id = t.id left join schools school on school.id = t.school_id left join districts d on d.id = u_p.district_id where t.event_id = #{event_id} and t.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.schedule_rank > 0 order by s.schedule_rank")
+            data = Team.find_by_sql("select t.identifier,school.name as school_name,d.name as district_name, u_p.username,u_p.autograph,t.teacher,s.schedule_rank,s.score_attribute,s.score,s.order_score,s.sort_score,u_p.student_code,u_p.grade,u_p.bj from team_user_ships t_u INNER join teams t on t.id = t_u.team_id left join user_profiles u_p on u_p.user_id = t_u.user_id left join scores s on s.team1_id = t.id left join schools school on school.id = t.school_id left join districts d on d.id = u_p.district_id where t.event_id = #{event_id} and t.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.schedule_rank > 0 order by s.schedule_rank")
             data = data.map { |score| {
                 项目: event_name,
                 组别: params_group,
@@ -202,10 +202,14 @@ class Admin::EventsController < AdminController
                 名次: score.schedule_rank,
                 学籍号: score.autograph ||= score.student_code,
                 年级: score.grade,
-                班级: score.bj
+                班级: score.bj,
+                最终成绩: score.score.to_s,
+                第二排序属性: score.order_score.to_s,
+                最三排序属性: score.sort_score.to_s,
+                成绩属性: score.score_attribute
             } }
           else
-            data = Team.find_by_sql("select t.identifier,school.name as school_name,d.name as district_name,t.teacher, GROUP_CONCAT(u_p.username) as username,s.schedule_rank from team_user_ships t_u INNER join teams t on t.id = t_u.team_id left join user_profiles u_p on u_p.user_id = t_u.user_id left join schools school on school.id = t.school_id left join districts d on d.id = school.district_id left join scores s on s.team1_id = t_u.team_id where t.event_id = #{event_id} and t.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.schedule_rank > 0 group by t_u.team_id,s.schedule_rank order by s.schedule_rank")
+            data = Team.find_by_sql("select t.identifier,school.name as school_name,d.name as district_name,t.teacher, GROUP_CONCAT(u_p.username) as username,s.schedule_rank,s.score_attribute,s.score,s.order_score,s.sort_score from team_user_ships t_u INNER join teams t on t.id = t_u.team_id left join user_profiles u_p on u_p.user_id = t_u.user_id left join schools school on school.id = t.school_id left join districts d on d.id = school.district_id left join scores s on s.team1_id = t_u.team_id where t.event_id = #{event_id} and t.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.schedule_rank > 0 group by t_u.team_id,s.schedule_rank,s.score_attribute,s.score,s.order_score,s.sort_score order by s.schedule_rank")
             data = data.map { |score| {
                 项目: event_name,
                 组别: params_group,
@@ -214,7 +218,11 @@ class Admin::EventsController < AdminController
                 区县: score.district_name,
                 学校: score.school_name,
                 老师: score.teacher,
-                名次: score.schedule_rank
+                名次: score.schedule_rank,
+                最终成绩: score.score.to_s,
+                第二排序属性: score.order_score.to_s,
+                最三排序属性: score.sort_score.to_s,
+                成绩属性: score.score_attribute
             } }
           end
           filename = "#{event_name}_#{params_group}_#{export_type.present? ? '个人' : '队伍'}_#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
