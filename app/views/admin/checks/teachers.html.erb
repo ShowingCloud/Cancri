@@ -16,6 +16,7 @@
         <th>手机</th>
         <th>区县</th>
         <th>学校</th>
+        <th>级别</th>
         <th>教师编号</th>
         <th>操作</th>
       </tr>
@@ -25,10 +26,13 @@
       <% @teacher_array.each do |th| %>
           <tr>
             <td><%= th[:username] %></td>
-            <td><%= th[:gender]==1 ? '男' : '女' %></td>
+            <td><%= th[:gender]==1 ? '男' : (th[:gender] == 2 ? '女' : '') %></td>
             <td><%= th[:mobile] %></td>
             <td><%= th[:district] %></td>
             <td><%= th[:school] %></td>
+            <td>
+              <%= show_teacher_role(th[:role_type]) %>
+            </td>
             <td><%= th[:num] %></td>
             <td>
               <a href="<%= "#modal-form-#{th[:id]}" %>" role="button" data-toggle="modal" class="btn btn-xs btn-warning">
@@ -40,7 +44,8 @@
                   <div class="modal-content" style="width: 700px">
                     <div class="widget-header model-header">
                       <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
-                      <h4 class="blue smaller text-center"><%= th[:username] %>  - <%= th[:gender]==1 ? '男' : '女' %>
+                      <h4 class="blue smaller text-center"><%= th[:username] %>
+                        - <%= show_teacher_role(th[:role_type]) %>
                         <%= "- #{th[:num]}" if th[:num].present? %>
                         - <%= th[:school] %></h4>
                     </div>
@@ -61,13 +66,10 @@
 
                           <div class="teacher-apply-level hide">
                             <h3>级别</h3>
-                            <label><input name="teacher-apply-level" value="1" type="radio"/> 市级</label><br>
-                            <label><input name="teacher-apply-level" value="2" type="radio"/> 区级(唯一)</label><br>
-                            <label><input name="teacher-apply-level" value="3" type="radio"/> 校级(唯一)</label><br>
-                            <label><input name="teacher-apply-level" value="4" type="radio"/> 区级</label><br>
-                            <label><input name="teacher-apply-level" value="5" type="radio"/> 校级</label><br>
-
-
+                            <% [[1, '市级'], [2, '区级（高级）'], [3, '校级（高级）'], [4, '区级'], [5, '校级'], [6, '外聘']].each do |teacher_role| %>
+                                <label><input name="teacher-apply-level" value="<%= teacher_role[0] %>" <%= 'checked' if teacher_role[0] == th[:role_type] %> type="radio"/><%= teacher_role[1] %>
+                                </label><br>
+                            <% end %>
                           </div>
 
                         </div>

@@ -8,7 +8,7 @@ class UserProfile < ApplicationRecord
   validates :school_id, numericality: {:greater_than => 0}, allow_blank: true
   validates :grade, allow_blank: true, numericality: {:greater_than => 0}
   validates :district_id, numericality: {:greater_than => 0}, allow_blank: true
-  validates :student_code, allow_blank: true, uniqueness: true, length: {is: 19}, numericality: {only_integer: true}
+  validates :student_code, allow_blank: true, uniqueness: true, length: {minimum: 1}, numericality: {only_integer: true}
   validates :bj, allow_blank: true, :numericality => {:greater_than => 0}
 
   GENDER = {male: 1, female: 2}
@@ -28,7 +28,7 @@ class UserProfile < ApplicationRecord
       if /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.match(identity_card) == nil
         errors[:identity_card] << '请正确填写18位身份证号'
       end
-      if birthday.gsub('-', '') != identity_card[6..13]
+      if birthday.to_s.gsub('-', '') != identity_card[6..13]
         errors[:birthday] << '与身份证信息不符'
       end
 

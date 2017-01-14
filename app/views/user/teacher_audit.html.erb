@@ -1,0 +1,51 @@
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="user-notification">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @teachers.present? %>
+
+                <table>
+                  <thead>
+                  <tr>
+                    <th>姓名</th>
+                    <th>学校</th>
+                    <th>编号</th>
+                    <th>级别</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <% @teachers.each do |teacher| %>
+                        <input id="teacher_role_id" value="<%= teacher.id %>" type="hidden"/>
+                        <td><%= teacher.username %></td>
+                        <td><%= teacher.school_name %></td>
+                        <td><%= teacher.desc %></td>
+                        <td><%= show_teacher_type(teacher.role_type) %></td>
+                        <td>
+                          <a class="btn btn-primary audit">审核</a>
+                        </td>
+                    <% end %>
+                    <nav>
+                      <%= paginate @teachers %>
+                    </nav>
+                  </tr>
+                  </tbody>
+                </table>
+
+            <% else %>
+                <p> 暂无待审核老师</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -29,13 +29,13 @@ class ApplicationController < ActionController::Base
 
   def require_mobile
     if current_user.present?
-      response = Typhoeus.get("#{Settings.auth_url}/user_infos/#{current_user.id}.json",headers: { Authorization: Settings.auth_token })
+      response = Typhoeus.get("#{Settings.auth_url}/user_infos/#{current_user.id}.json", headers: {Authorization: Settings.auth_token})
       if response.code == 200
-          data =  JSON.parse(response.body)
-          return true && current_user.update_attributes(mobile:data["mobile"]) if data["mobile"].present?
+        data = JSON.parse(response.body)
+        return true && current_user.update_attributes(mobile: data["mobile"]) if data["mobile"].present?
       else
-          logger.error "request user data from #{response.effective_url} failed"
-          current_user.mobile.present?
+        logger.error "request user data from #{response.effective_url} failed"
+        current_user.mobile.present?
       end
     else
       false
@@ -70,6 +70,11 @@ class ApplicationController < ActionController::Base
     unless has_teacher_role
       render_optional_error(403)
     end
+  end
+
+  def super_district_teacher
+    return false if current_user.blank?
+    current_user.user_roles.where(role_id: 1, role_type: 2, status: 1).exists?
   end
 
   private

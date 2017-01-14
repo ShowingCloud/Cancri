@@ -258,6 +258,11 @@ Rails.application.routes.draw do
   get 'user/comp_student' => 'user#comp_student', as: 'user_comp_student'
   get 'user/get_comp_students' => 'user#get_comp_students', as: 'user_get_comp_students'
   get 'user/role_apply', to: 'user#role_apply', as: 'user_role_apply'
+  post 'user/apply_teacher', to: 'user#apply_teacher', as: 'user_apply_teacher'
+  get 'user/hacker_apply', to: 'user#hacker_apply', as: 'user_hacker_apply'
+  post 'user/hacker_apply_post', to: 'user#hacker_apply_post', as: 'user_hacker_apply_post'
+  match 'user/teacher_audit', to: 'user#teacher_audit', as: 'user_teacher_audit', via: [:get, :post]
+  get 'user/hacker_audit', to: 'user#hacker_audit', as: 'user_hacker_audit'
   # get 'user/join_voucher', to: 'user#join_voucher'
   # get 'user/export_voucher', to: 'user#export_voucher'
   mount ActionCable.server => '/cable'

@@ -9,10 +9,169 @@
         <div class="user-main">
           <%= render 'user/tab' %>
           <div class="sub-content">
-            <select>
-              <option>在线</option>
-              <option>外聘</option>
-            </select>
+            <% if @user_roles.present? %>
+                <% @user_roles.each do |u_r| %>
+                  <div class="user_role">
+                    <p>
+                      <% if u_r.status == 0 %>
+                        您认证成为<%= u_r.role_type == 6 ? '外聘' : '在编' %>老师的申请已提交，请等待审核
+                      <% else %>
+                        您已认证成为<%= u_r.role_type == 6 ? '外聘' : '在编' %>老师
+                      <% end %>
+                    </p>
+                    <p>
+                      学校：<%= u_r.school_name %>
+                    </p>
+                    <p>
+                      级别：
+                      <% case u_r.role_type when 1 %>
+                          市级
+                      <% when 4 %>
+                          区级
+                      <% when 5 %>
+                          校级
+                      <% else %>
+                          未知
+                      <% end %>
+                    </p>
+                    <% if u_r.status != 0 %>
+                      <button class="btn-robodou edit_role_btn">
+                        修改
+                      </button>
+                    <% end %>
+                  </div>
+                <% end %>
+              <% end %>
+              <div class="role_form <%= 'hidden' if @user_roles.present? %>">
+                <select id="teacher_role_type">
+                  <option value="zb" <%= 'selected="selected"' if [5,4,1].include? @user_roles[0].role_type %> >在编教师</option>
+                  <option value="wp" <%= 'selected="selected"' if @user_roles[0].role_type == 6 %> >外聘教师</option>
+                </select>
+                <p>校内老师请认证为在编教师，否则无法通过</p>
+                <%= simple_form_for(current_user, html: {id:"teacher_role_form",class:"form-horizontal"}, url: user_apply_teacher_path, method: :post) do |f| %>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="user_username">姓名</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="user_username" name="user_username" value="<%= current_user.user_profile.try(:username) %>">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="user_school_id">学校</label>
+                    <div class="col-sm-10">
+                      <input type="hidden" id="user_profile_district_id" />
+                      <input type="hidden" id="user_profile_school_id" name="user_school_id" value="<%= current_user.user_profile.school_id %>"/>
+                      <input type="hidden" id="change_district_id" value="<%= current_user.user_profile.district_id %>"/>
+                      <span><a href="#select-school-modal" role="button" class="select-user-school" data-toggle="modal"><%= current_user.user_profile.school_id.present? ? current_user.user_profile.school.try(:name) : '选择学校' %></a></span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="user_school_id">教师资格证编号</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="user_certificate" name="user_certificate">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="user_school_id">级别</label>
+                    <div class="col-sm-10">
+                      <%= select_tag "user_role_type", options_for_select({ "校级" => "5", "区级" => "4", "市级" => "1" }, @user_roles[0].role_type ),:class=>"form-control" %>
+                      <input type="hidden" id="user_role_type_hidden" name="user_role_type" value="6" disabled />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <%= f.submit class: 'btn-robodou', value: '认证', 'data-disable-with' => '正在提交' %>
+                    </div>
+                  </div>
+                <% end %>
+
+              </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="select-district-modal" class="modal" data-backdrop="static" tabindex="-1" style="z-index:1060">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="bigger text-center">选择区县</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="col-xs-4">
+                <label>省市</label>
+                <div>
+                  <select id="select-province">
+                    <option value="">请选择省市</option>
+                    <% Province.select(:id, :name).each do |p| %>
+                        <option value="<%= p.id %>"><%= p.name %></option>
+                    <% end %>
+                  </select>
+                </div>
+              </div>
+              <div class="col-xs-4"><label>城市</label>
+                <div>
+                  <select id="select-city">
+                    <option value="">请选择城市</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-xs-4"><label>区县</label>
+                <div>
+                  <select id="select-district">
+                    <option value="">请选择区县</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="space-12"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="select-school-modal" class="modal" tabindex="-1" style="z-index:1050">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="blue bigger text-center">选择学校</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="col-xs-8">
+                <label for="">区县</label>
+                <label>&nbsp;&nbsp;&nbsp;<a href="#select-district-modal" role="button" class="blue select-user-district" data-toggle="modal"><%= '选择区县' %></a></label>
+              </div>
+              <div class="col-xs-8">
+                <label>学校</label>
+                  <select class="chosen-select" id="select-user-school" data-placeholder="请选择学校">
+                  </select>
+                <div>
+                  <label>没有你的学校？在此添加：</label>
+                  <input id="add-school-input" type="text">
+                  <button type="button" class="btn-robodou btn-add-school">添加</button>
+                </div>
+              </div>
+            </div>
+            <div class="space-12"></div>
           </div>
         </div>
       </div>

@@ -200,6 +200,7 @@ $(function() {
         var _self = $(this);
         var selected_district = _self.find("option:selected");
         var district_id = _self.val();
+        console.log("district_id:"+district_id);
         var province_name = selected_district.attr('data-province');
         var city_name = selected_district.attr('data-city');
         var district_name = selected_district.text();
@@ -207,8 +208,7 @@ $(function() {
         document.getElementById("change_district_id").value = district_id;
         $(".select-user-district").text(province_name + ' -- ' + city_name + ' -- ' + district_name);
         $("#select-district-modal").modal('hide');
-        if ($('#select-school-modal').hasClass('in')) {
-            if (district_id != '') {
+            if (district_id) {
                 $.ajax({
                     url: '/api/v1/schools/get_by_district',
                     type: 'get',
@@ -233,9 +233,8 @@ $(function() {
                     }
                 });
             } else {
-                alert_r(false, '非有效区县')
+                alert_r(false, '非有效区县');
             }
-        }
 
     });
 
@@ -871,6 +870,70 @@ $(function() {
             };
             ajax_handle(option)
         });
+    }
+
+    //教师创客认证申请
+    $(".edit_role_btn").click(function(){
+      $(".role_form").removeClass('hidden');
+      $(this).parents(".user_role").addClass('hidden');
+    });
+
+    $('#teacher_role_type').change(function(){
+      var role_type = $(this).val();
+      var user_certificate = $("#user_certificate");
+      var user_role_type = $("#user_role_type");
+      var user_role_type_hidden = $('#user_role_type_hidden');
+      if(role_type === 'zb'){
+        user_certificate.prop( "disabled", false ).parents(".form-group").removeClass('hidden');
+        user_role_type.prop( "disabled", false ).parents(".form-group").removeClass('hidden');
+        user_role_type_hidden.prop( "disabled", true );
+      }else{
+        user_certificate.prop( "disabled", true ).parents(".form-group").addClass('hidden');
+        user_role_type.prop( "disabled", true ).parents(".form-group").addClass('hidden');
+        user_role_type_hidden.prop( "disabled", false );
+      }
+    });
+
+    $("#role-nav .sub-menu-item").click(function(){
+      var _this = $(this);
+      var role = _this.data("role");
+      var items = $("#role-nav .sub-menu-item");
+      items.removeClass("active");
+      _this.addClass("active");
+      $("#hacker_type").val(role);
+      role_form_switch(role);
+    });
+
+    $("#hacker_create_way").change(function(){
+      if($(this).val() === "1"){
+        $(".hacker_create_with").addClass("hidden");
+      }else{
+        $(".hacker_create_with").removeClass("hidden");
+      }
+    });
+
+    var role = $("#hacker_type").val();
+    if(role){
+      role_form_switch(role);
+    }
+
+    function role_form_switch(role){
+      if(role == "1"){
+        $(".only-role1").removeClass("hidden");
+        $(".only-role2").addClass("hidden");
+      }else{
+        var mobile = $("#user-mobile").text();
+        if(!mobile.length){
+          alert_r("请先去认证手机号",function(){
+            window.location = '/user/mobile';
+          });
+          return;
+        }else{
+          $("#user_family_mobile").val(mobile);
+        }
+        $(".only-role2").removeClass("hidden");
+        $(".only-role1").addClass("hidden");
+      }
     }
 
     //参赛学生列表

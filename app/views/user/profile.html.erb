@@ -37,46 +37,6 @@
                   <%= f.input :student_code, label_html: { class: 'col-sm-2' } %>
                   <%= f.input :identity_card, label_html: { class: 'col-sm-2' } %>
                   <%= f.submit class: 'btn-robodou col-sm-offset-1', value: '更新详细信息', 'data-disable-with' => '更新详细信息' %>
-
-                  <!-- <div class="form-group string optional user_profile_roles">
-                    <label class="string optional control-label" for="user_profile_roles">身份</label>
-
-                    <div class="">
-                      <% Role.all.each do |r| %>
-                          <% @status = false %>
-                          <% @has_roles.each do |h| %>
-                              <% if r.id==h[0] %>
-                                  <% @status = true %>
-                                  <%= label_tag r.name %> <%= "(待审核)" if h[1]==0 %>
-                              <% end %>
-                          <% end %>
-                          <% unless @status %>
-                              <label class="fieldset-label">
-                                <%= check_box_tag 'user_profile[roles][]', r.name %>
-                                <%= r.name %>
-                              </label>
-                          <% end %>
-                      <% end %>
-                    </div>
-                  </div> -->
-                  <!-- <fieldset class="teacher-part hide">
-                    <legend>教师认证信息</legend>
-                    <div class="form-group">
-                      <%= f.input :teacher_no %>
-                    </div>
-                    <div class="form-group">
-                      <label for="user_avatar">上传教师证</label>
-                      <%= f.file_field :certificate %>
-                    </div>
-                  </fieldset>
-                  <fieldset class="ck-part hide">
-                    <legend>家庭创客认证信息</legend>
-                    <div class="form-group">
-                      <label for="user_avatar">上传图片</label>
-                      <%= f.file_field :cover %>
-                    </div>
-                    <%= f.input :desc, as: :text %>
-                  </fieldset> -->
             <% end %>
           </div>
         </div>

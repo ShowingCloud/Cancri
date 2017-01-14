@@ -6,6 +6,7 @@ a {
 }
 
 a:hover {
+  color: #add0f0;
   text-decoration: none;
 }
 
@@ -569,6 +570,11 @@ a:hover {
 .user-center .user-main .sub-menu {
   overflow: hidden;
   border-bottom: 1px solid #FFFFFF;
+}
+
+#role-nav{
+  overflow: auto;
+  border-bottom: none;
 }
 
 .user-center .user-main .sub-menu .sub-menu-item {
@@ -2214,5 +2220,7 @@ select {
 }
 
 .select-user-district, .select-user-school{
+  color: #5ba4e4;
+  text-decoration:underline;
   line-height: 30px;
 }

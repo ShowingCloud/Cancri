@@ -163,7 +163,6 @@ $(function () {
 
     // =================================== events end ======================================
 
-    
 
     // 活动打分
     $('.create-activity-score,.update-activity-score').on('click', function () {
@@ -384,12 +383,10 @@ $(function () {
                     "status": status, "id": id
                 },
                 success: function (data) {
+                    admin_gritter_notice(data[0], data[1]);
                     if (data[0]) {
                         $('#modal-form-' + id).modal('hide');
                         $("#after-audit-" + id).addClass('hide');
-                        alert(data[1]);
-                    } else {
-                        alert(data[1]);
                     }
                 }
             });

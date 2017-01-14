@@ -2,6 +2,7 @@ class UserController < ApplicationController
   before_action :authenticate_user!
   before_action :set_user, only: [:competitions, :courses, :activities]
   before_action :is_teacher, only: [:programs, :program, :program_se, :create_program, :course_score]
+  before_action :super_district_teacher, only: [:teachers, :teacher_audit, :hacker_audit]
 
   # 个人信息概览
   def preview
@@ -638,8 +639,145 @@ class UserController < ApplicationController
   end
 
   def role_apply
-    @user_roles = current_user.user_roles.where(role_id:1)
+    @user_roles = UserRole.left_joins(:school).where(role_id: 1, user_id: current_user.id).select('user_roles.*', 'schools.name as school_name')
   end
+
+  def apply_teacher
+    username = params[:user_username]
+    role_type = params[:user_role_type]
+    school_id = params[:user_school_id]
+    certificate = params[:user_certificate]
+    user_id = current_user.id
+    user_profile = current_user.user_profile || current_user.build_user_profile
+
+    if user_profile.update_attributes(username: username, school_id: school_id)
+      user_role = UserRole.where(user_id: user_id, role_id: 1).take
+      if user_role.present?
+        user_role.update_attributes(role_type: role_type, desc: certificate, school_id: school_id, status: 0)
+      else
+        user_role = UserRole.create(user_id: user_id, role_id: 1, role_type: role_type, desc: certificate, school_id: school_id, status: 0)
+      end
+      if user_role.save
+        result = [true, '申请成功，审核结果将消息告知您']
+      else
+        result = [false, user_role.errors.full_messages[0]]
+      end
+    else
+      result = [false, user_profile.errors.full_messages[0]]
+    end
+    flash[:notice] = result[1]
+    if result[0]
+      redirect_to '/user/role_apply'
+    else
+      render '/user/role_apply'
+    end
+  end
+
+  def hacker_apply
+    hacker = UserRole.joins(:user).left_joins(:school).joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').where(role_id: 2, user_id: current_user.id).select('user_roles.*', 'users.mobile', 'u_p.username', 'u_p.gender', 'u_p.birthday', 'u_p.position', 'u_p.identity_card', 'u_p.address', 'schools.name as school_name').take
+    if hacker.present?
+      @hacker = {status: hacker.status, mobile: hacker.mobile, profile: {username: hacker.username, gender: hacker.gender, birthday: hacker.birthday, school_name: hacker.school_name, school_id: hacker.school_id, position: hacker.position, identity_card: hacker.identity_card, address: hacker.address}, hacker: hacker.user_hacker, family: hacker.user_family, role_type: hacker.role_type, not_update: true}
+    else
+      profile = current_user.user_profile ||= current_user.build_user_profile
+      hacker = current_user.build_user_hacker
+      family = current_user.build_user_family
+      @hacker = {profile: profile, hacker: hacker, family: family}
+    end
+  end
+
+  def hacker_apply_post
+    profile = params[:user_profile]
+    family = params[:user_family]
+    hacker = params[:hacker]
+    role_type = params[:hacker_type]
+    school_id = profile[:school_id]
+    update = params[:update]
+    if update == 'true'
+      return_url = '/user/hacker_apply?update=true'
+    else
+      return_url = '/user/hacker_apply'
+    end
+    @hacker = {family: family, role_type: role_type, profile: profile, hacker: hacker}
+    if role_type == '2' && current_user.mobile.nil?
+      flash[:notice] = '申请社会创客时需认证手机！'
+      redirect_to '/user/mobile'
+    else
+      if profile[:username].present? && profile[:birthday].present? && school_id.present? && profile[:gender].present?
+        begin
+          UserHacker.transaction do
+            user_profile = current_user.user_profile ||= current_user.build_user_profile
+            user_profile.update!(user_profile_params)
+            user_role = current_user.user_roles.where(role_id: 2).take || current_user.user_roles.build
+            user_role.update!(role_id: 2, role_type: role_type, school_id: school_id, status: 0)
+            user_family = user_role.user_family || user_role.build_user_family
+            user_hacker = user_role.user_hacker || user_role.build_user_hacker
+            user_family.update!(user_id: user_role.user_id, father_name: family[:father_name], mother_name: family[:mother_name], address: family[:address], wx: family[:wx], qq: family[:qq], email: family[:email])
+            user_hacker.update!(create_date: hacker[:create_date], user_id: user_role.user_id, square: hacker[:square], situation: hacker[:situation], partake: hacker[:partake], active_weekly: hacker[:active_weekly], family_hobbies: hacker[:family_hobbies], create_way: hacker[:create_way], create_with: hacker[:create_with])
+          end
+          flash[:notice] = '申请成功，审核结果将通过消息告知您！'
+          redirect_to return_url
+        rescue Exception => ex
+          flash[:notice] = ex.message[5..-1]
+          render return_url
+        end
+      else
+        flash[:notice] = '请将姓名、性别、生日、学校填写完整！'
+        render return_url
+      end
+    end
+  end
+
+  def teacher_audit
+    if request.method == 'POST'
+      status = params[:status]
+      role_type = params[:role_type]
+      user_role_id = params[:id]
+      audit_role = UserRole.where(id: user_role_id).take
+      if audit_role.present?
+        if audit_role.status == 0
+          if current_user.user_roles.where(role_id: 1, role_type: 1, status: 1).exists? || UserRole.user_role_info([current_user.id, audit_role.user_id]).uniq.length == 1
+            if status == '1'
+              if audit_role.update_attributes(status: 1, role_type: role_type)
+                result = [true, '审核成功!']
+                Notification.create(user_id: audit_role.user_id, message_type: 0, content: '您申请的老师身份审核通过!')
+              else
+                result = [false, '审核出现意外!']
+              end
+            elsif status == '0'
+              if audit_role.destroy
+                result = [true, '审核成功']
+                Notification.create(user_id: audit_role.user_id, message_type: 0, content: '您申请的老师身份审核未通过!')
+              else
+                result = [false, '审核出现意外!']
+              end
+            else
+              result = [false, '请选择审核结果!']
+            end
+          else
+            result = [false, '您没有权限审核该角色!']
+          end
+          audit_role.update_attributes(role_type: role_type)
+        else
+          result = [false, '该角色不是待审核状态']
+        end
+      else
+        result = [false, '对象不存在']
+      end
+      render json: {status: result[0], message: result[1]}
+    else
+      @teachers = UserRole.left_join_u_p.left_joins(:school).where(role_id: 1, role_type: [3, 5, 6], status: 0).select('user_roles.*', 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
+    end
+  end
+
+  def teachers
+    district_id = UserRole.user_role_info([current_user.id])[0]
+    @teachers = UserRole.left_join_u_p.left_joins(:school).where(role_id: 1, status: 1).where('schools.district_id=?', district_id).select('user_roles.*', 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
+  end
+
+  def hacker_audit
+    @hackers = UserRole.joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').joins(:school).where(role_type: 2, status: 0).select('user_roles.*', 'u_p.username', 'schools.name as school_name')
+  end
+
 
   def get_schools
     district_id = params[:district_id]
@@ -754,6 +892,14 @@ class UserController < ApplicationController
     unless @user
       render_optional_error(404)
     end
+  end
+
+  def user_profile_params
+    params.require(:user_profile).permit(:username, :birthday, :gender, :school_id, :identity_card, :position, :address)
+  end
+
+  def user_family_params
+    params.require(:user_family).permit(:username, :birthday, :gender, :school_id, :identity_card, :position)
   end
 
   def params_program

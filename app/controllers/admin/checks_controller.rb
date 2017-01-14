@@ -5,29 +5,30 @@ class Admin::ChecksController < AdminController
   end
 
   def teachers
-    @teachers= UserRole.left_joins(:user, :school, :district).joins('left join user_profiles up on up.user_id=user_roles.user_id').where(role_id: 1, status: 0).select(:id, :cover, :user_id, 'schools.name as school_name', 'districts.name as district_name', 'users.mobile', 'up.username', 'up.gender', 'up.teacher_no').page(params[:page]).per(params[:per])
+    @teachers= UserRole.left_joins(:user).joins('left join schools s on s.id = user_roles.school_id').joins('left join districts d on d.id = s.district_id').joins('left join user_profiles up on up.user_id=user_roles.user_id').where(role_id: 1, status: 0).select(:id, :cover, :desc, :user_id, :role_type, 's.name as school_name', 'd.name as district_name', 'users.mobile', 'up.username', 'up.gender').page(params[:page]).per(params[:per])
     @teacher_array = @teachers.map { |c| {
         id: c.id,
         user_id: c.user_id,
+        role_type: c.role_type,
         district: c.district_name,
         school: c.school_name,
         mobile: c.mobile,
-        num: c.teacher_no,
+        num: c.desc,
         username: c.username,
-        gender: c.gender,
-        certificate: c.cover.present? ? ActionController::Base.helpers.asset_path(c.cover_url(:large)) : nil
+        gender: c.gender
+        # certificate: c.cover.present? ? ActionController::Base.helpers.asset_path(c.cover_url(:large)) : nil
     } }
   end
 
   def review_teacher
-    level = params[:level]
+    level = params[:level].to_i
     status = params[:status].to_i
     ud = params[:ud]
     if status.present? && ud.present?
-      ur = UserRole.where(user_id: ud, role_id: 1, status: 0).take
+      ur = UserRole.where(user_id: ud, role_id: 1, role_type: level, status: 0).take
       if ur.present?
         if status == 1
-          if ([level.to_i] & [1, 2, 3, 4, 5]).length>0
+          if ([level] & [1, 2, 3, 4, 5, 6]).length>0
             ur.role_type = level
             ur.status = 1
             if ur.save
@@ -84,12 +85,15 @@ class Admin::ChecksController < AdminController
   end
 
   def hackers
-    @hackers = UserRole.joins('inner join user_profiles u_p on u_p.user_id = user_roles.user_id').joins('left join schools s on s.id = u_p.school_id').joins('left join districts d on u_p.district_id = d.id').where('user_roles.role_id=?', 2).where('user_roles.status=?', 0)
-                   .select(:id, :cover, :desc, 's.name as school_name', 'd.name as district_name', 'u_p.username', 'u_p.gender').page(params[:page]).per(params[:per])
+    @hackers = UserRole.joins('inner join user_profiles u_p on u_p.user_id = user_roles.user_id').joins('left join schools s on s.id = user_roles.school_id').joins('left join districts d on u_p.district_id = d.id').where('user_roles.role_id=?', 2).where('user_roles.status=?', 0)
+                   .select(:id, :cover, :desc, :role_type, 's.name as school_name', 'd.name as district_name', 'u_p.username', 'u_p.gender', 'u_p.birthday', 'u_p.position', 'u_p.identity_card').page(params[:page]).per(params[:per])
     @hackers_array = @hackers.map { |c| {
         id: c.id,
         username: c.username,
         gender: c.gender,
+        role_type: c.role_type,
+        position: c.position,
+        identity_card: c.identity_card,
         school: c.school_name,
         district: c.district_name,
         desc: c.desc,
@@ -98,11 +102,12 @@ class Admin::ChecksController < AdminController
   end
 
   def hacker_list
-    @hackers = UserRole.joins('inner join user_profiles u_p on u_p.user_id = user_roles.user_id').joins('left join schools s on s.id = u_p.school_id').joins('left join districts d on u_p.district_id = d.id').where('user_roles.role_id=?', 2).where('user_roles.status=?', 1)
-                   .select(:id, :cover, :desc, 's.name as school_name', 'd.name as district_name', 'u_p.username', 'u_p.gender').page(params[:page]).per(params[:per])
+    @hackers = UserRole.joins('inner join user_profiles u_p on u_p.user_id = user_roles.user_id').joins('left join schools s on s.id = user_roles.school_id').joins('left join districts d on s.district_id = d.id').where('user_roles.role_id=?', 2).where('user_roles.status=?', 1)
+                   .select(:id, :cover, :desc, :role_type, 's.name as school_name', 'd.name as district_name', 'u_p.username', 'u_p.gender').page(params[:page]).per(params[:per])
     @hackers_array = @hackers.map { |c| {
         id: c.id,
         username: c.username,
+        role_type: c.role_type,
         gender: c.gender,
         school: c.school_name,
         district: c.district_name,
@@ -117,12 +122,21 @@ class Admin::ChecksController < AdminController
     if status.present?
       ur = UserRole.find(id)
       if ur.present?
-        ur.status = status=='1' ? 1 : 2
-        if ur.save
-          Notification.create!(user_id: ur.user_id, content: '您的家庭创客身份审核'+(status=='1' ? '通过!' : '未通过!'), message_type: 0)
-          result = [true, '操作成功，即将推送消息告知被审核用户']
+        if status.to_i == 1
+          ur.status = 1
+          if ur.save
+            Notification.create(user_id: ur.user_id, content: '您的创客身份审核通过!', message_type: 0)
+            result = [true, '操作成功，即将推送消息告知被审核用户']
+          else
+            result = [false, '操作失败']
+          end
         else
-          result = [false, '操作失败']
+          if ur.destroy
+            Notification.create(user_id: ur.user_id, content: '您的创客身份审核未通过!', message_type: 0)
+            result = [true, '操作成功，即将推送消息告知被审核用户']
+          else
+            result = [false, '操作失败']
+          end
         end
       else
         result = [false, '该角色不存在']

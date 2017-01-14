@@ -4,7 +4,7 @@
 <% @action_student_manage = ['student_manage', 'comp_student'] %>
 <% @action_stu_info = ['competitions', 'courses', 'activities'] %>
 <% @action_security = ['security', 'email', 'reset_email', 'mobile', 'passwd', 'reset_mobile'] %>
-
+<% @action_role_apple_array = ['role_apply', 'hacker_apply_post', 'hacker_apply'] %>
 
 <div class="sidebar">
   <div class="sidebar-top">
@@ -21,6 +21,7 @@
       <i class="user-icon maker-icon"></i> -->
     </div>
   </div>
+  <% is_teacher = has_teacher_role %>
   <div class="sidebar-menu">
     <a href="<%= user_preview_path %>">
       <div class="sidebar-item <%= 'active' if @action_preview_array.include?(action_name) %>">
@@ -34,16 +35,22 @@
         账户安全
       </div>
     </a>
-    <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>">
-      <div class="sidebar-item <%= 'active' if @action_apply_array.include?(action_name) %>">
-        <i class="glyphicon glyphicon-flag"></i>
-        <%= has_teacher_role ? '项目管理' : '报名信息' %>
+    <a href="<%= user_role_apply_path %>">
+      <div class="sidebar-item <%= 'active' if @action_role_apple_array.include?(action_name) %>">
+        <i class="glyphicon glyphicon-asterisk"></i>
+        身份认证
       </div>
     </a>
-    <a href="<%= has_teacher_role ? user_student_manage_path : '/user/competitions' %>">
+    <a href="<%= is_teacher ? user_programs_path : user_apply_path %>">
+      <div class="sidebar-item <%= 'active' if @action_apply_array.include?(action_name) %>">
+        <i class="glyphicon glyphicon-flag"></i>
+        <%= is_teacher ? '项目管理' : '报名信息' %>
+      </div>
+    </a>
+    <a href="<%= is_teacher ? user_student_manage_path : '/user/competitions' %>">
       <div class="sidebar-item <%= 'active' if @action_stu_info.include?(action_name) %>">
         <i class="glyphicon glyphicon-cog"></i>
-        <%= has_teacher_role ? '学生管理' : '个人管理' %>
+        <%= is_teacher ? '学生管理' : '个人管理' %>
       </div>
     </a>
     <a href="<%= user_notification_path %>">
