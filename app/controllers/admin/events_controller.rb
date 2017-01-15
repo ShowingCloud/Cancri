@@ -206,7 +206,7 @@ class Admin::EventsController < AdminController
                 最终成绩: score.score.to_s,
                 第二排序属性: score.order_score.to_s,
                 最三排序属性: score.sort_score.to_s,
-                成绩属性: score.score_attribute
+                成绩属性: show_score_process(JSON.parse(score.score_attribute))
             } }
           else
             data = Team.find_by_sql("select t.identifier,school.name as school_name,d.name as district_name,t.teacher, GROUP_CONCAT(u_p.username) as username,s.schedule_rank,s.score_attribute,s.score,s.order_score,s.sort_score from team_user_ships t_u INNER join teams t on t.id = t_u.team_id left join user_profiles u_p on u_p.user_id = t_u.user_id left join schools school on school.id = t.school_id left join districts d on d.id = school.district_id left join scores s on s.team1_id = t_u.team_id where t.event_id = #{event_id} and t.group in #{sql_group} and s.schedule_id = #{schedule_id} and s.schedule_rank > 0 group by t_u.team_id,s.schedule_rank,s.score_attribute,s.score,s.order_score,s.sort_score order by s.schedule_rank")
@@ -222,7 +222,7 @@ class Admin::EventsController < AdminController
                 最终成绩: score.score.to_s,
                 第二排序属性: score.order_score.to_s,
                 最三排序属性: score.sort_score.to_s,
-                成绩属性: score.score_attribute
+                成绩属性: show_score_process(JSON.parse(score.score_attribute))
             } }
           end
           filename = "#{event_name}_#{params_group}_#{export_type.present? ? '个人' : '队伍'}_#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
@@ -799,5 +799,23 @@ class Admin::EventsController < AdminController
       ranks << rank_num
     end
     [round_ranks, ranks.join(',')]
+  end
+
+  def show_score_process(process_hash)
+    score_process = ''
+    process_hash['rounds_scores'].each_with_index { |r_s, index|
+      if r_s == 'invalid'
+        score_process+="第#{index+1}轮成绩无效;"
+      else
+        score_process+="第#{index+1}轮:"
+        process_hash['process'][index].values.each_with_index { |v|
+          if v.is_a?(Hash)
+            score_process += v['name']+':'+v['val']+';'
+          end
+        }
+        score_process+= "该轮成绩：#{r_s};  "
+      end
+    }
+    score_process
   end
 end
