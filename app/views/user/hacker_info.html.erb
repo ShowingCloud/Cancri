@@ -59,7 +59,7 @@
                 </div>
                 <br>
                 <% if role[:status] == 0 %>
-                    <a class="btn btn-primary" href="#">通过审核</a>
+                  <%=  link_to "通过审核", user_hacker_audit_path( status: 1, id: params[:id]), :class =>"btn btn-primary", :id => "hacker-audit" %>
                 <% end %>
 
             <% else %>
@@ -71,5 +71,3 @@
     </div>
   </div>
 </div>
-
-
