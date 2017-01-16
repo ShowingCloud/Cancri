@@ -2,7 +2,7 @@ class UserProfile < ApplicationRecord
   belongs_to :user
   belongs_to :school, optional: true
   belongs_to :district, optional: true
-  has_many :user_roles, through: :user
+  belongs_to :user_role
   before_validation :validate_data
   validates :gender, inclusion: [1, 2], allow_blank: true
   validates :school_id, numericality: {:greater_than => 0}, allow_blank: true

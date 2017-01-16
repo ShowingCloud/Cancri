@@ -1,3 +1,37 @@
-<div class="main">
-  user#hacker_audit
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="user-notification">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @hackers.present? %>
+                <div style="border:1px solid; border-radius: 8px;padding: 10px">
+                  <% @hackers.each do |hacker| %>
+                      姓名：<%= hacker.username %>
+                      <br>
+                      学校：<%= hacker.school_name %>
+                      <div class="pull-right">
+                        <a href="/user/hacker_info/<%= hacker.id %>">查看详情</a>
+                      </div>
+                  <% end %>
+
+                </div>
+                <nav>
+                  <%= paginate @hackers %>
+                </nav>
+            <% else %>
+                <p> 暂无待审核创客</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+

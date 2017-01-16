@@ -1,0 +1,75 @@
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="user-notification">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @hacker_info.present? %>
+                <% hacker_profile = @hacker_info[:profile] %>
+                <% hacker_family = @hacker_info[:family] %>
+                <% hacker = @hacker_info[:hacker] %>
+                <% role = @hacker_info[:role] %>
+                <%= "#{hacker_profile[:username]}申请认证#{role[:role_type] == 1 ? '中小学生' : '社会'}创客" %>
+                <br><br>
+                <div style="border:1px solid white;border-radius: 15px;padding:15px">
+                  <h5>基本信息</h5>
+                  <label>姓名：</label><%= hacker_profile[:username] %>
+                  <br><label>性别：</label><%= show_gender(hacker_profile[:gender]) %>
+                  <% if role[:role_type] == 1 %>
+                      <br><label>学校：</label><%= hacker_profile[:school_name] %>
+                  <% end %>
+                  <br><label>生日：</label><%= hacker_profile[:birthday] %>
+                  <% if role[:role_type] == 2 %>
+                      <br><label>单位地址：</label><%= hacker_profile[:address] %>
+                      <br><label>身份证：</label><%= hacker_profile[:identity_card] %>
+                      <br><label>职称：</label><%= hacker_profile[:position] %>
+                  <% end %>
+                </div>
+                <br>
+                <div style="border:1px solid white;border-radius: 15px;padding:15px">
+                  <h5>家庭信息</h5>
+                  <% if role[:role_type] == 1 %>
+                      <label>父亲姓名：</label><%= hacker_family[:father_name] %>
+                      <br><label>母亲姓名：</label><%= hacker_family[:mother_name] %>
+                      <br>
+                  <% end %>
+                  <label>家庭住址：</label><%= hacker_family[:address] %>
+                  <br><label><%= '家长' if role[:role_type] == 1 %>微信：</label><%= hacker_family[:wx] %>
+                  <br><label><%= '家长' if role[:role_type] == 1 %>QQ：</label><%= hacker_family[:qq] %>
+                  <br><label><%= '家长' if role[:role_type] == 1 %>E-mail：</label><%= hacker_family[:email] %>
+                </div>
+                <br>
+                <div style="border:1px solid white;border-radius: 15px;padding:15px">
+                  <h5>创建“家庭工坊”情况</h5>
+                  <label>创建时间：</label><%= hacker[:create_date] %>
+                  <br><label>面积：</label><%= hacker[:square] %>平方
+                  <br><label>形式：</label><%= t('user_hacker.situation'+hacker[:situation].to_s) %>
+                  <br><label>参与：</label><%= t('user_hacker.partake'+hacker[:partake].to_s) %>
+                  <br><label>每周活动时间：</label><%= hacker[:active_weekly] %>
+                  <br><label>爱好：</label><%= hacker[:family_hobbies] %>
+                  <br><label>推荐：</label><%= t('user_hacker.create_way'+hacker[:create_way].to_s) %>
+                  <% if hacker[:create_way]!=1 %>
+                      <br>推荐组织：<%= hacker[:create_with] %>
+                  <% end %>
+                </div>
+                <br>
+                <% if role[:status] == 0 %>
+                    <a class="btn btn-primary" href="#">通过审核</a>
+                <% end %>
+
+            <% else %>
+                <p> 403 </p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

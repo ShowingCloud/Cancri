@@ -775,7 +775,47 @@ class UserController < ApplicationController
   end
 
   def hacker_audit
-    @hackers = UserRole.joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').joins(:school).where(role_type: 2, status: 0).select('user_roles.*', 'u_p.username', 'schools.name as school_name')
+    if request.method == 'POST'
+      user_role_id = params[:id]
+      status = params[:status]
+      if user_role_id.present? && status.in?(%w(0 1))
+        user_role = UserRole.find_by_id(user_role_id)
+        if user_role.present? && (user_role.status == 0)
+          if UserRole.user_role_info([current_user.id, user_role.user_id]).uniq.length == 1
+            if status == '1'
+              is_ok = user_role.update(status: 1)
+            else
+              is_ok = user_role.destroy
+            end
+            if is_ok
+              result = [true, '审核成功，结果将消息告知用户']
+              Notification.create(user_id: user_role.user_id, message_type: 0, content: "您申请的创客身份审核#{status=='1' ? '通过' : '未通过'}")
+            else
+              result = [false, '审核失败']
+            end
+          else
+            result = [false, '您没有权限']
+          end
+        else
+          result = [false, '该对象不存在或已被审核']
+        end
+      else
+        result = [false, '参数不规范']
+      end
+      render json: {status: result[0], message: result[1]}
+    else
+      @hackers = UserRole.joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').joins(:school).where(role_id: 2, status: 0).select(:id, :role_type, 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
+    end
+  end
+
+  def hacker_info
+    user_role_id = params[:id]
+    user_role = UserRole.find(user_role_id)
+    if UserRole.user_role_info([current_user.id, user_role.user_id]).uniq.length == 1
+      @hacker_info = {role: user_role, profile: user_role.user_profile, family: user_role.user_family, hacker: user_role.user_hacker}
+    else
+      render_optional_error(403)
+    end
   end
 
 

@@ -1,7 +1,7 @@
 class UserRole < ApplicationRecord
   belongs_to :role
   belongs_to :user
-  belongs_to :user_profile, optional: true
+  has_one :user_profile, foreign_key: :user_id, primary_key: :user_id
   belongs_to :school
   belongs_to :district
   has_one :user_family, :dependent => :destroy
