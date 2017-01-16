@@ -1,0 +1,12 @@
+<div class="container">
+  <% if @teachers.present? %>
+      <% @teachers.each do |t| %>
+          姓名：<%= t.username %>
+          类型：<%= show_teacher_type(t.role_type) %>
+          学校：<%= t.school_name %>
+          <!---->
+      <% end %>
+  <% else %>
+      暂无老师
+  <% end %>
+</div>

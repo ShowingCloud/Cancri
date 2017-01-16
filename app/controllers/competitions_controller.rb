@@ -107,7 +107,6 @@ class CompetitionsController < ApplicationController
     user_id = current_user.id
     username = params[:username]
     gender = params[:gender]
-    district_id = params[:district]
     school_id = params[:school]
     grade = params[:grade]
     birthday = params[:birthday]
@@ -120,29 +119,26 @@ class CompetitionsController < ApplicationController
     ed = params[:team_event]
 
 
-    if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present? && teacher.present? && group.present?
+    if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && student_code.present? && birthday.present? && teacher.present? && group.present?
       if has_teacher_role
         result = [false, '您是老师,不能报名比赛']
       else
         user = current_user.user_profile ||= current_user.build_user_profile
-        if user.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
+        if user.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, student_code: student_code, birthday: birthday, identity_card: identity_card)
           event = Event.joins(:competition).where(id: ed).select(' competitions.apply_end_time ').take
-          if event.present? && event.apply_end_time > Time.now
+          if event.present? && event.apply_end_time > Time.zone.now
             already_apply = TeamUserShip.where(user_id: user_id, event_id: ed, status: true).exists?
             if already_apply
               result = [false, ' 该比赛您已经报名 ， 请不要再次报名! ']
             else
-              team = Team.create(group: group, district_id: district_id, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: school_id)
-              if team.save
-                team_user = TeamUserShip.create(team_id: team.id, user_id: team.user_id, event_id: ed, district_id: district_id, school_id: school_id, grade: grade, status: true)
-                if team_user.save
-                  result = [true, ' 队伍创建成功! ']
-                else
-                  team.delete
-                  result = [false, ' 队伍创建失败 ']
+              begin
+                TeamUserShip.transaction do
+                  team = Team.create!(group: group, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: school_id)
+                  TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed, school_id: school_id, grade: grade, status: true)
                 end
-              else
-                result = [false, team.errors.full_messages.first]
+                result = [true, '队伍创建成功!']
+              rescue Exception => ex
+                result = [false, ex.message]
               end
             end
           else
