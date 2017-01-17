@@ -18,9 +18,11 @@ $(function() {
                     });
                 } else {
                     $self.css({
-                        "background-image": "url(" + default_src + ")"
+                        // "background-image": "url(" + default_src + ")"
+                        "background-image": ""
                     }); //default image
                 }
+
                 lazyload.loading($self, $self.attr('data-src'));
             });
         },
@@ -126,7 +128,7 @@ $(function() {
         var school_district_id = document.getElementById("change_district_id").value;
         if (district_id != school_district_id) {
             $(".select-user-school").text('请选择学校');
-            document.getElementById("user_profile_school_id").value = null;
+            $("#user_profile_school_id").val(null).change();
         }
     });
 
@@ -245,7 +247,7 @@ $(function() {
         var school_name = select_user_school.find("option:selected").text();
         if (district_id > 0 && school_id > 0) {
             document.getElementById("user_profile_district_id").value = district_id;
-            document.getElementById("user_profile_school_id").value = school_id;
+            $("#user_profile_school_id").val(school_id).change();
             document.getElementById("change_district_id").value = district_id;
             $('.select-user-school').text(school_name);
             $("#select-school-modal").modal('hide');
@@ -974,6 +976,58 @@ $(function() {
         }
       );
 
+    });
+
+    // 修改老师信息
+
+    function teacher_edit_save($ele){
+      var tr = $ele.parents('tr');
+      tr.find('.role-type').removeClass('hidden');
+      var role_type_select = tr.find('.role-type-select');
+      var role_type = role_type_select.val();
+
+      $.ajax({
+        url: $ele.data("url"),
+        data: {role_type: role_type},
+        type: 'post',
+        success: function(data){
+          if(data.message) {
+            alert_r(data.message);
+            role_type_select.remove();
+            $ele.text("修改").off('click').click(function(){
+              teacher_edit_click($(this));
+            });
+          }
+        },
+        error:function(data){
+          console.log(data);
+        }
+      });
+
+    }
+
+    function teacher_edit_click($ele){
+      var tr = $ele.parents('tr');
+      tr.find('.role-type').after('<select class="role-type-select"><option value="6">外聘校级普通</option><option value="5">在编校级普通</option><option value="3">在编校级高级</option></select>').addClass('hidden');
+      $(".role-type-select").val($ele.data("role-type"));
+      tr.find('.school-name').addClass('underline').click(function(){
+        $("#teacher-edit-table .school-name").removeClass('active');
+        $(this).addClass('active');
+        $("#select-school-modal").modal();
+      });
+      $ele.text("保存").off('click').click(function(){
+        teacher_edit_save($(this));
+      });
+    }
+    if($("#teacher-edit-table").length){
+      $("#user_profile_school_id").change(function(){
+        var id =$(this).val();
+        $('.school-name.active').data("id",id);
+      });
+    }
+
+    $(".teacher-edit").click(function(){
+      teacher_edit_click($(this));
     });
 
     //参赛学生列表

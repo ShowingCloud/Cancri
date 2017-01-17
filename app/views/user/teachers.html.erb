@@ -1,12 +1,138 @@
-<div class="container">
-  <% if @teachers.present? %>
-      <% @teachers.each do |t| %>
-          姓名：<%= t.username %>
-          类型：<%= show_teacher_type(t.role_type) %>
-          学校：<%= t.school_name %>
-          <!---->
-      <% end %>
-  <% else %>
-      暂无老师
-  <% end %>
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="user-notification">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @teachers.present? %>
+
+                <table class="table" id="teacher-edit-table">
+                  <thead>
+                  <tr>
+                    <th>姓名</th>
+                    <th>学校</th>
+                    <th>级别</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <% @teachers.each do |teacher| %>
+                        <input id="teacher_role_id" value="<%= teacher.id %>" type="hidden"/>
+                        <input type="hidden" id="user_profile_district_id"/>
+                        <input type="hidden" id="user_profile_school_id"/>
+                        <input type="hidden" id="change_district_id"/>
+                        <td><%= teacher.username %></td>
+                        <td><span class="school-name"><%= teacher.school_name %></span></td>
+                        <td><span class="role-type"><%= show_teacher_type(teacher.role_type) %></span></td>
+                        <td>
+                          <button class="btn btn-primary teacher-edit" data-role-type= "<%= teacher.role_type %>" data-url="<%= user_teacher_audit_path(status: 1, id: teacher.id) %>">
+                            修改
+                          </button>
+                        </td>
+                    <% end %>
+                    <nav>
+                      <%= paginate @teachers %>
+                    </nav>
+                  </tr>
+                  </tbody>
+                </table>
+
+            <% else %>
+                <p> 暂无老师</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="select-district-modal" class="modal" data-backdrop="static" tabindex="-1" style="z-index:1060">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="bigger text-center">选择区县</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="col-xs-4">
+                <label>省市</label>
+                <div>
+                  <select id="select-province">
+                    <option value="">请选择省市</option>
+                    <% Province.select(:id, :name).each do |p| %>
+                        <option value="<%= p.id %>"><%= p.name %></option>
+                    <% end %>
+                  </select>
+                </div>
+              </div>
+              <div class="col-xs-4"><label>城市</label>
+                <div>
+                  <select id="select-city">
+                    <option value="">请选择城市</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-xs-4"><label>区县</label>
+                <div>
+                  <select id="select-district">
+                    <option value="">请选择区县</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="space-12"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="select-school-modal" class="modal" tabindex="-1" style="z-index:1050">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="blue bigger text-center">选择学校</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="col-xs-8">
+                <label for="">区县</label>
+                <label>&nbsp;&nbsp;&nbsp;<a href="#select-district-modal" role="button" class="blue select-user-district" data-toggle="modal"><%= '选择区县' %></a></label>
+              </div>
+              <div class="col-xs-8">
+                <label>学校</label>
+                  <select class="chosen-select" id="select-user-school" data-placeholder="请选择学校">
+                  </select>
+                <div>
+                  <label>没有你的学校？在此添加：</label>
+                  <input id="add-school-input" type="text">
+                  <button type="button" class="btn-robodou btn-add-school">添加</button>
+                </div>
+              </div>
+            </div>
+            <div class="space-12"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
