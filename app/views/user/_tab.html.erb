@@ -48,15 +48,30 @@
         </div>
       </a>
   <% end %>
-  <% if @action_student_manage.include?(action_name) %>
+  <% if @action_project_manage.include?(action_name) %>
       <a href="<%= user_student_manage_path %>">
         <div class="sub-menu-item <%= 'active' if action_name == 'student_manage' %> ">
-          所有学生
+          学生信息
         </div>
       </a>
       <a href="<%= user_comp_student_path %>">
         <div class="sub-menu-item <%= 'active' if action_name == 'comp_student' %>">
-          参赛学生
+          学生审核
+        </div>
+      </a>
+      <a href="<%= user_teacher_audit_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'teacher_audit' %>">
+          老师审核
+        </div>
+      </a>
+      <a href="<%= user_teacher_audit_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'teacher_info' %>">
+          老师信息
+        </div>
+      </a>
+      <a href="<%= user_hacker_audit_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'hacker_audit' %>">
+          家庭创客审核
         </div>
       </a>
   <% end %>

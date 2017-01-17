@@ -936,6 +936,46 @@ $(function() {
       }
     }
 
+    //老师创客身份审核
+    $("#hacker-audit").click(function(e){
+      e.preventDefault();
+      $.ajax({
+        url: $(this).attr('href'),
+        type: 'post',
+        success: function(data){
+          if(data.message) alert_r(data.message,function(){
+            if(data.status === true) window.location.replace("/user/hacker_audit");
+          });
+        },
+        error:function(data){
+          console.log(data);
+        }
+      });
+    });
+    $("#teacher-audit").click(function(e){
+      e.preventDefault();
+      var url = $(this).attr('href');
+      var role_type = $(this).data('role_type');
+      $("#teacher-audit-modal").modal();
+      $("#submit-teacher-role").off('click').click(
+        function(){
+          $.ajax({
+            url: url,
+            type: 'post',
+            success: function(data){
+              if(data.message) alert_r(data.message,function(){
+                if(data.status === true) window.location.replace("/user/teacher_audit");
+              });
+            },
+            error:function(data){
+              console.log(data);
+            }
+          });
+        }
+      );
+
+    });
+
     //参赛学生列表
 
     if ($('#comp-stu').length > 0) {
