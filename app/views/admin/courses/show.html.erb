@@ -60,6 +60,11 @@
           <%= @course.desc.html_safe %>
       <% end %>
     </li>
-
+    <li class="list-group-item">
+      <span class="text-primary">课件:</span>
+      <% if @course.course_files.present? %>
+          课件已上传（<%= @course.course_files.count %>）
+      <% end %>
+    </li>
   </ul>
 </div>
