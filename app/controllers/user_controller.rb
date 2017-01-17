@@ -734,7 +734,6 @@ class UserController < ApplicationController
       user_role_id = params[:id]
       audit_role = UserRole.where(id: user_role_id).take
       if audit_role.present?
-        if audit_role.status == 0
           if current_user.user_roles.where(role_id: 1, role_type: 1, status: 1).exists? || UserRole.user_role_info([current_user.id, audit_role.user_id]).uniq.length == 1
             if status == '1'
               if audit_role.update_attributes(status: 1, role_type: role_type)
@@ -757,9 +756,6 @@ class UserController < ApplicationController
             result = [false, '您没有权限审核该角色!']
           end
           audit_role.update_attributes(role_type: role_type)
-        else
-          result = [false, '该角色不是待审核状态']
-        end
       else
         result = [false, '对象不存在']
       end
