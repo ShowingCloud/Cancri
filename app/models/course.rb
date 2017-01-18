@@ -5,6 +5,7 @@ class Course < ApplicationRecord
   has_many :users, through: :course_user_ships
   has_many :course_files, :dependent => :destroy, foreign_key: :course_id
   has_many :course_score_attributes, :dependent => :destroy, foreign_key: :course_id
+  has_many :course_opus, through: :course_user_ships
   validates :name, presence: true, uniqueness: true
   validates :target, presence: true, format: {with: /\A[\u4e00-\u9fa5]+\Z/i, message: '请用汉字描述'}
   validates :num, presence: true, format: {with: /\A[1-9]\d+\Z/i, message: '只能为整数'}

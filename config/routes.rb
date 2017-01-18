@@ -250,6 +250,7 @@ Rails.application.routes.draw do
   get '/user/get_competitions' => 'user#get_competitions', as: 'user_get_competitions'
   match '/user/programs' => 'user#programs', as: 'user_programs', via: [:get]
   match '/user/programs/:id' => 'user#program', via: [:get]
+  get '/user/course_opus/:id' => 'user#course_opus', as: 'user_course_opus'
   post 'user/course_score' => 'user#course_score', as: 'user_course_score'
   match 'user/create_program' => 'user#create_program', as: 'user_create_program', via: [:get, :post]
   match 'user/program_se/:id' => 'user#program_se', as: 'user_program_se', via: [:get, :post]

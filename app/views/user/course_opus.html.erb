@@ -1,0 +1,29 @@
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="user-notification">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @opus.present? %>
+                <% @opus.each do |opus| %>
+                    <%= opus.name %>
+                <% end %>
+                <nav>
+                  <%= paginate @opus %>
+                </nav>
+            <% else %>
+                <p> 暂无作品</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

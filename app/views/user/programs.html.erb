@@ -36,10 +36,10 @@
                           <% if c.status==1 %>
                               <a href="<%= "#{user_programs_path}/#{c.id}" %>" class="label label-primary" title="学生名单">
                                 <i class="glyphicon glyphicon-th-list"></i></a>
-                          <% end %>
-                          <% if c.status != 1 %>
                               <a href="<%= "/user/program_se/#{c.id}" %>" class="label label-warning" title="查看编辑">
                                 <i class="glyphicon glyphicon-edit"></i></a>
+                              <a href="<%= "/user/course_opus/#{c.id}" %>" class="label label-info" title="作品">
+                                <i class="glyphicon glyphicon-plus"></i></a>
                           <% end %>
                         </td>
                       </tr>
