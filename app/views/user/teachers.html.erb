@@ -10,7 +10,9 @@
           <%= render 'user/tab' %>
           <div class="sub-content">
             <% if @teachers.present? %>
-
+                <input type="hidden" id="user_profile_district_id"/>
+                <input type="hidden" id="user_profile_school_id"/>
+                <input type="hidden" id="change_district_id"/>
                 <table class="table" id="teacher-edit-table">
                   <thead>
                   <tr>
@@ -21,25 +23,22 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
                     <% @teachers.each do |teacher| %>
-                        <input id="teacher_role_id" value="<%= teacher.id %>" type="hidden"/>
-                        <input type="hidden" id="user_profile_district_id"/>
-                        <input type="hidden" id="user_profile_school_id"/>
-                        <input type="hidden" id="change_district_id"/>
-                        <td><%= teacher.username %></td>
-                        <td><span class="school-name"><%= teacher.school_name %></span></td>
-                        <td><span class="role-type"><%= show_teacher_type(teacher.role_type) %></span></td>
-                        <td>
-                          <button class="btn btn-primary teacher-edit" data-role-type= "<%= teacher.role_type %>" data-url="<%= user_teacher_audit_path(status: 1, id: teacher.id) %>">
-                            修改
-                          </button>
-                        </td>
+                      <tr>
+                          <input id="teacher_role_id" value="<%= teacher.id %>" type="hidden"/>
+                          <td><%= teacher.username %></td>
+                          <td><span class="school-name"><%= teacher.school_name %></span></td>
+                          <td><span class="role-type"><%= show_teacher_type(teacher.role_type) %></span></td>
+                          <td>
+                            <button class="btn btn-primary teacher-edit" data-role-type= "<%= teacher.role_type %>" data-url="<%= user_teacher_audit_path(status: 1, id: teacher.id) %>">
+                              修改
+                            </button>
+                          </td>
+                      </tr>
                     <% end %>
                     <nav>
                       <%= paginate @teachers %>
                     </nav>
-                  </tr>
                   </tbody>
                 </table>
 

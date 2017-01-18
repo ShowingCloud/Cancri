@@ -984,11 +984,16 @@ $(function() {
       var tr = $ele.parents('tr');
       tr.find('.role-type').removeClass('hidden');
       var role_type_select = tr.find('.role-type-select');
+      var school_id = tr.find('.school-name').data("id");
       var role_type = role_type_select.val();
+      var post_data = {role_type: role_type};
+      if(school_id){
+        post_data.school_id = school_id;
+      }
 
       $.ajax({
         url: $ele.data("url"),
-        data: {role_type: role_type},
+        data: post_data,
         type: 'post',
         success: function(data){
           if(data.message) {
