@@ -28,7 +28,7 @@
                           <input id="teacher_role_id" value="<%= teacher.id %>" type="hidden"/>
                           <td><%= teacher.username %></td>
                           <td><span class="school-name"><%= teacher.school_name %></span></td>
-                          <td><span class="role-type"><%= show_teacher_type(teacher.role_type) %></span></td>
+                          <td><span class="role-type"><%= show_teacher_role(teacher.role_type) %></span></td>
                           <td>
                             <button class="btn btn-primary teacher-edit" data-role-type= "<%= teacher.role_type %>" data-url="<%= user_teacher_audit_path(status: 1, id: teacher.id) %>">
                               修改

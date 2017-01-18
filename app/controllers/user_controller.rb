@@ -126,6 +126,13 @@ class UserController < ApplicationController
     end
   end
 
+  def course_opus
+    course_id = params[:id]
+    if the_course_teacher(course_id)
+      @opus = CourseOpu.all.page(params[:page]).per(params[:per])
+    end
+  end
+
   def get_user_course_score
     @user_course_scores = CourseUserScore.where(course_id: params[:cd], user_id: params[:ud])
   end
@@ -730,32 +737,39 @@ class UserController < ApplicationController
   def teacher_audit
     if request.method == 'POST'
       status = params[:status]
-      role_type = params[:role_type]
+      role_type = params[:role_type].to_i
       user_role_id = params[:id]
       audit_role = UserRole.where(id: user_role_id).take
       if audit_role.present?
-          if current_user.user_roles.where(role_id: 1, role_type: 1, status: 1).exists? || UserRole.user_role_info([current_user.id, audit_role.user_id]).uniq.length == 1
-            if status == '1'
-              if audit_role.update_attributes(status: 1, role_type: role_type)
-                result = [true, '审核成功!']
-                Notification.create(user_id: audit_role.user_id, message_type: 0, content: '您申请的老师身份审核通过!')
+        if current_user.user_roles.where(role_id: 1, role_type: 1, status: 1).exists? || UserRole.user_role_info([current_user.id, audit_role.user_id]).uniq.length == 1
+          if status == '1'
+            origin_status = audit_role.status
+            if audit_role.update_attributes(status: 1, role_type: role_type)
+              result = [true, '审核成功!']
+              teacher_type = show_teacher_role(role_type)
+              if status.to_i != origin_status
+                content = "您申请的教师身份（#{teacher_type}）审核通过!"
               else
-                result = [false, '审核出现意外!']
+                content = "您的教师角色变更为#{teacher_type}!"
               end
-            elsif status == '0'
-              if audit_role.destroy
-                result = [true, '审核成功']
-                Notification.create(user_id: audit_role.user_id, message_type: 0, content: '您申请的老师身份审核未通过!')
-              else
-                result = [false, '审核出现意外!']
-              end
+              Notification.create(user_id: audit_role.user_id, message_type: 0, content: content)
             else
-              result = [false, '请选择审核结果!']
+              result = [false, '审核出现意外!']
+            end
+          elsif status == '0'
+            if audit_role.destroy
+              result = [true, '审核成功']
+              Notification.create(user_id: audit_role.user_id, message_type: 0, content: '您申请的老师身份审核未通过!')
+            else
+              result = [false, '审核出现意外!']
             end
           else
-            result = [false, '您没有权限审核该角色!']
+            result = [false, '请选择审核结果!']
           end
-          audit_role.update_attributes(role_type: role_type)
+        else
+          result = [false, '您没有权限审核该角色!']
+        end
+        audit_role.update_attributes(role_type: role_type)
       else
         result = [false, '对象不存在']
       end
