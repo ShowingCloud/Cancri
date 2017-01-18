@@ -11,7 +11,7 @@
           <div class="sub-content">
             <% if @teachers.present? %>
 
-                <table class="table">
+                <table class="table vertical-align-middle">
                   <thead>
                   <tr>
                     <th>姓名</th>
@@ -22,21 +22,22 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
+
                     <% @teachers.each do |teacher| %>
+                      <tr>
                         <input id="teacher_role_id" value="<%= teacher.id %>" type="hidden"/>
                         <td><%= teacher.username %></td>
                         <td><%= teacher.school_name %></td>
                         <td><%= teacher.desc %></td>
-                        <td><%= show_teacher_type(teacher.role_type) %></td>
+                        <td><%= show_teacher_role(teacher.role_type) %></td>
                         <td>
                           <%=  link_to "审核", user_teacher_audit_path(role_type: teacher.role_type, status: 1, id: teacher.id), :class =>"btn btn-primary", :id => "teacher-audit", :data => { :role_type => teacher.role_type} %>
                         </td>
+                      </tr>
                     <% end %>
                     <nav>
                       <%= paginate @teachers %>
                     </nav>
-                  </tr>
                   </tbody>
                 </table>
 

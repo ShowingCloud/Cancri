@@ -61,6 +61,10 @@ a:hover {
   color: #A6CFFF;
 }
 
+.vertical-align-middle.table > tbody > tr > td{
+  vertical-align: middle;
+}
+
 .btn-robodou {
   text-align: center;
   background: transparent;

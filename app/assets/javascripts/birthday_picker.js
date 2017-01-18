@@ -75,7 +75,7 @@ $(function ($)
         // Set the default date if given
         var date_str = options.defaultDate || $input.val();
         if (date_str) {
-            console.log(date_str);
+            //console.log(date_str);
             var date;
             if($.type(date_str) !== "date"){
                 /*
