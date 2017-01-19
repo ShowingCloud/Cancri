@@ -10,17 +10,18 @@
           <%= render 'user/tab' %>
           <div class="sub-content">
             <% if @hackers.present? %>
-                <div style="border:1px solid; border-radius: 8px;padding: 10px">
                   <% @hackers.each do |hacker| %>
-                      姓名：<%= hacker.username %>
-                      <br>
-                      学校：<%= hacker.school_name %>
-                      <div class="pull-right">
-                        <a href="/user/hacker_info/<%= hacker.id %>">查看详情</a>
+                      <div class="row round-border">
+                        <div class="col-sm-10">
+                          姓名：<%= hacker.username %>
+                        <br>
+                          学校：<%= hacker.school_name %>
+                        </div>
+                        <div class="col-sm-2">
+                          <a class="btn btn-primary" href="/user/hacker_info/<%= hacker.id %>">查看详情</a>
+                        </div>
                       </div>
                   <% end %>
-
-                </div>
                 <nav>
                   <%= paginate @hackers %>
                 </nav>
@@ -33,5 +34,3 @@
     </div>
   </div>
 </div>
-
-

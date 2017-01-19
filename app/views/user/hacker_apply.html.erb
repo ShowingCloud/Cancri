@@ -204,7 +204,7 @@
                         <div class="col-sm-2">
                           <%= select_tag "hacker[create_way]", options_for_select({ "自荐" => "1", "联合体" => "2", "学校" => "3", "个人" => "4" }, hacker[:create_way].to_s ),:class=>"form-control" %>
                         </div>
-                        <div class="hacker_create_with <%= 'hidden' if hacker[:create_way] == 1 %>">
+                        <div class="hacker_create_with <%= 'hidden' if hacker[:create_way] == 1 || hacker[:create_way].nil?  %>">
                           <label class="control-label col-sm-2" for="hacker[create_way]">推荐</label>
                           <div class="col-sm-3">
                             <input class="form-control" name="hacker[create_with]" value="<%= hacker[:create_with] %>"/>
