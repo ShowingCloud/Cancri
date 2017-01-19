@@ -87,7 +87,7 @@ class UserController < ApplicationController
   end
 
   def courses
-    @courses = CourseUserShip.left_joins(:school, :course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where('courses.end_time < ?', Time.now).where(user_id: @user.id).select(:score, :grade, 'up.username', 'up.student_code', 'courses.name', 'courses.end_time', 'schools.name as school_name').page(params[:page]).per(params[:per])
+    @courses = CourseUserShip.left_joins(:school, :course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where(user_id: @user.id).select(:score, :grade, :course_id, 'up.username', 'up.student_code', 'courses.name', 'courses.start_time', 'courses.end_time', 'schools.name as school_name').page(params[:page]).per(params[:per])
   end
 
   def activities
@@ -130,6 +130,16 @@ class UserController < ApplicationController
     course_id = params[:id]
     if the_course_teacher(course_id)
       @opus = CourseOpu.all.page(params[:page]).per(params[:per])
+    end
+  end
+
+  def course_stu_opus
+    course_id = params[:id]
+    @has_apply = CourseUserShip.joins(:course).joins('left join user_profiles u_p on u_p.user_id = courses.user_id').where(course_id: course_id, user_id: current_user.id).select(:id, :score, :course_id, 'courses.name as course_name', 'courses.start_time', 'courses.end_time', 'u_p.username as teacher_name').take
+    if @has_apply.present?
+      @opus = @has_apply.course_opus.page(params[:page]).per(params[:per])
+    else
+      render_optional_error(403)
     end
   end
 

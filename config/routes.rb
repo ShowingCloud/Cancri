@@ -169,6 +169,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :users do
+        collection do
+          post :upload_course_opus
+        end
+      end
       resources :competitions do
         collection do
           get :get_events
@@ -251,6 +256,7 @@ Rails.application.routes.draw do
   match '/user/programs' => 'user#programs', as: 'user_programs', via: [:get]
   match '/user/programs/:id' => 'user#program', via: [:get]
   get '/user/course_opus/:id' => 'user#course_opus', as: 'user_course_opus'
+  get '/user/course_stu_opus/:id' => 'user#course_stu_opus', as: 'user_course_stu_opus'
   post 'user/course_score' => 'user#course_score', as: 'user_course_score'
   match 'user/create_program' => 'user#create_program', as: 'user_create_program', via: [:get, :post]
   match 'user/program_se/:id' => 'user#program_se', as: 'user_program_se', via: [:get, :post]
