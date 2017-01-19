@@ -202,7 +202,7 @@ $(function() {
         var _self = $(this);
         var selected_district = _self.find("option:selected");
         var district_id = _self.val();
-        console.log("district_id:"+district_id);
+        //console.log("district_id:"+district_id);
         var province_name = selected_district.attr('data-province');
         var city_name = selected_district.attr('data-city');
         var district_name = selected_district.text();
@@ -278,7 +278,7 @@ $(function() {
         event.preventDefault();
         var cookie = $.cookie('lesson-selected');
         if (typeof cookie == 'string') {
-            console.log(cookie);
+            //console.log(cookie);
             if (cookie == 'null' || cookie == '[]') {
                 alert_r('请先选择课程！');
             } else {
@@ -540,7 +540,7 @@ $(function() {
     if ($('.add-school').length > 0) {
         $('.add-school').off('click').on('click', function() {
             var dis = $('#district-select').val();
-            console.log(dis);
+            //console.log(dis);
             if (typeof dis != 'string' || dis.length < 1 || dis == '0' || dis == 0) {
                 alert_r('请选择区县！');
             } else {
@@ -630,7 +630,7 @@ $(function() {
     $('.control-idc').on('change', function(event) {
         event.preventDefault();
         var v = $(this).val();
-        console.log(v);
+        //console.log(v);
         if (v >= 10) {
             $('.idc-form').removeClass('hide');
         }
@@ -950,7 +950,7 @@ $(function() {
           });
         },
         error:function(data){
-          console.log(data);
+          //console.log(data);
         }
       });
     });
@@ -970,7 +970,7 @@ $(function() {
               });
             },
             error:function(data){
-              console.log(data);
+              //console.log(data);
             }
           });
         }
@@ -982,33 +982,39 @@ $(function() {
 
     function teacher_edit_save($ele){
       var tr = $ele.parents('tr');
-      tr.find('.role-type').removeClass('hidden');
       var role_type_select = tr.find('.role-type-select');
       var school_id = tr.find('.school-name').data("id");
       var role_type = role_type_select.val();
-      var post_data = {role_type: role_type};
-      if(school_id){
-        post_data.school_id = school_id;
-      }
-
-      $.ajax({
-        url: $ele.data("url"),
-        data: post_data,
-        type: 'post',
-        success: function(data){
-          if(data.message) {
-            alert_r(data.message);
-            role_type_select.remove();
-            $ele.text("修改").off('click').click(function(){
-              teacher_edit_click($(this));
-            });
-          }
-        },
-        error:function(data){
-          console.log(data);
+      if(role_type == $ele.data("role-type")){
+        alert_r('请修改后再保存');
+      }else{
+        var post_data = {role_type: role_type};
+        if(school_id){
+          post_data.school_id = school_id;
         }
-      });
 
+        $.ajax({
+          url: $ele.data("url"),
+          data: post_data,
+          type: 'post',
+          success: function(data){
+            if(data.message) {
+              alert_r(data.message);
+            }
+            if(data.status === true){
+              tr.find('.role-type').removeClass('hidden').text(role_type_select.find('option:selected').html());
+              role_type_select.remove();
+              $ele.text("修改").off('click').click(function(){
+                teacher_edit_click($(this));
+              });
+            }
+          },
+          error:function(data){
+            //console.log(data);
+            alert_r('提交失败');
+          }
+        });
+      }
     }
 
     function teacher_edit_click($ele){
@@ -1191,7 +1197,7 @@ $(function() {
                     }
                 });
 
-                console.log(arr);
+                //console.log(arr);
 
                 var url = '/competitions/district_submit_teams';
                 var option = {
@@ -1351,7 +1357,7 @@ $(function() {
                 var page_count;
                 if (total_count > page_size) {
                     page_count = Math.ceil(total_count / page_size);
-                    console.log("page_count:" + page_count);
+                    //console.log("page_count:" + page_count);
                     var current_page = page_num || 1;
                     var prev_page = $('<li><a href="#" data-page="' + (parseInt(current_page) - 1) + '">上一页</a></li>');
                     var next_page = $('<li><a href="#" data-page="' + (parseInt(current_page) + 1) + '">下一页</a></li>');
@@ -1376,13 +1382,13 @@ $(function() {
                     $(".pager a").click(function(e) {
                         e.preventDefault();
                         var target_page = $(this).data("page");
-                        console.log(target_page);
+                        //console.log(target_page);
                         student_control_handle(com, ed, status, _space, s_id, target_page);
                     });
 
                     $('.pager select').on('change', function() {
                         var target_page = $(this).val();
-                        console.log(target_page);
+                        //console.log(target_page);
                         student_control_handle(com, ed, status, _space, s_id, target_page);
                     });
 
