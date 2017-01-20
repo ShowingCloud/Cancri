@@ -41,11 +41,52 @@ module Api
       end
 
 
-      private
+      # 报名课程的用户批量删除自己的作品
+      # POST /api/v1/users/delete_course_opus
 
-      def set_user
-        @user = User.find_by_nickname(params[:id])
+      def delete_course_opus
+        cp_ids = params[:course_opus_ids]
+        if cp_ids.present? && cp_ids.is_a?(Array)
+          user_ids = CourseOpu.joins(:course_user_ship).where(id: params[:cp_ids]).pluck('course_user_ships.user_id')
+          if user_ids.present? && user_ids.uniq == [current_user.id] && user_ids.length == cp_ids.length
+            if CourseOpu.delete(cp_ids)
+              result= [true, '删除成功']
+            else
+              result= [false, '删除失败']
+            end
+          else
+            result = [false, '不规范请求']
+          end
+        else
+          result = [false, '参数不规范']
+        end
+        render json: {status: result[0], message: result[1]}
       end
+
+      # 报名课程的用户更新自己作品
+      # POST /api/v1/users/update_course_opus
+
+      def update_course_opus
+        requires! :id, type: Integer
+        requires! :desc
+        course_opus_id = params[:id]
+        desc = params[:desc]
+        current_user_id = current_user.id
+        course_opus = CourseOpu.joins(:course_user_ship).where(id: course_opus_id).select('course_opus.*', :desc, 'course_user_ships.user_id').take
+        if course_opus.present? && course_opus.user_id == current_user_id
+          course_opus.desc = desc
+          if course_opus.save
+            result = [true, '更新成功']
+          else
+            result = [false, '更新失败']
+          end
+        else
+          result = [false, '不规范请求']
+        end
+        render json: {status: result[0], message: result[1]}
+      end
+
+
     end
   end
 end

@@ -102,3 +102,61 @@ $('.update-course-score,.create-course-score').on('click', function () {
     });
 
 });
+
+
+// selected course opus change event
+var course_opus_input = $("#course_opu_cover");
+course_opus_input.on('change', function () {
+    readURL(this, ['jpeg', 'jpg', 'png', 'gif'], 1);
+});
+
+$('.upload-course-opus-submit').click(function (event) {
+    event.preventDefault();
+    var form = $("#new_course_opu");
+    if (!course_opus_input.val()) {
+        alert('请选择要上传的作品');
+        course_opus_input.trigger('click');
+        return false;
+    }
+    var has_no_error = true;
+    $.each(form.serializeArray(), function (k, v) {
+        var input_name = v.name;
+        var input_value = v.value;
+        if (input_name == 'course_opu[name]' && input_value == '') {
+            $("#course_opu_name").focus();
+            has_no_error = false;
+            alert('请填写作品名称');
+            return has_no_error;
+        }
+        if (input_name == 'course_opu[desc]' && input_value == '') {
+            $("#course_opu_desc").focus();
+            has_no_error = false;
+            alert('请填写作品描述');
+            return has_no_error;
+        }
+    });
+    if (has_no_error) {
+        $.ajax({
+            url: form.attr('action'),
+            type: "POST",
+            dataType: "json",
+            data: new FormData(form[0]),
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                $.notify(data.message);
+                if (data.status) {
+                    $("#upload-course-opus-modal").modal('hide');
+                    course_opus_input.val("");
+                    $(".photo-preview").attr("src", "");
+                }
+            },
+            error: function (data) {
+                alert(data);
+            }
+        });
+    } else {
+        return false;
+    }
+
+});
