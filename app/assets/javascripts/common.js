@@ -1,10 +1,66 @@
 /**
  * Created by huaxiukun on 16/5/31.
  */
+
+function readURL(input, limit_types, file_size_limit) {
+    var file_name = $(input).val();
+    var file_type = get_file_type(file_name);
+    var has_no_error = (check_file_type(input, limit_types, file_type) && check_file_size(input, file_size_limit, input.files[0].size));
+    if (has_no_error) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var photo_preview = $('.photo-preview');
+            // photo_preview.css('background', 'url(' + e.target.result + ')');
+            photo_preview.removeClass('hide');
+            photo_preview.attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        return false;
+    }
+}
+
+function get_file_type(file_name) {
+    return file_name.substring(file_name.lastIndexOf(".") + 1).toLowerCase();
+}
+
+function check_file_type(input, limit_types, file_type) {
+    if ($.inArray(file_type, limit_types) == -1) {
+        alert('文件格式不规范,请上传 ' + limit_types.join('、') + ' 格式的文件');
+        input.value = '';
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function check_file_size(input, limit_size, file_size) {
+    var size = file_size / 1024 / 1024;
+    if (size > limit_size) {
+        alert("文件大小不能大于" + limit_size + "M，请重新选择");
+        input.value = '';
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function multiple_check_type_size(input, limit_type, limit_size) {
+    var has_no_error;
+    $.each(input.files, function (k, v) {
+        has_no_error = (check_file_type(input, limit_type, get_file_type(v.name)) && check_file_size(input, limit_size, v.size));
+        if (!has_no_error) {
+            return false;
+        }
+    });
+    return !has_no_error;
+}
+
 //删除两边空格
 function trim(str) {
     return str.replace(/(^\s*)|(\s*$)/g, "");
 }
+
 // change bs set cookie = 1
 $('#select-area').on('change', function () {
     var area = $('#select-area').val();
@@ -20,69 +76,9 @@ function setCookie(key, value, path) {
     $.cookie(key, value, {path: path});
 }
 
-function checkIdcard(num){
-        num = num.toUpperCase();
-        //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。
-        if (!(/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(num))) {
-            // console.log('输入的身份证号长度不对，或者号码不符合规定！\n15位号码应全为数字，18位号码末位可以为数字或X。');
-            return false;
-        }
-        //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
-        //下面分别分析出生日期和校验位
-        var len, re;
-        len = num.length;
-        if (len == 15)
-        {
-            re = new RegExp(/^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/);
-            var arrSplit = num.match(re);
-            //检查生日日期是否正确
-            var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
-            var bGoodDay;
-            bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2])) && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) && (dtmBirth.getDate() == Number(arrSplit[4]));
-            if (!bGoodDay) {
-                // console.log('输入的身份证号里出生日期不对！');
-                return false;
-            } else {
-                //将15位身份证转成18位
-                //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
-                var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
-                var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
-                var nTemp = 0, i;
-                num = num.substr(0, 6) + '19' + num.substr(6, num.length - 6);
-                for (i = 0; i < 17; i ++) {
-                     nTemp += num.substr(i, 1) * arrInt[i];
-                }
-                num += arrCh[nTemp % 11];
-                return true;
-            }
-        }
-        if (len == 18) {
-            re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);
-            var arrSplit = num.match(re);
-            //检查生日日期是否正确
-            var dtmBirth = new Date(arrSplit[2] + "/" + arrSplit[3] + "/" + arrSplit[4]);
-            var bGoodDay;
-            bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2])) && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) && (dtmBirth.getDate() == Number(arrSplit[4]));
-            if (!bGoodDay) {
-                // console.log('输入的身份证号里出生日期不对！');
-                return false;
-            } else {
-                //检验18位身份证的校验码是否正确。
-                //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
-                var valnum;
-                var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
-                var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
-                var nTemp = 0, i;
-                for(i = 0; i < 17; i ++)
-                {
-                    nTemp += num.substr(i, 1) * arrInt[i];
-                }
-                valnum = arrCh[nTemp % 11];
-                if (valnum != num.substr(17, 1)) {
-                    return false;
-                }
-                return true;
-            }
-        }
-        return false;
-    }
+function checkIdcard(num) {
+    num = num.toUpperCase();
+    //  only validate length is 18 
+    var identity_code_reg = /^(\d{6})(?:(?!0000)[0-9]{4}(?:(?:0[1-9]|1[0-2])(?:0[1-9]|1[0-9]|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)-02-29)(\d{3})([0-9]|X)$/;
+    return identity_code_reg.test(num);
+}

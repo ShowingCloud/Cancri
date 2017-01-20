@@ -172,6 +172,8 @@ Rails.application.routes.draw do
       resources :users do
         collection do
           post :upload_course_opus
+          post :delete_course_opus
+          post :update_course_opus
         end
       end
       resources :competitions do
