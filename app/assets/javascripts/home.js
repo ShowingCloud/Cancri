@@ -553,22 +553,29 @@ $(function() {
         var thumb = $('#demeanor-photo').find('.thumb');
         thumb.on('click', function(event) {
             event.preventDefault();
-            var height = this.naturalHeight;
-            var width = this.naturalWidth;
-            for (var i = 1; i < 10; i += 0.01) {
-                if (height <= 550 && width <= 1000) {
-                    var src = $(this).attr('src');
-                    var win = $('#thumb-win');
-                    var img = win.find('.inner-img');
-                    img.height(height);
-                    img.width(width);
-                    lazyload.loading(img, src);
-                    win.modal('show');
-                    break;
-                }
-                height = height * (1.0 / i);
-                width = width * (1.0 / i);
-            }
+            var window_width = $(window).width();
+            var window_height = $(window).height();
+            var src = $(this).data('url');
+            var win = $('#thumb-win');
+            var img = win.find('.inner-img');
+            img.attr('src',src).css({'max-width': window_width * 0.8,'max-height':window_height * 0.8});
+            win.modal('show');
+            // var height = this.naturalHeight;
+            // var width = this.naturalWidth;
+            // for (var i = 1; i < 10; i += 0.01) {
+            //     if (height <= 550 && width <= 1000) {
+            //         var src = $(this).attr('src');
+            //         var win = $('#thumb-win');
+            //         var img = win.find('.inner-img');
+            //         img.height(height);
+            //         img.width(width);
+            //         lazyload.loading(img, src);
+            //         win.modal('show');
+            //         break;
+            //     }
+            //     height = height * (1.0 / i);
+            //     width = width * (1.0 / i);
+            // }
         });
     }
     if ($('#demeanor-video').length > 0) {
