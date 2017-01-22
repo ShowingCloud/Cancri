@@ -27,17 +27,22 @@ module Api
 
         has_apply = CourseUserShip.joins(:course).where(course_id: course_id, user_id: current_user.id).select(:id, :course_id, 'courses.start_time', 'courses.end_time').take
         time_now = Time.zone.now
-        if has_apply.present? && (time_now > has_apply.start_time) && (time_now < has_apply.end_time)
-          course_opus = CourseOpu.create(course_user_ship_id: course_user_ship_id, name: name, desc: desc, cover: cover)
-          if course_opus.save
-            result = [true, '上传成功']
+        respond_to do |format|
+          if has_apply.present? && (time_now > has_apply.start_time) && (time_now < has_apply.end_time)
+            course_opus = CourseOpu.create(course_user_ship_id: course_user_ship_id, name: name, desc: desc, cover: cover)
+            if course_opus.save
+              result = [true, '上传成功']
+              format.json { render json: {status: result[0], message: result[1]} }
+            else
+              result = [false, course_opus.errors.full_messages.first]
+              format.json { render json: {status: result[0], message: result[1]} }
+            end
           else
-            result = [false, course_opus.errors.full_messages.first]
+            result = [false, '您没有报名该课程，或不在上传时间']
+            format.json { render json: {status: result[0], message: result[1]} }
           end
-        else
-          result = [false, '您没有报名该课程，或不在上传时间']
+          format.html { redirect_to "/user/course_stu_opus/#{course_id}", notice: result[1] }
         end
-        render json: {status: result[0], message: result[1]}
       end
 
 
@@ -47,7 +52,7 @@ module Api
       def delete_course_opus
         cp_ids = params[:course_opus_ids]
         if cp_ids.present? && cp_ids.is_a?(Array)
-          user_ids = CourseOpu.joins(:course_user_ship).where(id: params[:cp_ids]).pluck('course_user_ships.user_id')
+          user_ids = CourseOpu.joins(:course_user_ship).where(id: cp_ids).pluck('course_user_ships.user_id')
           if user_ids.present? && user_ids.uniq == [current_user.id] && user_ids.length == cp_ids.length
             if CourseOpu.delete(cp_ids)
               result= [true, '删除成功']

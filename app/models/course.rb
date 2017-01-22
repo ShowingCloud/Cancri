@@ -15,6 +15,7 @@ class Course < ApplicationRecord
   validates :district_id, presence: true
   validates :user_id, presence: true
   after_validation :validate_datetime
+  after_validation :end_time_comp_now, on: :create
 
   attr_accessor :course_wave
   STATUS = {
@@ -22,6 +23,12 @@ class Course < ApplicationRecord
       通过: 1,
       不通过: 2,
   }
+
+  def end_time_comp_now
+    if apply_end_time < Time.now
+      errors[:start_time] << '课程报名结束时间不能早于现在'
+    end
+  end
 
   def validate_datetime
     if apply_start_time.present? and apply_end_time.present? and start_time.present? and end_time.present?
@@ -33,9 +40,6 @@ class Course < ApplicationRecord
       end
       if start_time > end_time
         errors[:start_time] << '课程结束时间不能早于课程开始时间'
-      end
-      if apply_end_time < Time.now
-        errors[:start_time] << '课程报名结束时间不能早于现在'
       end
     else
       errors[:start_time] << '课程报名起始时间和课程开课起始时间为必填项'

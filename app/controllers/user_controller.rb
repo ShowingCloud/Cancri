@@ -1,5 +1,6 @@
 class UserController < ApplicationController
   before_action :authenticate_user!
+  before_action :current_roles
   before_action :set_user, only: [:competitions, :courses, :activities]
   before_action :is_teacher, only: [:programs, :program, :program_se, :create_program, :course_score]
   before_action :super_district_teacher, only: [:teachers, :teacher_audit, :hacker_audit]
@@ -119,7 +120,7 @@ class UserController < ApplicationController
   def program
     course = Course.find(params[:id])
     if course && course.user_id == current_user.id
-      @apply_info = CourseUserShip.includes(:course_user_scores).joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').joins('left join districts d on u_p.district_id = d.id').select(:id, :user_id, :course_id, :grade, :score, 'courses.name as course_name', 'u_p.username', 'd.name as district_name', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
+      @apply_info = CourseUserShip.includes(:course_user_scores).joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').select(:id, :user_id, :course_id, :grade, :score, :opus_count, 'courses.name as course_name', 'u_p.username', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
       @course_score_attrs = CourseScoreAttribute.where(course_id: params[:id]).select(:id, :course_id, :name, :score_per).to_a
     else
       render_optional_error(404)
@@ -952,6 +953,10 @@ class UserController < ApplicationController
     unless @user
       render_optional_error(404)
     end
+  end
+
+  def current_roles
+    @current_roles = current_user.user_roles.where(role_id: [1, 2]).pluck(:role_id, :status, :role_type)
   end
 
   def user_profile_params
