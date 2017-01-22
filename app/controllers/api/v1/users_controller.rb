@@ -32,7 +32,7 @@ module Api
             course_opus = CourseOpu.create(course_user_ship_id: course_user_ship_id, name: name, desc: desc, cover: cover)
             if course_opus.save
               result = [true, '上传成功']
-              format.json { render json: {status: result[0], message: result[1]} }
+              format.json { render json: {status: result[0], message: result[1], id: course_opus.id, cover: ActionController::Base.helpers.asset_path(course_opus.cover_url)} }
             else
               result = [false, course_opus.errors.full_messages.first]
               format.json { render json: {status: result[0], message: result[1]} }
