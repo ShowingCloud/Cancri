@@ -69,12 +69,15 @@ module Api
       def update_course_opus
         requires! :id, type: Integer
         requires! :desc
+        requires! :name
         course_opus_id = params[:id]
         desc = params[:desc]
+        name = params[:name]
         current_user_id = current_user.id
-        course_opus = CourseOpu.joins(:course_user_ship).where(id: course_opus_id).select('course_opus.*', :desc, 'course_user_ships.user_id').take
+        course_opus = CourseOpu.joins(:course_user_ship).where(id: course_opus_id).select('course_opus.*', 'course_user_ships.user_id').take
         if course_opus.present? && course_opus.user_id == current_user_id
           course_opus.desc = desc
+          course_opus.name = name
           if course_opus.save
             result = [true, '更新成功']
           else
