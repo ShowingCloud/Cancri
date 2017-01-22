@@ -103,6 +103,97 @@ $('.update-course-score,.create-course-score').on('click', function () {
 
 });
 
+$('.course-opus').on('click','input[type=checkbox]',function(event){
+  event.stopPropagation();
+});
+
+$('.delete-submit').click(
+  function(){
+    var checkedValues = $('input:checkbox:checked').map(function() {
+        return this.value;
+    }).get();
+    $.ajax({
+      url: "/api/v1/users/delete_course_opus",
+      type: "POST",
+      dataType: "json",
+      data:{course_opus_ids: checkedValues},
+      success: function(response){
+          alert_r(response.message);
+          if(response.status === true){
+            $('input:checkbox:checked').each(function(){
+              $(this).parents('.opus-item').remove();
+            });
+          }
+          $('.delete-trigger').trigger('click');
+      },
+      error: function(){
+          alert_r("操作失败");
+      }
+    });
+  }
+);
+
+$('.delete-trigger').click(function(){
+  var delete_submit = $('.delete-submit');
+  var checkboxes = $('.course-opus input[type=checkbox]');
+  if(delete_submit.hasClass('hidden')){
+    delete_submit.removeClass('hidden');
+    $(this).html("取消");
+    checkboxes.each(function(){
+      $(this).prop('checked', false).removeClass('hidden');
+    });
+  }else{
+    delete_submit.addClass('hidden');
+    $(this).html("删除");
+    checkboxes.addClass('hidden');
+  }
+});
+
+$('.course-opus.student').on('click','.opus-item',function(){
+  var _this = $(this);
+  var desc = _this.data('desc');
+  var url = _this.data('url');
+  $('#preview').attr('src',url);
+  $('#desc').html(desc);
+  $('#stuOpusViewer').modal();
+  $('#edit-course-opus-modal .photo-preview').attr('src',url);
+  $('#edit-course-opus-id').val(_this.data('id'));
+  $('#edit-course-opus-name').val(_this.find('.name').html());
+  $('#edit-course-opus-desc').val(_this.data('desc'));
+});
+
+$('.course-opus.teacher').on('click','.opus-item',function(){
+  var _this = $(this);
+  var desc = _this.data('desc');
+  var url = _this.data('url');
+  $('#preview').attr('src',url);
+  $('#desc').html(desc);
+  $('#teacherOpusViewer').modal();
+});
+
+$('#edit-course-opus-submit').click(function(){
+  var name = $('#edit-course-opus-name').val();
+  var desc = $('#edit-course-opus-desc').val();
+  var id = $('#edit-course-opus-id').val();
+  if(!name) name= null;
+  if(!desc) desc= null;
+  $.ajax({
+    url: "/api/v1/users/update_course_opus",
+    type: "POST",
+    dataType: "json",
+    data: {name:name,desc:desc,id:id},
+    success: function(response){
+      alert_r(response.message);
+      $("#edit-course-opus-modal").modal('hide');
+      var item = $('[data-id="'+id+'"]');
+      item.data('desc',desc);
+      item.find('.name').html(name);
+    },
+    error: function(response){
+      alert_r('上传失败');
+    }
+  });
+});
 
 // selected course opus change event
 var course_opus_input = $("#course_opu_cover");
@@ -113,31 +204,44 @@ course_opus_input.on('change', function () {
 $('.upload-course-opus-submit').click(function (event) {
     event.preventDefault();
     var form = $("#new_course_opu");
-
     if (course_opus_input.val()) {
+      if(window.FormData !== undefined) {
+        var postData = new FormData(form[0]);
         $.ajax({
             url: form.attr('action'),
             type: "POST",
             dataType: "json",
-            data: new FormData(form[0]),
+            data: postData,
             processData: false,
             contentType: false,
             success: function (data) {
                 $.notify(data.message);
                 if (data.status) {
+                    var name = $("[name='course_opu[name]']").val();
+                    var desc = $("[name='course_opu[desc]']").val();
+                    var url = $(".photo-preview").attr('src');
                     $("#upload-course-opus-modal").modal('hide');
                     course_opus_input.val("");
                     $(".photo-preview").attr("src", "");
+                    var id = data.id;
+                    var cover = data.cover || url;
+                    if(id){
+                      $(".course-opus").append('<div class="col-xs-4 text-center opus-item" data-url="'+ url +'" data-id="'+ id +'" data-desc="'+ desc +'"><p><input type="checkbox" value="<%= opus.id %>" class="hidden"><img src="'+ cover +'" alt="Middle cover"></p><div class="name">'+name+'</div></div>');
+                    }else{
+                      window.location.reload();
+                    }
                 }
             },
             error: function (data) {
                 alert(data);
             }
         });
+      }else{
+        form.submit();
+      }
     } else {
         alert('请选择要上传的作品');
         course_opus_input.trigger('click');
-        return false;
     }
 
 });

@@ -2244,3 +2244,24 @@ select {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+.photo-preview{
+  max-width: 50%;
+  max-height: 50%;
+}
+.course-opus{
+  margin-top: 80px;
+
+  .name{
+    height: 20px;
+    line-height: 20px;
+  }
+
+  .opus-item{
+    margin-bottom: 20px;
+  }
+
+  img{
+    width: 200px;
+    height: 200px;
+  }
+}

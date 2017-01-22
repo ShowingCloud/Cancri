@@ -6,18 +6,6 @@
 <% @action_security = ['security', 'email', 'reset_email', 'mobile', 'passwd', 'reset_mobile'] %>
 <% @action_role_apple_array = ['role_apply', 'hacker_apply_post', 'hacker_apply'] %>
 
-<% if @current_roles.present? %>
-    <% @current_roles.each do |role| %>
-        <% if role[0] == 1 %>
-            <%= show_teacher_role(role[2]) %>教师<%= '（待审核）' if role[1] == 0 %>
-        <% elsif role[0] ==2 && role[2] == 1 %>
-            中小学生创客
-        <% else %>
-            社会创客
-        <% end %>
-    <% end %>
-<% end %>
-
 <div class="sidebar">
   <div class="sidebar-top">
     <div class="avatar">
@@ -29,8 +17,15 @@
     </div>
     <div class="username">
       <%= current_user.nickname %>
-      <!-- <i class="user-icon teacher-icon"></i>
-      <i class="user-icon maker-icon"></i> -->
+      <% if @current_roles.present? %>
+          <% @current_roles.each do |role| %>
+              <% if role[0] == 1 && role[1] != 0 %>
+                  <i class="user-icon teacher-icon"></i>
+              <% elsif role[0] == 2 %>
+                <i class="user-icon maker-icon"></i>
+              <% end %>
+          <% end %>
+      <% end %>
     </div>
   </div>
   <% is_teacher = has_teacher_role %>

@@ -24,7 +24,7 @@
                     <td><%= "#{c.start_time.strftime('%Y-%m-%d')} -- #{c.end_time.strftime('%Y-%m-%d')}" %></td>
                     <td></td>
                     <td><a href="">下载</a></td>
-                    <td><a href="/user/course_stu_opus/<%= c.course_id %>">查看</a></td>
+                    <td><a href="/user/course_stu_opus/<%= c.course_id %>?per=6">查看</a></td>
                   </tr>
               <% end %>
             </table>
