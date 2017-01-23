@@ -927,18 +927,16 @@ $(function() {
     }
 
     function role_form_switch(role){
+      var mobile = $("#user-mobile").val();
       if(role == "1"){
         $(".only-role1").removeClass("hidden");
         $(".only-role2").addClass("hidden");
       }else{
-        var mobile = $("#user-mobile").text();
         if(!mobile.length){
           alert_r("请先去认证手机号",function(){
             window.location = '/user/mobile';
           });
           return;
-        }else{
-          $("#user_family_mobile").val(mobile);
         }
         $(".only-role2").removeClass("hidden");
         $(".only-role1").addClass("hidden");

@@ -59,9 +59,9 @@
                     <label class="control-label col-sm-2" for="user_school_id">学校</label>
                     <div class="col-sm-10">
                       <input type="hidden" id="user_profile_district_id" />
-                      <input type="hidden" id="user_profile_school_id" name="user_school_id" value="<%= current_user.user_profile.school_id %>"/>
-                      <input type="hidden" id="change_district_id" value="<%= current_user.user_profile.district_id %>"/>
-                      <span><a href="#select-school-modal" role="button" class="select-user-school" data-toggle="modal"><%= current_user.user_profile.school_id.present? ? current_user.user_profile.school.try(:name) : '选择学校' %></a></span>
+                      <input type="hidden" id="user_profile_school_id" name="user_school_id" value="<%= current_user.user_profile.try(:school_id) %>"/>
+                      <input type="hidden" id="change_district_id" value="<%= current_user.user_profile.try(:district_id) %>"/>
+                      <span><a href="#select-school-modal" role="button" class="select-user-school" data-toggle="modal"><%= current_user.user_profile.try(:school_id).present? ? current_user.user_profile.school.try(:name) : '选择学校' %></a></span>
                     </div>
                   </div>
                   <div class="form-group">
@@ -73,7 +73,7 @@
                   <div class="form-group">
                     <label class="control-label col-sm-2" for="user_school_id">级别</label>
                     <div class="col-sm-10">
-                      <%= select_tag "user_role_type", options_for_select({ "校级" => "5", "区级" => "4", "市级" => "1" }, @user_roles[0].try(:role_type) ),:class=>"form-control" %>
+                      <%= select_tag "user_role_type", options_for_select({ "校级" => "5", "校级（负责人）" => "3", "区级" => "4","区级（负责人）" => "2", "市级" => "1" }, @user_roles[0].try(:role_type) ),:class=>"form-control" %>
                       <input type="hidden" id="user_role_type_hidden" name="user_role_type" value="6" disabled />
                     </div>
                   </div>
