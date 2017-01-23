@@ -2,6 +2,8 @@ module Api
   module V1
     class ApplicationController < ActionController::API
       include ::ActionController::Cookies
+      include ::ActionController::MimeResponds
+      include ::ActionController::Flash
       class ParameterValueNotAllowed < ActionController::ParameterMissing
         attr_reader :values
 

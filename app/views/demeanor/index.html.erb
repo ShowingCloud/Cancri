@@ -5,11 +5,11 @@
       <a href="/demeanor/videos">视频</a>
     </div>
     <div class="middle">
-      <% if @photos.length>0 %>
+      <% if @photos.present? %>
           <% @photos.each do |p| %>
               <div class="thumb-box">
                 <div class="image-border">
-                  <%= image_tag(p.image_url, class: 'thumb') %>
+                  <%= image_tag(p.image.large.url, class: 'thumb',:data => { :url => p.image_url}) %>
                 </div>
                 <div class="dec">
                   <%= p.comp_name %>

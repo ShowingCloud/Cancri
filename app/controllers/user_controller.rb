@@ -1,12 +1,13 @@
 class UserController < ApplicationController
   before_action :authenticate_user!
+  before_action :current_roles
   before_action :set_user, only: [:competitions, :courses, :activities]
   before_action :is_teacher, only: [:programs, :program, :program_se, :create_program, :course_score]
-  before_action :super_district_teacher, only: [:teachers, :teacher_audit, :hacker_audit]
+  before_action :super_district_teacher, only: [:teachers, :teacher_audit, :hacker_audit, :hacker_info]
 
   # 个人信息概览
   def preview
-    @user_info = User.joins('left join user_profiles u_p on u_p.user_id = users.id').joins('left join schools s on s.id = u_p.school_id').where(id: current_user.id).select(:email, :mobile, 'u_p.username as name', 'u_p.gender', 'u_p.grade', 'u_p.bj', 'u_p.roles as role', 'u_p.birthday', 's.name as school', 'u_p.address').take
+    @user_info = User.joins('left join user_profiles u_p on u_p.user_id = users.id').joins('left join schools s on s.id = u_p.school_id').where(id: current_user.id).select(:email, :mobile, 'u_p.username as name', 'u_p.gender', 'u_p.grade', 'u_p.bj', 'u_p.roles as role', 'u_p.birthday', 's.name as school', 'u_p.address', 'u_p.student_code', 'u_p.identity_card').take
   end
 
 
@@ -72,7 +73,7 @@ class UserController < ApplicationController
 
         if @user_profile.update_attributes(username: username, birthday: birthday, gender: gender, address: address, teacher_no: teacher_no, autograph: autograph, school_id: school_id, district_id: district_id, grade: grade, bj: bj, student_code: student_code, identity_card: identity_card)
           flash[:success] = '更新成功-'+message
-          redirect_to user_profile_path
+          redirect_to user_preview_path
         else
           flash[:error] = '更新失败-'+message
         end
@@ -87,7 +88,7 @@ class UserController < ApplicationController
   end
 
   def courses
-    @courses = CourseUserShip.left_joins(:school, :course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where('courses.end_time < ?', Time.now).where(user_id: @user.id).select(:score, :grade, 'up.username', 'up.student_code', 'courses.name', 'courses.end_time', 'schools.name as school_name').page(params[:page]).per(params[:per])
+    @courses = CourseUserShip.left_joins(:school, :course).joins('left join user_profiles up on up.user_id=course_user_ships.user_id').where(user_id: @user.id).select(:score, :grade, :course_id, 'up.username', 'up.student_code', 'courses.name', 'courses.start_time', 'courses.end_time', 'schools.name as school_name').page(params[:page]).per(params[:per])
   end
 
   def activities
@@ -119,10 +120,27 @@ class UserController < ApplicationController
   def program
     course = Course.find(params[:id])
     if course && course.user_id == current_user.id
-      @apply_info = CourseUserShip.includes(:course_user_scores).joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').joins('left join districts d on u_p.district_id = d.id').select(:id, :user_id, :course_id, :grade, :score, 'courses.name as course_name', 'u_p.username', 'd.name as district_name', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
+      @apply_info = CourseUserShip.includes(:course_user_scores).joins(:course, :user).where(course_id: params[:id]).left_joins(:school).joins('left join user_profiles u_p on course_user_ships.user_id = u_p.user_id').select(:id, :user_id, :course_id, :grade, :score, :opus_count, 'courses.name as course_name', 'u_p.username', 'courses.end_time', 'users.mobile', 'schools.name as school_name').page(params[:page]).per(params[:per])
       @course_score_attrs = CourseScoreAttribute.where(course_id: params[:id]).select(:id, :course_id, :name, :score_per).to_a
     else
       render_optional_error(404)
+    end
+  end
+
+  def course_opus
+    course_id = params[:id]
+    if the_course_teacher(course_id)
+      @opus = CourseOpu.all.page(params[:page]).per(params[:per])
+    end
+  end
+
+  def course_stu_opus
+    course_id = params[:id]
+    @has_apply = CourseUserShip.joins(:course).joins('left join user_profiles u_p on u_p.user_id = courses.user_id').where(course_id: course_id, user_id: current_user.id).select(:id, :score, :course_id, 'courses.name as course_name', 'courses.start_time', 'courses.end_time', 'u_p.username as teacher_name').take
+    if @has_apply.present?
+      @opus = @has_apply.course_opus.page(params[:page]).per(params[:per])
+    else
+      render_optional_error(403)
     end
   end
 
@@ -665,12 +683,8 @@ class UserController < ApplicationController
     else
       result = [false, user_profile.errors.full_messages[0]]
     end
-    flash[:notice] = result[1]
-    if result[0]
-      redirect_to '/user/role_apply'
-    else
-      render '/user/role_apply'
-    end
+    flash[:error] = result[1]
+    redirect_to '/user/role_apply'
   end
 
   def hacker_apply
@@ -730,42 +744,45 @@ class UserController < ApplicationController
   def teacher_audit
     if request.method == 'POST'
       status = params[:status]
-      role_type = params[:role_type]
+      role_type = params[:role_type].to_i
       user_role_id = params[:id]
       audit_role = UserRole.where(id: user_role_id).take
       if audit_role.present?
-        if audit_role.status == 0
-          if current_user.user_roles.where(role_id: 1, role_type: 1, status: 1).exists? || UserRole.user_role_info([current_user.id, audit_role.user_id]).uniq.length == 1
-            if status == '1'
-              if audit_role.update_attributes(status: 1, role_type: role_type)
-                result = [true, '审核成功!']
-                Notification.create(user_id: audit_role.user_id, message_type: 0, content: '您申请的老师身份审核通过!')
+        if current_user.user_roles.where(role_id: 1, role_type: 1, status: 1).exists? || UserRole.user_role_info([current_user.id, audit_role.user_id]).uniq.length == 1
+          if status == '1'
+            origin_status = audit_role.status
+            if audit_role.update_attributes(status: 1, role_type: role_type)
+              result = [true, '审核成功!']
+              teacher_type = show_teacher_role(role_type)
+              if status.to_i != origin_status
+                content = "您申请的教师身份（#{teacher_type}）审核通过!"
               else
-                result = [false, '审核出现意外!']
+                content = "您的教师角色变更为#{teacher_type}!"
               end
-            elsif status == '0'
-              if audit_role.destroy
-                result = [true, '审核成功']
-                Notification.create(user_id: audit_role.user_id, message_type: 0, content: '您申请的老师身份审核未通过!')
-              else
-                result = [false, '审核出现意外!']
-              end
+              Notification.create(user_id: audit_role.user_id, message_type: 0, content: content)
             else
-              result = [false, '请选择审核结果!']
+              result = [false, '审核出现意外!']
+            end
+          elsif status == '0'
+            if audit_role.destroy
+              result = [true, '审核成功']
+              Notification.create(user_id: audit_role.user_id, message_type: 0, content: '您申请的老师身份审核未通过!')
+            else
+              result = [false, '审核出现意外!']
             end
           else
-            result = [false, '您没有权限审核该角色!']
+            result = [false, '请选择审核结果!']
           end
-          audit_role.update_attributes(role_type: role_type)
         else
-          result = [false, '该角色不是待审核状态']
+          result = [false, '您没有权限审核该角色!']
         end
+        audit_role.update_attributes(role_type: role_type)
       else
         result = [false, '对象不存在']
       end
       render json: {status: result[0], message: result[1]}
     else
-      @teachers = UserRole.left_join_u_p.left_joins(:school).where(role_id: 1, role_type: [3, 5, 6], status: 0).select('user_roles.*', 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
+      @teachers = UserRole.left_join_u_p.left_joins(:school).where(role_id: 1, role_type: [3, 5, 6], status: 0, district_id: @district_teacher_role.district_id).select('user_roles.*', 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
     end
   end
 
@@ -775,7 +792,47 @@ class UserController < ApplicationController
   end
 
   def hacker_audit
-    @hackers = UserRole.joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').joins(:school).where(role_type: 2, status: 0).select('user_roles.*', 'u_p.username', 'schools.name as school_name')
+    if request.method == 'POST'
+      user_role_id = params[:id]
+      status = params[:status]
+      if user_role_id.present? && status.in?(%w(0 1))
+        user_role = UserRole.find_by_id(user_role_id)
+        if user_role.present? && (user_role.status == 0)
+          if UserRole.user_role_info([@district_teacher_role.id, user_role.id]).uniq.length == 1
+            if status == '1'
+              is_ok = user_role.update(status: 1)
+            else
+              is_ok = user_role.destroy
+            end
+            if is_ok
+              result = [true, '审核成功，结果将消息告知用户']
+              Notification.create(user_id: user_role.user_id, message_type: 0, content: "您申请的创客身份审核#{status=='1' ? '通过' : '未通过'}")
+            else
+              result = [false, '审核失败']
+            end
+          else
+            result = [false, '您没有权限']
+          end
+        else
+          result = [false, '该对象不存在或已被审核']
+        end
+      else
+        result = [false, '参数不规范']
+      end
+      render json: {status: result[0], message: result[1]}
+    else
+      @hackers = UserRole.joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').joins(:school).joins('left join districts d on d.id = schools.district_id').where(role_id: 2, status: 0).select(:id, :role_type, 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
+    end
+  end
+
+  def hacker_info
+    user_role_id = params[:id]
+    user_role = UserRole.find(user_role_id)
+    if UserRole.user_role_info([@district_teacher_role.id, user_role.id]).uniq.length == 1
+      @hacker_info = {role: user_role, profile: user_role.user_profile, family: user_role.user_family, hacker: user_role.user_hacker}
+    else
+      render_optional_error(403)
+    end
   end
 
 
@@ -892,6 +949,10 @@ class UserController < ApplicationController
     unless @user
       render_optional_error(404)
     end
+  end
+
+  def current_roles
+    @current_roles = current_user.user_roles.where(role_id: [1, 2]).pluck(:role_id, :status, :role_type)
   end
 
   def user_profile_params

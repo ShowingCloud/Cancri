@@ -339,3 +339,6 @@ zh-CN:
      create_with: '推荐组织'
      situation: '形式'
      partake: '参与'
+     student_code: '学籍号'
+     desc: '描述'
+     cover: '文件'

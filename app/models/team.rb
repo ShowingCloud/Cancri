@@ -12,7 +12,7 @@ class Team < ApplicationRecord
   # validates :name, presence: true, length: {in: 2..5}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '队伍名称只能包含中文、数字、字母、下划线'}, uniqueness: {scope: :event_id, message: '同一个项目的队伍名称不能重复'}
   validates :user_id, presence: true
   validates :status, presence: true
-  validates :district_id, presence: true
+  # validates :district_id, presence: true
   validates :group, presence: true, length: {is: 1}
   validates :event_id, presence: true, uniqueness: {scope: :user_id, message: '一个用户不能报名一个项目两次'}
   validates :teacher, presence: true #, format: {with: /\A[\u4e00-\u9fa5]{2,10}\Z/i, message: '只能包含2-10位中文'}
@@ -24,9 +24,12 @@ class Team < ApplicationRecord
   protected
 
   def notify_after_status_update
-    status_change = attribute_previous_change(:status)
-    if status_change.present? && status_change !=[0, 2]
-      NotifyJob.perform_async(id, identifier, user_id, players, status_change)
+    # status_change = attribute_previous_change(:status)
+    # if status_change.present? && status_change !=[0, 2]
+    #   NotifyJob.perform_async(id, identifier, user_id, players, status_change)
+    # end
+    if status_changed? && status_change == [0, 2]
+      NotifyJob.perform_async(id, identifier, user_id, players, [0, 2])
     end
   end
 

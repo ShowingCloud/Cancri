@@ -1,0 +1,52 @@
+<div id="main" class="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container" id="user-notification">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @opus.present? %>
+            <div class="row course-opus teacher">
+              <% @opus.each do |opus| %>
+                  <%= content_tag :div, class: "col-xs-4 text-center opus-item",:data => {url: opus.cover_url(:large),id: opus.id, desc: opus.desc} do %>
+                    <p>
+                      <input type="checkbox" value="<%= opus.id %>" class="hidden">
+                      <%= image_tag(opus.cover_url(:middle)) %>
+                    </p>
+                    <div class="name"><%= opus.name %></div>
+                  <% end %>
+              <% end %>
+            </div>
+            <nav>
+              <%= paginate @opus %>
+            </nav>
+            <% else %>
+                <p> 暂无作品</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="teacherOpusViewer" class="modal fade" role="dialog" tabindex="-2">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="img-wrapper">
+          <img src="" alt="opus-preview" id="preview">
+        </div>
+        <br>
+        <p id="desc"></p>
+      </div>
+
+    </div>
+  </div>
+</div>

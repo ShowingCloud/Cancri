@@ -11,7 +11,7 @@
           <div class="sub-content">
             <% if @teachers.present? %>
 
-                <table>
+                <table class="table vertical-align-middle">
                   <thead>
                   <tr>
                     <th>姓名</th>
@@ -22,21 +22,22 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
+
                     <% @teachers.each do |teacher| %>
+                      <tr>
                         <input id="teacher_role_id" value="<%= teacher.id %>" type="hidden"/>
                         <td><%= teacher.username %></td>
                         <td><%= teacher.school_name %></td>
                         <td><%= teacher.desc %></td>
-                        <td><%= show_teacher_type(teacher.role_type) %></td>
+                        <td><%= show_teacher_role(teacher.role_type) %></td>
                         <td>
-                          <a class="btn btn-primary audit">审核</a>
+                          <%=  link_to "审核", user_teacher_audit_path(role_type: teacher.role_type, status: 1, id: teacher.id), :class =>"btn btn-primary", :id => "teacher-audit", :data => { :role_type => teacher.role_type} %>
                         </td>
+                      </tr>
                     <% end %>
                     <nav>
                       <%= paginate @teachers %>
                     </nav>
-                  </tr>
                   </tbody>
                 </table>
 
@@ -45,6 +46,28 @@
             <% end %>
           </div>
         </div>
+      </div>
+    </div>
+    <div id="teacher-audit-modal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content text-center">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">审核</h4>
+          </div>
+          <div class="modal-body">
+            <h4>选择身份</h4>
+            <select id="teacher_role">
+              <option value="6">外聘校级普通</option>
+              <option value="5">在编校级普通</option>
+              <option value="3">在编校级高级</option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button id="submit-teacher-role" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

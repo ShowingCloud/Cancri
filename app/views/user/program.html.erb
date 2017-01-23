@@ -16,9 +16,9 @@
                   <tr>
                     <th>姓名</th>
                     <th>手机</th>
-                    <th>区县</th>
                     <th>学校</th>
                     <th>年级</th>
+                    <th>上传作品数</th>
                     <th>评分详情</th>
                     <th>成绩</th>
                   </tr>
@@ -28,9 +28,9 @@
                       <tr>
                         <td><%= c.username %></td>
                         <td><%= c.mobile %></td>
-                        <td><%= c.district_name %></td>
                         <td><%= c.school_name %></td>
                         <td><%= c.grade %></td>
+                        <td><%= c.opus_count %></td>
                         <td>
                           <% if @course_score_attrs.length > 0 %>
                               <div class="course-score-attrs-list">
@@ -124,4 +124,3 @@
     </div>
   </div>
 </div>
-

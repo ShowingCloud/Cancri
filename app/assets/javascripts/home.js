@@ -18,9 +18,11 @@ $(function() {
                     });
                 } else {
                     $self.css({
-                        "background-image": "url(" + default_src + ")"
+                        // "background-image": "url(" + default_src + ")"
+                        "background-image": ""
                     }); //default image
                 }
+
                 lazyload.loading($self, $self.attr('data-src'));
             });
         },
@@ -126,7 +128,7 @@ $(function() {
         var school_district_id = document.getElementById("change_district_id").value;
         if (district_id != school_district_id) {
             $(".select-user-school").text('请选择学校');
-            document.getElementById("user_profile_school_id").value = null;
+            $("#user_profile_school_id").val(null).change();
         }
     });
 
@@ -200,7 +202,7 @@ $(function() {
         var _self = $(this);
         var selected_district = _self.find("option:selected");
         var district_id = _self.val();
-        console.log("district_id:"+district_id);
+        //console.log("district_id:"+district_id);
         var province_name = selected_district.attr('data-province');
         var city_name = selected_district.attr('data-city');
         var district_name = selected_district.text();
@@ -245,7 +247,7 @@ $(function() {
         var school_name = select_user_school.find("option:selected").text();
         if (district_id > 0 && school_id > 0) {
             document.getElementById("user_profile_district_id").value = district_id;
-            document.getElementById("user_profile_school_id").value = school_id;
+            $("#user_profile_school_id").val(school_id).change();
             document.getElementById("change_district_id").value = district_id;
             $('.select-user-school').text(school_name);
             $("#select-school-modal").modal('hide');
@@ -276,7 +278,7 @@ $(function() {
         event.preventDefault();
         var cookie = $.cookie('lesson-selected');
         if (typeof cookie == 'string') {
-            console.log(cookie);
+            //console.log(cookie);
             if (cookie == 'null' || cookie == '[]') {
                 alert_r('请先选择课程！');
             } else {
@@ -538,7 +540,7 @@ $(function() {
     if ($('.add-school').length > 0) {
         $('.add-school').off('click').on('click', function() {
             var dis = $('#district-select').val();
-            console.log(dis);
+            //console.log(dis);
             if (typeof dis != 'string' || dis.length < 1 || dis == '0' || dis == 0) {
                 alert_r('请选择区县！');
             } else {
@@ -551,22 +553,29 @@ $(function() {
         var thumb = $('#demeanor-photo').find('.thumb');
         thumb.on('click', function(event) {
             event.preventDefault();
-            var height = this.naturalHeight;
-            var width = this.naturalWidth;
-            for (var i = 1; i < 10; i += 0.01) {
-                if (height <= 550 && width <= 1000) {
-                    var src = $(this).attr('src');
-                    var win = $('#thumb-win');
-                    var img = win.find('.inner-img');
-                    img.height(height);
-                    img.width(width);
-                    lazyload.loading(img, src);
-                    win.modal('show');
-                    break;
-                }
-                height = height * (1.0 / i);
-                width = width * (1.0 / i);
-            }
+            var window_width = $(window).width();
+            var window_height = $(window).height();
+            var src = $(this).data('url');
+            var win = $('#thumb-win');
+            var img = win.find('.inner-img');
+            img.attr('src',src).css({'max-width': window_width * 0.8,'max-height':window_height * 0.8});
+            win.modal('show');
+            // var height = this.naturalHeight;
+            // var width = this.naturalWidth;
+            // for (var i = 1; i < 10; i += 0.01) {
+            //     if (height <= 550 && width <= 1000) {
+            //         var src = $(this).attr('src');
+            //         var win = $('#thumb-win');
+            //         var img = win.find('.inner-img');
+            //         img.height(height);
+            //         img.width(width);
+            //         lazyload.loading(img, src);
+            //         win.modal('show');
+            //         break;
+            //     }
+            //     height = height * (1.0 / i);
+            //     width = width * (1.0 / i);
+            // }
         });
     }
     if ($('#demeanor-video').length > 0) {
@@ -628,7 +637,7 @@ $(function() {
     $('.control-idc').on('change', function(event) {
         event.preventDefault();
         var v = $(this).val();
-        console.log(v);
+        //console.log(v);
         if (v >= 10) {
             $('.idc-form').removeClass('hide');
         }
@@ -918,23 +927,124 @@ $(function() {
     }
 
     function role_form_switch(role){
+      var mobile = $("#user-mobile").val();
       if(role == "1"){
         $(".only-role1").removeClass("hidden");
         $(".only-role2").addClass("hidden");
       }else{
-        var mobile = $("#user-mobile").text();
         if(!mobile.length){
           alert_r("请先去认证手机号",function(){
             window.location = '/user/mobile';
           });
           return;
-        }else{
-          $("#user_family_mobile").val(mobile);
         }
         $(".only-role2").removeClass("hidden");
         $(".only-role1").addClass("hidden");
       }
     }
+
+    //老师创客身份审核
+    $("#hacker-audit").click(function(e){
+      e.preventDefault();
+      $.ajax({
+        url: $(this).attr('href'),
+        type: 'post',
+        success: function(data){
+          if(data.message) alert_r(data.message,function(){
+            if(data.status === true) window.location.replace("/user/hacker_audit");
+          });
+        },
+        error:function(data){
+          //console.log(data);
+        }
+      });
+    });
+    $("#teacher-audit").click(function(e){
+      e.preventDefault();
+      var url = $(this).attr('href');
+      var role_type = $(this).data('role_type');
+      $("#teacher-audit-modal").modal();
+      $("#submit-teacher-role").off('click').click(
+        function(){
+          $.ajax({
+            url: url,
+            type: 'post',
+            success: function(data){
+              if(data.message) alert_r(data.message,function(){
+                if(data.status === true) window.location.replace("/user/teacher_audit");
+              });
+            },
+            error:function(data){
+              //console.log(data);
+            }
+          });
+        }
+      );
+
+    });
+
+    // 修改老师信息
+
+    function teacher_edit_save($ele){
+      var tr = $ele.parents('tr');
+      var role_type_select = tr.find('.role-type-select');
+      var school_id = tr.find('.school-name').data("id");
+      var role_type = role_type_select.val();
+      if(role_type == $ele.data("role-type")){
+        alert_r('请修改后再保存');
+      }else{
+        var post_data = {role_type: role_type};
+        if(school_id){
+          post_data.school_id = school_id;
+        }
+
+        $.ajax({
+          url: $ele.data("url"),
+          data: post_data,
+          type: 'post',
+          success: function(data){
+            if(data.message) {
+              alert_r(data.message);
+            }
+            if(data.status === true){
+              tr.find('.role-type').removeClass('hidden').text(role_type_select.find('option:selected').html());
+              role_type_select.remove();
+              $ele.text("修改").off('click').click(function(){
+                teacher_edit_click($(this));
+              });
+            }
+          },
+          error:function(data){
+            //console.log(data);
+            alert_r('提交失败');
+          }
+        });
+      }
+    }
+
+    function teacher_edit_click($ele){
+      var tr = $ele.parents('tr');
+      tr.find('.role-type').after('<select class="role-type-select"><option value="6">外聘校级普通</option><option value="5">在编校级普通</option><option value="3">在编校级高级</option></select>').addClass('hidden');
+      $(".role-type-select").val($ele.data("role-type"));
+      tr.find('.school-name').addClass('underline').click(function(){
+        $("#teacher-edit-table .school-name").removeClass('active');
+        $(this).addClass('active');
+        $("#select-school-modal").modal();
+      });
+      $ele.text("保存").off('click').click(function(){
+        teacher_edit_save($(this));
+      });
+    }
+    if($("#teacher-edit-table").length){
+      $("#user_profile_school_id").change(function(){
+        var id =$(this).val();
+        $('.school-name.active').data("id",id);
+      });
+    }
+
+    $(".teacher-edit").click(function(){
+      teacher_edit_click($(this));
+    });
 
     //参赛学生列表
 
@@ -1092,7 +1202,7 @@ $(function() {
                     }
                 });
 
-                console.log(arr);
+                //console.log(arr);
 
                 var url = '/competitions/district_submit_teams';
                 var option = {
@@ -1252,7 +1362,7 @@ $(function() {
                 var page_count;
                 if (total_count > page_size) {
                     page_count = Math.ceil(total_count / page_size);
-                    console.log("page_count:" + page_count);
+                    //console.log("page_count:" + page_count);
                     var current_page = page_num || 1;
                     var prev_page = $('<li><a href="#" data-page="' + (parseInt(current_page) - 1) + '">上一页</a></li>');
                     var next_page = $('<li><a href="#" data-page="' + (parseInt(current_page) + 1) + '">下一页</a></li>');
@@ -1277,13 +1387,13 @@ $(function() {
                     $(".pager a").click(function(e) {
                         e.preventDefault();
                         var target_page = $(this).data("page");
-                        console.log(target_page);
+                        //console.log(target_page);
                         student_control_handle(com, ed, status, _space, s_id, target_page);
                     });
 
                     $('.pager select').on('change', function() {
                         var target_page = $(this).val();
-                        console.log(target_page);
+                        //console.log(target_page);
                         student_control_handle(com, ed, status, _space, s_id, target_page);
                     });
 

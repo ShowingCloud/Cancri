@@ -169,6 +169,13 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :users do
+        collection do
+          post :upload_course_opus
+          post :delete_course_opus
+          post :update_course_opus
+        end
+      end
       resources :competitions do
         collection do
           get :get_events
@@ -250,6 +257,8 @@ Rails.application.routes.draw do
   get '/user/get_competitions' => 'user#get_competitions', as: 'user_get_competitions'
   match '/user/programs' => 'user#programs', as: 'user_programs', via: [:get]
   match '/user/programs/:id' => 'user#program', via: [:get]
+  get '/user/course_opus/:id' => 'user#course_opus', as: 'user_course_opus'
+  get '/user/course_stu_opus/:id' => 'user#course_stu_opus', as: 'user_course_stu_opus'
   post 'user/course_score' => 'user#course_score', as: 'user_course_score'
   match 'user/create_program' => 'user#create_program', as: 'user_create_program', via: [:get, :post]
   match 'user/program_se/:id' => 'user#program_se', as: 'user_program_se', via: [:get, :post]
@@ -262,7 +271,9 @@ Rails.application.routes.draw do
   get 'user/hacker_apply', to: 'user#hacker_apply', as: 'user_hacker_apply'
   post 'user/hacker_apply_post', to: 'user#hacker_apply_post', as: 'user_hacker_apply_post'
   match 'user/teacher_audit', to: 'user#teacher_audit', as: 'user_teacher_audit', via: [:get, :post]
-  get 'user/hacker_audit', to: 'user#hacker_audit', as: 'user_hacker_audit'
+  get 'user/teachers', to: 'user#teachers', as: 'user_teachers'
+  match 'user/hacker_audit', to: 'user#hacker_audit', as: 'user_hacker_audit', via: [:get, :post]
+  get 'user/hacker_info/:id', to: 'user#hacker_info', as: 'user_hacker_info'
   # get 'user/join_voucher', to: 'user#join_voucher'
   # get 'user/export_voucher', to: 'user#export_voucher'
   mount ActionCable.server => '/cable'

@@ -70,7 +70,7 @@ class Admin::ChecksController < AdminController
   end
 
   def teacher_list
-    @teachers = UserProfile.joins(:user_roles, :school).where('user_roles.role_id=?', 1).where('user_roles.status=?', 1).select(:id, :user_id, :username, :gender, :certificate, :school_id, 'schools.name as school_name', :mobile, :teacher_no, 'user_roles.role_type').page(params[:page]).per(params[:per])
+    @teachers = UserProfile.joins(:user).joins('inner join user_roles on user_roles.user_id = user_profiles.user_id').joins(:school).where('user_roles.role_id=?', 1).where('user_roles.status=?', 1).select(:id, :user_id, :username, :gender, :certificate, :school_id, 'schools.name as school_name', 'users.mobile', :teacher_no, 'user_roles.role_type').page(params[:page]).per(params[:per])
     @teacher_array = @teachers.map { |c| {
         id: c.id,
         user_id: c.user_id,

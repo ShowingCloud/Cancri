@@ -1,7 +1,7 @@
 <% @action_preview_array = ['preview', 'profile'] %>
 <% @action_notify_array = ['notification', 'notify_show'] %>
 <% @action_apply_array = ['apply', 'programs', 'program', 'create_program', 'program_se'] %>
-<% @action_student_manage = ['student_manage', 'comp_student'] %>
+<% @action_project_manage = ['student_manage', 'comp_student', 'teacher_audit', 'teachers', 'hacker_audit'] %>
 <% @action_stu_info = ['competitions', 'courses', 'activities'] %>
 <% @action_security = ['security', 'email', 'reset_email', 'mobile', 'passwd', 'reset_mobile'] %>
 <% @action_role_apple_array = ['role_apply', 'hacker_apply_post', 'hacker_apply'] %>
@@ -17,8 +17,15 @@
     </div>
     <div class="username">
       <%= current_user.nickname %>
-      <!-- <i class="user-icon teacher-icon"></i>
-      <i class="user-icon maker-icon"></i> -->
+      <% if @current_roles.present? %>
+          <% @current_roles.each do |role| %>
+              <% if role[0] == 1 && role[1] != 0 %>
+                  <i class="user-icon teacher-icon"></i>
+              <% elsif role[0] == 2 %>
+                <i class="user-icon maker-icon"></i>
+              <% end %>
+          <% end %>
+      <% end %>
     </div>
   </div>
   <% is_teacher = has_teacher_role %>
@@ -50,7 +57,7 @@
     <a href="<%= is_teacher ? user_student_manage_path : '/user/competitions' %>">
       <div class="sidebar-item <%= 'active' if @action_stu_info.include?(action_name) %>">
         <i class="glyphicon glyphicon-cog"></i>
-        <%= is_teacher ? '学生管理' : '个人管理' %>
+        <%= is_teacher ? '成员管理' : '个人管理' %>
       </div>
     </a>
     <a href="<%= user_notification_path %>">
