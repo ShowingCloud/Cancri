@@ -684,11 +684,7 @@ class UserController < ApplicationController
       result = [false, user_profile.errors.full_messages[0]]
     end
     flash[:notice] = result[1]
-    if result[0]
-      redirect_to '/user/role_apply'
-    else
-      render '/user/role_apply'
-    end
+    redirect_to '/user/role_apply'
   end
 
   def hacker_apply

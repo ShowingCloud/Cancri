@@ -66,7 +66,7 @@ class Admin::ChecksController < AdminController
     else
       result = [false, ' 数据不规范 ']
     end
-    render json: results
+    render json: result
   end
 
   def teacher_list
