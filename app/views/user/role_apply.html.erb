@@ -26,6 +26,10 @@
                       级别：
                       <% case u_r.role_type when 1 %>
                           市级
+                      <% when 2 %>
+                          区级（负责人）
+                      <% when 3 %>
+                          校级（负责人）
                       <% when 4 %>
                           区级
                       <% when 5 %>
@@ -44,7 +48,7 @@
               <% end %>
               <div class="role_form <%= 'hidden' if @user_roles.present? %>">
                 <select id="teacher_role_type">
-                  <option value="zb" <%= 'selected="selected"' if [5,4,1].include? @user_roles[0].try(:role_type) %> >在编教师</option>
+                  <option value="zb" <%= 'selected="selected"' if [5,4,3,2,1].include? @user_roles[0].try(:role_type) %> >在编教师</option>
                   <option value="wp" <%= 'selected="selected"' if @user_roles[0].try(:role_type) == 6 %> >外聘教师</option>
                 </select>
                 <p>校内老师请认证为在编教师，否则无法通过</p>
