@@ -7,7 +7,7 @@ class UserController < ApplicationController
 
   # 个人信息概览
   def preview
-    @user_info = User.joins('left join user_profiles u_p on u_p.user_id = users.id').joins('left join schools s on s.id = u_p.school_id').where(id: current_user.id).select(:email, :mobile, 'u_p.username as name', 'u_p.gender', 'u_p.grade', 'u_p.bj', 'u_p.roles as role', 'u_p.birthday', 's.name as school', 'u_p.address').take
+    @user_info = User.joins('left join user_profiles u_p on u_p.user_id = users.id').joins('left join schools s on s.id = u_p.school_id').where(id: current_user.id).select(:email, :mobile, 'u_p.username as name', 'u_p.gender', 'u_p.grade', 'u_p.bj', 'u_p.roles as role', 'u_p.birthday', 's.name as school', 'u_p.address', 'u_p.student_code', 'u_p.identity_card').take
   end
 
 
@@ -73,7 +73,7 @@ class UserController < ApplicationController
 
         if @user_profile.update_attributes(username: username, birthday: birthday, gender: gender, address: address, teacher_no: teacher_no, autograph: autograph, school_id: school_id, district_id: district_id, grade: grade, bj: bj, student_code: student_code, identity_card: identity_card)
           flash[:success] = '更新成功-'+message
-          redirect_to user_profile_path
+          redirect_to user_preview_path
         else
           flash[:error] = '更新失败-'+message
         end
@@ -683,7 +683,7 @@ class UserController < ApplicationController
     else
       result = [false, user_profile.errors.full_messages[0]]
     end
-    flash[:notice] = result[1]
+    flash[:error] = result[1]
     redirect_to '/user/role_apply'
   end
 
