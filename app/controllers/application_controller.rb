@@ -74,7 +74,10 @@ class ApplicationController < ActionController::Base
 
   def super_district_teacher
     return false if current_user.blank?
-    current_user.user_roles.where(role_id: 1, role_type: 2, status: 1).exists?
+    @district_teacher_role = current_user.user_roles.where(role_id: 1, role_type: 2, status: 1).take
+    unless @district_teacher_role.present?
+      render_optional_error(403)
+    end
   end
 
   def the_course_teacher(course_id)
