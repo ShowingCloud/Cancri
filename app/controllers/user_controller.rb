@@ -782,7 +782,7 @@ class UserController < ApplicationController
       end
       render json: {status: result[0], message: result[1]}
     else
-      @teachers = UserRole.left_join_u_p.left_joins(:school).where(role_id: 1, role_type: [3, 5, 6], status: 0).select('user_roles.*', 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
+      @teachers = UserRole.left_join_u_p.left_joins(:school).where(role_id: 1, role_type: [3, 5, 6], status: 0, district_id: @district_teacher_role.district_id).select('user_roles.*', 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
     end
   end
 

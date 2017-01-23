@@ -18,9 +18,16 @@ class UserRole < ApplicationRecord
   validates :role_type, uniqueness: {scope: :district_id, message: '该区县已有该角色老师'}, if: :role_type_2?, on: :update
 
   after_update_commit :update_school_teacher_role
+  before_save :update_district_id
   mount_uploader :cover, CoverUploader
 
   private
+
+  def update_district_id
+    if district_id.nil? || school_id_changed?
+      self.district_id = self.school.district_id
+    end
+  end
 
   def update_school_teacher_role
     if role_type == 3

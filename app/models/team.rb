@@ -24,9 +24,12 @@ class Team < ApplicationRecord
   protected
 
   def notify_after_status_update
-    status_change = attribute_previous_change(:status)
-    if status_change.present? && status_change !=[0, 2]
-      NotifyJob.perform_async(id, identifier, user_id, players, status_change)
+    # status_change = attribute_previous_change(:status)
+    # if status_change.present? && status_change !=[0, 2]
+    #   NotifyJob.perform_async(id, identifier, user_id, players, status_change)
+    # end
+    if status_changed? && status_change == [0, 2]
+      NotifyJob.perform_async(id, identifier, user_id, players, [0, 2])
     end
   end
 
