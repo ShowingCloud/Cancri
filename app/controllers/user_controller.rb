@@ -748,7 +748,7 @@ class UserController < ApplicationController
       user_role_id = params[:id]
       audit_role = UserRole.where(id: user_role_id).take
       if audit_role.present?
-        if current_user.user_roles.where(role_id: 1, role_type: 1, status: 1).exists? || UserRole.user_role_info([current_user.id, audit_role.user_id]).uniq.length == 1
+        if current_user.user_roles.where(role_id: 1, role_type: 1, status: 1).exists? || audit_role.district_id == @district_teacher_role.district_id
           if status == '1'
             origin_status = audit_role.status
             if audit_role.update_attributes(status: 1, role_type: role_type)
@@ -821,7 +821,7 @@ class UserController < ApplicationController
       end
       render json: {status: result[0], message: result[1]}
     else
-      @hackers = UserRole.joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').joins(:school).joins('left join districts d on d.id = schools.district_id').where(role_id: 2, status: 0).select(:id, :role_type, 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
+      @hackers = UserRole.joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').joins(:school).where(role_id: 2, status: 0, district_id: @district_teacher_role.district_id).select(:id, :role_type, 'u_p.username', 'schools.name as school_name').page(params[:page]).per(params[:per])
     end
   end
 

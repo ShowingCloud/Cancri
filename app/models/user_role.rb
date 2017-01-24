@@ -8,7 +8,7 @@ class UserRole < ApplicationRecord
   has_one :user_hacker, :dependent => :destroy
   scope :left_join_u_p, -> { joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id') }
   scope :left_join_s_d, -> { joins('left join schools s on s.id = user_roles.school_id').joins('left join districts d on d.id = s.district_id') }
-  scope :user_role_info, ->(user_ids) { left_join_s_d.where(user_id: user_ids).pluck('d.id as district_id') }
+  scope :user_role_info, ->(ids) { left_join_s_d.where(id: ids).pluck('d.id as district_id') }
   validates :status, inclusion: [0, 1, 2]
   validates :role_id, inclusion: [1, 2]
   validates :school_id, presence: true, numericality: {:greater_than => 0, message: '参数不规范'}
