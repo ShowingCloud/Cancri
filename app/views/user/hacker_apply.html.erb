@@ -80,20 +80,20 @@
                     <input id="hacker_type" name="hacker_type" type="hidden" value="<%= @hacker[:role_type] || 1 %>" />
                     <div style="border:1px solid white;border-radius: 15px;padding:15px">
                       基本信息：
-                      <div class="form-group">
+                      <div class="form-group required">
                         <label class="control-label col-sm-2" for="user_profile[username]">姓名</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control" id="user_profile[username]" name="user_profile[username]" value="<%= hacker_profile[:username] %>">
                         </div>
                       </div>
-                      <%= f.input :gender , input_html: { name: 'user_profile[gender]' } , label_html: { class: 'col-sm-2' }, as: :radio_buttons, :collection => [ ['男', '1'], ['女', '2'] ], :checked => current_user.user_profile.try(:gender), :item_wrapper_class => 'radio-inline' %>
-                      <div class="form-group">
+                      <%= f.input :gender , :wrapper_html => { class: 'required' }, input_html: { name: 'user_profile[gender]' } , label_html: { class: 'col-sm-2' }, as: :radio_buttons, :collection => [ ['男', '1'], ['女', '2'] ], :checked => current_user.user_profile.try(:gender), :item_wrapper_class => 'radio-inline' %>
+                      <div class="form-group required">
                         <label class="control-label col-sm-2" for="user_profile[birthday]">生日</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control" id="user_profile_birthday" name="user_profile[birthday]" value="<%= hacker_profile[:birthday] %>">
                         </div>
                       </div>
-                      <div class="form-group only-role1">
+                      <div class="form-group only-role1 required">
                         <label class="control-label col-sm-2" for="user_school_id">学校</label>
                         <div class="col-sm-10">
                           <input type="hidden" id="user_profile_district_id" />
@@ -102,13 +102,13 @@
                           <span><a href="#select-school-modal" role="button" class="select-user-school" data-toggle="modal"><%= current_user.user_profile.try(:school_id).present? ? current_user.user_profile.school.try(:name) : '选择学校' %></a></span>
                         </div>
                       </div>
-                      <div class="form-group only-role2">
+                      <div class="form-group only-role2 required">
                         <label class="control-label col-sm-2" for="user_profile[address]">单位地址</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control" id="user_profile_address" name="user_profile[address]" value="<%= hacker_profile[:address] %>">
                         </div>
                       </div>
-                      <div class="form-group only-role2">
+                      <div class="form-group only-role2 required">
                         <label class="control-label col-sm-2" for="user_profile[position]">职称</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control" id="user_profile_position" name="user_profile[position]" value="<%= hacker_profile[:position] %>">
@@ -118,7 +118,7 @@
                     <br>
                     <div style="border:1px solid white;border-radius: 15px;padding:15px">
                       家庭信息：
-                      <div class="form-group only-role1">
+                      <div class="form-group only-role1 required">
                         <label class="control-label col-sm-2" for="user_family[father_name]">父亲姓名</label>
                         <div class="col-sm-3">
                           <input type="text" class="form-control" id="user_family[father_name]" name="user_family[father_name]" value="<%= hacker_family[:father_name] %>">
@@ -128,24 +128,26 @@
                           <input type="text" class="form-control" id="user_family[mother_name]" name="user_family[mother_name]" value="<%= hacker_family[:mother_name] %>">
                         </div>
                       </div>
-                      <div class="form-group only-role1">
+                      <div class="form-group only-role1 required">
                         <label class="control-label col-sm-2" for="user_family[parent_mobile]">家长手机</label>
                         <div class="col-sm-3">
                           <input type="text" class="form-control" id="user_family_mobile" name="user_family[parent_mobile]" value="<%= hacker_family[:parent_mobile] %>">
                         </div>
                       </div>
-                      <div class="form-group only-role2 hidden">
+                      <div class="form-group only-role2 hidden required">
                         <label class="control-label col-sm-2" for="user_mobile">手机</label>
                         <div class="col-sm-3">
                           <input type="text" class="form-control" id="user-mobile" value="<%= current_user.try(:mobile) %>">
                         </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group required">
                         <label class="control-label col-sm-2" for="user_family[address]">家庭住址</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control" id="user_family[address]" name="user_family[address]" value="<%= hacker_family[:address] %>">
                         </div>
                       </div>
+                      <fieldset class="required_one">
+                      <legend>微信，QQ，邮箱三选一</legend>
                       <div class="form-group">
                         <label class="control-label col-sm-2 only-role1" for="user_family[wx]">家长微信</label>
                         <label class="control-label col-sm-2 only-role2 hidden" for="user_family[wx]">微信</label>
@@ -165,30 +167,31 @@
                           <input type="text" class="form-control" id="user_family[email]" name="user_family[email]" value="<%= hacker_family[:email] %>">
                         </div>
                       </div>
+                      </fieldset>
                     </div>
                     <br>
 
                     <div style="border:1px solid white;border-radius: 15px;padding:15px">
                       创建情况：
-                      <div class="form-group">
+                      <div class="form-group required">
                         <label class="control-label col-sm-2" for="hacker[create_date]">创建时间</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control" id="hacker[create_date]" name="hacker[create_date]" value="<%= hacker[:create_date] %>">
                         </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group required">
                         <label class="control-label col-sm-2" for="hacker[square]">面积（平米）</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control" id="hacker[square]" name="hacker[square]" value="<%= hacker[:square] %>">
                         </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group required">
                         <label class="control-label col-sm-2" for="hacker[situation]">形式</label>
                         <div class="col-sm-10">
                           <%= select_tag "hacker[situation]", options_for_select({ "专用工作台" => "1", "专用工作间" => "2" }, hacker[:situation].to_s ),:class=>"form-control" %>
                         </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group required">
                         <label class="control-label col-sm-2" for="hacker[partake]">参与</label>
                         <div class="col-sm-10">
                           <%= select_tag "hacker[partake]", options_for_select({ "以孩子为主" => "1", "以家长为主" => "2", "以亲子为主" => "3" }, hacker[:partake].to_s ),:class=>"form-control" %>
@@ -200,13 +203,13 @@
                           <input type="text" class="form-control" id="hacker[active_weekly]" name="hacker[active_weekly]" value="<%= hacker[:active_weekly] %>">
                         </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group required">
                         <label class="control-label col-sm-2" for="hacker[family_hobbies]">爱好</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control" id="hacker[family_hobbies]" name="hacker[family_hobbies]" value="<%= hacker[:family_hobbies] %>">
                         </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group required">
                         <label class="control-label col-sm-2" for="hacker[create_way]">推荐</label>
                         <div class="col-sm-2">
                           <%= select_tag "hacker[create_way]", options_for_select({ "自荐" => "1", "联合体" => "2", "学校" => "3", "个人" => "4" }, hacker[:create_way].to_s ),:class=>"form-control" %>
@@ -220,7 +223,7 @@
                       </div>
 
                     <div class="form-actions">
-                      <%= f.submit class: 'btn btn-primary', value: '提交', 'data-disable-with' => '正在提交' %>
+                      <%= f.submit id:'hacker-apply-submit',class: 'btn btn-primary', value: '提交', 'data-disable-with' => '正在提交' %>
                       <% if params[:update] == 'true' %>
                           <a class="btn btn-danger" href="/user/hacker_apply">取消修改</a>
                       <% end %>

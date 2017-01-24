@@ -435,8 +435,8 @@ $(function() {
                 alert_r('请填写正确的姓名！');
                 return;
             }
-            var school = form.find('#school-id').val();
-            var district = form.find('#district-id').val();
+            var school = form.find('#user_profile_school_id').val();
+            var district = form.find('#user_profile_district_id').val();
             if (!school) {
                 alert_r('请选择学校');
                 return;
@@ -850,7 +850,7 @@ $(function() {
             event.preventDefault();
             var username = $('#username').val();
             var district_id = $('#district-id').val();
-            var school_id = $('#school-id').val();
+            var school_id = $('#user_profile_school_id').val();
             var birthday = $('#birthday').val();
             var grade = $('#grade').val();
             var mobile = $('#mobile').val();
@@ -882,6 +882,42 @@ $(function() {
     }
 
     //教师创客认证申请
+
+    $("#hacker-apply-submit").click(function(e){
+      e.preventDefault();
+      var form = $("#hacker_form");
+      var required = form.find(".required:not(.hidden) .form-control");
+      var required_one = form.find(".required_one:not(.hidden)");
+      var missed= [];
+      required.each(function(){
+        if(!$(this).val()){
+          if(!$(this).parents('.hidden').length){
+            missed.push(this);
+          }
+        }
+      });
+      required_one.each(function(){
+        var empty =true;
+        $(this).find('.form-control').each(function(){
+          if($(this).val()){
+            empty = false;
+          }
+        });
+        if(empty){
+          missed.push(this);
+        }
+      });
+      if(missed.length){
+        alert_r("表单未填写完整",function(){
+          $('html, body').animate({
+              scrollTop: $(missed[0]).offset().top
+          }, 500);
+        });
+      }else{
+        form.submit();
+      }
+    });
+
     $(".edit_role_btn").click(function(){
       $(".role_form").removeClass('hidden');
       $(this).parents(".user_role").addClass('hidden');
