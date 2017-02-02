@@ -2265,3 +2265,14 @@ select {
     height: 200px;
   }
 }
+
+.error-page{
+  background-image: image-url('pagebk.jpg');
+  color: #FFF;
+  min-height: 600px;
+  width: 100%;
+}
+
+.required .control-label::before{
+  content: "*";
+}

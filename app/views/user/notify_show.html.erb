@@ -10,10 +10,10 @@
           <%= render 'user/tab' %>
           <div class="sub-content">
             <% if @notification.present? %>
-                <% unless @notification.read %>
+                <% unless @notification.read == 1 %>
                     <% @notification.update_attributes(read: 1) %>
                 <% end %>
-                <%= @notification.content %>
+                <p class="notification"><%= @notification.content %></p>
                 <!-- 队长邀请队员 -->
                 <% if @notification.message_type == 1 %>
                     <% if @t_u.present? %>
@@ -186,4 +186,3 @@
     </div>
   </div>
 </div>
-

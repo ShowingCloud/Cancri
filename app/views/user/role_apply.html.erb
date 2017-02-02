@@ -29,7 +29,7 @@
                       <% when 2 %>
                           区级（负责人）
                       <% when 3 %>
-                          校级（负责人）
+                          校级（负责人)
                       <% when 4 %>
                           区级
                       <% when 5 %>
@@ -46,7 +46,7 @@
                   </div>
                 <% end %>
               <% end %>
-              <div class="role_form <%= 'hidden' if @user_roles.present? %>">
+              <div class="role_form <%= 'hidden' if @user_roles.length > 0 %>">
                 <select id="teacher_role_type">
                   <option value="zb" <%= 'selected="selected"' if [5,4,3,2,1].include? @user_roles[0].try(:role_type) %> >在编教师</option>
                   <option value="wp" <%= 'selected="selected"' if @user_roles[0].try(:role_type) == 6 %> >外聘教师</option>
