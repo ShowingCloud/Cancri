@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   resources :courses
   resources :competitions, only: [:index, :show] do
     collection do
+      get :apply_process
       get :apply_event
       post :already_apply
       post :update_user_info

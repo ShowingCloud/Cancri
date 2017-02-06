@@ -1,10 +1,9 @@
 <div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
   <div class="container" id="comp-list">
-
     <div class="competition-top">
       <div class="pull-right">
         <a class="btn btn-robodou" id="user-info-btn">选手信息</a>
-        <a class="btn btn-robodou" id="apply-flow-btn">报名流程</a>
+        <%= link_to "报名流程", apply_process_competitions_path, id: "apply-flow-btn", class: "btn btn-robodou" %>
       </div>
       <ul class="competition-steps clearfix">
         <li class="step-wrapper">
