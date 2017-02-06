@@ -2,6 +2,9 @@
   <div class="container" id="comp-list">
     <div class="top">
       比赛列表
+      <%= link_to apply_process_competitions_path do %>
+          报名流程
+      <% end %>
     </div>
     <div class="middle">
       <% @competitions.each do |c| %>

@@ -1,5 +1,5 @@
 class CompetitionsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show, :invite, :events]
+  before_action :authenticate_user!, except: [:index, :show, :invite, :events, :apply_process]
   before_action :set_competition, only: [:show]
 
   def index
@@ -18,9 +18,19 @@ class CompetitionsController < ApplicationController
   def show
   end
 
+  def apply_process
+
+  end
+
   def events
     @competition = Competition.find(params[:id])
-    @events = Event.where(competition_id: @competition.id, is_father: 0).page(params[:page]).per(params[:per])
+    if current_user
+      events = Event.joins("left join team_user_ships t_u on t_u.event_id = events.id and t_u.user_id = #{current_user.id}").where(competition_id: @competition.id, is_father: 0).select(:id, :name, :team_max_num, 't_u.status as apply_status')
+      @events = {already: events.having('apply_status != ?', nil), one: events.having('team_max_num = ?', 1), multiple: events.having('team_max_num > ?', 1)}
+    else
+      events = Event.where(competition_id: @competition.id, is_father: 0).select(:id, :name, :team_max_num)
+      @events = {one: events.having('team_max_num = ?', 1), multiple: events.having('team_max_num > ?', 1)}
+    end
   end
 
   def apply_event

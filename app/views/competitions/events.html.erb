@@ -3,20 +3,55 @@
     <div class="top">
       <%= @competition.name %>
     </div>
-    <% if @events.length>0 %>
+    <% if @events.is_a?(Hash) %>
         <div class="middle">
           <% if @competition.apply_end_time > Time.now %>
-              <div class="border-box">
-                <% @events.each do |e| %>
-                    <div class="event-item">
-                      <%= link_to "#{apply_event_competitions_path}?ed=#{e.id}", class: '' do %>
-                          <div class="item-box">
-                            <div class="item-title"><%= e.name %></div>
-                          </div>
+              <% already = @events[:already] %>
+              <% one = @events[:one] %>
+              <% multiple = @events[:multiple] %>
+              <% if 1==2 %>
+                  <div class="border-box">
+                    <% @events.each do |e| %>
+                        <div class="event-item">
+                          <%= link_to "#{apply_event_competitions_path}?ed=#{e.id}", class: '' do %>
+                              <div class="item-box">
+                                <div class="item-title"><%= e.name %>(<%= e.apply_status %>)</div>
+                              </div>
+                          <% end %>
+                        </div>
+                    <% end %>
+                  </div>
+              <% else %>
+                  <% if current_user %>
+                      已提交项目：
+                      <% if already.present? %>
+
+                          <% already.each do |apply_events| %>
+                              <%= apply_events.name %>
+                          <% end %>
+                      <% else %>
+                          您暂没有报名任何项目
                       <% end %>
-                    </div>
-                <% end %>
-              </div>
+                      <br>
+                  <% end %>
+
+
+                  <% if one.present? %>
+                      单人项目：
+                      <% one.each do |one_events| %>
+                          <%= one_events.name %>
+                      <% end %>
+                  <% end %>
+                  <br>
+
+                  <% if multiple.present? %>
+                      多人项目：
+                      <% multiple.each do |multiple_events| %>
+                          <%= multiple_events.name %>
+                      <% end %>
+                  <% end %>
+
+              <% end %>
           <% else %>
               <h3 class="text-center" style="color: white">已过报名时间</h3>
           <% end %>
@@ -24,10 +59,6 @@
     <% else %>
         <div class="tips">该比赛暂无项目</div>
     <% end %>
-    <div class="bottom">
-      <nav>
-        <%= paginate @events %>
-      </nav>
-    </div>
+
   </div>
 </div>
