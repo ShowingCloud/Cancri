@@ -447,7 +447,6 @@ function leader_submit_team(td) {
     }
 }
 
-<<<<<<< HEAD
 var competition_tips={
   status:{
     index:0
