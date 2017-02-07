@@ -1,5 +1,39 @@
-<div class="container">
-  <h2>报名流程</h2>
-  <button>单人报名流程</button>
-  <button>多人报名流程</button>
+<div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
+  <div class="container text-center">
+    <div id="competition-flow">
+      <h2>报名流程</h2>
+      <ul class="row">
+        <li class="col-md-6 active"><a class="btn btn-tab btn-lightblue" data-toggle="tab" href="#single-flow">单人报名流程</a></li>
+        <li class="col-md-6"><a class="btn btn-tab btn-lightblue" data-toggle="tab" href="#multi-flow">多人报名流程</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div id="single-flow" class="tab-pane fade active in">
+          <ol>
+            <li>报名前请详细阅读报名流程，避免产生不必要的误操作。</li>
+            <li>在赛事列表中，选择所要报名的比赛进入。未到报名时间和已截止的项目无法报名。</li>
+            <li>进入某一个比赛后，选择需要报名的项目，单人项目可以多选一起进行报名。</li>
+            <li>项目选择完毕后，需进行个人信息的更新确认，以保证信息无误。一旦提交后，信息将无法更改。</li>
+            <li>信息更新确认后，需提交报名。</li>
+            <li>只有你所报的项目状态都是【已提交】时，即流程进行到【step4-等待审核】才算正式完成报名。</li>
+            <li>提交报名后，需等待老师审核，一旦老师审核通过，即可开始下载参赛证，并于比赛规定时间前往指定地点参加比赛。</li>
+            <li>全部操作过程中，请勿频繁刷新以及过早关闭网页，确保所有流程都正常进行</li>
+          </ol>
+        </div>
+        <div id="multi-flow" class="tab-pane fade">
+          <ol>
+            <li>报名前请详细阅读报名流程，避免产生不必要的误操作。</li>
+            <li>在赛事列表中，选择所要报名的比赛进入。未到报名时间和已截止的项目无法报名。</li>
+            <li>进入某一个比赛后，选择需要报名的项目，多人项目需逐一进行报名。</li>
+            <li>选择项目创建新的队伍（创建队伍者即为队长），需进行个人信息的更新确认，以保证信息无误。一旦提交后，信息将无法更改。</li>
+            <li>信息更新确认后，可进行队伍管理，邀请已注册的队员加入和删除队员进行队伍调整。</li>
+            <li>队员可以通过搜索队伍编号，申请加入已有队伍并完善信息，待队长审核通过后即可加入。</li>
+            <li>待队员都加入，队伍信息更新确认后，队长需提交报名，否则视为未报名。</li>
+            <li>只有你所报的项目状态都是【已提交】时，即流程进行到【step4-等待审核】才算正式完成报名。</li>
+            <li>提交报名后，需等待老师审核，一旦老师审核通过，即可开始下载参赛证，并于比赛规定时间前往指定地点参加比赛。团队项目下载一张参赛证即可。</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

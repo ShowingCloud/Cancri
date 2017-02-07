@@ -1,6 +1,10 @@
 body{
   font-family: Helvetica, Tahoma, Arial, STXihei, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
 }
+
+ul li{
+  list-style: none;
+}
 a {
   text-decoration: none;
 }
@@ -2296,8 +2300,8 @@ select {
       position: relative;
     }
 
-    .active{
-      color: red;
+    .active .step,.active .step-desc{
+      color: #ADE7F5;
     }
 
     .step-wrapper:last-child .step::after{
@@ -2309,13 +2313,16 @@ select {
       position: absolute;
       right: 0;
       color: #FFF;
-      top: 20px;
+      top: 15px;
+      font-size: 22px;
+      font-weight: lighter;
     }
   }
 
   .main-overlay {
       height: 100%;
-      width: 0;
+      width: 100%;
+      display: none;
       position: absolute;
       z-index: 1;
       left: 0;
@@ -2330,6 +2337,7 @@ select {
     border: 2px solid #9AE4FF;
     min-height: 180px;
     width: 350px;
+    z-index: 3;
 
     .close{
       font-size: 14px;
@@ -2356,3 +2364,75 @@ select {
       text-align: center;
     }
   }
+
+.competition-tip:before, .competition-tip:after {
+  content:'';
+  position: absolute;
+}
+.competition-tip:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -25px;
+  width: 50px;
+  height: 50px;
+  background: rgba(0,0,0, 0.7);
+  border-right: 2px solid rgba(0,0,0, 0.7);
+  border-bottom: 2px solid #9AE4FF;
+  -moz-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  left: -25px;
+}
+.competition-tip:after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: -25px;
+  width: 50px;
+  height: 50px;
+  background: rgba(0,0,0, 0.7);
+  border-right: 2px solid rgba(0,0,0, 0.7);
+  border-top: 2px solid #9AE4FF;
+  -moz-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  right: -25px;
+}
+
+  .btn-lightblue{
+    font-size: 16px;
+    color: #ADE7F5;
+    border: 1px solid #ADE7F5;
+    border-radius: 8px;
+  }
+
+  .btn-lightblue:hover{
+    color: #ADE7F5;
+  }
+
+#competition-flow{
+  width: 80%;
+  margin:0 auto;
+  color: #FFF;
+
+  ol{
+    text-align: left;
+
+    li{
+      padding:10px;
+    }
+  }
+
+  &>.tab-content{
+    border:1px solid #ADE7F5;
+    margin: 20px 0;
+    min-height: 200px;
+  }
+
+  .btn-tab{
+    color: #7E9398;
+  }
+
+  .active .btn-tab{
+    color: #ADE7F5;
+  }
+}
