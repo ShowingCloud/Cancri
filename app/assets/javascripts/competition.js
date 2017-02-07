@@ -1,6 +1,17 @@
 $(function () {
-    if($("#comp-list").length){
-      competition_tips.init();
+
+    $('#one-event-apply').on('click', function () {
+        var checked_num = $("input[name='one-event']:checked").length;
+        if (checked_num == 0) {
+            alert('请至少选择一个比赛项目！');
+            return false;
+        } else {
+            $('#show-user-info').trigger('click');
+        }
+    });
+
+    if ($("#comp-list").length) {
+        competition_tips.init();
     }
 
     $('.update-user-info-submit').on('click', function (event) {
@@ -436,6 +447,7 @@ function leader_submit_team(td) {
     }
 }
 
+<<<<<<< HEAD
 var competition_tips={
   status:{
     index:0

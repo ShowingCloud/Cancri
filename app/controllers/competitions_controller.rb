@@ -25,12 +25,18 @@ class CompetitionsController < ApplicationController
   def events
     @competition = Competition.find(params[:id])
     if current_user
-      events = Event.joins("left join team_user_ships t_u on t_u.event_id = events.id and t_u.user_id = #{current_user.id}").where(competition_id: @competition.id, is_father: 0).select(:id, :name, :team_max_num, 't_u.status as apply_status')
-      @events = {already: events.having('apply_status != ?', nil), one: events.having('team_max_num = ?', 1), multiple: events.having('team_max_num > ?', 1)}
+      current_user_id = current_user.id
+      events = Event.joins("left join team_user_ships t_u on t_u.event_id = events.id and t_u.user_id = #{current_user_id}").joins('left join teams t on t.id = t_u.team_id').where(competition_id: @competition.id, is_father: 0).select(:id, :name, :group, :team_max_num, 't.status as team_status', 't_u.team_id', 't_u.status as apply_status')
+      already_events = events.drop_while { |event| event.apply_status.nil? }
+      user_info = UserProfile.left_joins(:school, :district).where(user_id: current_user_id).select('user_profiles.*', 'schools.name as school_name', 'districts.name as district_name').take
+      @user_info = user_info || current_user.build_user_profile
     else
-      events = Event.where(competition_id: @competition.id, is_father: 0).select(:id, :name, :team_max_num)
-      @events = {one: events.having('team_max_num = ?', 1), multiple: events.having('team_max_num > ?', 1)}
+      events = Event.where(competition_id: @competition.id, is_father: 0).select(:id, :name, :group, :team_max_num)
+      already_events = []
     end
+    one_events = events.select { |event| event.team_max_num == 1 }
+    multiple_events = events - one_events - already_events
+    @events = {already: already_events, one: one_events, multiple: multiple_events}
   end
 
   def apply_event
@@ -108,6 +114,78 @@ class CompetitionsController < ApplicationController
       end
     else
       result = [false, '信息输入不完整']
+    end
+    render json: result
+  end
+
+
+  def leader_batch_apply
+    user_id = current_user.id
+    username = params[:username]
+    gender = params[:gender]
+    school_id = params[:school_id]
+    grade = params[:grade]
+    bj = params[:bj]
+    birthday = params[:birthday]
+    student_code = params[:student_code]
+    identity_card = params[:identity_card]
+
+    group = params[:team_group]
+    teacher = params[:teacher_name]
+    ed = params[:team_event]
+
+    if ed.is_a?(Array) && username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && student_code.present? && birthday.present? && teacher.present? && group.present?
+      if has_teacher_role
+        result = [false, '您是老师,不能报名比赛']
+      else
+        events = Event.joins(:competition).where(id: ed).select(:id, :name, 'competitions.apply_end_time')
+        if events.present? && events.length == ed.length
+          if events[0].apply_end_time > Time.zone.now
+            already_apply = TeamUserShip.where(user_id: user_id, event_id: ed).exists?
+            if already_apply
+              result = [false, '您提交的项目中部分您已报名，无需再次报名']
+            else
+              user_profile = current_user.user_profile ||= current_user.build_user_profile
+              if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, bj: bj, student_code: student_code, birthday: birthday, identity_card: identity_card)
+                result_status = true
+                events.each do |event|
+                  if result_status
+                    begin
+                      TeamUserShip.transaction do
+                        team = Team.create!(group: group, user_id: user_id, teacher: teacher, event_id: event.id, school_id: school_id)
+                        TeamUserShip.create!(team_id: team.id, user_id: user_id, event_id: event.id, school_id: school_id, grade: grade, status: true)
+                      end
+                      result << "#{event.name}报名成功!"
+                    rescue Exception => ex
+                      result_status = false
+                      result << [false, ex.message]
+                    end
+                  else
+                    break
+                  end
+                end
+                if result_status
+                  result = [true, '报名成功']
+                else
+                  if (result & [true]).present?
+                    result = [true, result[0..-2]+['剩余项目报名失败']]
+                  else
+                    result = [false, result.last]
+                  end
+                end
+              else
+                result = [false, user.errors.full_messages.first]
+              end
+            end
+          else
+            result = [false, '该比赛已过报名时间']
+          end
+        else
+          result = [false, '项目参数不规范']
+        end
+      end
+    else
+      result = [false, ' 信息输入不完整 ']
     end
     render json: result
   end
