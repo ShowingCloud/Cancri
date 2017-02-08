@@ -8,7 +8,7 @@ class UserProfile < ApplicationRecord
   validates :school_id, numericality: {:greater_than => 0}, allow_blank: true
   validates :grade, allow_blank: true, numericality: {:greater_than => 0}
   validates :district_id, numericality: {:greater_than => 0}, allow_blank: true
-  validates :student_code, allow_blank: true, uniqueness: true, length: {minimum: 1}, numericality: {only_integer: true}
+  validates :student_code, allow_blank: true, uniqueness: true, length: {minimum: 1}, format: {with: /\A[A-Z0-9]+\Z/i, message: '只能包含数字、字母'}
   validates :bj, allow_blank: true, :numericality => {:greater_than => 0}
 
   GENDER = {male: 1, female: 2}

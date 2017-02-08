@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     collection do
       get :apply_process
       get :apply_event
+      post :leader_batch_apply
       post :already_apply
       post :update_user_info
       post :leader_create_team

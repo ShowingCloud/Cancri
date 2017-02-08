@@ -124,70 +124,85 @@ class CompetitionsController < ApplicationController
     username = params[:username]
     gender = params[:gender]
     school_id = params[:school_id]
+    sk_station = params[:sk_station]
     grade = params[:grade]
     bj = params[:bj]
     birthday = params[:birthday]
     student_code = params[:student_code]
     identity_card = params[:identity_card]
+    group = params[:group]
+    teacher = params[:teacher]
+    eds = params[:eds]
 
-    group = params[:team_group]
-    teacher = params[:teacher_name]
-    ed = params[:team_event]
-
-    if ed.is_a?(Array) && username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && student_code.present? && birthday.present? && teacher.present? && group.present?
+    if eds.present? && eds.is_a?(Array) && eds.length < 6 && username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && student_code.present? && birthday.present? && teacher.present? && group.present?
       if has_teacher_role
-        result = [false, '您是老师,不能报名比赛']
+        result = [false, '您是老师,不能报名比赛!']
       else
-        events = Event.joins(:competition).where(id: ed).select(:id, :name, 'competitions.apply_end_time')
-        if events.present? && events.length == ed.length
-          if events[0].apply_end_time > Time.zone.now
-            already_apply = TeamUserShip.where(user_id: user_id, event_id: ed).exists?
-            if already_apply
-              result = [false, '您提交的项目中部分您已报名，无需再次报名']
-            else
-              user_profile = current_user.user_profile ||= current_user.build_user_profile
-              if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, bj: bj, student_code: student_code, birthday: birthday, identity_card: identity_card)
-                result_status = true
-                events.each do |event|
-                  if result_status
-                    begin
-                      TeamUserShip.transaction do
-                        team = Team.create!(group: group, user_id: user_id, teacher: teacher, event_id: event.id, school_id: school_id)
-                        TeamUserShip.create!(team_id: team.id, user_id: user_id, event_id: event.id, school_id: school_id, grade: grade, status: true)
-                      end
-                      result << "#{event.name}报名成功!"
-                    rescue Exception => ex
-                      result_status = false
-                      result << [false, ex.message]
-                    end
-                  else
-                    break
-                  end
-                end
-                if result_status
-                  result = [true, '报名成功']
-                else
-                  if (result & [true]).present?
-                    result = [true, result[0..-2]+['剩余项目报名失败']]
-                  else
-                    result = [false, result.last]
-                  end
-                end
+        if current_user.mobile.present?
+          events = Event.joins(:competition).where(id: eds).select(:id, :name, :group, 'competitions.apply_end_time')
+          if events.present? && events.length == eds.length
+            if events[0].apply_end_time > Time.zone.now
+              already_apply = TeamUserShip.where(user_id: user_id, event_id: eds).exists?
+              if already_apply
+                result = [false, '您提交的项目中部分您已报名，无需再次报名']
               else
-                result = [false, user.errors.full_messages.first]
+                user_profile = current_user.user_profile ||= current_user.build_user_profile
+                if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, bj: bj, student_code: student_code, birthday: birthday, identity_card: identity_card)
+                  result_status = true
+                  result = []
+                  success_teams = []
+                  each_index = 0
+                  events.each_with_index do |event, index|
+                    each_index = index
+                    if event.group.include?(group)
+                      if result_status
+                        begin
+                          TeamUserShip.transaction do
+                            team = Team.create!(group: group, user_id: user_id, teacher: teacher, event_id: event.id, school_id: school_id, sk_station: sk_station)
+                            team.team_user_ships.create!(team_id: team.id, user_id: user_id, event_id: event.id, school_id: school_id, grade: grade, status: true)
+                            result << "#{event.name}报名成功!"
+                            success_teams << {event_name: event.name, team_id: team.id}
+                          end
+                        rescue Exception => ex
+                          result_status = false
+                          result << ex.message
+                        end
+                      else
+                        break
+                      end
+                    else
+                      result << [false, "#{event.name}不包含您所报名的组别！"]
+                      result_status = false
+                      break
+                    end
+                  end
+                  if result_status
+                    result = [true, '提交成功', success_teams]
+                  else
+                    if each_index > 0
+                      result = [true, (result[0..-2]+['剩余项目报名失败']).join(','), success_teams]
+                    else
+                      result = result
+                    end
+                  end
+                else
+                  result = [false, user_profile.errors.full_messages.first]
+                end
               end
+            else
+              result = [false, '该比赛已过报名时间']
             end
           else
-            result = [false, '该比赛已过报名时间']
+            result = [false, '项目参数不规范']
           end
         else
-          result = [false, '项目参数不规范']
+          result = [false, '请先添加手机号!']
         end
       end
     else
-      result = [false, ' 信息输入不完整 ']
+      result = [false, '信息输入不完整或不规范']
     end
-    render json: result
+    render json: {status: result[0], message: result[1], success_teams: result[2]}
   end
 
   def leader_create_team
