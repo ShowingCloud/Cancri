@@ -1,114 +1,135 @@
 <div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
   <div class="container text-center" id="comp-show">
-    <div class="top">
-      <%= @competition.name %>
-    </div>
-    <div class="middle">
-      <div class="download-area">
-        <div class="title">
-          资料下载
-        </div>
-        <a target="_blank" href="<%= @competition.time_schedule %>">
-          <div class="download-item">
-            <div class="icon">
-              <i class="glyphicon glyphicon-cloud-download"></i>
-            </div>
-            <div class="item-name">比赛时间安排</div>
-          </div>
-        </a>
-        <a target="_blank" href="<%= @competition.detail_rule %>">
-          <div class="download-item">
-            <div class="icon">
-              <i class="glyphicon glyphicon-cloud-download"></i>
-            </div>
-            <div class="item-name">比赛详细规则</div>
-          </div>
-        </a>
+    <div class="competition-top">
+      <div class="pull-right">
+        <%= link_to "/competitions/#{@competition.id}/events", class: 'btn btn-lightblue' do %>
+            去报名
+        <% end %>
       </div>
-      <div class="section">
-        <div class="section-title">
-          活动信息
-        </div>
-        <div class="section-content">
-          <div class="section-fold">
-            <div class="fold-head">
-              比赛宗旨
-              <span class="caret"></span>
+      <ul class="competition-steps clearfix">
+        <li class="step-wrapper active">
+          <p class="step">STEP1</p>
+          <p class="step-desc">更新选手信息</p>
+        </li>
+        <li class="step-wrapper">
+          <p class="step">STEP2</p>
+          <p class="step-desc">选择赛事项目</p>
+        </li>
+        <li class="step-wrapper">
+          <p class="step">STEP3</p>
+          <p class="step-desc">提交报名信息</p>
+        </li>
+        <li class="step-wrapper">
+          <p class="step">STEP4</p>
+          <p class="step-desc">等待审核</p>
+        </li>
+      </ul>
+      <div class="default-wrapper">
+        <h3>
+          <%= @competition.name %>
+        </h3>
+        <div class="middle">
+          <div class="download-area">
+            <div class="title">
+              资料下载
             </div>
-            <div class="fold-body">
-              <%== @competition.aim.gsub(';', '<br>') %>
-            </div>
-          </div>
-          <div class="section-fold even">
-            <div class="fold-head">
-              大赛组委会
-              <span class="caret"></span>
-            </div>
-            <div class="fold-body">
-              <%== @competition.organizing_committee.gsub(';', '<br>') %>
-            </div>
-          </div>
-          <div class="section-fold">
-            <div class="fold-head">
-              日程安排
-              <span class="caret"></span>
-            </div>
-            <div class="fold-body">
-              <%== @competition.date_schedule.gsub(';', '<br>') %>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="section">
-        <div class="section-title">
-          比赛信息
-        </div>
-        <div class="section-content">
-          <div class="section-fold">
-            <div class="fold-head">
-              参赛要求
-              <span class="caret"></span>
-            </div>
-            <div class="fold-body">
-              <%== @competition.apply_require.gsub(';', '<br>') %>
-            </div>
-          </div>
-          <div class="section-fold even">
-            <div class="fold-head">
-              奖励方法
-              <span class="caret"></span>
-            </div>
-            <div class="fold-body">
-              <%== @competition.reward_method.gsub(';', '<br>') %>
-            </div>
-          </div>
-          <div class="section-fold">
-            <div class="fold-head">
-              参赛方法
-              <span class="caret"></span>
-            </div>
-            <div class="fold-body">
-              <%== @competition.apply_method.gsub(';', '<br>') %>
-            </div>
-          </div>
-          <% if @competition.description.present? %>
-            <div class="section-fold">
-              <div class="fold-head">
-                比赛描述
-                <span class="caret"></span>
+            <a target="_blank" href="<%= @competition.time_schedule %>">
+              <div class="download-item">
+                <div class="icon">
+                  <i class="glyphicon glyphicon-cloud-download"></i>
+                </div>
+                <div class="item-name">比赛时间安排</div>
               </div>
-              <div class="fold-body">
-                <%== @competition.description.gsub(';', '<br>') %>
+            </a>
+            <a target="_blank" href="<%= @competition.detail_rule %>">
+              <div class="download-item">
+                <div class="icon">
+                  <i class="glyphicon glyphicon-cloud-download"></i>
+                </div>
+                <div class="item-name">比赛详细规则</div>
+              </div>
+            </a>
+          </div>
+          <div class="section">
+            <div class="section-title">
+              活动信息
+            </div>
+            <div class="section-content">
+              <div class="section-fold">
+                <div class="fold-head">
+                  比赛宗旨
+                  <span class="caret"></span>
+                </div>
+                <div class="fold-body">
+                  <%== @competition.aim.gsub(';', '<br>') %>
+                </div>
+              </div>
+              <div class="section-fold even">
+                <div class="fold-head">
+                  大赛组委会
+                  <span class="caret"></span>
+                </div>
+                <div class="fold-body">
+                  <%== @competition.organizing_committee.gsub(';', '<br>') %>
+                </div>
+              </div>
+              <div class="section-fold">
+                <div class="fold-head">
+                  日程安排
+                  <span class="caret"></span>
+                </div>
+                <div class="fold-body">
+                  <%== @competition.date_schedule.gsub(';', '<br>') %>
+                </div>
               </div>
             </div>
-          <% end %>
+          </div>
+          <div class="section">
+            <div class="section-title">
+              比赛信息
+            </div>
+            <div class="section-content">
+              <div class="section-fold">
+                <div class="fold-head">
+                  参赛要求
+                  <span class="caret"></span>
+                </div>
+                <div class="fold-body">
+                  <%== @competition.apply_require.gsub(';', '<br>') %>
+                </div>
+              </div>
+              <div class="section-fold even">
+                <div class="fold-head">
+                  奖励方法
+                  <span class="caret"></span>
+                </div>
+                <div class="fold-body">
+                  <%== @competition.reward_method.gsub(';', '<br>') %>
+                </div>
+              </div>
+              <div class="section-fold">
+                <div class="fold-head">
+                  参赛方法
+                  <span class="caret"></span>
+                </div>
+                <div class="fold-body">
+                  <%== @competition.apply_method.gsub(';', '<br>') %>
+                </div>
+              </div>
+              <% if @competition.description.present? %>
+                <div class="section-fold">
+                  <div class="fold-head">
+                    比赛描述
+                    <span class="caret"></span>
+                  </div>
+                  <div class="fold-body">
+                    <%== @competition.description.gsub(';', '<br>') %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="bottom">
-      <%= link_to "/competitions/#{@competition.id}/events", class: 'btn-robodou btn-big' do %>
-          去报名
-      <% end %>
-    </div>
   </div>
 </div>

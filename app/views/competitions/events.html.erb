@@ -1,8 +1,28 @@
 <div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
-  <div class="container" id="event-list">
-    <div class="top">
+  <div class="container text-center" id="event-list">
+    <h3>
       <%= @competition.name %>
-    </div>
+    </h3>
+
+    <ul class="competition-steps clearfix">
+      <li class="step-wrapper">
+        <p class="step">STEP1</p>
+        <p class="step-desc">更新选手信息</p>
+      </li>
+      <li class="step-wrapper active">
+        <p class="step">STEP2</p>
+        <p class="step-desc">选择赛事项目</p>
+      </li>
+      <li class="step-wrapper">
+        <p class="step">STEP3</p>
+        <p class="step-desc">提交报名信息</p>
+      </li>
+      <li class="step-wrapper">
+        <p class="step">STEP4</p>
+        <p class="step-desc">等待审核</p>
+      </li>
+    </ul>
+
     <% if @events.is_a?(Hash) %>
         <div class="middle">
           <% if @competition.apply_end_time > Time.now %>
@@ -11,12 +31,28 @@
               <% multiple = @events[:multiple] %>
 
               <% if current_user %>
-                  已提交项目：
-                  <% if already.present? %>
+                <% if already.present? %>
+                  <h4>已选项目</h4>
+                  <div>已提交状态才算是报名成功噢</div>
 
-                      <% already.each do |apply_events| %>
-                          <%= apply_events.name %>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>项目</th>
+                        <th>类别</th>
+                        <th>状态</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% already.each do |apply_event| %>
+                        <tr>
+                          <td><%= apply_event.name %></td>
+                          <td><%= apply_event.team_status %></td>
+                          <td><%= apply_event.team_status %></td>
+                        </tr>
                       <% end %>
+                    </tbody>
+                  </table>
                   <% else %>
                       您暂没有报名任何项目
                   <% end %>
@@ -26,7 +62,7 @@
 
               <% if one.present? %>
                   单人项目：
-                  <button id="one-event-apply">报名</button>
+                  <a id="one-event-apply" class="btn btn-lightblue">报名</a>
                   <% one.each do |one_events| %>
                       <p>
                         <input type="checkbox" name="one-event" value="<%= one_events.id %>"><%= one_events.name %>
@@ -66,20 +102,20 @@
 
           <div class="col-xs-12">
             <div class="row">
-              <form class="form-horizontal">
+              <form class="form-horizontal" id="competition-apply-batch">
                 <div class="form-group">
                   <label for="username" class="col-sm-3 control-label">姓名</label>
 
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="username-join" value="<%= @user_info.username %>" placeholder="姓名">
+                    <input type="text" class="form-control" name="username" id="username-join" value="<%= @user_info.username %>" placeholder="姓名">
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="gender" class="col-sm-3 control-label">性别</label>
 
                   <div class="col-sm-8">
-                    <label class="gender-label"><input type="radio" name="user_profile[gender]" value="1" <%= 'checked="checked"' if @user_info.gender.to_i == 1 %>/>男</label>
-                    <label class="gender-label"><input type="radio" name="user_profile[gender]" value="2" <%= 'checked="checked"' if @user_info.gender.to_i == 2 %>/>女</label>
+                    <label class="gender-label"><input type="radio" name="gender" value="1" <%= 'checked="checked"' if @user_info.gender.to_i == 1 %>/>男</label>
+                    <label class="gender-label"><input type="radio" name="gender" value="2" <%= 'checked="checked"' if @user_info.gender.to_i == 2 %>/>女</label>
                   </div>
                 </div>
                 <div class="form-group">
@@ -94,7 +130,7 @@
                   <label for="birthday" class="col-sm-3 control-label">生日</label>
 
                   <div class="col-sm-8">
-                    <input type="text" class="form-control datetime" id="birthday-join" value="<%= @user_info.birthday %>" data-type="select-date" data-date-format="yyyy-mm-dd">
+                    <input type="text" name="birthday" class="form-control datetime" id="birthday-join" value="<%= @user_info.birthday %>" data-type="select-date" data-date-format="yyyy-mm-dd">
                   </div>
                 </div>
                 <div class="form-group">
@@ -107,7 +143,7 @@
                         <button class="new-school btn-robodou">选择学校</button>
                     <% end %>
                     <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
-                    <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
+                    <input type="hidden" name="school_id" id="school-id" value="<%= @user_info.school_id %>"/>
                   </div>
                 </div>
                 <div class="form-group">
@@ -120,14 +156,14 @@
                         <button class="new-school btn-robodou">选择学校</button>
                     <% end %>
                     <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
-                    <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
+                    <input type="hidden" name="sk_station" id="school-id" value="<%= @user_info.school_id %>"/>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="grade" class="col-sm-3 control-label">年级</label>
 
                   <div class="col-sm-8">
-                    <select id="grade-join" class="form-control">
+                    <select id="grade-join" name="grade" class="form-control">
                       <option value="0">请选择年级</option>
                       <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
                       <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
@@ -148,14 +184,14 @@
                   <label for="identity_card" class="col-sm-3 control-label">身份证</label>
 
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="identity_card-join" value="<%= @user_info.identity_card %>">
+                    <input type="text" class="form-control" name="identity_card" id="identity_card-join" value="<%= @user_info.identity_card %>">
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="bj" class="col-sm-3 control-label">班级</label>
 
                   <div class="col-sm-8">
-                    <select id="bj-join" class="form-control">
+                    <select id="bj-join" name="bj" class="form-control">
                       <option value="0">请选择班级</option>
                       <% (1..100).each do |bj| %>
                           <option value="<%= bj %>"><%= bj %></option>
@@ -167,7 +203,7 @@
                   <label for="group" class="col-sm-3 control-label">组别</label>
 
                   <div class="col-sm-8">
-                    <select id="group-join" class="form-control">
+                    <select id="group-join" class="form-control" name="group">
                       <option value="">请选择组别</option>
                       <option value="1">小学</option>
                       <option value="2">中学</option>
@@ -178,7 +214,7 @@
                   <label for="teacher" class="col-sm-3 control-label">指导教师</label>
 
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="teacher-join">
+                    <input type="text" class="form-control" name="teacher" id="teacher-join">
                   </div>
                 </div>
 
@@ -191,7 +227,7 @@
                 </div>
                 <div class="form-group">
                   <div class="col-sm-offset-3 col-sm-8">
-                    <button class="btn btn-info btn-block join-team-submit">提交</button>
+                    <button class="btn btn-info btn-block" id="competition-apply-batch-submit">提交</button>
                   </div>
                 </div>
               </form>

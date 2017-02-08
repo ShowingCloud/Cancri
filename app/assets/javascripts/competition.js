@@ -1,5 +1,79 @@
 $(function () {
 
+    $('#competition-apply-batch-submit').click(function(){
+      var fields = [
+        {
+          "field":"username",
+          "msg":"请填写姓名(2-10位的中文或英文字符)！",
+          "validate": "ch_en_str"
+        },
+        {
+          "field":"gender",
+          "msg":"请选择性别！"
+        },
+        {
+          "field":"school_id",
+          "msg":"请选择学籍所在学校！"
+        },
+        {
+          "field":"sk_station",
+          "msg":"请选择报名学校！"
+        },
+        {
+          "field":"grade",
+          "msg":"请选择年级！"
+        },
+        {
+          "field":"bj",
+          "msg":"请选择年级！！"
+        },
+        {
+          "field":"birthday",
+          "msg":"请填写生日！"
+        },
+        {
+          "field":"student_code",
+          "msg":"请填写学籍号！"
+        },
+        {
+          "field":"identity_card",
+          "msg":"请填写身份证号！",
+          "validate":"identity_card"
+        },
+        {
+          "field":"group",
+          "msg":"请选择组别！"
+        },
+        {
+          "field":"teacher",
+          "msg":"请填写指导老师！"
+        }
+      ];
+
+      var form_error = [];
+      var form_data = {};
+      $.each(fields, function( _index, field ) {
+        var field_name = field.field;
+        var field_val = $("#"+field_name).val();
+
+        if(field_val){
+          if(field.validate){
+            if(field.validate === "identity_card"){
+              if(checkIdcard(field_val)){
+                form_data[field_name] = field_val;
+              }else{
+
+              }
+            }
+          }else{
+            form_data[field_name] = field_val;
+          }
+        }else{
+          form_error.push(field);
+        }
+      });
+    });
+
     $('#one-event-apply').on('click', function () {
         var checked_num = $("input[name='one-event']:checked").length;
         if (checked_num == 0) {
