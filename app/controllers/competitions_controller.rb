@@ -161,7 +161,7 @@ class CompetitionsController < ApplicationController
                             team = Team.create!(group: group, user_id: user_id, teacher: teacher, event_id: event.id, school_id: school_id, sk_station: sk_station)
                             team.team_user_ships.create!(team_id: team.id, user_id: user_id, event_id: event.id, school_id: school_id, grade: grade, status: true)
                             result << "#{event.name}报名成功!"
-                            success_teams << {event_name: event.name, team_id: team.id}
+                            success_teams << {event_name: event.name, team_id: team.id, identifier: team.identifier}
                           end
                         rescue Exception => ex
                           result_status = false
