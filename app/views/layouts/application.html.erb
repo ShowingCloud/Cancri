@@ -103,10 +103,11 @@
 
 <script type="text/javascript">
     function alert_r(msg, cb, param) {
+        var flash = $('#flash');
         if(msg && typeof msg === "string"){
-          $('#flash').find('.content').text(msg);
-          $('#flash').remodal().open();
-          $(document).on('closed', '.remodal', function () {
+          flash.find('.content').html(msg);
+          flash.remodal().open();
+          $('.remodal').one('closed', function () {
               if (cb) {
                   if (param) {
                       cb(param);

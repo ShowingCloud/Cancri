@@ -5,7 +5,10 @@ $(function () {
         {
           "field":"username",
           "msg":"请填写姓名(2-10位的中文或英文字符)！",
-          "validate": "ch_en_str"
+          "validate": {
+            "rule": /^[a-zA-Z\u4e00-\u9fa5]{2,10}$/,
+            "msg": "请填写姓名(2-10位的中文或英文字符)！"
+          }
         },
         {
           "field":"gender",
@@ -38,7 +41,10 @@ $(function () {
         {
           "field":"identity_card",
           "msg":"请填写身份证号！",
-          "validate":"identity_card"
+          "validate": {
+            "rule": checkIdcard,
+            "msg": "请填写正确的身份证号！"
+          }
         },
         {
           "field":"group",
@@ -50,37 +56,109 @@ $(function () {
         }
       ];
 
+      function validate(rule,value){
+        if(rule instanceof RegExp){
+          if(rule.test(value)){
+            return true;
+          }else{
+            return false;
+          }
+        }else if (typeof rule === "function") {
+          if(rule(value)){
+            return true;
+          }else{
+            return false;
+          }
+        }
+      }
+
       var form_error = [];
       var form_data = {};
+      var form = $("#competition-apply-batch");
       $.each(fields, function( _index, field ) {
         var field_name = field.field;
-        var field_val = $("#"+field_name).val();
-
-        if(field_val){
-          if(field.validate){
-            if(field.validate === "identity_card"){
-              if(checkIdcard(field_val)){
+        var field_tag= form.find("[name='"+field_name+"']");
+        var field_val = $.trim(field_tag.val());
+        if(field_tag.attr("type") === "radio"){
+          field_tag.each(function(){
+            var _this = $(this);
+            if(_this.prop("checked")){
+              field_val = $.trim(_this.val());
+            }
+          });
+        }
+        if(field_val.length){
+            if(field.validate){
+              if(validate(field.validate.rule,field_val)){
                 form_data[field_name] = field_val;
               }else{
-
+                form_error.push(field);
               }
+            }else{
+              form_data[field_name] = field_val;
             }
-          }else{
-            form_data[field_name] = field_val;
-          }
         }else{
-          form_error.push(field);
+          if(field_tag.is(":visible")){
+            form_error.push(field);
+          }else{
+            if(field_tag.attr("type") === "hidden"){
+              form_error.push(field);
+            }
+          }
         }
       });
+
+      if(form_error.length){
+        var msg = "";
+        $.each(form_error,function(_index,error){
+          msg = msg + "<br>" + error.msg;
+        });
+        alert_r(msg);
+      }else{
+        var eds=[];
+        $("input[name='one-event']:checked").each(function(){
+          eds.push($(this).val());
+        });
+        form_data.eds = eds;
+        form_data.district = $("#district-id").val();
+            $.ajax({
+                url: '/competitions/leader_batch_apply',
+                type: 'post',
+                data: form_data,
+                success: function (data) {
+                  if(data.status === true){
+                    $('#user-apply-info').modal("hide");
+                  }
+                  alert_r(data.message);
+                  if($.isArray(data.success_teams)){
+                    $.each(data.success_teams,function(_index,st){
+                      $("#table-wrapper").removeClass("hidden");
+                      $("#empy").addClass("hidden");
+                      $("#table-wrapper tbody").append("<tr><td>"+st.event_name+"</td></tr>");
+                    });
+                  }
+                }
+            });
+      }
     });
 
     $('#one-event-apply').on('click', function () {
-        var checked_num = $("input[name='one-event']:checked").length;
-        if (checked_num == 0) {
-            alert('请至少选择一个比赛项目！');
-            return false;
-        } else {
-            $('#show-user-info').trigger('click');
+        if($("#signed-in").val() === "false"){
+          alert_r("报名前请先登录",function(){
+            window.location.href = '/account/sign_in';
+          });
+        }else{
+          if($("#mobile").text() === ""){
+            alert_r("报名前请先登记你的手机号",function(){
+              window.location.href = '/user/mobile';
+            });
+          }else{
+            if ($("input[name='one-event']:checked").length) {
+                $('#user-apply-info').modal();
+            } else {
+              alert_r('请至少选择一个比赛项目！');
+            }
+          }
         }
     });
 
@@ -88,98 +166,98 @@ $(function () {
         competition_tips.init();
     }
 
-    $('.update-user-info-submit').on('click', function (event) {
-        event.preventDefault();
-        var username = $('#username').val();
-        var gender = $('#gender').val();
-        var district_id = $('#district-id').val();
-        var school_id = $('#school-id').val();
-        var birthday = $('#birthday').val();
-        var identity_card = $('#identity_card').val();
-        var grade = $('#grade').val();
-        var student_code = $('#student_code').val();
-        var team_group = $('#team-group').val();
-        var team_teacher = $('#team-teacher').val();
-        var teacher_mobile = $('#team-teacher-mobile').val();
-        var ed = $('#event-identify').val();
-        var chinese_english_reg = /^[a-zA-Z\u4e00-\u9fa5]{2,10}$/;
-
-        if (!chinese_english_reg.test(username)) {
-            alert_r('请填写姓名(2-10位的中文或英文字符)！');
-            return false;
-        }
-        if (gender.length < 1) {
-            alert_r('请选择性别！');
-            return false;
-        }
-        if (birthday.length < 1) {
-            alert_r('请填写生日！');
-            return false;
-        }
-        if (school_id.length < 1) {
-            alert_r('请选择学校！');
-            return false;
-        }
-        if (student_code.length < 1) {
-            alert_r('请填写学籍号！');
-            return false;
-        }
-        if (grade.length < 1) {
-            alert_r('请选择年级！');
-            return false;
-        }
-        if (team_group.length < 1) {
-            alert_r('请选择组别！');
-            return false;
-        }
-        if (parseInt(grade) >= 10 && !/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
-            alert_r('由于您选择了高中年级，请正确填写身份证！');
-            return false;
-        }
-        if (team_teacher.length < 1) {
-            alert_r('请填写指导老师！');
-            return false;
-        }
-        // if (teacher_mobile.length < 1) {
-        //     alert_r('请填写指导老师电话！');
-        //     return false;
-        // }
-
-
-        $.ajax({
-            url: '/competitions/leader_create_team',
-            type: 'post',
-            data: {
-                "username": username,
-                "gender": gender,
-                "district": district_id,
-                "school": school_id,
-                "birthday": birthday,
-                "identity_card": identity_card,
-                "grade": grade,
-                "student_code": student_code,
-                "team_group": team_group,
-                "teacher_name": team_teacher,
-                "teacher_mobile": teacher_mobile,
-                "team_event": ed
-            },
-            success: function (data) {
-                if (data[0]) {
-                    $('#update-user-info').modal('hide');
-                    var m = $('#max_num').val();
-                    var msg = '队伍创建成功！';
-                    if (m == 1) {
-                        msg = '报名信息已完善，请于报名时间截止前提交';
-                    }
-                    alert_r(msg, function () {
-                        window.location.reload();
-                    });
-                } else {
-                    alert_r(data[1]);
-                }
-            }
-        });
-    });
+    // $('.update-user-info-submit').on('click', function (event) {
+    //     event.preventDefault();
+    //     var username = $('#username').val();
+    //     var gender = $('#gender').val();
+    //     var district_id = $('#district-id').val();
+    //     var school_id = $('#school-id').val();
+    //     var birthday = $('#birthday').val();
+    //     var identity_card = $('#identity_card').val();
+    //     var grade = $('#grade').val();
+    //     var student_code = $('#student_code').val();
+    //     var team_group = $('#team-group').val();
+    //     var team_teacher = $('#team-teacher').val();
+    //     var teacher_mobile = $('#team-teacher-mobile').val();
+    //     var ed = $('#event-identify').val();
+    //     var chinese_english_reg = /^[a-zA-Z\u4e00-\u9fa5]{2,10}$/;
+    //
+    //     if (!chinese_english_reg.test(username)) {
+    //         alert_r('请填写姓名(2-10位的中文或英文字符)！');
+    //         return false;
+    //     }
+    //     if (gender.length < 1) {
+    //         alert_r('请选择性别！');
+    //         return false;
+    //     }
+    //     if (birthday.length < 1) {
+    //         alert_r('请填写生日！');
+    //         return false;
+    //     }
+    //     if (school_id.length < 1) {
+    //         alert_r('请选择学校！');
+    //         return false;
+    //     }
+    //     if (student_code.length < 1) {
+    //         alert_r('请填写学籍号！');
+    //         return false;
+    //     }
+    //     if (grade.length < 1) {
+    //         alert_r('请选择年级！');
+    //         return false;
+    //     }
+    //     if (team_group.length < 1) {
+    //         alert_r('请选择组别！');
+    //         return false;
+    //     }
+    //     if (parseInt(grade) >= 10 && !/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
+    //         alert_r('由于您选择了高中年级，请正确填写身份证！');
+    //         return false;
+    //     }
+    //     if (team_teacher.length < 1) {
+    //         alert_r('请填写指导老师！');
+    //         return false;
+    //     }
+    //     // if (teacher_mobile.length < 1) {
+    //     //     alert_r('请填写指导老师电话！');
+    //     //     return false;
+    //     // }
+    //
+    //
+    //     $.ajax({
+    //         url: '/competitions/leader_create_team',
+    //         type: 'post',
+    //         data: {
+    //             "username": username,
+    //             "gender": gender,
+    //             "district": district_id,
+    //             "school": school_id,
+    //             "birthday": birthday,
+    //             "identity_card": identity_card,
+    //             "grade": grade,
+    //             "student_code": student_code,
+    //             "team_group": team_group,
+    //             "teacher_name": team_teacher,
+    //             "teacher_mobile": teacher_mobile,
+    //             "team_event": ed
+    //         },
+    //         success: function (data) {
+    //             if (data[0]) {
+    //                 $('#update-user-info').modal('hide');
+    //                 var m = $('#max_num').val();
+    //                 var msg = '队伍创建成功！';
+    //                 if (m == 1) {
+    //                     msg = '报名信息已完善，请于报名时间截止前提交';
+    //                 }
+    //                 alert_r(msg, function () {
+    //                     window.location.reload();
+    //                 });
+    //             } else {
+    //                 alert_r(data[1]);
+    //             }
+    //         }
+    //     });
+    // });
 
 
     //创建队伍
