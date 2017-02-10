@@ -27,14 +27,14 @@ class CompetitionsController < ApplicationController
     if current_user
       current_user_id = current_user.id
       events = Event.joins("left join team_user_ships t_u on t_u.event_id = events.id and t_u.user_id = #{current_user_id}").joins('left join teams t on t.id = t_u.team_id').where(competition_id: @competition.id, is_father: 0).select(:id, :name, :group, :team_max_num, 't.status as team_status', 't_u.team_id', 't_u.status as apply_status')
-      already_events = events.drop_while { |event| event.apply_status.nil? }
+      already_events = events.select { |event| event.apply_status != nil }
       user_info = UserProfile.left_joins(:school, :district).where(user_id: current_user_id).select('user_profiles.*', 'schools.name as school_name', 'districts.name as district_name').take
       @user_info = user_info || current_user.build_user_profile
     else
       events = Event.where(competition_id: @competition.id, is_father: 0).select(:id, :name, :group, :team_max_num)
       already_events = []
     end
-    one_events = events.select { |event| event.team_max_num == 1 }
+    one_events = events.select { |event| event.team_max_num == 1 } - already_events
     multiple_events = events - one_events - already_events
     @events = {already: already_events, one: one_events, multiple: multiple_events}
   end
