@@ -93,7 +93,7 @@ class CompetitionsController < ApplicationController
             else
               begin
                 Notification.transaction do
-                  t_u = TeamUserShip.create!(team_id: td, user_id: user_id, event_id: event.event_id, school_id: school_id, grade: grade, status: false)
+                  t_u = TeamUserShip.create!(team_id: td, user_id: user_id, event_id: event.event_id, school_id: school_id, grade: grade, status: 0)
                   Notification.create!(user_id: event.user_id, content: username+' 申请加入您在比赛项目－'+ event.event_name.to_s + '中创建的队伍－'+ event.identifier, t_u_id: t_u.id, team_id: td, message_type: 2, reply_to: user_id)
                 end
                 result = [true, '申请成功,等待队长同意,结果将会通过消息推送告知您!']
@@ -291,7 +291,7 @@ class CompetitionsController < ApplicationController
           if TeamUserShip.where(user_id: ud, event_id: event_info.id).exists?
             result = [false, '该户已报名此项目或已被您或其他人邀请参加']
           else
-            t_u = TeamUserShip.create(team_id: td, user_id: ud, event_id: event_info.id, status: false, school_id: 0)
+            t_u = TeamUserShip.create(team_id: td, user_id: ud, event_id: event_info.id, status: 2, school_id: 0)
             if t_u.save
               result= [true, '邀请成功,等待该队员同意', user_info.nickname, user_info.username]
               Notification.create(user_id: ud, message_type: 1, content: current_user.user_profile.try(:username)+'邀请你参加['+event_info.name+']比赛项目,队伍为:'+event_info.identifier, t_u_id: t_u.id, team_id: td, reply_to: current_user.id)
@@ -414,7 +414,7 @@ class CompetitionsController < ApplicationController
               flash[:error] = '拒绝失败'
             end
           else
-            t_u.status = true
+            t_u.status = 1
             if t_u.save
               flash[:success] = '接受成功'
               Notification.create(user_id: t_u.user_id, content: team_info.name+'比赛项目中'+team_info.identifier+'的队长同意了你的申请，您已成功加入了该队', message_type: 0)
