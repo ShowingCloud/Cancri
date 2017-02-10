@@ -19,6 +19,10 @@ a:hover {
   border-radius: 20px;
 }
 
+input[type=search]{
+  border-radius: 40px;
+}
+
 #top {
   height: 100px;
   background: center center;
@@ -1582,14 +1586,16 @@ select {
 }
 
 #event-list {
-  .top {
-    padding: 20px 0;
-    border-bottom: 1px solid #fff;
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    color: #fff;
+  #table-wrapper{
+    th{
+      border-top: 2px solid #ddd;
+    }
   }
+
+  td{
+    text-align: left;
+  }
+
   .tips {
     font-size: 14px;
     color: #fff;
@@ -1598,22 +1604,17 @@ select {
   }
   .middle {
     padding: 10px 0;
+    width: 70%;
     overflow: hidden;
-    .border-box {
+    .box {
       padding: 20px;
+      margin-bottom: 30px;
       border: 1px solid #fff;
-      border-radius: 15px;
+      border-radius: 5px;
       overflow: hidden;
     }
     .event-item {
-      float: left;
-      width: 25%;
-      padding: 10px;
-      overflow: hidden;
-      text-align: center;
-      a {
-        color: #6699cc;
-      }
+      margin:10px auto;
     }
   }
 }
@@ -2407,7 +2408,7 @@ select {
 }
 
   .btn-lightblue{
-    font-size: 16px;
+    // font-size: 16px;
     color: #ADE7F5;
     border: 1px solid #ADE7F5;
     border-radius: 8px;
@@ -2443,4 +2444,8 @@ select {
   .active .btn-tab{
     color: #ADE7F5;
   }
+}
+
+.form-plain{
+    line-height: 32px;
 }
