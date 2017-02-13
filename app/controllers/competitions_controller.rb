@@ -84,7 +84,7 @@ class CompetitionsController < ApplicationController
         result = [false, '您是教师，不能报名比赛!']
       else
         user_profile = current_user.user_profile ||= current_user.build_user_profile
-        if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
+        if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, student_code: student_code, birthday: birthday, identity_card: identity_card)
           event = Team.joins(:event).joins('left join competitions c on events.competition_id = c.id').where('teams.id=?', td).select('c.apply_end_time', 'events.team_max_num', :players, :identifier, 'events.id as event_id', 'teams.user_id', 'events.name as event_name').take
           if event.present? && (event.apply_end_time > Time.zone.now) && (event.team_max_num > 1) && (event.team_max_num > event.players)
             already_apply = TeamUserShip.where(user_id: user_id, event_id: event.event_id).exists?
