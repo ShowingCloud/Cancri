@@ -164,10 +164,10 @@ class CompetitionService
   end
 
   def self.via_identifier_get_team(identifier)
-    team = Team.joins(:event, :school).joins('left join competitions comp on comp.id = events.competition_id').where(identifier: identifier).select(:identifier, :id, :group, :teacher, 'events.name as event_name', 'events.competition_id as comp_id', 'comp.name as comp_name', 'schools.name as school_name').take
+    team = Team.joins(:event, :school).joins('left join competitions comp on comp.id = events.competition_id').where(identifier: identifier).select(:identifier, :id, :user_id, :group, :teacher, 'events.name as event_name', 'events.competition_id as comp_id', 'comp.name as comp_name', 'schools.name as school_name').take
     if team.present?
       players = TeamUserShip.joins('left join user_profiles up on up.user_id = team_user_ships.user_id').where(team_id: team.id).select(:id, :status, 'up.username', 'up.grade', 'up.bj', 'up.gender','up.birthday')
-      result = {status: true, identifier: team.identifier, team_id: team.id, teacher: team.teacher, school_name: team.school_name, group: team.group, event_name: team.event_name, comp_name: team.comp_name, players: players}
+      result = {status: true, identifier: team.identifier, leader_id:team.user_id, team_id: team.id, teacher: team.teacher, school_name: team.school_name, group: team.group, event_name: team.event_name, comp_name: team.comp_name, players: players}
     else
       result = {status: false, message: '该队伍编码不存在'}
     end
