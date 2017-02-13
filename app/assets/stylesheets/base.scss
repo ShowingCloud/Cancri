@@ -21,6 +21,10 @@ a:hover {
 
 input[type=search]{
   border-radius: 40px;
+  color: #000;
+  border: 0;
+  box-shadow: none;
+  outline: none;
 }
 
 #top {
@@ -1586,14 +1590,16 @@ select {
 }
 
 #event-list {
-  #table-wrapper{
+  #applied-events-wrapper{
     th{
       border-top: 2px solid #ddd;
     }
   }
 
   td{
+    width: 25%;
     text-align: left;
+    vertical-align: baseline;
   }
 
   .tips {

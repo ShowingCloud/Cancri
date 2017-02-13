@@ -118,52 +118,130 @@ $(function () {
         });
         alert_r(msg);
       }else{
-        var apply = $('#user-apply-info').data("apply");
-        form_data.eds = apply.eds;
         form_data.district = $("#district-id").val();
-            $.ajax({
-                url: '/competitions/leader_batch_apply',
-                type: 'post',
-                data: form_data,
-                success: function (data) {
-                  if(data.status === true){
-                    $('#user-apply-info').modal("hide");
-                    if(apply.type === "one-event"){
+        var apply = $('#user-apply-info').data("apply");
+        if(apply.team_id){
+          form_data.td = apply.team_id;
+          $.ajax({
+              url: '/competitions/apply_join_team',
+              type: 'post',
+              data: form_data,
+              success: function (data) {
+                console.log(data);
+                  if (data.status === true) {
+                      $('#user-apply-info').modal('hide');
+                  }
+                  alert_r(data.message);
+              }
+          });
+        }else{
+          form_data.eds = apply.eds;
+              $.ajax({
+                  url: '/competitions/leader_batch_apply',
+                  type: 'post',
+                  data: form_data,
+                  success: function (data) {
+                    if(data.status === true){
+                      $('#user-apply-info').modal("hide");
+                      if(apply.type === "one-event"){
+                        alert_r(data.message);
+                      }
+                    }else{
                       alert_r(data.message);
                     }
-                  }else{
-                    alert_r(data.message);
+                    if($.isArray(data.success_teams)){
+                      $("#applied-events-wrapper").removeClass("hidden");
+                      $("#empy").addClass("hidden");
+                      $.each(data.success_teams,function(_index,st){
+                        if(apply.type === "one-event"){
+                          $("#applied-events-wrapper tbody").append("<tr data-identifier='"+st.identifier+"'><td>"+st.event_name+"</td><td>单人</td><td>已提交</td></tr>");
+                          $("#one-event-" + st.event_id).remove();
+                        }else{
+                          $("#multiple_events").find("option[value='"+ st.event_id+"']").remove();
+                          $("#applied-events-wrapper tbody").append("<tr data-identifier='"+st.identifier+"'><td>"+st.event_name+"</td><td>多人</td><td><a class='btn btn-lightblue'>提交</a><a class='btn btn-lightblue'>查看队伍</a></td></tr>");
+                          alert_r("你参加"+st.event_name+"的队伍已建立，快把队伍编号："+st.identifier+"告诉你的小伙伴，让他们加入吧～");
+                        }
+                      });
+                    }
                   }
-                  if($.isArray(data.success_teams)){
-                    $("#table-wrapper").removeClass("hidden");
-                    $("#empy").addClass("hidden");
-                    $.each(data.success_teams,function(_index,st){
-                      if(apply.type === "one-event"){
-                        $("#table-wrapper tbody").append("<tr data-identifier='"+st.identifier+"'><td>"+st.event_name+"</td><td>单人</td><td>已提交</td></tr>");
-                        $("#one-event-" + st.event_id).remove();
-                      }else{
-                        $("#multiple_events").find("option[value='"+ st.event_id+"']").remove();
-                        $("#table-wrapper tbody").append("<tr data-identifier='"+st.identifier+"'><td>"+st.event_name+"</td><td>多人</td><td><a class='btn btn-lightblue'>提交</a><a class='btn btn-lightblue'>查看队伍</a></td></tr>");
-                        alert_r("你参加"+st.event_name+"的队伍已建立，快把队伍编号："+st.identifier+"告诉你的小伙伴，让他们加入吧～");
-                      }
-                    });
-                  }
-                }
-            });
+              });
+        }
+
       }
     });
 
-    $("#search-team").click(function(){
-      var identifier = $("#search-team").val();
+    $("#applied-events-wrapper").on("click",".submit",function(){
+        var identifier = $(this).parents("tr").data('identifier');
+        leader_submit_team(identifier);
+    });
+
+    $("#applied-events-wrapper").on("click",".view",function(){
+        var identifier = $(this).parents("tr").data('identifier');
+        $.ajax({
+         url: "/api/v1/events/get_team_by_identifier",
+         data: {identifier: identifier},
+         success: function(data){
+           console.log(data);
+           var school_name = data.school_name;
+           var teacher = data.teacher;
+           var modal = $("#viewTeamModal");
+           modal.find('.info').html(
+             "<div>项目："+ data.event_name +"</div>"+
+             "<div>编号："+ data.identifier +"</div>"+
+             "<div>人数："+ data.players.length +"</div>"+
+             "<div>组别："+ (data.group === 1 ? "小学" : "中学" ) +"</div>"
+         );
+         var tbody = modal.find("#players-table tbody");
+         tbody.empty();
+         $.each(data.players,function(_index,player){
+           var tr = $("<tr><td>"+player.username+"</td><td>"+getAge(player.birthday)+"</td><td>"+ school_name +"</td><td>"+ teacher +"</td><td>"+player.status+"</td><td><a class='btn btn-lightblue'>删除</a></td></tr>");
+           tbody.append(tr);
+         });
+           $("#viewTeamModal").modal();
+         }
+        });
+    });
+
+    $("#search-team-btn").click(function(){
+      var identifier = $("#search-team-input").val();
       if($.trim(identifier).length){
         $.ajax({
          url: "/api/v1/events/get_team_by_identifier",
          data: {identifier: $.trim(identifier)},
          success: function(data){
-           console.log(data);
+           $("#teams-table-wrapper").removeClass("hidden");
+           var tbody = $("#teams-table tbody");
+           var leader_id = data.leader_id;
+           var leader_name = "";
+           $.each(data.players,function(_index,player){
+             if(player.user_id === leader_id){
+               leader_name = player.username;
+             }
+           });
+           var tr = $("<tr><td>"+data.event_name+"</td><td>"+data.group+"</td><td>"+leader_name+"</td><td>"+data.school_name+"</td><td><a class='btn btn-lightblue'>加入</a></td></tr>");
+           tbody.html(tr);
+           tr.find(".btn").click(function(){
+             before_apply(function(){
+               $('#user-apply-info').data("apply",{"team_id":data.team_id,type:"join-team"}).modal();
+             });
+           });
          }
         });
+      }else{
+        alert_r("请输入队伍编号");
       }
+    });
+
+    $("#user-apply-info").on('show.bs.modal', function () {
+      var apply_data = $(this).data("apply");
+      if(apply_data.type==="join-team"){
+        $("#group-join").addClass('hidden');
+        $("#teacher-join").addClass('hidden');
+      }
+    });
+    $("#user-apply-info").on('hide.bs.modal', function () {
+      $("#group-join").removeClass('hidden');
+      $("#teacher-join").removeClass('hidden');
     });
 
     function before_apply(callback){
@@ -211,154 +289,9 @@ $(function () {
         competition_tips.init();
     }
 
-    //加入队伍
-    $('#step-for-join').on('click', function (event) {
-        event.preventDefault();
-        $('#step-for-search').removeClass('hide');
-        $(this).parents('.first-step').addClass('hide');
-    });
 
-    $('.join-team-submit').on('click', function (event) {
-        event.preventDefault();
-        var username = $('#username-join').val();
-        var gender = $('#gender').val();
-        var district_id = $('#district-id').val();
-        var school_id = $('#school-id').val();
-        var birthday = $('#birthday-join').val();
-        var identity_card = $('#identity_card-join').val();
-        var grade = $('#grade-join').val();
-        var student_code = $('#student_code-join').val();
-        var td = $('#join-team-id').val();
-
-        if (username.length < 1) {
-            alert_r('请填写姓名！');
-            return false;
-        }
-        if (gender.length < 1) {
-            alert_r('请选择性别！');
-            return false;
-        }
-        if (birthday.length < 1) {
-            alert_r('请填写生日！');
-            return false;
-        }
-        if (school_id.length < 1) {
-            alert_r('请选择学校！');
-            return false;
-        }
-        if (student_code.length < 1) {
-            alert_r('请填写学籍号！');
-            return false;
-        }
-        if (grade.length < 1) {
-            alert_r('请选择年级！');
-            return false;
-        }
-        if (parseInt(grade) >= 10 && !/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(identity_card)) {
-            alert_r('由于您选择了高中年级，请正确填写身份证！');
-            return false;
-        }
-
-        $.ajax({
-            url: '/competitions/apply_join_team',
-            type: 'post',
-            data: {
-                "username": username,
-                "gender": gender,
-                "district": district_id,
-                "school": school_id,
-                "birthday": birthday,
-                "identity_card": identity_card,
-                "grade": grade,
-                "student_code": student_code,
-                "td": td
-            },
-            success: function (data) {
-                if (data[0]) {
-                    $('#update-user-info').modal('hide');
-                    alert_r(data[1], function () {
-                        window.location.reload();
-                    });
-                } else {
-                    alert_r(data[1]);
-                }
-            }
-        });
-    });
-
-    // 搜索队伍
-    $('.btn-search-team').on('click', function () {
-        var team = $('.search-team-input').val();
-        var space = $('.search-part');
-        var ed = $('#event-identify').val();
-        var reg = /[A-Z]+/i;
-        if (reg.test(team)) {
-            $.ajax({
-                url: '/competitions/search_team',
-                dataType: 'json',
-                type: 'get',
-                data: {ed: ed, team: team},
-                success: function (data) {
-                    if (data[0] && data[1].length > 0) {
-                        var result = data[1][0];
-                        space.find('.team-info').remove();
-                        space.find('.accept').remove();
-                        var info = $('<table class="team-info">' +
-                            '<tr>' +
-                            '<td>队伍编号</td>' +
-                            '<td>' + result.identifier + '</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                            '<td>队长姓名</td>' +
-                            '<td>' + result.username + '</td>' +
-                            '</tr>' +
-                            '<td>所属学校</td>' +
-                            '<td>' + result.school_name + '</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                            '<td>指导老师</td>' +
-                            '<td>' + result.teacher + '</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                            '<td>老师电话</td>' +
-                            '<td>' + result.teacher_mobile + '</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                            '<td>队伍人数</td>' +
-                            '<td>' + result.players + '</td>' +
-                            '</tr>' +
-                            '</table>');
-                        space.append(info);
-                        if (result.status == 0 && result.players < result.team_max_num) {
-                            var btn = $('<div class="accept">' +
-                                '<button data-id="' + result.id + '" class="btn-primary btn btn-block btn-join-team">加入该队</button>' +
-                                '</div>');
-                            space.append(btn);
-                        }
-                        $('.btn-join-team').on('click', function (event) {
-                            event.preventDefault();
-                            space.find('.team-info').remove();
-                            space.find('.accept').remove();
-                            var id = $(this).attr('data-id');
-                            $('#step-for-search').addClass('hide');
-                            $('#step-for-join-team').removeClass('hide').append('<input type="hidden" id="join-team-id" value="' + id + '">');
-
-                        });
-                    } else {
-                        alert_r('未查询到该队伍');
-                    }
-                },
-                error: function (data) {
-                    alert_r('查询出错！请稍后重试！');
-                }
-            });
-        } else {
-            alert_r('请输入队伍编号');
-        }
-    });
-
-    $('#search-player').on('click', function () {
-        var invited_name = $('.search-player-input').val();
+    $('#search-player-btn').on('click', function () {
+        var invited_name = $('#search-player-input').val();
         if (invited_name) {
             $.ajax({
                 url: '/competitions/search_user',
@@ -524,23 +457,25 @@ function leader_delete_player(ud) {
 
 //队长提交报名
 function leader_submit_team(td) {
-    if (confirm('确定提交报名信息?（提交后无法修改）')) {
-        $.ajax({
-            url: '/competitions/leader_submit_team',
-            dataType: 'json',
-            type: 'post',
-            data: {td: td},
-            success: function (data) {
-                if (data[0]) {
-                    alert_r(data[1], function () {
-                        window.location.reload();
-                    });
-                } else {
-                    alert_r(data[1]);
-                }
-            }
-        })
+  bootbox.confirm({ size: "small",title:"提交队伍",message: "确定提交比赛信息?", callback: function(result) {
+    if(result === true){
+      $.ajax({
+          url: '/competitions/leader_submit_team',
+          dataType: 'json',
+          type: 'post',
+          data: {td: td},
+          success: function (data) {
+              if (data[0]) {
+                  alert_r(data[1], function () {
+                      window.location.reload();
+                  });
+              } else {
+                  alert_r(data[1]);
+              }
+          }
+      });
     }
+  } });
 }
 
 var competition_tips={

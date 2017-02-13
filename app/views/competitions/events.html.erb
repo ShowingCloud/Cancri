@@ -37,7 +37,7 @@
                   </div>
                 <% end %>
 
-                  <div id="table-wrapper" class="<%= "hidden" unless already.present? %>">
+                  <div id="applied-events-wrapper" class="<%= "hidden" unless already.present? %>">
                     <h4>已选项目</h4>
                     <div>已提交状态才算是报名成功噢</div>
 
@@ -47,14 +47,24 @@
                           <th>项目</th>
                           <th>类别</th>
                           <th>状态</th>
+                          <th></th>
                         </tr>
                       </thead>
                       <tbody>
                         <% already.each do |apply_event| %>
-                          <tr>
+                          <tr data-identifier="<%= apply_event.identifier %>">
                             <td><%= apply_event.name %></td>
-                            <td><%= apply_event.team_status %></td>
-                            <td><%= apply_event.team_status %></td>
+                            <td><%= apply_event.team_max_num == 1 ? "单人" : "多人" %></td>
+                            <td class="team_status" >
+                              <% if apply_event.team_status == 0 && apply_event.leader_id == apply_event.player_id %>
+                                <a class="btn btn-lightblue submit">提交</a>
+                              <% else %>
+                                <%= show_team_status(apply_event.team_status) %>
+                              <% end %>
+                            </td>
+                            <td>
+                              <a class="btn btn-lightblue view">查看队伍</a>
+                            </td>
                           </tr>
                         <% end %>
                       </tbody>
@@ -88,11 +98,11 @@
                   </div>
                   <br>
                   <div class="row">
-                    <label class="col-md-3 col-md-offset-2">队伍编号</label><input type="search" class="col-md-3" id="search-team"><a class="btn btn-lightblue">搜索</a>
+                    <label class="col-md-3 col-md-offset-2">队伍编号</label><input type="search" class="col-md-3" id="search-team-input"><a class="btn btn-lightblue" id="search-team-btn">搜索</a>
                   </div>
                   <br>
-                  <div class="box">
-                    <table class="table">
+                  <div class="box hidden" id="teams-table-wrapper">
+                    <table class="table" id="teams-table">
                       <thead>
                         <tr>
                           <th>项目</th>
@@ -103,13 +113,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                          <tr>
-                            <td>XXXX</td>
-                            <td>XXXX</td>
-                            <td>XXXX</td>
-                            <td>XXXX</td>
-                            <td>加入</td>
-                          </tr>
+
                       </tbody>
                     </table>
                 </div>
@@ -178,7 +182,7 @@
                 <div class="form-group">
                   <label for="school_name" class="col-sm-3 control-label">学籍所在学校</label>
 
-                  <div class="col-sm-8 form-plain">
+                  <diapplied-events-wrappersm-8 form-plain">
                     <% if @user_info.school_id.present? && @user_info.school_id!=0 %>
                         <span class="change-school school-tag"><%= @user_info.school_name %> </span>
                     <% else %>
@@ -187,7 +191,7 @@
                     <input type="hidden" id="district-id" value="<%= @user_info.try(:district_id) %>"/>
                     <input type="hidden" name="school_id" id="school-id" value="<%= @user_info.try(:school_id) %>"/>
                   </div>
-                </div>
+
                 <div class="form-group">
                   <label for="school_name" class="col-sm-3 control-label">报名学校</label>
 
@@ -241,22 +245,22 @@
                     </select>
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="group-join">
                   <label for="group" class="col-sm-3 control-label">组别</label>
 
                   <div class="col-sm-8">
-                    <select id="group-join" class="form-control" name="group">
+                    <select  class="form-control" name="group">
                       <option value="">请选择组别</option>
                       <option value="1">小学</option>
                       <option value="2">中学</option>
                     </select>
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="teacher-join">
                   <label for="teacher" class="col-sm-3 control-label">指导教师</label>
 
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" name="teacher" id="teacher-join">
+                    <input type="text" class="form-control" name="teacher" >
                   </div>
                 </div>
 
@@ -271,6 +275,7 @@
                   <div class="col-sm-offset-3 col-sm-8">
                     <a class="btn btn-info" id="competition-apply-batch-submit">提交</a>
                   </div>
+                </div>
                 </div>
               </form>
 
@@ -362,6 +367,49 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div id="viewTeamModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <div class="info text-center">
+          <div>项目</div>
+          <div>编号</div>
+          <div>人数</div>
+          <div>组别</div>
+        </div>
+        <div class="row">
+          <label class="col-md-3 col-md-offset-2">邀请队员</label><input type="search" class="col-md-3" id="search-player-input"><a class="btn btn-lightblue" id="search-player-btn">搜索</a>
+        </div>
+
+        <table class="table" id="players-table">
+          <thead>
+            <tr>
+              <th>队员姓名</th>
+              <th>年龄</th>
+              <th>学校</th>
+              <th>指导老师</th>
+              <th>状态</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+        <div class="button-row">
+          <a class="btn btn-lightblue">解散队伍</a>
+          <a class="btn btn-lightblue">提交</a>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 <% end %>
