@@ -92,3 +92,24 @@ function getAge(dateString) {
     }
     return age;
 }
+
+function getGender(num){
+  switch (num) {
+    case 1:
+      return "男";
+    case 2:
+      return "女";
+    default:
+      return "未知";
+  }
+}
+
+function getGrade(num){
+  var grades = ['一', '二', '三', '四', '五', '六(初中预备)', '七(初中一)', '八(初中二)', '九(初中三)', '高一', '高二', '高三'];
+  var result = grades[parseInt(num) - 1];
+  if(result){
+    return result;
+  }else{
+    return "未知";
+  }
+}

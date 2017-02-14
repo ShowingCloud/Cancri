@@ -84,7 +84,7 @@
                   <% one.each do |one_events| %>
                       <div class="col-md-4" id="one-event-<%= one_events.id %>">
                         <input type="checkbox" name="one-event" value="<%= one_events.id %>">
-                        <label><%= one_events.name %><label>
+                        <label><%= one_events.name %></label>
                       </div>
                   <% end %>
                 </div>
@@ -182,7 +182,7 @@
                 <div class="form-group">
                   <label for="school_name" class="col-sm-3 control-label">学籍所在学校</label>
 
-                  <diapplied-events-wrappersm-8 form-plain">
+                  <div class="col-sm-8 form-plain">
                     <% if @user_info.school_id.present? && @user_info.school_id!=0 %>
                         <span class="change-school school-tag"><%= @user_info.school_name %> </span>
                     <% else %>
@@ -191,6 +191,7 @@
                     <input type="hidden" id="district-id" value="<%= @user_info.try(:district_id) %>"/>
                     <input type="hidden" name="school_id" id="school-id" value="<%= @user_info.try(:school_id) %>"/>
                   </div>
+                </div>
 
                 <div class="form-group">
                   <label for="school_name" class="col-sm-3 control-label">报名学校</label>
@@ -384,15 +385,34 @@
           <div>人数</div>
           <div>组别</div>
         </div>
-        <div class="row">
-          <label class="col-md-3 col-md-offset-2">邀请队员</label><input type="search" class="col-md-3" id="search-player-input"><a class="btn btn-lightblue" id="search-player-btn">搜索</a>
+        <div class="leader-required">
+          <div class="row">
+            <label class="col-md-3 col-md-offset-2">邀请队员</label><input type="search" class="col-md-3" id="search-player-input"><a class="btn btn-lightblue" id="search-player-btn">搜索</a>
+          </div>
+
+          <div id="search-player-result" class="box hidden">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>队员姓名</th>
+                  <th>性别</th>
+                  <th>学校</th>
+                  <th>年级</th>
+                  <th>班级</th>
+                </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <table class="table" id="players-table">
           <thead>
             <tr>
               <th>队员姓名</th>
-              <th>年龄</th>
+              <th>性别</th>
               <th>学校</th>
               <th>指导老师</th>
               <th>状态</th>
@@ -403,9 +423,9 @@
 
           </tbody>
         </table>
-        <div class="button-row">
-          <a class="btn btn-lightblue">解散队伍</a>
-          <a class="btn btn-lightblue">提交</a>
+        <div class="button-row leader-required">
+          <a class="btn btn-primary">解散队伍</a>
+          <a class="btn btn-primary">提交</a>
         </div>
       </div>
     </div>

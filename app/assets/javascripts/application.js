@@ -15,19 +15,18 @@
 //= require bootstrap-dialog
 //= require cable
 //= require common
-//= require account
 //= require user
 //= require notify
 //= require home
 //= require admin/bootstrap-datepicker.min
 //= require course
 //= require kindeditor
-//= require admin/bootbox.min
 //= require remodal
 //= require competition
 //= require jquery.qrcode.min
 //= require comp_voucher
 //= require birthday_picker
 
+//= //require account
 //= //require turbolinks
 //= //require_tree .
