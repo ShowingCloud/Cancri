@@ -270,7 +270,7 @@ class CompetitionsController < ApplicationController
   def search_user
     invited_name = params[:invited_name]
     if request.method == 'GET' && invited_name.present? && invited_name.length>1
-      users = UserProfile.left_joins(:user, :school).where(['user_profiles.username like ?', "#{invited_name}%"]).where('school_id is not NULL').select(:user_id, :nickname, 'user_profiles.username', 'schools.name as school_name', 'user_profiles.gender', 'user_profiles.grade')
+      users = UserProfile.left_joins(:user, :school).where(['user_profiles.username like ?', "#{invited_name}%"]).where('school_id is not NULL').select(:user_id, :nickname, 'user_profiles.username', 'schools.name as school_name', 'user_profiles.gender', 'user_profiles.grade', 'user_profiles.bj')
       result = [true, users]
     else
       result = [false, '请至少输入名字的前两个字']
