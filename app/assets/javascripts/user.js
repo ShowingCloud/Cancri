@@ -118,7 +118,7 @@ $('.delete-submit').click(
       dataType: "json",
       data:{course_opus_ids: checkedValues},
       success: function(response){
-          alert_r(response.message);
+          BootstrapDialog.alert(response.message);
           if(response.status === true){
             $('input:checkbox:checked').each(function(){
               $(this).parents('.opus-item').remove();
@@ -127,7 +127,7 @@ $('.delete-submit').click(
           $('.delete-trigger').trigger('click');
       },
       error: function(){
-          alert_r("操作失败");
+          BootstrapDialog.alert("操作失败");
       }
     });
   }
@@ -183,14 +183,14 @@ $('#edit-course-opus-submit').click(function(){
     dataType: "json",
     data: {name:name,desc:desc,id:id},
     success: function(response){
-      alert_r(response.message);
+      BootstrapDialog.alert(response.message);
       $("#edit-course-opus-modal").modal('hide');
       var item = $('[data-id="'+id+'"]');
       item.data('desc',desc);
       item.find('.name').html(name);
     },
     error: function(response){
-      alert_r('上传失败');
+      BootstrapDialog.alert('上传失败');
     }
   });
 });

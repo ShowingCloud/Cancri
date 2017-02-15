@@ -1,4 +1,4 @@
-<div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
+<div class="main" id="main" >
   <div class="container text-center" id="event-list">
     <h3>
       <%= @competition.name %>
@@ -52,7 +52,7 @@
                       </thead>
                       <tbody>
                         <% already.each do |apply_event| %>
-                          <tr data-identifier="<%= apply_event.identifier %>">
+                          <tr data-identifier="<%= apply_event.identifier %>" data-team-id="<%= apply_event.team_id %>" data-leader-id="<%= apply_event.leader_id %>" data-player-id="<%= apply_event.player_id %>">
                             <td><%= apply_event.name %></td>
                             <td><%= apply_event.team_max_num == 1 ? "单人" : "多人" %></td>
                             <td class="team_status" >
@@ -63,7 +63,11 @@
                               <% end %>
                             </td>
                             <td>
-                              <a class="btn btn-lightblue view">查看队伍</a>
+                              <% if apply_event.team_max_num > 1 %>
+                                <a class="btn btn-lightblue view-team">查看队伍</a>
+                              <% else %>
+                                <a class="btn btn-lightblue view-info">查看信息</a>
+                              <% end %>
                             </td>
                           </tr>
                         <% end %>
@@ -414,7 +418,8 @@
               <th>队员姓名</th>
               <th>性别</th>
               <th>学校</th>
-              <th>指导老师</th>
+              <th>年级</th>
+              <th>班级</th>
               <th>状态</th>
               <th></th>
             </tr>
@@ -424,8 +429,8 @@
           </tbody>
         </table>
         <div class="button-row leader-required">
-          <a class="btn btn-primary">解散队伍</a>
-          <a class="btn btn-primary">提交</a>
+          <a class="btn btn-primary" id="delete-team">解散队伍</a>
+          <a class="btn btn-primary" id="submit-team">提交</a>
         </div>
       </div>
     </div>

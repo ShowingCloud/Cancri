@@ -21,7 +21,6 @@
 //= require admin/bootstrap-datepicker.min
 //= require course
 //= require kindeditor
-//= require remodal
 //= require competition
 //= require jquery.qrcode.min
 //= require comp_voucher

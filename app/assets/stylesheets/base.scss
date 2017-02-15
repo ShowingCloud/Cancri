@@ -29,6 +29,7 @@ input[type=search]{
   height: 100px;
   background: center center;
   background-size: cover;
+  background-image: image_url('top.png');
 }
 
 #top .logo {
@@ -174,6 +175,8 @@ input[type=search]{
   background-repeat: no-repeat;
   background-attachment: fixed;
   color: #FFF;
+  background-image: image-url('pagebk.jpg');
+  background-size: cover;
 }
 
 #footer {
@@ -2347,11 +2350,9 @@ select {
     background: rgba(57,105,119,0.74);
     border-top: 2px solid #9AE4FF;
     border-bottom: 2px solid #9AE4FF;
-    min-height: 180px;
+    height: 180px;
     width: 330px;
     z-index: 3;
-    overflow: visible;
-    display: table;
 
     .close{
       font-size: 14px;
@@ -2382,10 +2383,9 @@ select {
 .competition-tip:before, .competition-tip:after {
   content:'';
   position:absolute;
-  top: 0;
+  top: -2px;
   width:20px;
-  height:100%;
-  display:table-cell;
+  height: 180px;
 }
 .competition-tip:before {
   right:100%;

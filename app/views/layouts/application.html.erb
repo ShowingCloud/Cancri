@@ -10,8 +10,8 @@
 
 </head>
 
-<body>
-<div id="top" data-src="<%= image_path('top.png') %>">
+<body class="<%= get_area %>">
+<div id="top">
   <div class="container">
     <div class="row">
       <div class="col-xs-12">
@@ -71,18 +71,6 @@
     </div>
   </div>
 </div>
-<div id="bs-pg" data-bk="<%= image_path('bs-pagebk.png') %>"></div>
-
-<div id="flash" class="remodal" data-remodal-id="modal"
-     data-remodal-options="hashTracking: false, closeOnOutsideClick: false">
-
-  <button data-remodal-action="close" class="remodal-close"></button>
-  <div class="content">
-  </div>
-  <br>
-  <button data-remodal-action="cancel" class="remodal-cancel">确定</button>
-</div>
-
 
 <%= yield %>
 
@@ -102,24 +90,11 @@
 <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
 <script type="text/javascript">
-    function alert_r(msg, cb, param) {
-        var flash = $('#flash');
-        if(msg && typeof msg === "string"){
-          flash.find('.content').html(msg);
-          flash.remodal().open();
-          $('.remodal').one('closed', function () {
-              if (cb) {
-                  if (param) {
-                      cb(param);
-                  } else {
-                      cb();
-                  }
-              }
-          });
-        }
-    }
+    BootstrapDialog.DEFAULT_TEXTS[BootstrapDialog.TYPE_PRIMARY] = '提示信息';
+    BootstrapDialog.DEFAULT_TEXTS['OK'] = '确认';
+    BootstrapDialog.DEFAULT_TEXTS['CANCEL'] = '取消';
     <% if flash.present? %>
-    alert_r(<% flash.each do |f| %>
+    BootstrapDialog.alert(<% flash.each do |f| %>
             "<%= f[1] %>"
             <% end %>);
     <% end %>
