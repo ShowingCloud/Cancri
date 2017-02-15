@@ -338,17 +338,22 @@ class CompetitionsController < ApplicationController
   def leader_delete_player
     td = params[:td]
     ud = params[:ud]
-    team_info = Event.joins(:teams, :competition).where('teams.id=?', td).select(:name, 'teams.user_id', 'teams.status', 'competitions.apply_end_time').take
-    if team_info.present? && (team_info.status ==0) && (team_info.user_id == current_user.id) && (team_info.apply_end_time > Time.now)
-      t_u = TeamUserShip.where(user_id: ud, team_id: td).take
-      if t_u.present? && t_u.destroy
-        result = [true, '清退成功!']
-        Notification.create(user_id: team_info.user_id, message_type: 0, content: '在比赛项目:'+team_info.name+'中,您被队长移出队伍')
+    current_user_id = current_user.id
+    if ud == current_user_id.to_s
+      team_info = Event.joins(:teams, :competition).where('teams.id=?', td).select(:name, 'teams.user_id', 'teams.status', 'competitions.apply_end_time').take
+      if team_info.present? && (team_info.status ==0) && (team_info.user_id == current_user_id) && (team_info.apply_end_time > Time.now)
+        t_u = TeamUserShip.where(user_id: ud, team_id: td).take
+        if t_u.present? && t_u.destroy
+          result = [true, '清退成功!']
+          Notification.create(user_id: team_info.user_id, message_type: 0, content: '在比赛项目:'+team_info.name+'中,您被队长移出队伍')
+        else
+          result = [false, '清退失败!']
+        end
       else
-        result = [false, '清退失败!']
+        result = [false, '不规范请求或报名时间已截止']
       end
     else
-      result = [false, '不规范请求或报名时间已截止']
+      result = [false, '队长不能剔除自己']
     end
     render json: result
   end
@@ -401,7 +406,7 @@ class CompetitionsController < ApplicationController
     t_u_id = params[:tud]
     notification_id = params[:nd]
     reject = params[:reject] # option
-    if t_u_id.present? && notification_id.present?
+    if t_u_id.present? && (request.format.html? && notification_id.present?)
       t_u = TeamUserShip.where(id: t_u_id).first
       if t_u.present?
         team_info = Event.joins(:competition).left_joins(:teams).where('teams.id=?', t_u.team_id).select(:name, 'competitions.apply_end_time', 'teams.user_id as leader_user_id', 'teams.status as team_status', 'teams.identifier').take
@@ -409,27 +414,30 @@ class CompetitionsController < ApplicationController
           if reject.present? && reject=='1'
             Notification.create(user_id: t_u.user_id, content: team_info.name+'比赛项目中队伍'+team_info.identifier+'的队长拒绝了你的申请，您未能加入该队', message_type: 0)
             if t_u.destroy
-              flash[:success] = '拒绝成功'
+              result = [true, '拒绝成功']
             else
-              flash[:error] = '拒绝失败'
+              result = [false, '拒绝失败']
             end
           else
             t_u.status = 1
             if t_u.save
-              flash[:success] = '接受成功'
+              result = [true, '接受成功']
               Notification.create(user_id: t_u.user_id, content: team_info.name+'比赛项目中'+team_info.identifier+'的队长同意了你的申请，您已成功加入了该队', message_type: 0)
             else
-              flash[:error] = '接受失败'
+              result = [false, '接受失败']
             end
           end
         else
-          flash[:error] = '不规范请求'
+          result = [false, '不规范请求']
         end
       else
-        flash[:error] = '不规范请求'
+        result = [false, '不规范请求']
       end
     end
-    redirect_to "/user/notify?id=#{notification_id}"
+    respond_to do |format|
+      format.html { redirect_to "/user/notify?id=#{notification_id}", notice: result[1] }
+      format.json { render json: result }
+    end
   end
 
   def school_refuse_teams
