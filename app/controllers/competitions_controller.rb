@@ -340,6 +340,8 @@ class CompetitionsController < ApplicationController
     ud = params[:ud]
     current_user_id = current_user.id
     if ud == current_user_id.to_s
+      result = [false, '队长不能剔除自己']
+    else
       team_info = Event.joins(:teams, :competition).where('teams.id=?', td).select(:name, 'teams.user_id', 'teams.status', 'competitions.apply_end_time').take
       if team_info.present? && (team_info.status ==0) && (team_info.user_id == current_user_id) && (team_info.apply_end_time > Time.now)
         t_u = TeamUserShip.where(user_id: ud, team_id: td).take
@@ -352,8 +354,6 @@ class CompetitionsController < ApplicationController
       else
         result = [false, '不规范请求或报名时间已截止']
       end
-    else
-      result = [false, '队长不能剔除自己']
     end
     render json: result
   end
