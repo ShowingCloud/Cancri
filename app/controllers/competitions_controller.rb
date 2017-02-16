@@ -410,7 +410,7 @@ class CompetitionsController < ApplicationController
       t_u = TeamUserShip.where(id: t_u_id).first
       if t_u.present?
         team_info = Event.joins(:competition).left_joins(:teams).where('teams.id=?', t_u.team_id).select(:name, 'competitions.apply_end_time', 'teams.user_id as leader_user_id', 'teams.status as team_status', 'teams.identifier').take
-        if team_info.present? && (team_info.apply_end_time > Time.now) && (team_info.team_status ==0) && (!t_u.status) && (team_info.leader_user_id == current_user.id)
+        if team_info.present? && (team_info.apply_end_time > Time.now) && (team_info.team_status ==0) && (t_u.status == 0) && (team_info.leader_user_id == current_user.id)
           if reject.present? && reject=='1'
             Notification.create(user_id: t_u.user_id, content: team_info.name+'比赛项目中队伍'+team_info.identifier+'的队长拒绝了你的申请，您未能加入该队', message_type: 0)
             if t_u.destroy
