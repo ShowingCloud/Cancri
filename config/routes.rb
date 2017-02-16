@@ -59,6 +59,8 @@ Rails.application.routes.draw do
   end
   resources :course_score_attrs
   resources :course_files
+  get '/volunteers', to: 'volunteers#index'
+  match '/volunteers/recruit', to: 'volunteers#recruit', as: 'volunteers_recruit', via: [:get, :post]
   get '/test' => 'test#index'
 
   # -----------------------------------------------------------
