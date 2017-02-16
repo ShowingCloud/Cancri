@@ -85,8 +85,8 @@ class CompetitionsController < ApplicationController
       else
         user_profile = current_user.user_profile ||= current_user.build_user_profile
         if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, student_code: student_code, birthday: birthday, identity_card: identity_card)
-          event = Team.joins(:event).joins('left join competitions c on events.competition_id = c.id').where('teams.id=?', td).select('c.apply_end_time', 'events.team_max_num', :players, :identifier, 'events.id as event_id', 'teams.user_id', 'events.name as event_name').take
-          if event.present? && (event.apply_end_time > Time.zone.now) && (event.team_max_num > 1) && (event.team_max_num > event.players)
+          event = Team.joins(:event).joins('left join competitions c on events.competition_id = c.id').where('teams.id=?', td).select('c.apply_end_time', 'events.team_max_num', :players, :identifier, 'events.id as event_id', 'teams.user_id', 'teams.status as team_status', 'events.name as event_name').take
+          if event.present? && (event.apply_end_time > Time.zone.now) && (event.team_max_num > 1) && (event.team_max_num > event.players) && (event.team_status == 0)
             already_apply = TeamUserShip.where(user_id: user_id, event_id: event.event_id).exists?
             if already_apply.present?
               result = [false, '该比赛您已报名或等待队长审核']
