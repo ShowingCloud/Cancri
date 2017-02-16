@@ -362,7 +362,7 @@ class CompetitionsController < ApplicationController
     username = params[:username]
     gender = params[:gender]
     district_id = params[:district]
-    school_id = params[:school]
+    school_id = params[:school_id]
     grade = params[:grade]
     birthday = params[:birthday]
     student_code = params[:student_code]
