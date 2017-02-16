@@ -368,14 +368,13 @@ class CompetitionsController < ApplicationController
     student_code = params[:student_code]
     identity_card = params[:identity_card]
     td = params[:td]
-    ed = params[:ed]
 
     if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present?
       user_profile = current_user.user_profile ||= current_user.build_user_profile
       if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
-        event = Event.joins(:competition).left_joins(:teams).where(id: ed).where('teams.id=?', td).select(:name, 'competitions.apply_end_time', 'teams.user_id as leader_user_id', 'teams.status as team_status', 'teams.identifier').take
+        event = Event.joins(:teams, :competition).where('teams.id=?', td).select(:id,:name, 'competitions.apply_end_time', 'teams.user_id as leader_user_id', 'teams.status as team_status', 'teams.identifier').take
         if event.present? && event.apply_end_time > Time.now && event.team_status==0
-          t_u = TeamUserShip.where(user_id: current_user.id, event_id: ed).take
+          t_u = TeamUserShip.where(user_id: current_user.id, event_id: event.id).take
           if t_u.present?
             if t_u.status == 1
               result = [false, '该比赛您已经报名，请不要再次报名!']
