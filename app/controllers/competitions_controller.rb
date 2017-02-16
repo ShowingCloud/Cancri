@@ -406,7 +406,7 @@ class CompetitionsController < ApplicationController
     t_u_id = params[:tud]
     notification_id = params[:nd]
     reject = params[:reject] # option
-    if t_u_id.present? && (request.format.html? && notification_id.present?)
+    if t_u_id.present? && (request.format.json? || (request.format.html? && notification_id.present?))
       t_u = TeamUserShip.where(id: t_u_id).first
       if t_u.present?
         team_info = Event.joins(:competition).left_joins(:teams).where('teams.id=?', t_u.team_id).select(:name, 'competitions.apply_end_time', 'teams.user_id as leader_user_id', 'teams.status as team_status', 'teams.identifier').take
@@ -433,6 +433,8 @@ class CompetitionsController < ApplicationController
       else
         result = [false, '不规范请求']
       end
+    else
+      result = [false, '参数不规范']
     end
     respond_to do |format|
       format.html { redirect_to "/user/notify?id=#{notification_id}", notice: result[1] }
