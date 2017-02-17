@@ -209,6 +209,7 @@ class CompetitionsController < ApplicationController
     username = params[:username]
     gender = params[:gender]
     school_id = params[:school]
+    district_id = params[:district_id]
     grade = params[:grade]
     birthday = params[:birthday]
     student_code = params[:student_code]
@@ -220,12 +221,12 @@ class CompetitionsController < ApplicationController
     ed = params[:team_event]
 
 
-    if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && student_code.present? && birthday.present? && teacher.present? && group.present?
+    if username.present? && school_id.to_i !=0 && district_id.present? && grade.to_i !=0 && gender.present? && student_code.present? && birthday.present? && teacher.present? && group.present?
       if has_teacher_role
         result = [false, '您是老师,不能报名比赛']
       else
         user = current_user.user_profile ||= current_user.build_user_profile
-        if user.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, student_code: student_code, birthday: birthday, identity_card: identity_card)
+        if user.update_attributes(username: username, gender: gender, school_id: school_id, district_id: district_id, grade: grade, student_code: student_code, birthday: birthday, identity_card: identity_card)
           event = Event.joins(:competition).where(id: ed).select(' competitions.apply_end_time ').take
           if event.present? && event.apply_end_time > Time.zone.now
             already_apply = TeamUserShip.where(user_id: user_id, event_id: ed, status: true).exists?
@@ -234,8 +235,8 @@ class CompetitionsController < ApplicationController
             else
               begin
                 TeamUserShip.transaction do
-                  team = Team.create!(group: group, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: school_id)
-                  TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed, school_id: school_id, grade: grade, status: true)
+                  team = Team.create!(group: group, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: school_id, district_id: district_id)
+                  TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed, school_id: school_id, district_id: district_id, grade: grade, status: true)
                 end
                 result = [true, '队伍创建成功!']
               rescue Exception => ex
@@ -361,7 +362,7 @@ class CompetitionsController < ApplicationController
   def player_agree_leader_invite
     username = params[:username]
     gender = params[:gender]
-    district_id = params[:district]
+    district_id = params[:district_id]
     school_id = params[:school_id]
     grade = params[:grade]
     birthday = params[:birthday]
@@ -372,7 +373,7 @@ class CompetitionsController < ApplicationController
     if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present?
       user_profile = current_user.user_profile ||= current_user.build_user_profile
       if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
-        event = Event.joins(:teams, :competition).where('teams.id=?', td).select(:id,:name, 'competitions.apply_end_time', 'teams.user_id as leader_user_id', 'teams.status as team_status', 'teams.identifier').take
+        event = Event.joins(:teams, :competition).where('teams.id=?', td).select(:id, :name, 'competitions.apply_end_time', 'teams.user_id as leader_user_id', 'teams.status as team_status', 'teams.identifier').take
         if event.present? && event.apply_end_time > Time.now && event.team_status==0
           t_u = TeamUserShip.where(user_id: current_user.id, event_id: event.id).take
           if t_u.present?
