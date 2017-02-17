@@ -178,7 +178,7 @@ class CompetitionsController < ApplicationController
                     if each_index > 0
                       result = [true, (result[0..-2]+['剩余项目报名失败']).join(','), success_teams]
                     else
-                      result = [false, result[0]]
+                      result = [false, result[1]]
                     end
                   end
                 else
