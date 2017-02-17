@@ -1,11 +1,11 @@
 <div class="main" id="main">
   <div class="container text-center" id="comp-show">
     <div class="competition-top">
-      <div class="pull-right">
-        <%= link_to "/competitions/#{@competition.id}/events", class: 'btn btn-lightblue' do %>
+
+        <%= link_to "/competitions/#{@competition.id}/events", class: 'btn btn-lightblue btn-top' do %>
             去报名
         <% end %>
-      </div>
+
       <ul class="competition-steps clearfix">
         <li class="step-wrapper active">
           <p class="step">STEP1</p>

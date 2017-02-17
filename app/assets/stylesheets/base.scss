@@ -1588,6 +1588,7 @@ select {
             display: none;
             padding: 5px 20px;
             text-align: left;
+            text-indent: 2em;
             &.active {
               opacity: 1;
               display: block;
@@ -2314,8 +2315,13 @@ select {
 //competition
   .competition-top{
     text-align: center;
-    margin-top: 20px;
     position: relative;
+
+    .btn-top{
+      position: absolute;
+      right: 0;
+      top: 50px;
+    }
   }
   .competition-steps{
     display: inline-block;
