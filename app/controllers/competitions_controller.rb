@@ -167,7 +167,7 @@ class CompetitionsController < ApplicationController
                         break
                       end
                     else
-                      result << [false, "#{event.name}不包含您所报名的组别！"]
+                      result = [false, "#{event.name}不包含您所报名的组别！"]
                       result_status = false
                       break
                     end
