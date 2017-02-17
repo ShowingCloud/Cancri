@@ -106,12 +106,12 @@ $(function() {
     // 报名前检查
     function go_apply(callback) {
         if ($("#signed-in").val() === "false") {
-            BootstrapDialog.alert("报名前请先登录", function() {
+            alert_r("报名前请先登录", function() {
                 window.location.href = '/account/sign_in';
             });
         } else {
             if ($("#mobile").text() === "") {
-                BootstrapDialog.alert("报名前请先登记你的手机号", function() {
+                alert_r("报名前请先登记你的手机号", function() {
                     window.location.href = '/user/mobile';
                 });
             } else {
@@ -133,7 +133,7 @@ $(function() {
                             ud: user_id
                         },
                         success: function(data) {
-                          BootstrapDialog.alert(data[1]);
+                          alert_r(data[1]);
                             if (data[0]) {
                                 callback();
                             }
@@ -156,7 +156,7 @@ $(function() {
                             reject: '1'
                         },
                         success: function(data) {
-                          BootstrapDialog.alert(data[1]);
+                          alert_r(data[1]);
                             if (data[0]) {
                                 callback();
                             }
@@ -178,7 +178,7 @@ $(function() {
                             tud: tud
                         },
                         success: function(data) {
-                          BootstrapDialog.alert(data[1]);
+                          alert_r(data[1]);
                             if (data[0]) {
                                 callback();
                             }
@@ -202,10 +202,10 @@ $(function() {
                         },
                         success: function(data) {
                             if (data[0]) {
-                                BootstrapDialog.alert(data[1]);
+                                alert_r(data[1]);
                                 window.location.reload();
                             } else {
-                                BootstrapDialog.alert(data[1]);
+                                alert_r(data[1]);
                             }
                         }
                     });
@@ -228,10 +228,10 @@ $(function() {
                         },
                         success: function(data) {
                             if (data[0]) {
-                                BootstrapDialog.alert(data[1]);
+                                alert_r(data[1]);
                                 tr.remove();
                             } else {
-                                BootstrapDialog.alert(data[1]);
+                                alert_r(data[1]);
                             }
                         }
                     });
@@ -252,11 +252,11 @@ $(function() {
                         },
                         success: function(data) {
                             if (data[0]) {
-                                BootstrapDialog.alert(data[1], function() {
+                                alert_r(data[1], function() {
                                     window.location.reload();
                                 });
                             } else {
-                                BootstrapDialog.alert(data[1]);
+                                alert_r(data[1]);
                             }
                         }
                     });
@@ -268,16 +268,22 @@ $(function() {
       return $("#viewTeamModal").data("team_id");
     }
 
+    $(document).on('hidden.bs.modal','.modal', function (e) {
+        if($('.modal').hasClass('in')) {
+        $('body').addClass('modal-open');
+        }
+    });
+
     function accept_invitation(team_id,event_id){
       BootstrapDialog.confirm("确定接受邀请?",function(result) {
               if (result === true) {
                 go_apply(function() {
+
                   $('.modal').modal('hide');
                   $('#user-apply-info').data("apply", {
                       "team_id": team_id,
                       type: "accept_invitation"
                   }).modal();
-
                 });
               }
           });
@@ -427,7 +433,7 @@ $(function() {
             $.each(form_error, function(_index, error) {
                 msg = msg + "<br>" + error.msg;
             });
-            BootstrapDialog.alert(msg);
+            alert_r(msg);
         } else {
             form_data.district = $("#district-id").val();
             var apply = $('#user-apply-info').data("apply");
@@ -440,7 +446,7 @@ $(function() {
                     data: form_data,
                     success: function(data) {
                         console.log(data);
-                        BootstrapDialog.alert(data.message);
+                        alert_r(data.message);
                     }
                 });
             } else if (apply.type === "one-event" || apply.type === "multi-event"){//报名项目
@@ -453,10 +459,10 @@ $(function() {
                         if (data.status === true) {
                             $('#user-apply-info').modal("hide");
                             if (apply.type === "one-event") {
-                                BootstrapDialog.alert(data.message);
+                                alert_r(data.message);
                             }
                         } else {
-                            BootstrapDialog.alert(data.message);
+                            alert_r(data.message);
                         }
                         if ($.isArray(data.success_teams)) {
                             $("#applied-events-wrapper").removeClass("hidden");
@@ -467,8 +473,8 @@ $(function() {
                                     $("#one-event-" + st.event_id).remove();
                                 } else if(apply.type === "multi-event"){//多人项目
                                     $("#multiple_events").find("option[value='" + st.event_id + "']").remove();
-                                    $("#applied-events-wrapper tbody").append("<tr data-identifier='" + st.identifier + "' data-team-id='"+ st.team_id +"' data-leader-id='"+ st.leader_id +"'  data-player-id='"+ st.player_id +"'><td>" + st.event_name + "</td><td>多人</td><td><a class='btn btn-lightblue submit'>提交</a></td><td><a class='btn btn-lightblue view-team'>查看队伍</a></td></tr>");
-                                    BootstrapDialog.alert("你参加" + st.event_name + "的队伍已建立，快把队伍编号：" + st.identifier + "告诉你的小伙伴，让他们加入吧～");
+                                    $("#applied-events-wrapper tbody").append("<tr data-identifier='" + st.identifier + "' data-team-id='"+ st.team_id +"' ><td>" + st.event_name + "</td><td>多人</td><td><a class='btn btn-lightblue submit'>提交</a></td><td><a class='btn btn-lightblue view-team'>查看队伍</a></td></tr>");
+                                    alert_r("你参加" + st.event_name + "的队伍已建立，快把队伍编号：" + st.identifier + "告诉你的小伙伴，让他们加入吧～");
                                 }
                             });
                         }
@@ -485,7 +491,7 @@ $(function() {
                       if (data[0] === true) {
                           $('#user-apply-info').modal('hide');
                       }
-                      BootstrapDialog.alert(data[1]);
+                      alert_r(data[1]);
                   }
               });
             }
@@ -537,7 +543,7 @@ $(function() {
                     var tr = $("<tr><td>" + player.username + "</td><td>" + getGender(player.gender) + "</td><td>" + school_name + "</td><td>" + getGrade(player.grade) + "</td><td>"+player.bj+"</td><td>" + player_status(player.status,is_leader) + "</td><td><a class='btn btn-xs btn-danger del leader-required'>删除</a></td></tr>");
                     tr.data("user",player.user_id);
                     tr.data("team-user",player.id);
-                    if(player.user_id === leader_id){
+                    if(!leader_id || player.user_id === leader_id){
                       tr.find('.del').removeClass("leader-required").addClass('hidden');
                     }
                     if(player.status === 0){
@@ -554,7 +560,7 @@ $(function() {
                 $("#delete-team").text("解散队伍").removeClass('single');
                 $("#viewTeamModal").modal();
               }else{
-                BootstrapDialog.alert(data.message);
+                alert_r(data.message);
               }
             }
         });
@@ -588,7 +594,7 @@ $(function() {
                 $("#delete-team").text("取消报名").addClass('single');
                 $("#viewTeamModal").modal();
               }else{
-                BootstrapDialog.alert(data.message);
+                alert_r(data.message);
               }
             }
         });
@@ -624,12 +630,12 @@ $(function() {
                         });
                     });
                   }else{
-                    BootstrapDialog.alert(data.message);
+                    alert_r(data.message);
                   }
                 }
             });
         } else {
-            BootstrapDialog.alert("请输入队伍编号");
+            alert_r("请输入队伍编号");
         }
     });
 
@@ -657,7 +663,7 @@ $(function() {
                     type: "one-event"
                 }).modal();
             } else {
-                BootstrapDialog.alert('请至少选择一个比赛项目！');
+                alert_r('请至少选择一个比赛项目！');
             }
         });
     });
@@ -671,7 +677,7 @@ $(function() {
                     type: "multi-event"
                 }).modal();
             } else {
-                BootstrapDialog.alert('请选择一个多人比赛项目！');
+                alert_r('请选择一个多人比赛项目！');
             }
         });
     });
@@ -742,7 +748,7 @@ $(function() {
                 success: function(data) {
                     if (data[0]) {
                         if (data[1].length === 0) {
-                            BootstrapDialog.alert('未查询到相关用户');
+                            alert_r('未查询到相关用户');
                         } else {
                             var result = data[1];
                             var player_result = $('#search-player-result');
@@ -762,15 +768,15 @@ $(function() {
                             });
                         }
                     } else {
-                        BootstrapDialog.alert(data[1]);
+                        alert_r(data[1]);
                     }
                 },
                 error: function(data) {
-                    BootstrapDialog.alert(data.status);
+                    alert_r(data.status);
                 }
             });
         } else {
-            BootstrapDialog.alert('请输入名字的前两个字');
+            alert_r('请输入名字的前两个字');
         }
     });
 
@@ -779,13 +785,15 @@ $(function() {
         var v = $(this).val();
         if (v >= 10) {
             $('.identity-group-join').removeClass('hide');
+        }else{
+          $('.identity-group-join').addClass('hide');
         }
     });
 
     $('#team-group').on('change', function() {
         var _self = $(this);
         var group = _self.val();
-        var g = $('#grade');
+        var g = $('#grade-join');
         var icd = $('.identity-group');
         g.find('option').show();
         var a = [];

@@ -113,3 +113,13 @@ function getGrade(num){
     return "未知";
   }
 }
+
+function alert_r(msg,callback){
+  if(msg && typeof msg === 'string'){
+    BootstrapDialog.alert(msg,callback);
+  }
+}
+
+BootstrapDialog.DEFAULT_TEXTS[BootstrapDialog.TYPE_PRIMARY] = '提示信息';
+BootstrapDialog.DEFAULT_TEXTS['OK'] = '确认';
+BootstrapDialog.DEFAULT_TEXTS['CANCEL'] = '取消';

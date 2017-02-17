@@ -17,15 +17,15 @@
 
                   <div class="form-group">
                     <label class="control-label col-sm-2" for="user_profile[district_id]">区县</label>
-                    <input type="hidden" id="user_profile_district_id" name="user_profile[district_id]" value="<%= @user_profile.district_id %>"/>
+                    <input type="hidden" class="district_input" name="user_profile[district_id]" value="<%= @user_profile.district_id %>"/>
                     <span class="col-sm-9"><a href="#select-district-modal" role="button" class="select-user-district" data-toggle="modal"><%= @user_profile.district_id.present? ? "#{@user_profile.district.try(:province_name)}--#{@user_profile.district.try(:city_name)}--#{@user_profile.district.try(:name)}" : '选择区县' %></a></span>
                   </div>
 
                   <div class="form-group">
                     <label class="control-label col-sm-2" for="user_profile[school_id]">学校</label>
-                    <input type="hidden" id="user_profile_school_id" name="user_profile[school_id]" value="<%= @user_profile.try(:school_id) %>"/>
+                    <input type="hidden" class="school_input" name="user_profile[school_id]" value="<%= @user_profile.try(:school_id) %>"/>
                     <input type="hidden" id="change_district_id" value="<%= @user_profile.try(:district_id) %>"/>
-                    <span class="col-sm-9"><a href="#select-school-modal" role="button" class="select-user-school" data-toggle="modal"><%= @user_profile.school_id.present? ? @user_profile.school.try(:name) : '选择学校' %></a></span>
+                    <span class="col-sm-9"><a class="school-tag"><%= @user_profile.school_id.present? ? @user_profile.school.try(:name) : '选择学校' %></a></span>
                   </div>
 
                   <%= f.input :grade, label_html: { class: 'col-sm-2' }, as: :select, :include_blank => false,
@@ -45,85 +45,4 @@
   </div>
 </div>
 
-<div id="select-district-modal" class="modal" data-backdrop="static" tabindex="-1" style="z-index:1060">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="bigger text-center">选择区县</h4>
-      </div>
-
-      <div class="modal-body overflow-visible">
-        <div class="row">
-
-          <div class="col-xs-12">
-            <div class="row">
-              <div class="col-xs-4">
-                <label>省市</label>
-                <div>
-                  <select id="select-province">
-                    <option value="">请选择省市</option>
-                    <% Province.select(:id, :name).each do |p| %>
-                        <option value="<%= p.id %>"><%= p.name %></option>
-                    <% end %>
-                  </select>
-                </div>
-              </div>
-              <div class="col-xs-4"><label>城市</label>
-                <div>
-                  <select id="select-city">
-                    <option value="">请选择城市</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-xs-4"><label>区县</label>
-                <div>
-                  <select id="select-district">
-                    <option value="">请选择区县</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="space-12"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="select-school-modal" class="modal" tabindex="-1" style="z-index:1050">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="blue bigger text-center">选择学校</h4>
-      </div>
-
-      <div class="modal-body overflow-visible">
-        <div class="row">
-
-          <div class="col-xs-12">
-            <div class="row">
-              <div class="col-xs-8">
-                <label for="">区县</label>
-                <label>&nbsp;&nbsp;&nbsp;<a href="#select-district-modal" role="button" class="blue select-user-district" data-toggle="modal"><%= '选择区县' %></a></label>
-              </div>
-              <div class="col-xs-8">
-                <label>学校</label>
-                  <select class="chosen-select" id="select-user-school" data-placeholder="请选择学校">
-                  </select>
-                <div>
-                  <label>没有你的学校？在此添加：</label>
-                  <input id="add-school-input" type="text">
-                  <button type="button" class="btn-robodou btn-add-school">添加</button>
-                </div>
-              </div>
-            </div>
-            <div class="space-12"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<%= render "user/school_district_modal" %>

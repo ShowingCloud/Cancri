@@ -88,13 +88,12 @@
 <%= javascript_include_tag 'application' %>
 
 <script type="text/javascript">
-    BootstrapDialog.DEFAULT_TEXTS[BootstrapDialog.TYPE_PRIMARY] = '提示信息';
-    BootstrapDialog.DEFAULT_TEXTS['OK'] = '确认';
-    BootstrapDialog.DEFAULT_TEXTS['CANCEL'] = '取消';
     <% if flash.present? %>
-    BootstrapDialog.alert(<% flash.each do |f| %>
-            "<%= f[1] %>"
-            <% end %>);
+      alert_r(
+        <% flash.each do |f| %>
+              "<%= f[1] %>"
+        <% end %>
+      );
     <% end %>
 </script>
 

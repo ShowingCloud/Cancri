@@ -22,7 +22,7 @@ $('#user-apply-course').on('click', function() {
                 window.location.reload();
             } else {
                 if (data[1] === '请先在个人中心添加手机') {
-                    BootstrapDialog.alert(data[1], function() {
+                    alert_r(data[1], function() {
                         window.location = '/user/mobile';
                     });
                 } else {

@@ -75,8 +75,9 @@
                                       <% else %>
                                           <button class="new-school btn-robodou">选择学校</button>
                                       <% end %>
-                                      <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
-                                      <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
+                                      <input type="hidden" class="district-id" id="district-id" value="<%= @user_info.district_id %>"/>
+                                      <input type="hidden" class="school-id" id="school-id" value="<%= @user_info.school_id %>"/>
+                                      <input type="hidden" id="change_district_id" value="<%= @user_info.district_id %>" />
                                     </div>
                                   </div>
                                   <div class="form-group">
@@ -124,21 +125,4 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="school-modal">
-  <div class="school-modal-inner">
-    <div class="title">
-      选择学校
-    </div>
-    <div class="content">
-      <div class="screening">
-        <label for="selected-dis">区县</label>
-        <select name="district" id="district-select">
-          <option value="0">请选择区县</option>
-
-        </select>
-      </div>
-      <div class="school-list">
-      </div>
-    </div>
-  </div>
-</div>
+<%= render "user/school_district_modal" %>

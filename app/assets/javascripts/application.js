@@ -21,6 +21,7 @@
 //= require notify
 //= require cable
 //= require common
+//= require school_picker
 //= require user
 //= require home
 //= require course

@@ -108,9 +108,9 @@ $(function () {
                 },
                 success: function (data) {
                     if (data[0]) {
-                        BootstrapDialog.alert(data[1]);
+                        alert_r(data[1]);
                     } else {
-                        BootstrapDialog.alert(data[1]);
+                        alert_r(data[1]);
                     }
                 },
                 error: function (data) {
@@ -122,7 +122,7 @@ $(function () {
                 }
             });
         } else {
-            BootstrapDialog.alert("邮箱格式不正确");
+            alert_r("邮箱格式不正确");
         }
     });
 
