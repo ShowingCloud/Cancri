@@ -104,7 +104,7 @@ $(function() {
     };
 
     // 报名前检查
-    function before_apply(callback) {
+    function go_apply(callback) {
         if ($("#signed-in").val() === "false") {
             BootstrapDialog.alert("报名前请先登录", function() {
                 window.location.href = '/account/sign_in';
@@ -122,7 +122,7 @@ $(function() {
 
     // 队长邀请队员
     function invite_player(user_id,team_id,callback) {
-        BootstrapDialog.confirm("邀请用户",function(result) {
+        BootstrapDialog.confirm("确定邀请该用户？",function(result) {
                 if (result === true) {
                     $.ajax({
                         url: '/competitions/leader_invite_player',
@@ -144,7 +144,7 @@ $(function() {
     }
 
     // 队长拒绝他人加入的申请
-    function reject(t_u_id,callback) {
+    function reject(tud,callback) {
         BootstrapDialog.confirm("拒绝此人的加入队伍？",function(result) {
                 if (result === true) {
                     $.ajax({
@@ -152,7 +152,7 @@ $(function() {
                         dataType: 'json',
                         type: 'post',
                         data: {
-                            t_u_id: t_u_id,
+                            tud: tud,
                             reject: '1'
                         },
                         success: function(data) {
@@ -167,7 +167,7 @@ $(function() {
     }
 
     // 队长批准他人加入的申请
-    function approve(t_u_id,callback) {
+    function approve(tud,callback) {
         BootstrapDialog.confirm("同意此人的加入队伍？",function(result) {
                 if (result === true) {
                     $.ajax({
@@ -175,7 +175,7 @@ $(function() {
                         dataType: 'json',
                         type: 'post',
                         data: {
-                            t_u_id: t_u_id
+                            tud: tud
                         },
                         success: function(data) {
                           BootstrapDialog.alert(data[1]);
@@ -189,8 +189,9 @@ $(function() {
     }
 
     // 队长解散队伍
-    function leader_delete_team(team_id) {
-        BootstrapDialog.confirm("确定解散队伍?",function(result) {
+    function leader_delete_team(team_id,msg) {
+        msg = msg || "确定解散队伍?";
+        BootstrapDialog.confirm(msg,function(result) {
                 if (result === true) {
                     $.ajax({
                         url: '/competitions/leader_delete_team',
@@ -270,7 +271,14 @@ $(function() {
     function accept_invitation(team_id,event_id){
       BootstrapDialog.confirm("确定接受邀请?",function(result) {
               if (result === true) {
+                go_apply(function() {
+                  $('.modal').modal('hide');
+                  $('#user-apply-info').data("apply", {
+                      "team_id": team_id,
+                      type: "accept_invitation"
+                  }).modal();
 
+                });
               }
           });
     }
@@ -423,7 +431,8 @@ $(function() {
         } else {
             form_data.district = $("#district-id").val();
             var apply = $('#user-apply-info').data("apply");
-            if (apply.team_id) {//加入队伍
+            console.log(apply);
+            if (apply.type === "join-team") {//加入队伍
                 form_data.td = apply.team_id;
                 $.ajax({
                     url: '/competitions/apply_join_team',
@@ -431,13 +440,10 @@ $(function() {
                     data: form_data,
                     success: function(data) {
                         console.log(data);
-                        if (data.status === true) {
-                            $('#user-apply-info').modal('hide');
-                        }
                         BootstrapDialog.alert(data.message);
                     }
                 });
-            } else {//报名项目
+            } else if (apply.type === "one-event" || apply.type === "multi-event"){//报名项目
                 form_data.eds = apply.eds;
                 $.ajax({
                     url: '/competitions/leader_batch_apply',
@@ -457,17 +463,31 @@ $(function() {
                             $("#empty").addClass("hidden");
                             $.each(data.success_teams, function(_index, st) {
                                 if (apply.type === "one-event") {//单人项目
-                                    $("#applied-events-wrapper tbody").append("<tr data-identifier='" + st.identifier + "'><td>" + st.event_name + "</td><td>单人</td><td>已提交</td><td></td></tr>");
+                                    $("#applied-events-wrapper tbody").append("<tr data-identifier='" + st.identifier + "' data-team-id='"+ st.team_id +"'><td>" + st.event_name + "</td><td>单人</td><td><a class='btn btn-lightblue submit'>提交</a></td><td><a class='btn btn-lightblue view-info'>查看信息</a></td></tr>");
                                     $("#one-event-" + st.event_id).remove();
-                                } else {//多人项目
+                                } else if(apply.type === "multi-event"){//多人项目
                                     $("#multiple_events").find("option[value='" + st.event_id + "']").remove();
-                                    $("#applied-events-wrapper tbody").append("<tr data-identifier='" + st.identifier + "'><td>" + st.event_name + "</td><td>多人</td><td><a class='btn btn-lightblue submit'>提交</a></td><td><a class='btn btn-lightblue view-team'>查看队伍</a></td></tr>");
+                                    $("#applied-events-wrapper tbody").append("<tr data-identifier='" + st.identifier + "' data-team-id='"+ st.team_id +"' data-leader-id='"+ st.leader_id +"'  data-player-id='"+ st.player_id +"'><td>" + st.event_name + "</td><td>多人</td><td><a class='btn btn-lightblue submit'>提交</a></td><td><a class='btn btn-lightblue view-team'>查看队伍</a></td></tr>");
                                     BootstrapDialog.alert("你参加" + st.event_name + "的队伍已建立，快把队伍编号：" + st.identifier + "告诉你的小伙伴，让他们加入吧～");
                                 }
                             });
                         }
                     }
                 });
+            }else{
+              form_data.td = apply.team_id;
+              $.ajax({
+                  url: '/competitions/player_agree_leader_invite',
+                  type: 'post',
+                  data: form_data,
+                  success: function(data) {
+                      console.log(data);
+                      if (data[0] === true) {
+                          $('#user-apply-info').modal('hide');
+                      }
+                      BootstrapDialog.alert(data[1]);
+                  }
+              });
             }
 
         }
@@ -488,6 +508,7 @@ $(function() {
         var tr = $(this).parents("tr");
         var identifier = tr.data('identifier');
         var leader_id = tr.data('leader-id');
+        console.log("leader_id:"+leader_id);
         var player_id = tr.data('player-id');
         var is_leader = false;
         if (leader_id === player_id){
@@ -517,16 +538,54 @@ $(function() {
                     tr.data("user",player.user_id);
                     tr.data("team-user",player.id);
                     if(player.user_id === leader_id){
-                      tr.find('.del').addClass('hidden');
+                      tr.find('.del').removeClass("leader-required").addClass('hidden');
                     }
                     if(player.status === 0){
                       tr.find('.del').removeClass('del').addClass('reject');
                     }
                     tbody.append(tr);
                 });
+                $(".multi_only").removeClass("hidden");
                 if(!is_leader){
                   $(".leader-required").addClass("hidden");
+                }else{
+                  $(".leader-required").removeClass("hidden");
                 }
+                $("#delete-team").text("解散队伍").removeClass('single');
+                $("#viewTeamModal").modal();
+              }else{
+                BootstrapDialog.alert(data.message);
+              }
+            }
+        });
+    });
+
+    //查看信息（单人）
+    $("#applied-events-wrapper").on("click", ".view-info", function() {
+        var tr = $(this).parents("tr");
+        var identifier = tr.data('identifier');
+        $.ajax({
+            url: "/api/v1/events/get_team_by_identifier",
+            data: {
+                identifier: identifier
+            },
+            success: function(data) {
+                if(data.status === true){
+                var modal = $("#viewTeamModal");
+                modal.data("team_id",data.team_id);
+                modal.find('.info').html(
+                    "<div>项目：" + data.event_name + "</div>" +
+                    "<div>编号：" + data.identifier + "</div>" +
+                    "<div>姓名：" + data.players[0].username + "</div>" +
+                    "<div>性别：" + getGender(data.players[0].gender) + "</div>" +
+                    "<div>学校：" + data.school_name + "</div>" +
+                    "<div>年级：" + getGrade(data.players[0].grade) + "</div>" +
+                    "<div>班级：" + data.players[0].bj + "</div>" +
+                    "<div>组别：" + (data.group === 1 ? "小学" : "中学") + "</div>" +
+                    "<div>指导老师：" + data.teacher + "</div>"
+                );
+                $(".multi_only").addClass("hidden");
+                $("#delete-team").text("取消报名").addClass('single');
                 $("#viewTeamModal").modal();
               }else{
                 BootstrapDialog.alert(data.message);
@@ -557,7 +616,7 @@ $(function() {
                     var tr = $("<tr><td>" + data.event_name + "</td><td>" + data.group + "</td><td>" + leader_name + "</td><td>" + data.school_name + "</td><td><a class='btn btn-lightblue'>加入</a></td></tr>");
                     tbody.html(tr);
                     tr.find(".btn").click(function() {
-                        before_apply(function() {
+                        go_apply(function() {
                             $('#user-apply-info').data("apply", {
                                 "team_id": data.team_id,
                                 type: "join-team"
@@ -576,7 +635,7 @@ $(function() {
 
     $("#user-apply-info").on('show.bs.modal', function() {
         var apply_data = $(this).data("apply");
-        if (apply_data.type === "join-team") { //普通队员加入队伍时隐藏‘组别’和‘指导老师’
+        if (apply_data.type === "join-team" || apply_data.type === "accept_invitation") { //普通队员加入队伍时隐藏‘组别’和‘指导老师’
             $("#group-join").addClass('hidden');
             $("#teacher-join").addClass('hidden');
         }
@@ -587,7 +646,7 @@ $(function() {
     });
     // 单人项目报名
     $('#one-event-apply').on('click', function() {
-        before_apply(function() {
+        go_apply(function() {
             if ($("input[name='one-event']:checked").length) {
                 var eds = [];
                 $("input[name='one-event']:checked").each(function() {
@@ -604,7 +663,7 @@ $(function() {
     });
     // 多人项目报名
     $('#multi-event-apply').on('click', function() {
-        before_apply(function() {
+        go_apply(function() {
             var multi_event = $("#multiple_events").val();
             if ($.trim(multi_event).length) {
                 $('#user-apply-info').data("apply", {
@@ -618,7 +677,11 @@ $(function() {
     });
 
     $("#delete-team").on('click',function(){
-      leader_delete_team(modal_team_id());
+      if($(this).hasClass("single")){
+        leader_delete_team(modal_team_id(),"确定取消报名？");
+      }else{
+        leader_delete_team(modal_team_id());
+      }
     });
 
     $("#submit-team").on('click',function(){
@@ -645,25 +708,24 @@ $(function() {
 
     $("#players-table").on('click','.reject',function(){
       var tr = $(this).parents('tr');
-      var t_u_id = tr.data('team-user');
-      reject(t_u_id,function(){
+      var tud = tr.data('team-user');
+      reject(tud,function(){
         tr.remove();
       });
     });
 
     $("#players-table").on('click','.approve',function(){
       var tr = $(this).parents('tr');
-      var t_u_id = tr.data('team-user');
-      approve(t_u_id,function(){
-        tr.find("td:last-child").removeClass('reject');
+      var tud = tr.data('team-user');
+      approve(tud,function(){
+        tr.find("td:last-child .reject").removeClass('reject').addClass('del');
         tr.find("td:nth-last-child(2)").html("已加入");
       });
     });
 
     $("#players-table").on('click','.accept',function(){
-      var team_id;
-      var event_id;
-      accept_invitation(team_id,event_id);
+      var team_id = modal_team_id();
+      accept_invitation(team_id);
     });
 
     // 搜索队员

@@ -175,6 +175,7 @@ input[type=search]{
   background-repeat: no-repeat;
   background-attachment: fixed;
   color: #FFF;
+  background-color: #2a1d27;
   background-image: image-url('pagebk.jpg');
   background-size: cover;
 }
@@ -1605,7 +1606,7 @@ select {
 
   .tips {
     font-size: 14px;
-    color: #fff;
+    color: #ADE7F5;
     padding: 10px 0;
     text-align: center;
   }
@@ -1706,6 +1707,13 @@ select {
         padding-top: 7px;
       }
     }
+  }
+}
+
+#viewTeamModal {
+  .info{
+    display: inline-block;
+    text-align: left;
   }
 }
 

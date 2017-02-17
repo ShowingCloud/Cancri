@@ -39,7 +39,7 @@
 
                   <div id="applied-events-wrapper" class="<%= "hidden" unless already.present? %>">
                     <h4>已选项目</h4>
-                    <div>已提交状态才算是报名成功噢</div>
+                    <div class="tips">已提交状态才算是报名成功噢</div>
 
                     <table class="table">
                       <thead>
@@ -139,7 +139,7 @@
 
 <input type="hidden" id="signed-in" value="<%= user_signed_in? %>"/>
 <% if user_signed_in? %>
-<div id="user-apply-info" class="modal" tabindex="-1">
+<div id="user-apply-info" class="modal" tabindex="-1"  role="dialog" data-keyboard="false" data-backdrop="static" style="z-index:1050">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -214,21 +214,7 @@
                   <label for="grade" class="col-sm-3 control-label">年级</label>
 
                   <div class="col-sm-8">
-                    <select id="grade-join" name="grade" class="form-control">
-                      <option value="0">请选择年级</option>
-                      <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
-                      <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
-                      <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
-                      <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
-                      <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
-                      <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
-                      <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
-                      <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
-                      <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
-                      <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
-                      <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
-                      <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
-                    </select>
+                    <%= select_tag "grade-join", options_for_select([ ['一年级', '1'], ['二年级', '2'], ['三年级', '3'], ['四年级', '4'], ['五年级', '5'], ['六年级（初中预备）', '6'], ['七年级（初中一年级）', '7'], ['八年级（初中二年级）', '8'], ['九年级（初中三年级）', '9'], ['高中一年级','10'], ['高中二年级','11'], ['高中三年级','12'] ], @user_info.grade.to_i),name: "grade",class: "form-control" %>
                   </div>
                 </div>
                 <div class="form-group identity-group-join <%= 'hide' if @user_info.grade.to_i < 10 %>">
@@ -383,15 +369,23 @@
         <h4 class="modal-title"></h4>
       </div>
       <div class="modal-body">
-        <div class="info text-center">
-          <div>项目</div>
-          <div>编号</div>
-          <div>人数</div>
-          <div>组别</div>
+        <div class="text-center">
+          <div class="info">
+            <div>项目</div>
+            <div>编号</div>
+            <div>人数</div>
+            <div>组别</div>
+          </div>
         </div>
-        <div class="leader-required">
-          <div class="row">
-            <label class="col-md-3 col-md-offset-2">邀请队员</label><input type="search" class="col-md-3" id="search-player-input"><a class="btn btn-lightblue" id="search-player-btn">搜索</a>
+          <div class="leader-required multi_only">
+          <div class="row text-center">
+            <div class="col-md-4"><label>邀请队员</label></div>
+            <div class="col-md-4">
+              <input type="search" id="search-player-input">
+            </div>
+            <div class="col-md-4">
+              <a class="btn btn-primary" id="search-player-btn">搜索</a>
+            </div>
           </div>
 
           <div id="search-player-result" class="box hidden">
@@ -410,9 +404,8 @@
               </tbody>
             </table>
           </div>
-        </div>
-
-        <table class="table" id="players-table">
+          </div>
+        <table class="table multi_only" id="players-table">
           <thead>
             <tr>
               <th>队员姓名</th>

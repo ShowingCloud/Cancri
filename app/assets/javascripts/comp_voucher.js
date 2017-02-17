@@ -81,4 +81,3 @@ function utf16to8(str) {
     }
     return out;
 }
-
