@@ -279,7 +279,7 @@ Rails.application.routes.draw do
   match 'user/hacker_audit', to: 'user#hacker_audit', as: 'user_hacker_audit', via: [:get, :post]
   get 'user/hacker_info/:id', to: 'user#hacker_info', as: 'user_hacker_info'
   # get 'user/join_voucher', to: 'user#join_voucher'
-  # get 'user/export_voucher', to: 'user#export_voucher'
+  get 'user/export_voucher', to: 'user#export_voucher'
   mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
 
