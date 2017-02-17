@@ -316,7 +316,7 @@ class CompetitionsController < ApplicationController
     td = params[:td]
     if td.present?
       team_info = Event.joins(:teams, :competition).where('teams.id=?', td).select(:name, :team_max_num, 'teams.user_id', 'teams.status', 'teams.players', 'competitions.apply_end_time').take
-      if team_info.present? && (team_info.status ==0) && (team_info.user_id == current_user.id) && (team_info.apply_end_time > Time.now)
+      if team_info.present? && (team_info.status != 1) && (team_info.user_id == current_user.id) && (team_info.apply_end_time > Time.now)
         if Team.find(td).destroy
           result = [true, '解散成功']
           if (team_info.team_max_num > 1) && (team_info.players>1)
