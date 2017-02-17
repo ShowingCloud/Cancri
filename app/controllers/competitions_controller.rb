@@ -120,6 +120,7 @@ class CompetitionsController < ApplicationController
     username = params[:username]
     gender = params[:gender]
     school_id = params[:school_id]
+    district_id = params[:district_id]
     sk_station = params[:sk_station]
     grade = params[:grade]
     bj = params[:bj]
@@ -130,7 +131,7 @@ class CompetitionsController < ApplicationController
     teacher = params[:teacher]
     eds = params[:eds]
 
-    if eds.present? && eds.is_a?(Array) && eds.length < 6 && username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && student_code.present? && birthday.present? && teacher.present? && group.present?
+    if eds.present? && eds.is_a?(Array) && eds.length < 6 && username.present? && school_id.to_i !=0 && district_id.present? && grade.to_i !=0 && gender.present? && student_code.present? && birthday.present? && teacher.present? && group.present?
       if has_teacher_role
         result = [false, '您是老师,不能报名比赛!']
       else
@@ -143,7 +144,7 @@ class CompetitionsController < ApplicationController
                 result = [false, '您提交的项目中部分您已报名，无需再次报名']
               else
                 user_profile = current_user.user_profile ||= current_user.build_user_profile
-                if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, bj: bj, student_code: student_code, birthday: birthday, identity_card: identity_card)
+                if user_profile.update_attributes(username: username, gender: gender, district_id: district_id, school_id: school_id, grade: grade, bj: bj, student_code: student_code, birthday: birthday, identity_card: identity_card)
                   result_status = true
                   result = []
                   success_teams = []
@@ -154,8 +155,8 @@ class CompetitionsController < ApplicationController
                       if result_status
                         begin
                           TeamUserShip.transaction do
-                            team = Team.create!(group: group, user_id: user_id, teacher: teacher, event_id: event.id, school_id: school_id, sk_station: sk_station)
-                            team.team_user_ships.create!(team_id: team.id, user_id: user_id, event_id: event.id, school_id: school_id, grade: grade, status: true)
+                            team = Team.create!(group: group, user_id: user_id, teacher: teacher, event_id: event.id, district_id: district_id, school_id: school_id, sk_station: sk_station)
+                            team.team_user_ships.create!(team_id: team.id, user_id: user_id, event_id: event.id, district_id: district_id, school_id: school_id, grade: grade, status: true)
                             result << "#{event.name}报名成功!"
                             success_teams << {event_name: event.name, team_id: team.id, identifier: team.identifier, event_id: event.id}
                           end
