@@ -435,7 +435,7 @@ $(function() {
             });
             alert_r(msg);
         } else {
-            form_data.district = $("#district-id").val();
+            form_data.district_id = $("#district-id").val();
             var apply = $('#user-apply-info').data("apply");
             console.log(apply);
             if (apply.type === "join-team") {//加入队伍
@@ -445,7 +445,6 @@ $(function() {
                     type: 'post',
                     data: form_data,
                     success: function(data) {
-                        console.log(data);
                         alert_r(data.message);
                     }
                 });
@@ -788,6 +787,7 @@ $(function() {
         }else{
           $('.identity-group-join').addClass('hide');
         }
+
     });
 
     $('#team-group').on('change', function() {

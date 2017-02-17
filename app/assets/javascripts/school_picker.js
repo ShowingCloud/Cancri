@@ -1,12 +1,17 @@
 $(function() {
     var $school_input = $(".school_input");
     var $school_tag = $('.school-tag');
+    var $district_input = $(".district_input");
     $('.school-tag').on('click', function(event) {
         event.preventDefault();
         $school_tag = $(this);
         $school_input = $(this).siblings(".school_input");
         if(!$school_input.length){
           $school_input=$(this).parent().siblings(".school_input");
+        }
+        $district_input = $(this).siblings(".district_input");
+        if(!$school_input.length){
+          $district_input=$(this).parent().siblings(".district_input");
         }
         school_handle();
     });
@@ -102,7 +107,7 @@ $(function() {
         var province_name = selected_district.attr('data-province');
         var city_name = selected_district.attr('data-city');
         var district_name = selected_district.text();
-        $(".district_input").val(district_id).change();
+        $district_input.val(district_id).change();
         document.getElementById("change_district_id").value = district_id;
         $(".select-user-district").text(province_name + ' -- ' + city_name + ' -- ' + district_name);
         $("#select-district-modal").modal('hide');
@@ -144,7 +149,7 @@ $(function() {
         var district_id = districts_select.val();
         var school_name = select_user_school.find("option:selected").text();
         if (district_id > 0 && school_id > 0) {
-            $(".district_input").val(district_id);
+            $district_input.val(district_id);
             $school_input.val(school_id).change();
             document.getElementById("change_district_id").value = district_id;
             $school_tag.text(school_name);

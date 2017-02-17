@@ -65,7 +65,11 @@
                               <% end %>
                             </td>
                             <td>
-                              <a class="btn btn-xs btn-primary" href="/user/export_voucher?ed=<%= a.event_id %>">下载参赛证</a>
+                              <% if a.team_status == 1 %>
+                                <a class="btn btn-xs btn-primary" href="/user/export_voucher?ed=<%= a.event_id %>">下载参赛证</a>
+                              <% else %>
+                                审核通过后可下载参赛证
+                              <% end %>
                             </td>
                           </tr>
                       <% end %>

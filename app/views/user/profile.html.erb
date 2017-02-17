@@ -17,7 +17,6 @@
 
                   <div class="form-group">
                     <label class="control-label col-sm-2" for="user_profile[district_id]">区县</label>
-                    <input type="hidden" class="district_input" name="user_profile[district_id]" value="<%= @user_profile.district_id %>"/>
                     <span class="col-sm-9"><a href="#select-district-modal" role="button" class="select-user-district" data-toggle="modal"><%= @user_profile.district_id.present? ? "#{@user_profile.district.try(:province_name)}--#{@user_profile.district.try(:city_name)}--#{@user_profile.district.try(:name)}" : '选择区县' %></a></span>
                   </div>
 
@@ -25,6 +24,7 @@
                     <label class="control-label col-sm-2" for="user_profile[school_id]">学校</label>
                     <input type="hidden" class="school_input" name="user_profile[school_id]" value="<%= @user_profile.try(:school_id) %>"/>
                     <input type="hidden" id="change_district_id" value="<%= @user_profile.try(:district_id) %>"/>
+                    <input type="hidden" class="district_input" name="user_profile[district_id]" value="<%= @user_profile.district_id %>"/>
                     <span class="col-sm-9"><a class="school-tag"><%= @user_profile.school_id.present? ? @user_profile.school.try(:name) : '选择学校' %></a></span>
                   </div>
 

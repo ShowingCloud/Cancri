@@ -192,7 +192,7 @@
                     <% else %>
                         <button class="new-school btn-robodou">选择学校</button>
                     <% end %>
-                    <input type="hidden" id="district-id" value="<%= @user_info.try(:district_id) %>"/>
+                    <input type="hidden" class="district_input" id="district-id" value="<%= @user_info.try(:district_id) %>"/>
                     <input type="hidden" id="change_district_id" value="<%= @user_info.try(:district_id) %>"/>
                     <input type="hidden" class="school_input" name="school_id" id="school-id" value="<%= @user_info.try(:school_id) %>"/>
                   </div>
