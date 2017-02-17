@@ -75,9 +75,14 @@
       </div>
       <div class="panel-body">
         <ul>
-          <li><a href="/admin/checks/teachers">教师：<span><%= @review_th_num %></span></a></li>
-          <li><a href="/admin/checks/hackers">创客：<span><%= @review_fh_num %></span></a></li>
-          <!--<li><a href="/admin/checks/referees">裁判：<span><%= @review_re_num %></span></a></li>-->
+          <% if @review_roles.present? %>
+              <% @review_roles.each do |role| %>
+                  <li>
+                    <a href="/admin/checks/<%= show_review_role_action(role.name) %>"><%= role.name %>
+                      ：<span><%= role[:num].present? ? role.num : 0 %></span></a>
+                  </li>
+              <% end %>
+          <% end %>
           <li><a href="/admin/checks/schools">学校：<span><%= @review_sc_num %></span></a></li>
         </ul>
       </div>

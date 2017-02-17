@@ -45,5 +45,18 @@ module AdminHelper
     end
   end
 
+  def show_review_role_action(role_name)
+    case role_name
+      when '教师'
+        'teachers'
+      when '创客'
+        'hackers'
+      when '志愿者'
+        'volunteers'
+      else
+        ''
+    end
+  end
+
 
 end

@@ -10,9 +10,7 @@ class Team < ApplicationRecord
 
   GROUP = {primary: 1, middle: 2, junior: 3, high: 4}
   # validates :name, presence: true, length: {in: 2..5}, format: {with: /\A[\u4e00-\u9fa5_a-zA-Z0-9]+\Z/i, message: '队伍名称只能包含中文、数字、字母、下划线'}, uniqueness: {scope: :event_id, message: '同一个项目的队伍名称不能重复'}
-  validates :user_id, presence: true
-  validates :status, presence: true
-  # validates :district_id, presence: true
+  validates :status, :district_id, :school_id, :user_id, presence: true
   validates :group, inclusion: [1, 2, 3, 4], presence: true
   validates :event_id, presence: true, uniqueness: {scope: :user_id, message: '一个用户不能报名一个项目两次'}
   validates :teacher, presence: true, format: {with: /\A[\u4e00-\u9fa5]{2,10}\Z/i, message: '只能包含2-10位中文'}
