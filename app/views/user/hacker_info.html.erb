@@ -59,8 +59,8 @@
                 </div>
                 <br>
                 <% if role[:status] == 0 %>
-                  <%=  link_to "不通过审核", user_hacker_audit_path( status: 0, id: params[:id]), :class =>"btn btn-primary", :id => "hacker-audit" %>
-                  <%=  link_to "通过审核", user_hacker_audit_path( status: 1, id: params[:id]), :class =>"btn btn-danger", :id => "hacker-audit" %>
+                  <%=  link_to "不通过审核", user_hacker_audit_path( status: 0, id: params[:id]), :class =>"btn btn-primary hacker-audit" %>
+                  <%=  link_to "通过审核", user_hacker_audit_path( status: 1, id: params[:id]), :class =>"btn btn-danger hacker-audit" %>
                 <% end %>
 
             <% else %>

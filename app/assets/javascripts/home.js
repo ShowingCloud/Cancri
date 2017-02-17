@@ -797,7 +797,7 @@ $(function() {
     }
 
     //老师创客身份审核
-    $("#hacker-audit").click(function(e){
+    $(".hacker-audit").click(function(e){
       e.preventDefault();
       $.ajax({
         url: $(this).attr('href'),
