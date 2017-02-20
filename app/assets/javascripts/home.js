@@ -4,7 +4,9 @@ $(function() {
     });
 
     $('#logout').on('confirm:complete', function(e, response) {
-        $(".loading").removeClass('hidden');
+      if(response) {
+          $(".loading").removeClass('hidden');
+      }
     });
 
     var clear_cookie = {
@@ -1183,10 +1185,10 @@ $(function() {
                                 },
                                 success: function(result) {
                                     if (result[0]) {
-                                        alert_r(result[1], function(param) {
-                                            var str = (param[1] == 'submit') ? '该队伍已通过审核' : '该队伍未通过审核';
-                                            param[0].parents('.item-control').empty().text(str);
-                                        }, [_self, type]);
+                                        alert_r(result[1], function() {
+                                            var str = (type == 'submit') ? '该队伍已通过审核' : '该队伍未通过审核';
+                                            _self.parents('.item-control').empty().text(str);
+                                        });
                                     } else {
                                         alert_r(result[1]);
                                     }

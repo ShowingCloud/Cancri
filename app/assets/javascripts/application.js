@@ -19,6 +19,7 @@
 //= require jquery.qrcode.min
 //= require admin/bootstrap-datepicker.min
 //= require notify
+//= require guide
 //= require cable
 //= require common
 //= require school_picker

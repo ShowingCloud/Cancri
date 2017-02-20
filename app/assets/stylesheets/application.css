@@ -14,6 +14,7 @@
  *= require bootstrap-dialog
  *= require base
  *= require theme
+ *= require guide
  *= require admin/datepicker
  *= //require_tree .
  *= require_self

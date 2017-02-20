@@ -1,107 +1,4 @@
 $(function() {
-    // 新手引导
-    var competition_tips = {
-      status:{
-          index: 0
-        },
-        config: {
-            tips: [{
-                    msg: "报名前请先阅读报名流程后，再根据流程进行操作",
-                    highlight: "#apply-flow-btn"
-                },
-                {
-                    msg: "完善/更新选手信息后，选择比赛和项目进行报名",
-                    highlight: ".middle"
-                },
-                {
-                    msg: "多人项目需要等待所有队员加入后提交，单人项目选择项目即可提交。",
-                    highlight: null
-                }
-            ],
-            defalut_sytle: {
-                position: "absolute",
-                right: "50%",
-                top: "60%",
-                transform: "translate(50%, -50%)"
-            }
-        },
-        init: function() {
-            Date.prototype.sameDay = function(d) {
-                return this.getFullYear() === d.getFullYear() && this.getDate() === d.getDate() && this.getMonth() === d.getMonth();
-            };
-            var comp_tips_open = window.localStorage.getItem("comp_tips_open");
-            if (!comp_tips_open || !new Date().sameDay(new Date(comp_tips_open))) {
-                competition_tips.open();
-            }
-        },
-        open: function() {
-            $(".main-overlay").css("display", "block");
-            competition_tips.next();
-        },
-        next: function() {
-            function show(target, msg, next_callback) {
-                $(".competition-tip").remove();
-                var ele = $(target);
-                var style;
-                if (ele.length) {
-                    var top = ele.position().top + ele.outerHeight();
-                    var height = $(window).height();
-                    if (top < height / 2) {
-                        style = {
-                            position: "absolute",
-                            right: ($(window).width() - (ele.offset().left + ele.outerWidth())) + "px",
-                            top: (top + 50) + "px"
-                        };
-                    } else {
-                        style = competition_tips.config.defalut_sytle;
-                    }
-                } else {
-                    style = competition_tips.config.defalut_sytle;
-                }
-
-                var container = $(".main");
-                var tip_ele = $('<div class="competition-tip"><span class="close">关闭</span><div class="msg">' + msg + '</div></div>');
-                tip_ele.css(style);
-                container.append(tip_ele);
-                tip_ele.find('.close').click(function() {
-                    competition_tips.close();
-                });
-                if (competition_tips.status.index < competition_tips.config.tips.length - 1) {
-                    if (next_callback) {
-                        var next_btn = $('<div class="btn-next">下一步</div>');
-                        next_btn.click(function() {
-                            next_callback();
-                        });
-                        tip_ele.append(next_btn);
-                    }
-                }
-            }
-            var index = competition_tips.status.index;
-            var tip = competition_tips.config.tips[index];
-            if (tip) {
-                if (tip.highlight) {
-                    $(tip.highlight).css({
-                        "position": "relative",
-                        "z-index": "2",
-                        "pointer-events": "none"
-                    });
-                }
-                show(tip.highlight, tip.msg, function() {
-                    $(tip.highlight).css({
-                        "z-index": "0",
-                        "pointer-events": "auto"
-                    });
-                    competition_tips.status.index++;
-                    competition_tips.next();
-                });
-            }
-        },
-        close: function() {
-            window.localStorage.setItem("comp_tips_open", new Date());
-            $(".main-overlay").css('display', 'none');
-            $(".competition-tip").remove();
-        }
-    };
 
     // 报名前检查
     function go_apply(callback) {
@@ -498,10 +395,31 @@ $(function() {
         }
     });
 
-    // 初始化新手引导
-    if ($("#comp-list").length) {
-        competition_tips.init();
-    }
+    // 新手引导
+    $("#comp-list").guide({
+      before_check: function(){
+        Date.prototype.sameDay = function(d) {
+            return this.getFullYear() === d.getFullYear() && this.getDate() === d.getDate() && this.getMonth() === d.getMonth();
+        };
+        var comp_tips_open = window.localStorage.getItem("comp_tips_open");
+        return (!comp_tips_open || !new Date().sameDay(new Date(comp_tips_open)));
+      },
+      close_callback:function(){
+        window.localStorage.setItem("comp_tips_open", new Date());
+      },
+      tips:[{
+              msg: "报名前请先阅读报名流程后，再根据流程进行操作",
+              highlight: "#apply-flow-btn"
+          },
+          {
+              msg: "选择比赛和项目进行报名,完善/更新选手信息",
+              highlight: ".middle"
+          },
+          {
+              msg: "多人项目需要等待所有队员加入后提交，单人项目选择项目即可提交。"
+          }
+      ]
+    });
 
     // 多人项目最终报名提交
     $("#applied-events-wrapper").on("click", ".submit", function() {

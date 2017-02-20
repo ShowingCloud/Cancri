@@ -1,0 +1,80 @@
+.guide-overlay {
+    height: 100%;
+    width: 100%;
+    display: none;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.7);
+    overflow-x: hidden;
+}
+
+.guide-tip {
+    background: rgba(57,105,119,0.74);
+    border-top: 2px solid #9AE4FF;
+    border-bottom: 2px solid #9AE4FF;
+    height: 180px;
+    width: 330px;
+    z-index: 3;
+
+    .close {
+        font-size: 14px;
+        color: #7EDAED;
+        letter-spacing: 0;
+        font-weight: 100;
+        margin: 10px 0;
+        opacity: 1;
+    }
+
+    .btn-next {
+        font-size: 16px;
+        color: #7EDAED;
+        letter-spacing: 0;
+        text-align: center;
+    }
+
+    .msg {
+        font-size: 16px;
+        color: #FFFFFF;
+        letter-spacing: 1.1px;
+        line-height: 21px;
+        margin: 50px;
+        text-align: center;
+    }
+
+    &:after,
+    &:before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        width: 20px;
+        height: 180px;
+    }
+
+    &:before {
+        right: 100%;
+        background: inherit;
+        border-top: 3px solid #9AE4FF;
+        border-left: 3px solid #9AE4FF;
+        border-bottom: 2px solid #9AE4FF;
+        -webkit-transform-origin: 100% 100%;
+        transform-origin: 100% 100%;
+        -webkit-transform: perspective(1px) rotateY(-0.35deg);
+        transform: perspective(1px) rotateY(-0.35deg);
+    }
+
+    &:after {
+        left: 100%;
+        border-top: 2px solid #9AE4FF;
+        border-right: 3px solid #9AE4FF;
+        border-bottom: 3px solid #9AE4FF;
+        border-left: none;
+        background: inherit;
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: perspective(1px) rotateY(0.35deg);
+        transform: perspective(1px) rotateY(0.35deg);
+    }
+}
