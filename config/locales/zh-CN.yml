@@ -276,6 +276,8 @@ zh-CN:
       course_score_attribute: '评分标准'
       school: '学校'
       notification: '消息'
+      volunteer: '志愿者'
+      regulation: '章程'
   views:
     pagination:
         first: "首页"

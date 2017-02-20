@@ -24,6 +24,37 @@ class Admin::VolunteersController < AdminController
   def edit
   end
 
+  def edit_regulation
+    if request.method == 'POST'
+      if regulation_params[:id].present?
+        @regulation = Regulation.find(regulation_params[:id])
+        @regulation.update(regulation_params)
+      else
+        @regulation = Regulation.new(regulation_params)
+      end
+
+      respond_to do |format|
+        if @regulation.save
+          format.html { redirect_to '/admin/volunteers/regulation', notice: '操作成功!' }
+        else
+          @volunteer_r = Regulation.new(regulation_params)
+          flash[:alert] = @regulation.errors.full_messages.first
+          format.html { render action: 'edit_regulation' }
+        end
+      end
+    else
+      @volunteer_r = Regulation.find_by_regulation_type(1) || Regulation.new
+    end
+  end
+
+  def regulation
+    @volunteer_r = Regulation.find_by_regulation_type(1)
+  end
+
+  def events
+
+  end
+
   # POST /admin/volunteers
   # POST /admin/volunteers.json
   def create
@@ -73,6 +104,10 @@ class Admin::VolunteersController < AdminController
   # Never trust parameters from the scary internet, only allow the white list through.
   def volunteer_params
     params.require(:user_role).permit!
+  end
+
+  def regulation_params
+    params.require(:regulation).permit(:id, :name, :regulation_type, :content)
   end
 
 end

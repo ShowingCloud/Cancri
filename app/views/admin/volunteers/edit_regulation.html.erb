@@ -1,0 +1,20 @@
+<h1 class="page-header">
+  编辑志愿者章程
+
+  <small class="pull-right">
+    <a href="<%= regulation_admin_volunteers_path %>" title="显示<%= t('activerecord.models.volunteer') %>" class="btn btn-default">
+      <i class="icon-eye-open icon-only"></i></a>
+  </small>
+</h1>
+
+<div>
+  <%= simple_form_for(@volunteer_r, url: edit_regulation_admin_volunteers_path, method: :post) do |f| %>
+      <%= f.hidden_field :regulation_type, value: 1 %>
+      <%= f.hidden_field :id %>
+      <%= f.input :name, maxlength: 50 %>
+      <%= f.kindeditor :content, :window_onload => true, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', 'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
+      <div class="form-actions">
+        <%= f.submit class: 'btn btn-primary', value: '提交', 'data-disabled_with' => '正在提交' %>
+      </div>
+  <% end %>
+</div>

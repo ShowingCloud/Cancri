@@ -158,7 +158,14 @@ Rails.application.routes.draw do
       end
     end
     resources :news_types
-    resources :volunteers
+    resources :volunteers, only: [:index] do
+      collection do
+        get :edit_regulation
+        post :edit_regulation
+        get :regulation
+        get :events
+      end
+    end
     resources :score_attributes
     resources :photos #, only: [:new, :create, :index,:show]
     resources :videos

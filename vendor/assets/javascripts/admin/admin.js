@@ -2,6 +2,23 @@
  * Created by huaxiukun on 16/2/25.
  */
 $(function () {
+    // ============================== news start ================================
+    var $volunteer_apply_time = $("#volunteer-apply-datetime");
+
+    if ($("#news_type_checkbox").length > 0) {
+        $('input:checkbox').click(function () {
+            var _self = $(this);
+            if (_self.attr('data-name') == '志愿者招聘' && _self.is(':checked')) {
+                $volunteer_apply_time.removeClass('hide');
+            } else {
+                $volunteer_apply_time.addClass('hide');
+            }
+
+        });
+    }
+    // ============================== news end   ================================
+
+
     // ============================== events start ==============================
     // add event schedule score attrs
     $('.add-schedule-attrs-modal').on('click', function () {

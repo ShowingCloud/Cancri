@@ -1,0 +1,21 @@
+<h1 class="page-header">
+  志愿者章程
+
+  <small class="pull-right">
+    <a href="<%= edit_regulation_admin_volunteers_path %>" title="" class="btn btn-info">
+      编辑
+    </a>
+    <a href="<%= _back_url %>" title="返回" class="btn btn-info">
+      <i class="icon icon-reply"></i>
+    </a>
+
+  </small>
+</h1>
+
+<div>
+  <% if @volunteer_r %>
+      <%= raw(@volunteer_r.content) %>
+  <% else %>
+      <div class="alert alert-info">暂无章程</div>
+  <% end %>
+</div>
