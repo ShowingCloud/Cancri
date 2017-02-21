@@ -1,0 +1,1 @@
+json.extract! @event_volunteer, :name, :created_at, :updated_at

@@ -1,0 +1,41 @@
+<h1 class="page-header">
+  显示<%= t('activerecord.models.event_volunteer') %>
+  <small class="pull-right">
+    <a href="<%= new_admin_event_volunteer_path %>" title="新增<%= t('activerecord.models.event_volunteer') %>" class="btn btn-default">
+      <i class="icon-plus icon-only"></i></a>
+    <a href="<%= edit_admin_event_volunteer_path(@event_volunteer) %>" title="编辑该<%= t('activerecord.models.event_volunteer') %>" class="btn btn-default">
+      <i class="icon-edit icon-only"></i></a>
+    <a href="<%= admin_event_volunteers_path %>" title="列表<%= t('activerecord.models.event_volunteer') %>" class="btn btn-default">
+      <i class="icon-list icon-only"></i></a>
+  </small>
+</h1>
+
+<% if notice %>
+    <div class="alert alert-success"><%= notice %>
+      <button class="close" data-dismiss="alert">
+        <i class="icon-remove"></i>
+      </button>
+    </div>
+<% end %>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <%= t('activerecord.models.event_volunteer') %>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.name') %>:</h4>
+      <%= @event_volunteer.name %>
+    </li>
+  </ul>
+  <ul class="list-group">
+
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.status') %>:</h4>
+      <%= t('status.status'+@event_volunteer.status.to_s) %>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.content') %>:</h4>
+      <%= raw(@event_volunteer.content) %>
+    </li>
+  </ul>
+</div>

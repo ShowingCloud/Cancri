@@ -2,9 +2,9 @@
   <div class="container text-center" id="comp-show">
     <div class="competition-top">
 
-        <%= link_to "/competitions/#{@competition.id}/events", class: 'btn btn-lightblue btn-top' do %>
-            去报名
-        <% end %>
+      <%= link_to "/competitions/#{@competition.id}/events", class: 'btn btn-lightblue btn-top' do %>
+          去报名
+      <% end %>
 
       <ul class="competition-steps clearfix">
         <li class="step-wrapper active">
@@ -117,19 +117,20 @@
                 </div>
               </div>
               <% if @competition.description.present? %>
-                <div class="section-fold">
-                  <div class="fold-head">
-                    比赛描述
-                    <span class="caret"></span>
+                  <div class="section-fold">
+                    <div class="fold-head">
+                      比赛描述
+                      <span class="caret"></span>
+                    </div>
+                    <div class="fold-body">
+                      <%== @competition.description.gsub(';', '<br>') %>
+                    </div>
                   </div>
-                  <div class="fold-body">
-                    <%== @competition.description.gsub(';', '<br>') %>
-                  </div>
-                </div>
               <% end %>
             </div>
           </div>
         </div>
       </div>
+    </div>
   </div>
 </div>

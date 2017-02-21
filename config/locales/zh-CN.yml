@@ -278,6 +278,7 @@ zh-CN:
       notification: '消息'
       volunteer: '志愿者'
       regulation: '章程'
+      event_volunteer: '招募志愿者'
   views:
     pagination:
         first: "首页"
@@ -297,7 +298,7 @@ zh-CN:
   status:
      status0: '待显示'
      status1: '显示'
-     status2: '比赛结束'
+     status2: '结束'
   team:
      status0: '报名中'
      status1: '报名成功'
