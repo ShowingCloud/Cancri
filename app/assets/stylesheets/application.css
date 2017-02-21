@@ -15,6 +15,7 @@
  *= require base
  *= require theme
  *= require guide
+ *= require volunteer
  *= require admin/datepicker
  *= //require_tree .
  *= require_self

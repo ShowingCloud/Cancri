@@ -21,7 +21,7 @@
         function close() {
             $(".guide-overlay").css('display', 'none');
             $(".guide-tip").remove();
-            if (opts.callback) {
+            if (opts.close_callback) {
                 opts.close_callback();
             }
         }
@@ -70,6 +70,10 @@
             container.append(tip_ele);
             tip_ele.find('.close').click(function() {
                 close();
+                $(target).css({
+                    "z-index": "0",
+                    "pointer-events": "auto"
+                });
             });
             if (status.index < opts.tips.length - 1) {
                 if (next_callback) {
