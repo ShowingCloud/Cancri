@@ -166,6 +166,7 @@ Rails.application.routes.draw do
         get :events
       end
     end
+    resources :event_volunteers
     resources :score_attributes
     resources :photos #, only: [:new, :create, :index,:show]
     resources :videos
@@ -191,6 +192,7 @@ Rails.application.routes.draw do
         collection do
           get :get_events
           get :get_parent_group
+          get :get_obj_by_status
         end
       end
       resources :events do

@@ -520,3 +520,7 @@ function admin_gritter_notice(status, respond_message) {
         class_name: status ? '' : 'gritter-error'
     });
 }
+
+function ajax_handle(options) {
+    $.ajax(options);
+}

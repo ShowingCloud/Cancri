@@ -88,6 +88,8 @@ zh-CN:
         reward_method: '奖励方法'
         apply_method: '参赛方法'
         emc_contact: '紧急联系人'
+        event_type: '项目类别'
+        type_id: '所属项目'
 
     "yes": '是'
     "no": '否'

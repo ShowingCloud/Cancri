@@ -2,7 +2,46 @@
  * Created by huaxiukun on 16/2/25.
  */
 $(function () {
-    // ============================== news start ================================
+    // ======================== event_volunteers start   ==========================
+
+    var $event_volunteer_type = $("#event_volunteer_event_type");
+    if ($event_volunteer_type.length > 0) {
+        var $event_vol_type_id = $("#event_volunteer_type_id");
+        $event_volunteer_type.on('change', function () {
+            var _self = this;
+            var event_type = _self.value;
+            if (event_type) {
+                var options = {
+                    url: '/api/v1/competitions/get_obj_by_status',
+                    type: 'get',
+                    data: {event_type: event_type, status: 2},
+                    success: function (result) {
+                        if (result.length > 0) {
+
+                            $event_vol_type_id.empty();
+                            $event_vol_type_id.append($('<option>请选择所属项目</option>'));
+                            $.each(result, function (k, v) {
+                                var option = $('<option value="' + v.id + '" data-name="'+ v.name +'">' + v.name + '</option>');
+                                $event_vol_type_id.append(option);
+                            })
+                        } else {
+                            admin_gritter_notice(false, '没有在显示的比赛或活动');
+                        }
+                    },
+                    error: function (error) {
+                        admin_gritter_notice(false, error.responseText);
+                    }
+                };
+                ajax_handle(options);
+            }
+        });
+
+        // $event_vol_type_id.on('change',function () {
+        //   var aa=  $("#event_volunteer_type_id [name='event_volunteer[type_id]']:checked").val();
+        //     console.log(aa)
+        // });
+    }
+
     var $volunteer_apply_time = $("#volunteer-apply-datetime");
 
     if ($("#news_type_checkbox").length > 0) {
@@ -16,7 +55,7 @@ $(function () {
 
         });
     }
-    // ============================== news end   ================================
+    // ======================== event_volunteers end   ==========================
 
 
     // ============================== events start ==============================
