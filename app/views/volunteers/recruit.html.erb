@@ -2,12 +2,30 @@
   <div class="container" id="volunteer-recruit">
     <div class="volunteer-head">
       <ul class="row text-center">
-        <li class="col-md-4 active"><a class="btn btn-lightblue btn-block" href="<%= volunteers_recruit_path %>">志愿者招募</a></li>
+        <li class="col-md-4 active">
+          <a class="btn btn-lightblue btn-block" href="<%= volunteers_recruit_path %>">志愿者招募</a></li>
         <li class="col-md-4"><a class="btn btn-lightblue btn-block" href="<%= volunteers_path %>">志愿者认证</a></li>
         <li class="col-md-4"><a class="btn btn-lightblue btn-block" href="">积分查询</a></li>
       </ul>
     </div>
     <div class="volunteer-content">
+      <% if params[:id].present? %>
+          <h3><%= @event_volunteer.name %></h3>
+          <%= raw @event_volunteer.content %>
+          <% if user_signed_in? && @has_apply.present? %>
+              <%= @has_apply.status == 1 ? '您已报名该招募活动' : '您已报名，请等待审核' %>
+          <% else %>
+              <p><button>报名</button></p>
+          <% end %>
+      <% else %>
+          <% if @event_volunteers.present? %>
+              <% @event_volunteers.each do |ev| %>
+                  <%= ev.name %>
+              <% end %>
+          <% else %>
+              暂无招募
+          <% end %>
+      <% end %>
 
     </div>
   </div>

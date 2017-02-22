@@ -7,7 +7,10 @@ $(function () {
     var $event_volunteer_type = $("#event_volunteer_event_type");
     if ($event_volunteer_type.length > 0) {
         var $event_vol_type_id = $("#event_volunteer_type_id");
+        var $event_volunteer_name = $("#event_volunteer_name");
         $event_volunteer_type.on('change', function () {
+            $event_volunteer_name.val('');
+            $event_vol_type_id.empty();
             var _self = this;
             var event_type = _self.value;
             if (event_type) {
@@ -17,11 +20,9 @@ $(function () {
                     data: {event_type: event_type, status: 2},
                     success: function (result) {
                         if (result.length > 0) {
-
-                            $event_vol_type_id.empty();
                             $event_vol_type_id.append($('<option>请选择所属项目</option>'));
                             $.each(result, function (k, v) {
-                                var option = $('<option value="' + v.id + '" data-name="'+ v.name +'">' + v.name + '</option>');
+                                var option = $('<option value="' + v.id + '" data-name="' + v.name + '">' + v.name + '</option>');
                                 $event_vol_type_id.append(option);
                             })
                         } else {
@@ -36,10 +37,10 @@ $(function () {
             }
         });
 
-        // $event_vol_type_id.on('change',function () {
-        //   var aa=  $("#event_volunteer_type_id [name='event_volunteer[type_id]']:checked").val();
-        //     console.log(aa)
-        // });
+        $event_vol_type_id.on('change', function () {
+            var obj_name = $("#event_volunteer_type_id option:selected").attr('data-name');
+            $event_volunteer_name.val(obj_name + '志愿者招募');
+        });
     }
 
     var $volunteer_apply_time = $("#volunteer-apply-datetime");

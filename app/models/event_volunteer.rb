@@ -1,4 +1,6 @@
 class EventVolunteer < ApplicationRecord
+  belongs_to :competition, foreign_key: :type_id
+  belongs_to :Activity, foreign_key: :type_id
   validates :name, :event_type, :type_id, :content, presence: true
   after_validation :check_apply_time
   after_validation :check_start_time, on: :create

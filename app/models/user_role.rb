@@ -10,8 +10,8 @@ class UserRole < ApplicationRecord
   scope :left_join_s_d, -> { joins('left join schools s on s.id = user_roles.school_id').joins('left join districts d on d.id = s.district_id') }
   scope :user_role_info, ->(ids) { left_join_s_d.where(id: ids).pluck('d.id as district_id') }
   validates :status, inclusion: [0, 1, 2]
-  validates :role_id, inclusion: [1, 2]
-  validates :school_id, presence: true, numericality: {:greater_than => 0, message: '参数不规范'}
+  validates :role_id, inclusion: [1, 2, 3]
+  validates :school_id, presence: true, numericality: {:greater_than => 0, message: '参数不规范'}, if: :not_volunteer
   validates :user_id, presence: true, uniqueness: {scope: [:role_id, :role_type], message: '一个用户的同一角色不同重复'}
   validates :role_type, presence: true
   validates :role_type, uniqueness: {scope: :school_id, message: '该学校已有该角色老师'}, if: :role_type_3?, on: :update
@@ -24,7 +24,7 @@ class UserRole < ApplicationRecord
   private
 
   def update_district_id
-    if district_id.nil? || school_id_changed?
+    if (school_id.present? && district_id.nil?)  || school_id_changed?
       self.district_id = self.school.district_id
     end
   end
@@ -39,6 +39,10 @@ class UserRole < ApplicationRecord
         end
       end
     end
+  end
+
+  def not_volunteer
+    role_id != 3
   end
 
   def role_type_3?

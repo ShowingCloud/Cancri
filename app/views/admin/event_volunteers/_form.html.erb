@@ -1,17 +1,26 @@
 <div class="panel panel-info">
   <div class="panel-heading"><%= t('activerecord.models.event_volunteer') %></div>
   <div class="panel-body">
-    <!--<label><input type="radio" value="Competition" name="event_volunteer_type"/>比赛</label>-->
-    <!--<label><input type="radio" value="Activity" name="event_volunteer_type"/>活动</label>-->
+
     <%= simple_form_for([:admin, @event_volunteer]) do |f| %>
         <%= f.error_notification %>
+        <% if @event_volunteer.errors.any? %>
+            <div class="alert alert-danger"><%= @event_volunteer.errors.full_messages.join(',') %></div>
+        <% end %>
         <div class="form-inputs">
-          <%= f.input :event_type, collection: {'比赛': 'Competition', '活动': 'Activity'} %>
 
+          <%= f.input :event_type, collection: {'比赛': 'Competition', '活动': 'Activity'} %>
           <div class="form-group integer required event_volunteer_type_id">
-            <label class="control-label integer required" for="event_volunteer_type_id"><abbr title="必填字段">*</abbr> 所属项目</label>
+            <label class="control-label integer required" for="event_volunteer_type_id"><abbr title="必填字段">*</abbr>
+              所属项目</label>
             <select id="event_volunteer_type_id" class="form-control" name="event_volunteer[type_id]">
               <option value="">请选择所属项目</option>
+              <% if action_name == 'edit' || @event_volunteer.type_id.present? %>
+                  <% event_obj = @event_volunteer.event_type.constantize.where(id: @event_volunteer.type_id).select(:id, :name).take %>
+                  <% if event_obj.present? %>
+                      <option value="<%= event_obj.id %>" data-name="<%= event_obj.name %>" selected><%= event_obj.name %></option>
+                  <% end %>
+              <% end %>
             </select>
           </div>
           <%= f.input :name %>

@@ -4,6 +4,7 @@ class Competition < ApplicationRecord
   has_many :photos, :dependent => :destroy
   has_many :videos, :dependent => :destroy
   has_many :competition_schedules, :dependent => :destroy
+  has_one :event_volunteer, -> { where event_type: 'Competition' }, foreign_key: :type_id
 
   before_validation :validate_datetime
   before_validation :validate_time_now, on: :create
