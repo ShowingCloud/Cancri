@@ -15,7 +15,9 @@
           <% if user_signed_in? && @has_apply.present? %>
               <%= @has_apply.status == 1 ? '您已报名该招募活动' : '您已报名，请等待审核' %>
           <% else %>
-              <p><button>报名</button></p>
+              <p>
+                <button>报名</button>
+              </p>
           <% end %>
       <% else %>
           <% if @event_volunteers.present? %>

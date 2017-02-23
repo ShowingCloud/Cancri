@@ -2,21 +2,21 @@ class VolunteersController < ApplicationController
   before_action :authenticate_user!, except: [:recruit]
 
   def index
-    @user_info = User.left_joins(:user_profile).select(:id, :mobile, :gender, :standby_school, :grade, :identity_card, :alipay_account)
+    @user_info = User.left_joins(:user_profile).where(id: current_user.id).select(:id, :mobile, 'user_profiles.username', 'user_profiles.gender', 'user_profiles.grade', 'user_profiles.standby_school', 'user_profiles.identity_card', 'user_profiles.alipay_account').take
     volunteer_role = current_user.user_roles.where(role_id: 3).take
     @has_apply = volunteer_role.present? ? volunteer_role.status : false #[false,0,1,2]
   end
 
 
   def apply_volunteer
+    user_params = params[:user]
+    standby_school = user_params[:standby_school]
+    gender = user_params[:gender]
+    grade = user_params[:grade]
+    identity_card = user_params[:identity_card]
+    alipay_account = user_params[:alipay_account]
     if require_mobile
-      standby_school = params[:standby_school]
-      gender = params[:gender]
-      grade = params[:grade]
-      identity_card = params[:identity_card]
-      alipay_account = params[:alipay_account]
-
-      if standby_school.present? && gender.present? && grade.present? && identity_card.present?
+      if standby_school.present? && gender.present? && grade.present? && identity_card.present? && alipay_account.present?
         user_profile = current_user.user_profile ||= current_user.build_user_profile
         if user_profile.update_attributes(gender: gender, grade: grade, standby_school: standby_school, identity_card: identity_card, alipay_account: alipay_account)
           volunteer_role = UserRole.create(user_id: current_user.id, role_id: 3, status: 0, role_type: 1)
@@ -37,13 +37,26 @@ class VolunteersController < ApplicationController
 
     respond_to do |format|
       if result[0]
-        format.html { redirect_to '/volunteers/index', notice: result[1] }
+        format.html { redirect_to volunteers_path, notice: result[1] }
       else
-        format.html { render action: 'index', alert: result[1] }
+        @user_info = UserProfile.new(params[:user].permit(:grade, :gender, :standby_school, :identity_card, :alipay_account))
+        flash.now[:alert] = result[1]
+        format.html { render action: 'index' }
       end
-      format.json { render json: {status: result[0], message: result[1]} }
+      format.js { render json: {status: result[0], message: result[1]} }
     end
+  end
 
+
+  def cancel_apply
+    has_apply = current_user.user_roles.where(role_id: 3).take
+    if has_apply.present? && has_apply.status == 0 && has_apply.delete
+      result = [true, '取消成功']
+    else
+      result = [false, '取消失败']
+    end
+    flash[:notice] = result[1]
+    redirect_to volunteers_path
   end
 
   def apply_event_volunteer

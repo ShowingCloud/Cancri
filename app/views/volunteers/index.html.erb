@@ -1,2 +1,69 @@
-<h1>Volunteers#index</h1>
-<p>Find me in app/views/volunteers/index.html.erb</p>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-4 col-lg-offset-4">
+      <% if @has_apply == 1 %>
+          您已认证为DOME志愿者
+          <p>姓名:<%= @user_info.username %></p>
+          <p>性别:<%= @user_info.gender %></p>
+          <p>手机:<%= @user_info.mobile %></p>
+          <p>学校:<%= @user_info.standby_school %></p>
+          <p>年级:<%= @user_info.grade %></p>
+          <p>身份证:<%= @user_info.identity_card %></p>
+          <p>支付宝:<%= @user_info.alipay_account %></p>
+          <a href="<%= user_profile_path %>" class="btn btn-primary">修改信息</a>
+      <% elsif @has_apply == 0 %>
+          DOME志愿者的认证申请已提交，请等待审核
+          <p>姓名:<%= @user_info.username %></p>
+          <p>性别:<%= @user_info.gender %></p>
+          <p>手机:<%= @user_info.mobile %></p>
+          <p>学校:<%= @user_info.standby_school %></p>
+          <p>年级:<%= @user_info.grade %></p>
+          <p>身份证:<%= @user_info.identity_card %></p>
+          <p>支付宝:<%= @user_info.alipay_account %></p>
+          <a href="<%= volunteers_cancel_apply_path %>" class="btn btn-primary">取消认证</a>
+      <% else %>
+          <%= simple_form_for(@user_info, url: volunteers_apply_volunteer_path, method: :post) do |f| %>
+              <div class="form-inputs">
+
+                <div class="form-group user_username">
+                  <label class="control-label" for="user_username">姓名</label>
+                  <input class="form-control" type="text" value="<%= @user_info.username %>" name="user[username]" id="user_username">
+                </div>
+                <div class="form-group">
+                  <label class="control-label">手机</label>
+                  <%= current_user.mobile %>
+                </div>
+                <div class="form-group user_gender">
+                  <label class="control-label" for="user_gender">性别 </label>
+
+                  <label><input type="radio" value="1" <%= "checked" if @user_info.gender ==1 %> name="user[gender]">
+                    男</label>
+                  <label><input type="radio" value="2" <%= "checked" if @user_info.gender ==2 %> name="user[gender]">
+                    女</label>
+                </div>
+                <div class="form-group user_standby_school">
+                  <label class="control-label" for="user_standby_school">学校</label>
+                  <input class="form-control" type="text" value="<%= @user_info.standby_school %>" name="user[standby_school]" id="user_standby_school">
+                </div>
+                <div class="form-group user_grade">
+                  <label class="control-label" for="user_grade">年级</label>
+                  <input class="form-control" type="text" value="<%= @user_info.grade %>" name="user[grade]" id="user_grade">
+                </div>
+                <div class="form-group user_identity_card">
+                  <label class="control-label" for="user_identity_card">身份证号</label>
+                  <input class="form-control" type="text" value="<%= @user_info.identity_card %>" name="user[identity_card]" id="user_identity_card">
+                </div>
+                <div class="form-group user_alipay_account">
+                  <label class="control-label" for="user_alipay_account">支付宝账号</label>
+                  <input class="form-control" type="text" value="<%= @user_info.alipay_account %>" name="user[alipay_account]" id="user_alipay_account">
+                </div>
+              </div>
+              <div class="form-actions">
+                <%= f.button :submit, class: 'btn btn-primary btn-block', value: '申请认证', 'data-disable-with': '正在提交' %>
+              </div>
+          <% end %>
+      <% end %>
+    </div>
+  </div>
+
+</div>

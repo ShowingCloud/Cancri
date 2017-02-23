@@ -316,6 +316,10 @@ zh-CN:
      partake3: '以亲子为主'
      situation1: '专用工作台'
      situation2: '专用工作间'
+  gender:
+    gender1: '男'
+    gender2: '女'
+    gender: ''
   attributes:
      name: '名称'
      username: '姓名'
@@ -345,3 +349,5 @@ zh-CN:
      student_code: '学籍号'
      desc: '描述'
      cover: '文件'
+     identity_card: '身份证'
+     alipay_account: '支付宝账号'

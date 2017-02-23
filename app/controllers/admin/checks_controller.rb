@@ -4,6 +4,42 @@ class Admin::ChecksController < AdminController
     authenticate_permissions(['admin'])
   end
 
+  def volunteers
+    @volunteers = UserRole.left_join_u_p.joins(:user).where(role_id: 3, status: 0).select(:id, 'users.mobile', 'u_p.username', 'u_p.standby_school', 'u_p.gender', 'u_p.grade', 'u_p.identity_card', 'u_p.alipay_account').page(params[:page]).per(params[:per])
+  end
+
+  def volunteer_list
+    @volunteers = UserRole.left_join_u_p.joins(:user).where(role_id: 3, status: 1).select(:id, 'users.mobile', 'u_p.username', 'u_p.standby_school', 'u_p.gender', 'u_p.grade', 'u_p.identity_card', 'u_p.alipay_account').page(params[:page]).per(params[:per])
+  end
+
+  def review_volunteer
+    status = params[:status]
+    user_role_id = params[:user_role_id]
+    if status.present? && user_role_id.present?
+      user_role = UserRole.find(user_role_id)
+      if user_role.present?
+        if status == '1'
+          user_role.status = 1
+          result_status = user_role.save
+        else
+          result_status = user_role.delete
+        end
+        if result_status
+          result = [true, '审核成功,结果将推送消息告知申请者']
+          Notification.create(user_id: user_role.user_id, content: "您申请的志愿者身份审核#{status == '1' ? '' : '未'}通过!", message_type: 5)
+        else
+          result = [false, '审核失败']
+        end
+      else
+        result=[false, '对象不存在']
+      end
+    else
+      result=[false, '参数不完整']
+    end
+
+    render json: {status: result[0], message: result[1]}
+  end
+
   def teachers
     @teachers= UserRole.left_joins(:user).joins('left join schools s on s.id = user_roles.school_id').joins('left join districts d on d.id = s.district_id').joins('left join user_profiles up on up.user_id=user_roles.user_id').where(role_id: 1, status: 0).select(:id, :cover, :desc, :user_id, :role_type, 's.name as school_name', 'd.name as district_name', 'users.mobile', 'up.username', 'up.gender').page(params[:page]).per(params[:per])
     @teacher_array = @teachers.map { |c| {

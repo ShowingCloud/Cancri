@@ -49,7 +49,7 @@ module AdminHelper
     case role_name
       when '教师'
         'teachers'
-      when '创客'
+      when '家庭创客'
         'hackers'
       when '志愿者'
         'volunteers'

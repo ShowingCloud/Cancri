@@ -1,0 +1,75 @@
+<h1 class="page-header">
+  待审核的志愿者列表
+  <small class="pull-right">
+    <a href="<%= admin_checks_volunteer_list_path %>" class="btn btn-default" title="<%= t('activerecord.models.volunteer') %>列表">
+      志愿者列表</a>
+  </small>
+</h1>
+<% if @volunteers.present? %>
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+      <tr>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>学校</th>
+        <th>年级</th>
+        <th>身份证</th>
+        <th>支付宝</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @volunteers.each do |s| %>
+          <tr id="<%= "volunteer-row-#{s.id}" %>">
+            <td><%= s.username %></td>
+            <td><%= t("gender.gender#{s.gender}") %></td>
+            <td><%= s.standby_school %></td>
+            <td><%= s.grade %></td>
+            <td><%= s.identity_card %></td>
+            <td><%= s.alipay_account %></td>
+            <td>
+              <a href="#modal-form" role="button" data-toggle="modal" data-id="<%= s.id %>" class="btn btn-xs btn-warning review-volunteer">
+                审核
+              </a>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <nav>
+      <%= paginate @volunteers %>
+    </nav>
+    <div id="modal-form" class="modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="widget-header model-header">
+            <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+            <h4 class="blue smaller text-center">审核结果</h4>
+          </div>
+
+          <div class="modal-body overflow-visible">
+            <div class="row text-center select-review-status">
+              <label><input name="review-status" value="1" type="radio"/> 通过</label>&nbsp;&nbsp;
+              <label><input name="review-status" value="0" type="radio"/> 未通过</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm" data-dismiss="modal">
+              <i class="icon-remove"></i>
+              取消
+            </button>
+
+            <button class="btn btn-sm btn-primary volunteer-review-status-submit">
+              <i class="icon-ok"></i>
+              提交
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+<% else %>
+    <div class="alert alert-success">
+      暂无未审核志愿者
+    </div>
+<% end %>

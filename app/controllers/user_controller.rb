@@ -21,7 +21,7 @@ class UserController < ApplicationController
     if request.method == 'POST'
       if params[:user_profile].present?
         # 过滤Profile参数
-        profile_params = params.require(:user_profile).permit(:username, :school_id, :bj, :district_id, :gender, :birthday, :student_code, :identity_card, :address, :cover, :desc, :teacher_no, :certificate, :grade, :autograph)
+        profile_params = params.require(:user_profile).permit(:username, :school_id, :bj, :district_id, :gender, :birthday, :student_code, :identity_card, :address, :cover, :desc, :teacher_no, :certificate, :grade, :autograph, :alipay_account)
         roles = params[:user_profile][:roles]
         username = profile_params[:username]
         autograph = profile_params[:autograph]
@@ -36,6 +36,7 @@ class UserController < ApplicationController
         address = profile_params[:address]
         teacher_no = profile_params[:teacher_no]
         certificate = profile_params[:certificate]
+        alipay_account = profile_params[:alipay_account]
 
         message = ''
         if roles.present? && roles.include?('教师')
@@ -71,7 +72,7 @@ class UserController < ApplicationController
           message=''
         end
 
-        if @user_profile.update_attributes(username: username, birthday: birthday, gender: gender, address: address, teacher_no: teacher_no, autograph: autograph, school_id: school_id, district_id: district_id, grade: grade, bj: bj, student_code: student_code, identity_card: identity_card)
+        if @user_profile.update_attributes(username: username, birthday: birthday, gender: gender, address: address, teacher_no: teacher_no, autograph: autograph, school_id: school_id, district_id: district_id, grade: grade, bj: bj, student_code: student_code, identity_card: identity_card, alipay_account: alipay_account)
           flash[:success] = '更新成功-'+message
           redirect_to user_preview_path
         else
