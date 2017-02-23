@@ -1,0 +1,44 @@
+<h1 class="page-header">
+  志愿者列表
+  <small class="pull-right">
+    <a href="/admin/checks/volunteers" class="btn btn-primary" title="待审核学校">
+      待审核志愿者</a>
+  </small>
+</h1>
+
+
+<% if @volunteers.present? %>
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+      <tr>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>学校</th>
+        <th>年级</th>
+        <th>身份证</th>
+        <th>支付宝</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @volunteers.each do |s| %>
+          <tr>
+            <td><%= s.username %></td>
+            <td><%= t("gender.gender#{s.gender}") %></td>
+            <td><%= s.standby_school %></td>
+            <td><%= s.grade %></td>
+            <td><%= s.identity_card %></td>
+            <td><%= s.alipay_account %></td>
+
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <nav>
+      <%= paginate @volunteers %>
+    </nav>
+<% else %>
+    <div class="alert alert-success">
+      暂无志愿者
+    </div>
+<% end %>

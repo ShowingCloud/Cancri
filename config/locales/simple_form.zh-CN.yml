@@ -90,6 +90,8 @@ zh-CN:
         emc_contact: '紧急联系人'
         event_type: '项目类别'
         type_id: '所属项目'
+        standby_school: '学校'
+        alipay_account: '支付宝账号'
 
     "yes": '是'
     "no": '否'

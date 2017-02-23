@@ -363,6 +363,8 @@ $(function () {
         });
 
     });
+
+
     // 学校审核
     $('.review-user-add-school').on('click', function () {
         var school_id = $(this).attr('data-id');
@@ -387,6 +389,36 @@ $(function () {
                     }
                 }
             });
+            $(".select-review-status [name='review-status']").prop('checked', false);
+        });
+    });
+
+    // 志愿者审核
+    $('.review-volunteer').on('click', function () {
+        console.log(12);
+        var user_role_id = $(this).attr('data-id');
+        $('.volunteer-review-status-submit').on('click', function () {
+            var status = $(".select-review-status [name='review-status']:checked").val();
+            if (!status) {
+                alert('请选择审核结果');
+                return false;
+            }
+
+            $.ajax({
+                url: '/admin/checks/review_volunteer',
+                type: 'post',
+                data: {
+                    "status": status, "user_role_id": user_role_id
+                },
+                success: function (data) {
+                    admin_gritter_notice(data.status, data.message);
+                    if (data.status) {
+                        $("#modal-form").modal('hide');
+                        $("#volunteer-row-" + user_role_id).addClass('hide');
+                    }
+                }
+            });
+            console.log(132);
             $(".select-review-status [name='review-status']").prop('checked', false);
         });
     });

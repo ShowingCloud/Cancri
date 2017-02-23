@@ -38,7 +38,6 @@ class User < ApplicationRecord
   attr_accessor :email_code
   attr_accessor :mobile_info
   attr_accessor :return_url
-  attr_accessor :gender
 
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup

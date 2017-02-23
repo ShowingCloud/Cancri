@@ -10,15 +10,15 @@
     </div>
     <div class="volunteer-content">
       <% if params[:id].present? %>
-            <h3 class="text-center"><%= @event_volunteer.name %></h3>
-            <%= raw @event_volunteer.content %>
-            <div class="text-center">
-              <% if user_signed_in? && @has_apply.present? %>
-                  <%= @has_apply.status == 1 ? '您已报名该招募活动' : '您已报名，请等待审核' %>
-              <% else %>
-                  <%= link_to "报名", "/volunteers/apply_event_volunteer?apply_event_volunteer="+ @event_volunteer.id.to_s , method: :post, class:'btn btn-lightblue' %>
-              <% end %>
-            </div>
+          <h3 class="text-center"><%= @event_volunteer.name %></h3>
+          <%= raw @event_volunteer.content %>
+          <div class="text-center">
+            <% if user_signed_in? && @has_apply.present? %>
+                <%= @has_apply.status == 1 ? '您已报名该招募活动' : '您已报名，请等待审核' %>
+            <% else %>
+                <%= link_to "报名", "/volunteers/apply_event_volunteer?apply_event_volunteer="+ @event_volunteer.id.to_s , method: :post, class:'btn btn-lightblue' %>
+            <% end %>
+          </div>
       <% else %>
           <% if @event_volunteers.present? %>
             <ul class='event-list'>
