@@ -86,7 +86,7 @@
                           <input type="text" class="form-control" id="user_profile[username]" name="user_profile[username]" value="<%= hacker_profile[:username] %>">
                         </div>
                       </div>
-                      <%= f.input :gender , :wrapper_html => { class: 'required' }, input_html: { name: 'user_profile[gender]' } , label_html: { class: 'col-sm-2' }, as: :radio_buttons, :collection => [ ['男', '1'], ['女', '2'] ], :checked => current_user.user_profile.try(:gender), :item_wrapper_class => 'radio-inline' %>
+                      <%= f.input :gender , :wrapper_html => { class: 'required' }, input_html: { name: 'user_profile[gender]' } , label_html: { class: 'col-sm-2' }, as: :radio_buttons, :collection => [ ['男', '1'], ['女', '2'] ], :checked => current_user.user_profile.gender || "", :item_wrapper_class => 'radio-inline' %>
                       <div class="form-group required">
                         <label class="control-label col-sm-2" for="user_profile[birthday]">生日</label>
                         <div class="col-sm-10">
