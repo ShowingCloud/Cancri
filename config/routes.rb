@@ -60,9 +60,10 @@ Rails.application.routes.draw do
   resources :course_score_attrs
   resources :course_files
   get '/volunteers', to: 'volunteers#index'
-  get '/volunteers/recruit', to: 'volunteers#recruit' #, as: 'volunteers_recruit', via: [:get, :post]
+  get '/volunteers/recruit', to: 'volunteers#recruit'
   get '/volunteers/recruit/:id', to: 'volunteers#recruit'
   post '/volunteers/apply_volunteer', to: 'volunteers#apply_volunteer'
+  get '/volunteers/cancel_apply', to: 'volunteers#cancel_apply'
   post '/volunteers/apply_event_volunteer', to: 'volunteers#apply_event_volunteer'
   get '/test' => 'test#index'
 
@@ -115,6 +116,9 @@ Rails.application.routes.draw do
     post '/checks/review_hacker' => 'checks#review_hacker'
     # post '/checks/review_referee' => 'checks#review_referee'
     post '/checks/review_school' => 'checks#review_school'
+    get '/checks/volunteers', to: 'checks#volunteers'
+    get '/checks/volunteer_list', to: 'checks#volunteer_list'
+    post '/checks/review_volunteer' => 'checks#review_volunteer'
     #
     resources :competition_schedules do
       collection do
