@@ -14,13 +14,12 @@ class VolunteersController < ApplicationController
     user_params = params[:user]
     standby_school = user_params[:standby_school]
     gender = user_params[:gender]
-    grade = user_params[:grade]
     identity_card = user_params[:identity_card]
     alipay_account = user_params[:alipay_account]
     if require_mobile
-      if standby_school.present? && gender.present? && grade.present? && identity_card.present? && alipay_account.present?
+      if standby_school.present? && gender.present? && identity_card.present? && alipay_account.present?
         user_profile = current_user.user_profile ||= current_user.build_user_profile
-        if user_profile.update_attributes(gender: gender, grade: grade, standby_school: standby_school, identity_card: identity_card, alipay_account: alipay_account)
+        if user_profile.update_attributes(gender: gender, standby_school: standby_school, identity_card: identity_card, alipay_account: alipay_account)
           volunteer_role = UserRole.create(user_id: current_user.id, role_id: 3, status: 0, role_type: 1)
           if volunteer_role.save
             result = [true, '申请成功，请等待审核，结果将通过消息推送告知您']
@@ -41,7 +40,7 @@ class VolunteersController < ApplicationController
       if result[0]
         format.html { redirect_to volunteers_path, notice: result[1] }
       else
-        @user_info = UserProfile.new(params[:user].permit(:grade, :gender, :standby_school, :identity_card, :alipay_account))
+        @user_info = UserProfile.new(params[:user].permit(:gender, :standby_school, :identity_card, :alipay_account))
         flash.now[:alert] = result[1]
         format.html { render action: 'index' }
       end
