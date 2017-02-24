@@ -5,11 +5,7 @@ class VolunteersController < ApplicationController
     @user_info = User.left_joins(:user_profile).where(id: current_user.id).select(:id, :mobile, 'user_profiles.username', 'user_profiles.gender', 'user_profiles.grade', 'user_profiles.standby_school', 'user_profiles.identity_card', 'user_profiles.alipay_account').take
     volunteer_role = current_user.user_roles.where(role_id: 3).take
     has_apply = volunteer_role.present? ? volunteer_role.status : false #[false,0,1,2]
-    if has_apply
-      regulation = nil
-    else
-      regulation = Regulation.first
-    end
+    regulation = Regulation.first
     @has_apply = {has_apply: has_apply, regulation: regulation}
   end
 
