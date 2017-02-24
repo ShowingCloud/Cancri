@@ -61,14 +61,19 @@ class Admin::EventVolunteersController < AdminController
   # DELETE /admin/event_volunteers/1
   # DELETE /admin/event_volunteers/1.json
   def destroy
-    has_use = EventVolunteer.where(role_id: params[:id]).exists?
+    event_volunteer_id = params[:id]
+    has_use = EventVolunteerUser.where(event_volunteer_id: event_volunteer_id).exists?
     if has_use
-      @notice=[false, 0, '已经被使用，不能删除']
+      notice = {status: false, message: '已经有志愿者申请，不能删除'}
     else
-      @event_volunteer = EventVolunteer.find(params[:id])
-      @event_volunteer.destroy
-      @notice=[true, @event_volunteer.id, '删除成功']
+      event_volunteer = EventVolunteer.find(event_volunteer_id)
+      if event_volunteer.destroy
+        notice = {status: true, obj_id: event_volunteer_id, message: '删除成功'}
+      else
+        notice = {status: false, message: '删除失败'}
+      end
     end
+    @notice = notice
     respond_to do |format|
       format.js
     end

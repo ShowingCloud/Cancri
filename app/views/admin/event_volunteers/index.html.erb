@@ -44,7 +44,7 @@
 
   <tbody>
   <% @event_volunteers.each do |event_volunteer| %>
-      <tr id="role-<%= event_volunteer.id %>">
+      <tr id="row-<%= event_volunteer.id %>">
         <td><%= event_volunteer.id %></td>
         <td><%= event_volunteer.name %></td>
         <td><%= link_to [:admin, event_volunteer], title: '查看', class: 'btn btn-xs btn-warn' do %>

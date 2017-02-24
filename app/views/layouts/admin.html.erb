@@ -157,106 +157,107 @@
         </div>
       </div>
       <!-- #sidebar-shortcuts -->
+      <% controller_params = params[:controller] %>
       <ul class="nav nav-list">
-        <li class="<%= params[:controller] == 'admin/users' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/users' ? 'active' : '' %>">
           <a href="<%= admin_users_path %>">
             <i class="icon-user"></i>
             <span class="menu-text"> 用户 </span>
           </a>
         </li>
         <% if authenticate_permissions_show(['super_admin']) %>
-            <li class="<%= params[:controller] == 'admin/admins' ? 'active' : '' %>">
+            <li class="<%= controller_params == 'admin/admins' ? 'active' : '' %>">
               <a href="<%= admin_admins_path %>">
                 <i class="icon-gear"></i>
                 <span class="menu-text"> 管理员 </span>
               </a>
             </li>
         <% end %>
-        <li class="<%= params[:controller] == 'admin/organizers' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/organizers' ? 'active' : '' %>">
           <a href="<%= admin_organizers_path %>">
             <i class="icon-home"></i>
             <span class="menu-text"> 单位 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/districts' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/districts' ? 'active' : '' %>">
           <a href="<%= admin_districts_path %>">
             <i class="icon-globe"></i>
             <span class="menu-text"> 区县 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/roles' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/roles' ? 'active' : '' %>">
           <a href="<%= admin_roles_path %>">
             <i class="icon-leaf"></i>
             <span class="menu-text"> 角色 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/courses' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/courses' ? 'active' : '' %>">
           <a href="<%= admin_courses_path %>">
             <i class="icon-book"></i>
             <span class="menu-text"> 课程 </span>
           </a>
         </li>
-        <li class="<%= (params[:controller] == 'admin/competitions' || (params[:type_id].present? && params[:type]=='0')) ? 'active' : '' %>">
+        <li class="<%= (controller_params == 'admin/competitions' || (params[:type_id].present? && params[:type]=='0')) ? 'active' : '' %>">
           <a href="<%= admin_competitions_path %>">
             <i class="icon-beaker"></i>
             <span class="menu-text"> 比赛 </span>
           </a>
         </li>
-        <li class="<%= (params[:controller] == 'admin/events' || params[:controller] == 'admin/event_schedules') ? 'active' : '' %>">
+        <li class="<%= (controller_params == 'admin/events' || controller_params == 'admin/event_schedules') ? 'active' : '' %>">
           <a href="<%= admin_events_path %>">
             <i class="icon-hand-right"></i>
             <span class="menu-text"> 项目 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/notifications' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/notifications' ? 'active' : '' %>">
           <a href="<%= admin_notifications_path %>">
             <i class="icon-bell"></i>
             <span class="menu-text"> 比赛消息 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/score_attributes' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/score_attributes' ? 'active' : '' %>">
           <a href="<%= admin_score_attributes_path %>">
             <i class="icon-hdd"></i>
             <span class="menu-text"> 成绩属性 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/schedules' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/schedules' ? 'active' : '' %>">
           <a href="<%= admin_schedules_path %>">
             <i class="icon-calendar"></i>
             <span class="menu-text"> 赛程名 </span>
           </a>
         </li>
-        <li class="<%= (params[:controller] == 'admin/activities' || (params[:type_id].present? && params[:type]=='1')) ? 'active' : '' %>">
+        <li class="<%= (controller_params == 'admin/activities' || (params[:type_id].present? && params[:type]=='1')) ? 'active' : '' %>">
           <a href="<%= admin_activities_path %>">
             <i class="icon-gift"></i>
             <span class="menu-text"> 活动 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/volunteers' ? 'active' : '' %>">
+        <li class="<%= controller_params.in?(%w(admin/volunteers admin/event_volunteers)) ? 'active' : '' %>">
           <a href="<%= admin_volunteers_path %>">
             <i class="icon-male"></i>
             <span class="menu-text"> 志愿者 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/news_types' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/news_types' ? 'active' : '' %>">
           <a href="<%= admin_news_types_path %>">
             <i class="icon-list"></i>
             <span class="menu-text"> 新闻类型 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/news' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/news' ? 'active' : '' %>">
           <a href="<%= admin_news_index_path %>">
             <i class="icon-comment-alt"></i>
             <span class="menu-text"> 新闻 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/schools' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/schools' ? 'active' : '' %>">
           <a href="<%= admin_schools_path %>">
             <i class="icon-inbox"></i>
             <span class="menu-text"> 学校 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/consults' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/consults' ? 'active' : '' %>">
           <a href="<%= admin_consults_path %>">
             <i class="icon-comments"></i>
             <span class="menu-text"> 用户反馈 </span>
@@ -265,25 +266,25 @@
 
 
         <% if 2==1 %>
-            <li class="<%= params[:controller] == 'admin/schedules' ? 'active' : '' %>">
+            <li class="<%= controller_params == 'admin/schedules' ? 'active' : '' %>">
               <a href="<%= admin_schedules_path %>">
                 <i class="icon-calendar"></i>
                 <span class="menu-text"> 赛程名 </span>
               </a>
             </li>
-            <li class="<%= params[:controller] == 'admin/score_attributes' ? 'active' : '' %>">
+            <li class="<%= controller_params == 'admin/score_attributes' ? 'active' : '' %>">
               <a href="<%= admin_score_attributes_path %>">
                 <i class="icon-hdd"></i>
                 <span class="menu-text"> 成绩属性 </span>
               </a>
             </li>
-            <li class="<%= params[:controller] == 'admin/volunteers' ? 'active' : '' %>">
+            <li class="<%= controller_params == 'admin/volunteers' ? 'active' : '' %>">
               <a href="<%= admin_volunteers_path %>">
                 <i class="icon-glass"></i>
                 <span class="menu-text"> 志愿者 </span>
               </a>
             </li>
-            <li class="<%= params[:controller] == 'admin/vouchers' ? 'active' : '' %>">
+            <li class="<%= controller_params == 'admin/vouchers' ? 'active' : '' %>">
               <a href="<%= admin_vouchers_path %>">
                 <i class="icon-comment-alt"></i>
                 <span class="menu-text"> 参赛证 </span>

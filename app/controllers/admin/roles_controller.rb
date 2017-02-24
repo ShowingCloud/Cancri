@@ -65,7 +65,7 @@ class Admin::RolesController < AdminController
     else
       @role = Role.find(params[:id])
       @role.destroy
-      @notice=[true, @role.id, '新闻类型删除成功']
+      @notice=[true, @role.id, '删除成功']
     end
     respond_to do |format|
       format.js

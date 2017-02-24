@@ -16,16 +16,16 @@
             <% if user_signed_in? && @has_apply.present? %>
                 <%= @has_apply.status == 1 ? '您已报名该招募活动' : '您已报名，请等待审核' %>
             <% else %>
-                <%= link_to "报名", "/volunteers/apply_event_volunteer?apply_event_volunteer="+ @event_volunteer.id.to_s , method: :post, class:'btn btn-lightblue' %>
+                <%= link_to "报名", "/volunteers/apply_event_volunteer?event_volunteer_id=#{@event_volunteer.id}", method: :post, class: 'btn btn-lightblue' %>
             <% end %>
           </div>
       <% else %>
           <% if @event_volunteers.present? %>
-            <ul class='event-list'>
-              <% @event_volunteers.each do |ev| %>
-                  <li><%= link_to ev.name, volunteers_recruit_path(id: ev.id) %></li>
-              <% end %>
-            </ul>
+              <ul class='event-list'>
+                <% @event_volunteers.each do |ev| %>
+                    <li><%= link_to ev.name, volunteers_recruit_path(id: ev.id) %></li>
+                <% end %>
+              </ul>
           <% else %>
               暂无招募
           <% end %>

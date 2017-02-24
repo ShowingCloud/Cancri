@@ -19,7 +19,7 @@ class EventVolunteer < ApplicationRecord
 
   def check_start_time
     if apply_start_time.present? && apply_start_time < Time.zone.now
-      errors[:apply_start_time] << '报名开始时间不能早于现在'
+      errors[:apply_start_time] << '不能早于现在'
     end
   end
 end
