@@ -174,6 +174,7 @@ Rails.application.routes.draw do
       end
     end
     resources :event_volunteers
+    resources :positions
     resources :score_attributes
     resources :photos #, only: [:new, :create, :index,:show]
     resources :videos

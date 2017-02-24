@@ -395,7 +395,6 @@ $(function () {
 
     // 志愿者审核
     $('.review-volunteer').on('click', function () {
-        console.log(12);
         var user_role_id = $(this).attr('data-id');
         $('.volunteer-review-status-submit').on('click', function () {
             var status = $(".select-review-status [name='review-status']:checked").val();
@@ -418,7 +417,6 @@ $(function () {
                     }
                 }
             });
-            console.log(132);
             $(".select-review-status [name='review-status']").prop('checked', false);
         });
     });

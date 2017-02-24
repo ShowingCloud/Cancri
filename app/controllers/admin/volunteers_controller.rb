@@ -52,7 +52,7 @@ class Admin::VolunteersController < AdminController
   end
 
   def events
-
+    @event_volunteers = EventVolunteer.includes(:competition, :activity).page(params[:page]).per(params[:per])
   end
 
   # POST /admin/volunteers

@@ -279,6 +279,7 @@ zh-CN:
       volunteer: '志愿者'
       regulation: '章程'
       event_volunteer: '招募志愿者'
+      position: '职位'
   views:
     pagination:
         first: "首页"

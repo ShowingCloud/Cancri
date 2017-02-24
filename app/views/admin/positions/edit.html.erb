@@ -1,0 +1,11 @@
+<h1 class="page-header">
+  编辑<%= t('activerecord.models.position') %>
+  <small class="pull-right">
+    <a href="<%= admin_positions_path(@position) %>" title="显示该<%= t('activerecord.models.position') %>" class="btn btn-default">
+      <i class="icon-eye-open icon-only"></i></a>
+    <a href="<%= admin_positions_path %>" title="<%= t('activerecord.models.position') %>列表" class="btn btn-default">
+      <i class="icon-list icon-only"></i></a>
+  </small>
+</h1>
+
+<%= render 'form' %>
