@@ -30,7 +30,6 @@
 //= require competition
 //= require comp_voucher
 
-
 //= //require account
 //= //require turbolinks
 //= //require_tree .

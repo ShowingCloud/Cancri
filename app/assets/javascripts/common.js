@@ -120,6 +120,27 @@ function alert_r(msg,callback){
   }
 }
 
+$("form.json-submit").submit(function(e){
+  var $form =  $(this);
+  var data = $form.serializeArray();
+  $.ajax({
+    url: $form.attr("action"),
+    data: data,
+    method: 'POST',
+    dataType: 'json',
+    success:function(response){
+      if(response.status === true){
+        alert_r(response.message,function(){
+          window.location.reload();
+        });
+      }else{
+        alert_r(response.message);
+      }
+    }
+  });
+  return false;
+});
+
 BootstrapDialog.DEFAULT_TEXTS[BootstrapDialog.TYPE_PRIMARY] = '提示信息';
 BootstrapDialog.DEFAULT_TEXTS['OK'] = '确认';
 BootstrapDialog.DEFAULT_TEXTS['CANCEL'] = '取消';
