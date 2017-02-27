@@ -47,6 +47,10 @@ class Admin::EventVolunteersController < AdminController
   # PATCH/PUT /admin/event_volunteers/1
   # PATCH/PUT /admin/event_volunteers/1.json
   def update
+    puts '===================================='
+    p event_volunteer_params[:positions]
+    puts '===================================='
+
     respond_to do |format|
       if @event_volunteer.update(event_volunteer_params)
         format.html { redirect_to [:admin, @event_volunteer], notice: '更新成功' }
@@ -79,6 +83,16 @@ class Admin::EventVolunteersController < AdminController
     end
   end
 
+  def volunteer_detail
+    user_id = params[:id]
+    @events = EventVolunteer.lj_e_v_u_u_p_u_r.where('e_v_u.user_id=?', user_id).select(:id, :name, :event_type, :type_id, 'e_v_u.desc', 'e_v_u.point', 'e_v_u.updated_at', 'u_p.username', 'u_p.standby_school', 'u_r.points', 'u_r.times').page(params[:page]).per(params[:per])
+  end
+
+  def volunteer_list
+    id = params[:id]
+    @volunteers = EventVolunteer.lj_e_v_u_u_p_u_r.joins('left join users u on u.id = u_p.user_id').where(id: id).select('e_v_u.id', :name, 'e_v_u.user_id', 'u.mobile', 'u_p.username', 'u_p.standby_school', 'u_p.alipay_account', 'u_r.points', 'u_r.times').page(params[:page]).per(params[:per])
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_event_volunteer
@@ -87,7 +101,7 @@ class Admin::EventVolunteersController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def event_volunteer_params
-    params.require(:event_volunteer).permit!
+    params.require(:event_volunteer).permit(:name, :event_type, :type_id, :content, :apply_start_time, :apply_end_time, :status, :positions)
   end
 
 end

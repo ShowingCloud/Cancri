@@ -173,7 +173,12 @@ Rails.application.routes.draw do
         get :events
       end
     end
-    resources :event_volunteers
+    resources :event_volunteers do
+      collection do
+        get '/volunteer_detail/:id', to: 'event_volunteers#volunteer_detail'
+        get '/volunteer_list/:id', to: 'event_volunteers#volunteer_list'
+      end
+    end
     resources :positions
     resources :score_attributes
     resources :photos #, only: [:new, :create, :index,:show]

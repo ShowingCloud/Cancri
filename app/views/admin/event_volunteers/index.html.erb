@@ -3,6 +3,8 @@
   <small class="pull-right">
     <a href="<%= new_admin_event_volunteer_path %>" class="btn btn-default" title="添加<%= t('activerecord.models.event_volunteer') %>">
       <i class="icon-only icon-plus"></i></a>
+    <a href="<%= admin_volunteers_path %>" class="btn btn-default" title="<%= t('activerecord.models.volunteer') %>列表">
+      <i class="icon-only icon-list"></i></a>
     <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
       <i class="icon-search icon-only"></i>
     </a>
@@ -52,6 +54,9 @@
           <% end %>
           <%= link_to edit_admin_event_volunteer_path(event_volunteer), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>
+          <% end %>
+          <%= link_to "/admin/event_volunteers/volunteer_list/#{event_volunteer.id}", title: '志愿者', class: 'btn btn-xs btn-primary' do %>
+              <i class="icon-user bigger-120"></i>
           <% end %>
           <%= link_to [:admin, event_volunteer], method: :delete, data: {confirm: '确认删除吗?', remote: true}, title: '删除', class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash bigger-120"></i>

@@ -34,6 +34,10 @@
       <%= t('status.status'+@event_volunteer.status.to_s) %>
     </li>
     <li class="list-group-item">
+      <h4>职位:</h4>
+      <%= "#{@event_volunteer.positions.length}个职位：#{@event_volunteer.positions.join(',') }" if @event_volunteer.positions.present? %>
+    </li>
+    <li class="list-group-item">
       <h4><%= t('simple_form.labels.defaults.event_type') %>:</h4>
       <% case @event_volunteer.event_type when 'Competition' %>
           比赛

@@ -1,0 +1,73 @@
+<h1 class="page-header">
+  <%= @volunteers.first.name %>
+  <small class="pull-right">
+    <a href="#" class="btn btn-default btn-search-toggle" title="积分排序">
+      积分排序
+    </a>
+    <a href="#" class="btn btn-primary btn-search-toggle" title="次数排序">
+      次数排序
+    </a>
+  </small>
+</h1>
+<div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
+  <div class="widget-header widget-header-small">
+    <h5 class="lighter">搜索</h5>
+  </div>
+  <div class="widget-body">
+    <div class="widget-main">
+      <form class="form" role="form" method="get">
+        <div class="input-group" data-search="field">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+              <span data-search-text class="admin-search-field"><%= t('simple_form.labels.defaults.name') %></span>
+              <span class="caret"></span></button>
+            <ul class="dropdown-width dropdown-menu">
+              <li data-search-option="name"><a><%= t('simple_form.labels.defaults.name') %></a></li>
+              <li data-search-option="id"><a>ID</a></li>
+            </ul>
+          </div>
+          <input type="hidden" name="field" value="<%= params[:field].present? ? params[:field] : 'name' %>"/>
+          <input placeholder="输入关键字，按回车键提交" value="<%= params[:keyword] %>" name="keyword" type="text" class="form-control" aria-label="...">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<% if @volunteers.length >1 %>
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th><%= t('simple_form.labels.defaults.username') %></th>
+        <th><%= t('simple_form.labels.defaults.mobile') %></th>
+        <th><%= t('simple_form.labels.defaults.standby_school') %></th>
+        <th><%= t('simple_form.labels.defaults.alipay_account') %></th>
+        <th>操作</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @volunteers.each do |event_volunteer| %>
+          <tr id="row-<%= event_volunteer.id %>">
+            <td><%= event_volunteer.id %></td>
+            <td><%= event_volunteer.username %></td>
+            <td><%= event_volunteer.mobile %></td>
+            <td><%= event_volunteer.standby_school %></td>
+            <td><%= event_volunteer.alipay_account %></td>
+            <td><%= link_to "/admin/event_volunteers/volunteer_detail/#{event_volunteer.user_id}", title: '查看', class: 'btn btn-xs btn-warn' do %>
+                  <i class="icon-eye-open bigger-120"></i>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <nav>
+      <%= paginate @volunteers %>
+    </nav>
+<% else %>
+    <div class="alert alert-primary">暂无志愿者报名</div>
+<% end %>
+
+
