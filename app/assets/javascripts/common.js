@@ -83,6 +83,9 @@ function checkIdcard(num) {
 }
 
 function getAge(dateString) {
+    if(!dateString){
+      return false;
+    }
     var today = new Date();
     var birthDate = new Date(dateString);
     var age = today.getFullYear() - birthDate.getFullYear();
@@ -109,6 +112,20 @@ function getGrade(num){
   var result = grades[parseInt(num) - 1];
   if(result){
     return result;
+  }else{
+    return "未知";
+  }
+}
+
+function getGroup(group){
+  var map ={
+    '1': '小学',
+    '2': '中学',
+    '3': '初中',
+    '4': '高中'
+  };
+  if(map[group]){
+    return map[group];
   }else{
     return "未知";
   }

@@ -1,16 +1,17 @@
 .volunteer{
   width: 80%;
-}
-.volunteer-head{
-  margin: 30px auto;
-}
 
-.event-list{
-  li{
-    list-style:decimal;
-    padding:10px 0;
+  &-head{
+    margin: 30px auto;
   }
-  a{
-    color: #FFF;
+
+  .event-list{
+    li{
+      list-style:decimal;
+      padding:10px 0;
+    }
+    a{
+      color: #FFF;
+    }
   }
 }

@@ -2,30 +2,17 @@
  * Created by huaxiukun on 16/8/15.
  */
 function download_comp_voucher(user_info) {
-    var user = eval('(' + user_info + ')');
-    var age = user["age"] != "" ? (new Date().getFullYear() - parseInt(user["age"])) : "";
-    var user_gender = (user["gender"] == '1' ? "男" : (user["gender"] == '2' ? "女" : ""));
-    var group = user["group"];
-    switch (group) {
-        case '1':
-            group = '小学';
-            break;
-        case '2':
-            group = '中学';
-            break;
-        case '3':
-            group = '初中';
-            break;
-        case '4':
-            group = '高中';
-            break;
-        default:
-            group = ''
-    }
-    $('#qrcodeCanvas').qrcode({
+
+    var user = JSON.parse(user_info);
+    var age = getAge(user.age);
+    var user_gender = getGender(user.gender);
+    var group = getGroup(user.group);
+    var $qrcodeCanvas = $('#qrcodeCanvas');
+
+    $qrcodeCanvas.qrcode({
         width: 260,
         height: 260,
-        text: utf16to8("姓名:" + user["username"] + ";\n性别:" + user_gender + ";\n学校:" + user["school_name"] + ";\n项目:" + user["event_name"] + ";\n组别:" + group + ";\n队伍:" + user["identifier"] + "")
+        text: utf16to8("姓名:" + user.username + ";\n性别:" + user_gender + ";\n学校:" + user.school_name + ";\n项目:" + user.event_name + ";\n组别:" + group + ";\n队伍:" + user.identifier + "")
     });
     var canvas = document.getElementById("myCanvas");
     if (canvas.getContext) {
@@ -48,10 +35,8 @@ function download_comp_voucher(user_info) {
         ctx.fillStyle = "white";
         ctx.fillText(user["comp_name"], 380, 765);
 
-        var qrcode_canvas = $("#qrcodeCanvas").find("canvas")[0];
-        var qrcode_image = new Image();
-        qrcode_image.src = qrcode_canvas.toDataURL("image/jpeg");
-        ctx.drawImage(qrcode_image, 785, 1266);
+        var qrcode_canvas = $qrcodeCanvas.find("canvas")[0];
+        ctx.drawImage(qrcode_canvas, 785, 1266);
         var all_img = new Image();
         all_img.src = canvas.toDataURL("image/jpeg");
 
