@@ -119,6 +119,7 @@ Rails.application.routes.draw do
     get '/checks/volunteers', to: 'checks#volunteers'
     get '/checks/volunteer_list', to: 'checks#volunteer_list'
     post '/checks/review_volunteer' => 'checks#review_volunteer'
+    post '/checks/audit_event_volunteer', to: 'checks#audit_event_volunteer'
     #
     resources :competition_schedules do
       collection do

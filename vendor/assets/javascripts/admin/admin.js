@@ -420,6 +420,72 @@ $(function () {
             $(".select-review-status [name='review-status']").prop('checked', false);
         });
     });
+
+    $(".select-review-status [name='review-status']").on('click', function () {
+        var status = $(".select-review-status [name='review-status']:checked").val();
+        if (status == 1) {
+            $("#volunteer-position-show").removeClass('hide');
+        } else {
+            $("#volunteer-position-show").addClass('hide');
+        }
+    });
+
+    // 活动志愿者录用审核
+    $('.open-audit-event-volunteer').on('click', function () {
+        var _self = $(this);
+        var volunteer_name = _self.attr('data-name');
+        $('#volunteer-username').text(volunteer_name);
+        var e_v_u_id = _self.attr('data-id');
+        var event_type = _self.attr('data-type');
+        var status = $(".select-review-status [name='review-status']:checked").val();
+
+        // var data = {};
+        $('.event-volunteer-status-submit').on('click', function () {
+            var status = $(".select-review-status [name='review-status']:checked").val();
+            if (status == '1') {
+                $("#volunteer-position-show").removeClass('hide');
+            } else {
+                $("#volunteer-position-show").addClass('hide');
+            }
+            var position = $("#volunteer-position").val();
+            if (!status) {
+                admin_gritter_notice(false, '请选择审核结果');
+                return false;
+            }
+            if (status == '1') {
+                $('#volunteer-position-show').removeClass('hide');
+                var $event_id = $("#competition-event-id");
+                var event_id = $event_id.val();
+                if (status && event_type == 'Competition' && !event_id) {
+                    $event_id.focus();
+                    admin_gritter_notice(false, '这里是比赛，请选择分配的项目');
+                    return false;
+                }
+                if (!position) {
+                    admin_gritter_notice(false, '请选择职位');
+                    return false;
+                }
+            }
+
+            $.ajax({
+                url: '/admin/checks/audit_event_volunteer',
+                type: 'post',
+                data: {
+                    "status": status,
+                    "e_v_u_id": e_v_u_id,
+                    "event_id": event_id,
+                    "position": position
+                },
+                success: function (data) {
+                    admin_gritter_notice(data.status, data.message);
+                    if (data.status) {
+                        $("#show-audit-event-volunteer").modal('hide');
+                    }
+                }
+            });
+            $(".select-review-status [name='review-status']").prop('checked', false);
+        });
+    });
     // 积分审核
     $('.audit-user-point').on('click', function () {
         var upd = $(this).attr('data-id');

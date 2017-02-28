@@ -47,10 +47,6 @@ class Admin::EventVolunteersController < AdminController
   # PATCH/PUT /admin/event_volunteers/1
   # PATCH/PUT /admin/event_volunteers/1.json
   def update
-    puts '===================================='
-    p event_volunteer_params[:positions]
-    puts '===================================='
-
     respond_to do |format|
       if @event_volunteer.update(event_volunteer_params)
         format.html { redirect_to [:admin, @event_volunteer], notice: '更新成功' }
@@ -90,7 +86,7 @@ class Admin::EventVolunteersController < AdminController
 
   def volunteer_list
     id = params[:id]
-    @volunteers = EventVolunteer.lj_e_v_u_u_p_u_r.joins('left join users u on u.id = u_p.user_id').where(id: id).select('e_v_u.id', :name, 'e_v_u.user_id', 'u.mobile', 'u_p.username', 'u_p.standby_school', 'u_p.alipay_account', 'u_r.points', 'u_r.times').page(params[:page]).per(params[:per])
+    @volunteers = EventVolunteer.lj_e_v_u_u_p_u_r.joins('left join users u on u.id = u_p.user_id').where(id: id).select('e_v_u.id', :name, :event_type, :type_id, :positions, 'e_v_u.user_id', 'e_v_u.status', 'u.mobile', 'u_p.username', 'u_p.standby_school', 'e_v_u.status', 'u_p.alipay_account', 'u_r.points', 'u_r.times').page(params[:page]).per(params[:per])
   end
 
   private
