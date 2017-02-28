@@ -66,7 +66,7 @@
                             </td>
                             <td>
                               <% if a.team_status == 1 %>
-                                <a class="btn btn-xs btn-primary" href="/user/export_voucher?ed=<%= a.event_id %>">下载参赛证</a>
+                                <%= link_to "下载参赛证", "/user/export_voucher?ed=#{a.event_id}",class:"btn btn-xs btn-primary",onclick: "download_comp_voucher(event,#{raw a.to_json})" %>
                               <% else %>
                                 审核通过后可下载参赛证
                               <% end %>
@@ -107,3 +107,4 @@
     </div>
   </div>
 </div>
+<%= javascript_include_tag 'jspdf.min' %>
