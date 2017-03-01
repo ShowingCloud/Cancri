@@ -19,18 +19,6 @@ $(function() {
         }
     };
 
-    var fix_height = {
-        init: function(selector) {
-            var max = document.body.clientHeight;
-            var screen = window.innerHeight;
-            if (screen > max) {
-                $(selector).css({
-                    'min-height': screen - 134
-                });
-            }
-        }
-    };
-
     if ($('#comp-show').length > 0) {
         var space = $('#comp-show');
         var fold = space.find('.fold-head');
@@ -328,13 +316,6 @@ $(function() {
             }
         })
     }
-
-    fix_height.init('#main');
-    clear_cookie.init();
-
-    $(window).on('resize', function() {
-        fix_height.init('#main');
-    });
 
     $('.lesson').find('.lesson-item').on('click', function() {
         var $this = $(this);

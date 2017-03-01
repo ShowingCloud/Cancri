@@ -1,1 +1,33 @@
-<h1>Volunteers#points</h1>
+<% avg_point = 72 %>
+<% times = 5 %>
+<% year = Time.current.year %>
+<div class="main" id="main">
+  <div class="container volunteer text-center">
+    <div class="volunteer-head">
+      <h1><%= avg_point %></h1>
+      <div><%= year %>年的平均积分</div>
+      <h1><%= times %></h1>
+      <div><%= year %>年参加活动的次数</div>
+    </div>
+    <h4>志愿者记录</h4>
+    <!-- <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th class="text-center">时间</th>
+        <th class="text-center">活动</th>
+        <th class="text-center">积分</th>
+        <th class="text-center">备注</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>3.5</td>
+        <td>我是活动</td>
+        <td>80</td>
+        <td>表现超好</td>
+      </tr>
+    </tbody>
+  </table> -->
+  <div><%= year %>年积分将于<%= year %>.12.31清零</div>
+  </div>
+</div>
