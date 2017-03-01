@@ -437,49 +437,56 @@ $(function () {
         $('#volunteer-username').text(volunteer_name);
         var e_v_u_id = _self.attr('data-id');
         var event_type = _self.attr('data-type');
-        var status = $(".select-review-status [name='review-status']:checked").val();
 
-        // var data = {};
-        $('.event-volunteer-status-submit').on('click', function () {
+        $('.event-volunteer-status-submit').unbind('click').click(function () {
             var status = $(".select-review-status [name='review-status']:checked").val();
-            if (status == '1') {
-                $("#volunteer-position-show").removeClass('hide');
-            } else {
-                $("#volunteer-position-show").addClass('hide');
-            }
-            var position = $("#volunteer-position").val();
             if (!status) {
                 admin_gritter_notice(false, '请选择审核结果');
                 return false;
             }
+            var data = {
+                "status": status,
+                "e_v_u_id": e_v_u_id
+            };
+
             if (status == '1') {
-                $('#volunteer-position-show').removeClass('hide');
+                var $position = $("#volunteer-position");
+                var position = $position.val();
+                $("#volunteer-position-show").removeClass('hide');
                 var $event_id = $("#competition-event-id");
+                var event_name = $event_id.find("option:selected").text();
                 var event_id = $event_id.val();
-                if (status && event_type == 'Competition' && !event_id) {
-                    $event_id.focus();
-                    admin_gritter_notice(false, '这里是比赛，请选择分配的项目');
-                    return false;
+                if (status && event_type == 'Competition') {
+                    if (event_id) {
+                        data.event_id = event_id;
+                        data.event_name = event_name;
+                    } else {
+                        $event_id.focus();
+                        admin_gritter_notice(false, '这里是比赛，请选择分配的项目');
+                        return false;
+                    }
                 }
-                if (!position) {
+                if (position) {
+                    data.position = position;
+                } else {
+                    $position.focus();
                     admin_gritter_notice(false, '请选择职位');
                     return false;
                 }
+            } else {
+                $("#volunteer-position-show").addClass('hide');
             }
 
             $.ajax({
-                url: '/admin/checks/audit_event_volunteer',
+                url: '/admin/event_volunteers/audit_event_v_user',
                 type: 'post',
-                data: {
-                    "status": status,
-                    "e_v_u_id": e_v_u_id,
-                    "event_id": event_id,
-                    "position": position
-                },
+                data: data,
                 success: function (data) {
                     admin_gritter_notice(data.status, data.message);
                     if (data.status) {
                         $("#show-audit-event-volunteer").modal('hide');
+                        document.getElementById("volunteer-user-" + e_v_u_id).innerHTML = '录用';
+                        document.getElementById("joins-times-" + e_v_u_id).innerHTML = parseInt(document.getElementById("joins-times-" + e_v_u_id).innerHTML) + 1;
                     }
                 }
             });

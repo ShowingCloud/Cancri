@@ -81,12 +81,58 @@ class Admin::EventVolunteersController < AdminController
 
   def volunteer_detail
     user_id = params[:id]
-    @events = EventVolunteer.lj_e_v_u_u_p_u_r.where('e_v_u.user_id=?', user_id).select(:id, :name, :event_type, :type_id, 'e_v_u.desc', 'e_v_u.point', 'e_v_u.updated_at', 'u_p.username', 'u_p.standby_school', 'u_r.points', 'u_r.times').page(params[:page]).per(params[:per])
+    @events = EventVolunteer.lj_e_v_u_u_p_u_r.where('e_v_u.user_id=?', user_id).where('e_v_u.status=?', 1).select(:id, :name, :event_type, :type_id, 'e_v_u.desc', 'e_v_u.point', 'e_v_u.updated_at', 'u_p.username', 'u_p.standby_school', 'u_r.points', 'u_r.times').page(params[:page]).per(params[:per])
   end
 
   def volunteer_list
     id = params[:id]
     @volunteers = EventVolunteer.lj_e_v_u_u_p_u_r.joins('left join users u on u.id = u_p.user_id').where(id: id).select('e_v_u.id', :name, :event_type, :type_id, :positions, 'e_v_u.user_id', 'e_v_u.status', 'u.mobile', 'u_p.username', 'u_p.standby_school', 'e_v_u.status', 'u_p.alipay_account', 'u_r.points', 'u_r.times').page(params[:page]).per(params[:per])
+  end
+
+
+  def audit_event_v_user
+    status = params[:status]
+    position = params[:position]
+    event_id = params[:event_id]
+    event_name = params[:event_name]
+    e_v_u_id = params[:e_v_u_id]
+    if status.in?(%w(1 0)) && e_v_u_id
+      e_v_u = EventVolunteerUser.joins(:event_volunteer).where(id: e_v_u_id).select(:id, :name, :event_volunteer_id, :user_id, :status, 'event_volunteers.event_type').take
+      if e_v_u
+        if e_v_u.status == 0
+          if status == '0'
+            if e_v_u.destroy
+              CreateNotificationJob.perform_later ({user_id: e_v_u.user_id, message_type: 5, content: "感谢您申请#{e_v_u.name}，很抱歉未能录用"})
+              result = [true, '审核成功，将消息推送告知被录用者']
+            else
+              result = [false, '审核失败']
+            end
+          else
+            if position.present?
+              if e_v_u.event_type == 'Activity' || (e_v_u.event_type == 'Competition' && event_id.to_i != 0)
+                if e_v_u.update_attributes(event_id: event_id, status: 1, position: 1)
+                  result = [true, '录用成功，将消息推送告知被录用者']
+                  CreateNotificationJob.perform_later ({user_id: e_v_u.user_id, message_type: 5, content: "您通过了在#{e_v_u.name}中的申请，职位为：#{event_name.present? ? event_name+' - ' : ''}#{position},请及时参加培训和活动！"})
+                else
+                  result = [false, '审核失败']
+                end
+              else
+                result = [false, '该活动是比赛，请选择分配的项目']
+              end
+            else
+              result = [false, '请选择职位']
+            end
+          end
+        else
+          result = [false, '该对象不在审核状态']
+        end
+      else
+        result = [false, '对象不存在']
+      end
+    else
+      result = [false, '参数不规范或不完整']
+    end
+    render json: {status: result[0], message: result[1]}
   end
 
   private

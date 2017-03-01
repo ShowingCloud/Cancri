@@ -59,10 +59,10 @@
             <td><%= event_volunteer.username %></td>
             <td><%= event_volunteer.mobile %></td>
             <td><%= event_volunteer.standby_school %></td>
-            <td><%= event_volunteer.times %></td>
+            <td id="joins-times-<%= event_volunteer.id %>"><%= event_volunteer.times %></td>
             <td><%= event_volunteer.points %></td>
             <td><%= event_volunteer.alipay_account %></td>
-            <td>
+            <td id="volunteer-user-<%= event_volunteer.id %>">
               <% if event_volunteer.status == 0 %>
                   <a href="#show-audit-event-volunteer" class="btn btn-xs btn-danger open-audit-event-volunteer" data-name="<%= event_volunteer.username %>" data-type="<%= event_volunteer.event_type %>" data-id="<%= event_volunteer.id %>" data-toggle="modal">待审核</a>
               <% else %>
@@ -93,6 +93,7 @@
               <label class=""><input name="review-status" value="1" type="radio"/> 录用</label>&nbsp;&nbsp;
               <label class=""><input name="review-status" value="0" type="radio"/> 不录用</label>
             </div>
+            <br>
             <div id="volunteer-position-show" class="hide">
               <% if @volunteers.first.event_type == 'Competition' %>
                   <div id="event-list">
@@ -107,9 +108,9 @@
                     </select>
                   </div>
               <% end %>
-              <div id="volunteer-position" class="center">
-                <select id="competition-event-id">
-                  <option>请选择职位</option>
+              <div class="center">
+                <select id="volunteer-position">
+                  <option value="">请选择职位</option>
                   <% if @volunteers.first.positions.present? %>
                       <% @volunteers.first.positions.each do |position| %>
                           <option value="<%= position %>"><%= position %></option>

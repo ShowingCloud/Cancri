@@ -59,10 +59,16 @@ class User < ApplicationRecord
     email = '' if email == "--- \n..."
     if user.nil?
       user = create(id: auth.extra.id, nickname: auth.info.nickname, mobile: mobile, email: email)
+      ac_result = user.save
     else
-      user.update_attributes(email: email, mobile: mobile)
+      ac_result = user.update_attributes(email: email, mobile: mobile)
     end
-    user
+    if ac_result
+      result = [true, user]
+    else
+      result = [false, nil, user.errors.full_messages.first]
+    end
+    {status: result[0], user: result[1], errors: result[2]}
   end
 
   private

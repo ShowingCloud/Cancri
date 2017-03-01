@@ -322,6 +322,7 @@ zh-CN:
     gender2: '女'
     gender: ''
   attributes:
+     nickname: '昵称'
      name: '名称'
      username: '姓名'
      birthday: '生日'

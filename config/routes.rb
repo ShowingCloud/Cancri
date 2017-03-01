@@ -119,7 +119,6 @@ Rails.application.routes.draw do
     get '/checks/volunteers', to: 'checks#volunteers'
     get '/checks/volunteer_list', to: 'checks#volunteer_list'
     post '/checks/review_volunteer' => 'checks#review_volunteer'
-    post '/checks/audit_event_volunteer', to: 'checks#audit_event_volunteer'
     #
     resources :competition_schedules do
       collection do
@@ -178,6 +177,7 @@ Rails.application.routes.draw do
       collection do
         get '/volunteer_detail/:id', to: 'event_volunteers#volunteer_detail'
         get '/volunteer_list/:id', to: 'event_volunteers#volunteer_list'
+        post '/audit_event_v_user', to: 'event_volunteers#audit_event_v_user'
       end
     end
     resources :positions
