@@ -8,12 +8,25 @@ class Admin::VolunteersController < AdminController
   # GET /admin/volunteers
   # GET /admin/volunteers.json
   def index
-    @volunteers = UserRole.where(role_id: 3).page(params[:page]).per(params[:per])
+    field = params[:field]
+    keyword = params[:keyword]
+    order_by = params[:order_by]
+    order_with = order_by.in?(%w(points times)) ? "#{order_by} desc" : "username asc"
+
+    volunteers = UserRole.joins(:user).left_joins(:user_profile).where(role_id: 3, status: 1).select(:id, :updated_at, :times, :points, 'users.mobile', 'user_profiles.username', 'user_profiles.standby_school', 'user_profiles.alipay_account').order(order_with)
+    if field.in?(%w(standby_school username)) && keyword.present?
+      volunteers = volunteers.where("user_profiles.#{field} like ?", "%#{keyword}%")
+    end
+    @volunteers = volunteers.page(params[:page]).per(params[:per])
   end
 
   # GET /admin/volunteers/1
   # GET /admin/volunteers/1.json
   def show
+    @events = UserRole.lj_e_v_u_e_v.joins(:user_profile).where(id: params[:id], status: 1, role_id: 3).select(:id, :user_id, :points, :times, 'user_profiles.standby_school', 'user_profiles.username', 'e_v.name', 'e_v_u.point', 'e_v_u.updated_at', 'e_v_u.desc', 'e_v_u.status as e_v_u_status').page(params[:page]).per(params[:per])
+    unless @events
+      render_optional_error(404)
+    end
   end
 
   # GET /admin/volunteers/new

@@ -165,7 +165,7 @@ Rails.application.routes.draw do
       end
     end
     resources :news_types
-    resources :volunteers, only: [:index] do
+    resources :volunteers, only: [:index, :show] do
       collection do
         get :edit_regulation
         post :edit_regulation

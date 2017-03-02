@@ -600,7 +600,11 @@ $(function () {
         $(".teacher-apply-level [name='teacher-apply-level']").prop("checked", false);
     });
     $('.btn-search-toggle').on('click', function () {
-        $('.form-search-toggle').toggleClass('hide show');
+        var form_search_toggle = $('.form-search-toggle');
+        form_search_toggle.toggleClass('hide show');
+        if (form_search_toggle.hasClass('show')) {
+            $('#admin-search-input').focus();
+        }
     });
     //编辑大赛进程
     $(".edit-schedule-submit").on('click', function (e) {

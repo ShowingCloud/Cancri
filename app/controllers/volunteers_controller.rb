@@ -12,6 +12,7 @@ class VolunteersController < ApplicationController
 
   def apply_volunteer
     user_params = params[:user]
+    username = user_params[:username]
     standby_school = user_params[:standby_school]
     gender = user_params[:gender]
     identity_card = user_params[:identity_card]
@@ -19,7 +20,7 @@ class VolunteersController < ApplicationController
     if require_mobile
       if standby_school.present? && gender.present? && identity_card.present? && alipay_account.present?
         user_profile = current_user.user_profile ||= current_user.build_user_profile
-        if user_profile.update_attributes(gender: gender, standby_school: standby_school, identity_card: identity_card, alipay_account: alipay_account)
+        if user_profile.update_attributes(username: username, gender: gender, standby_school: standby_school, identity_card: identity_card, alipay_account: alipay_account)
           volunteer_role = UserRole.create(user_id: current_user.id, role_id: 3, status: 0, role_type: 1)
           if volunteer_role.save
             result = [true, '申请成功，请等待审核，结果将通过消息推送告知您']

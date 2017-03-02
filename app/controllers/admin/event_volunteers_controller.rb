@@ -86,7 +86,7 @@ class Admin::EventVolunteersController < AdminController
 
   def volunteer_list
     id = params[:id]
-    @volunteers = EventVolunteer.lj_e_v_u_u_p_u_r.joins('left join users u on u.id = u_p.user_id').where(id: id).select('e_v_u.id', :name, :event_type, :type_id, :positions, 'e_v_u.user_id', 'e_v_u.status', 'u.mobile', 'u_p.username', 'u_p.standby_school', 'e_v_u.status', 'u_p.alipay_account', 'u_r.points', 'u_r.times').page(params[:page]).per(params[:per])
+    @volunteers = EventVolunteer.lj_e_v_u_u_p_u_r.joins('left join users u on u.id = u_p.user_id').where(id: id).select('e_v_u.id', :name, :event_type, :type_id, :positions, 'e_v_u.user_id', 'e_v_u.status', 'u.mobile', 'u_p.username', 'u_p.standby_school', 'e_v_u.status', 'e_v_u.point', 'e_v_u.desc', 'u_p.alipay_account', 'u_r.id as role_id', 'u_r.points', 'u_r.times').page(params[:page]).per(params[:per])
   end
 
 

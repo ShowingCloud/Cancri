@@ -6,6 +6,7 @@ class UserRole < ApplicationRecord
   belongs_to :district
   has_one :user_family, :dependent => :destroy
   has_one :user_hacker, :dependent => :destroy
+  scope :lj_e_v_u_e_v, -> { joins('left join event_volunteer_users e_v_u on e_v_u.user_id = user_roles.user_id').joins('left join event_volunteers e_v on e_v.id = e_v_u.event_volunteer_id') }
   scope :left_join_u_p, -> { joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id') }
   scope :left_join_s_d, -> { joins('left join schools s on s.id = user_roles.school_id').joins('left join districts d on d.id = s.district_id') }
   scope :user_role_info, ->(ids) { left_join_s_d.where(id: ids).pluck('d.id as district_id') }
@@ -24,7 +25,7 @@ class UserRole < ApplicationRecord
   private
 
   def update_district_id
-    if (school_id.present? && district_id.nil?)  || school_id_changed?
+    if (school_id.present? && district_id.nil?) || school_id_changed?
       self.district_id = self.school.district_id
     end
   end

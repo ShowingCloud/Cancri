@@ -1,15 +1,7 @@
 <h1 class="page-header">
-  <%= @volunteers.first.name %>
-
+  <%= @volunteers[0].name %>
   <small class="pull-right">
-    <% if @volunteers.length >0 %>
-        <a href="#" class="btn btn-info" title="积分排序">
-          积分排序
-        </a>
-        <a href="#" class="btn btn-primary btn-search-toggle" title="次数排序">
-          次数排序
-        </a>
-    <% end %>
+    <a href="<%= admin_event_volunteers_path %>" class="btn btn-default"><i class="icon icon-list"></i></a>
   </small>
 </h1>
 <div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
@@ -36,7 +28,7 @@
     </div>
   </div>
 </div>
-<% if @volunteers.length >0 %>
+<% if @volunteers[0].user_id.present? %>
     <table class="table table-bordered table-hover table-striped">
       <thead>
       <tr>
@@ -48,28 +40,41 @@
         <th>平均积分</th>
         <th><%= t('simple_form.labels.defaults.alipay_account') %></th>
         <th>状态</th>
+        <th>本次积分</th>
+        <th>描述</th>
         <th>操作</th>
       </tr>
       </thead>
 
       <tbody>
-      <% @volunteers.each do |event_volunteer| %>
-          <tr id="row-<%= event_volunteer.id %>">
-            <td><%= event_volunteer.id %></td>
-            <td><%= event_volunteer.username %></td>
-            <td><%= event_volunteer.mobile %></td>
-            <td><%= event_volunteer.standby_school %></td>
-            <td id="joins-times-<%= event_volunteer.id %>"><%= event_volunteer.times %></td>
-            <td><%= event_volunteer.points %></td>
-            <td><%= event_volunteer.alipay_account %></td>
-            <td id="volunteer-user-<%= event_volunteer.id %>">
-              <% if event_volunteer.status == 0 %>
-                  <a href="#show-audit-event-volunteer" class="btn btn-xs btn-danger open-audit-event-volunteer" data-name="<%= event_volunteer.username %>" data-type="<%= event_volunteer.event_type %>" data-id="<%= event_volunteer.id %>" data-toggle="modal">待审核</a>
+      <% @volunteers.each do |event_volunteer_user| %>
+          <% volunteer_user_id = event_volunteer_user.id %>
+          <tr id="row-<%= volunteer_user_id %>">
+            <td><%= volunteer_user_id %></td>
+            <td><%= event_volunteer_user.username %></td>
+            <td><%= event_volunteer_user.mobile %></td>
+            <td><%= event_volunteer_user.standby_school %></td>
+            <td id="joins-times-<%= volunteer_user_id %>"><%= event_volunteer_user.times %></td>
+            <td><%= event_volunteer_user.points %></td>
+            <td><%= event_volunteer_user.alipay_account %></td>
+            <td id="volunteer-user-<%= volunteer_user_id %>">
+              <% if event_volunteer_user.status == 0 %>
+                  <a href="#show-audit-event-volunteer" class="btn btn-xs btn-danger open-audit-event-volunteer" data-name="<%= event_volunteer_user.username %>" data-type="<%= event_volunteer.event_type %>" data-id="<%= event_volunteer.id %>" data-toggle="modal">待审核</a>
               <% else %>
                   录用
               <% end %>
             </td>
-            <td><%= link_to "/admin/event_volunteers/volunteer_detail/#{event_volunteer.user_id}", title: '查看', class: 'btn btn-xs btn-warn' do %>
+            <td>
+              <a href="#open-write-point" data-toggle="modal" class="btn btn-xs btn-warning" id="volunteer-point-<%= volunteer_user_id %>" data-id="<%= volunteer_user_id %>">
+                <% if event_volunteer_user.point.present? %>
+                    event_volunteer_user.point
+                <% else %>
+                    打分
+                <% end %>
+              </a>
+            </td>
+            <td><%= event_volunteer_user.desc %></td>
+            <td><%= link_to "/admin/volunteers/#{event_volunteer_user.role_id}", title: '查看', class: 'btn btn-xs btn-warn' do %>
                   <i class="icon-eye-open bigger-120"></i>
               <% end %>
             </td>
@@ -81,6 +86,40 @@
     <nav>
       <%= paginate @volunteers %>
     </nav>
+
+    <!-- write-point-modal-start-->
+    <div id="open-write-point" class="modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header widget-header">
+            <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+            <h4 class="blue smaller text-center">打分<span class="red" id="volunteer-username"></span></h4>
+          </div>
+          <div class="modal-body overflow-visible">
+            <div class="row text-center">
+              <input class="" placeholder="请输入积分" value="" id="update-volunteer-point">
+            </div>
+            <br>
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm" data-dismiss="modal">
+              <i class="icon-remove"></i>
+              取消
+            </button>
+
+            <button class="btn btn-sm btn-primary update-volunteer-point-submit">
+              <i class="icon-ok"></i>
+              提交
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <!-- end -->
+
     <div id="show-audit-event-volunteer" class="modal">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -138,7 +177,7 @@
 
     </div>
 <% else %>
-    <div class="alert alert-primary">暂无志愿者报名</div>
+    <div class="alert alert-success">暂无志愿者报名</div>
 <% end %>
 
 

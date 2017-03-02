@@ -1,11 +1,93 @@
 <h1 class="page-header">
-  志愿者列表
+  <%= t('activerecord.models.volunteer') %>列表
+
   <small class="pull-right">
-    <a href="<%= events_admin_volunteers_path %>" title="志愿者<%= t('activerecord.models.volunteer') %>" class="btn btn-info">
-      项目列表
+    <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
+      <i class="icon-search icon-only"></i>
     </a>
-    <a href="<%= regulation_admin_volunteers_path %>" title="志愿者<%= t('activerecord.models.volunteer') %>" class="btn btn-info">
-      章程
-    </a>
+    <a href="<%= admin_checks_volunteers_path %>" class="btn btn-danger" title="待审核">
+      待审核</a>
+    <a href="<%= admin_event_volunteers_path %>" class="btn btn-warning" title="招募志愿者活动列表">
+      招募活动</a>
+    <% if @volunteers.length >0 %>
+        <a href="/admin/volunteers?order_by=points<%= params[:field] ? "&field=#{params[:field]}" : "" %><%= params[:keyword] ? "&field=#{params[:keyword]}" : "" %>" class="btn btn-info" title="积分排序">
+          积分排序
+        </a>
+        <a href="/admin/volunteers?order_by=times<%= params[:field] ? "&field=#{params[:field]}" : "" %><%= params[:keyword] ? "&field=#{params[:keyword]}" : "" %>" class="btn btn-primary" title="次数排序">
+          次数排序
+        </a>
+    <% end %>
   </small>
 </h1>
+<div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
+  <div class="widget-header widget-header-small">
+    <h5 class="lighter">搜索</h5>
+  </div>
+  <div class="widget-body">
+    <div class="widget-main">
+      <form class="form" role="form" method="get">
+        <div class="input-group" data-search="field">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+              <span data-search-text class="admin-search-field"><%= t('simple_form.labels.defaults.nickname') %></span>
+              <span class="caret"></span></button>
+            <ul class="dropdown-width dropdown-menu">
+              <li data-search-option="username"><a><%= t('simple_form.labels.defaults.username') %></a></li>
+              <li data-search-option="standby_school"><a>学校</a></li>
+            </ul>
+          </div>
+          <input type="hidden" name="field" value="<%= params[:field].present? ? params[:field] : 'username' %>"/>
+          <input placeholder="输入关键字，按回车键提交" id="admin-search-input" value="<%= params[:keyword] %>" name="keyword" type="text" class="form-control" aria-label="...">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<% if @volunteers.present? %>
+
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+      <tr>
+        <th><%= t('simple_form.labels.defaults.username') %></th>
+        <th>学校</th>
+        <th><%= t('simple_form.labels.defaults.mobile') %></th>
+        <th>次数</th>
+        <th>积分</th>
+        <th>平均积分</th>
+        <th>认证时间</th>
+        <th><%= t('simple_form.labels.defaults.alipay_account') %></th>
+        <th>操作</th>
+      </tr>
+      </thead>
+
+
+      <tbody>
+      <% @volunteers.each do |volunteer| %>
+          <tr>
+            <td><%= volunteer.username %></td>
+            <td><%= volunteer.standby_school %></td>
+            <td><%= volunteer.mobile %></td>
+            <td><%= volunteer.times %></td>
+            <td><%= volunteer.points %></td>
+            <td><%= volunteer.points == 0 ? 0 : (Float(volunteer.points)/volunteer.times).round(2) %></td>
+            <td><%= volunteer.updated_at.strftime('%Y-%m-%d') %></td>
+            <td><%= volunteer.alipay_account %></td>
+            <td><%= link_to admin_volunteer_path(volunteer), title: '查看', class: 'btn btn-xs btn-warn' do %>
+                  <i class="icon-eye-open bigger-120"></i>
+              <% end %>
+              <%= link_to '', method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+                  <i class="icon-trash bigger-120"></i>
+              <% end %>
+              </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <nav>
+      <%= paginate @volunteers %>
+    </nav>
+
+<% else %>
+    <div class="alert alert-primary">暂无志愿者</div>
+<% end %>
