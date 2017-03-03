@@ -1,4 +1,5 @@
 class Admin::EventVolunteersController < AdminController
+  before_action :authenticate
   before_action :set_event_volunteer, only: [:show, :edit, :update]
   before_action do
     authenticate_permissions(['editor', 'admin', 'super_admin'])
@@ -97,7 +98,7 @@ class Admin::EventVolunteersController < AdminController
     event_name = params[:event_name]
     e_v_u_id = params[:e_v_u_id]
     if status.in?(%w(1 0)) && e_v_u_id
-      e_v_u = EventVolunteerUser.joins(:event_volunteer).where(id: e_v_u_id).select(:id, :name, :event_volunteer_id, :user_id, :status, 'event_volunteers.event_type').take
+      e_v_u = EventVolunteerUser.joins(:event_volunteer).where(id: e_v_u_id).select(:id, :name, :event_volunteer_id, :user_id, :status,:point, 'event_volunteers.event_type').take
       if e_v_u
         if e_v_u.status == 0
           if status == '0'
@@ -110,7 +111,7 @@ class Admin::EventVolunteersController < AdminController
           else
             if position.present?
               if e_v_u.event_type == 'Activity' || (e_v_u.event_type == 'Competition' && event_id.to_i != 0)
-                if e_v_u.update_attributes(event_id: event_id, status: 1, position: 1)
+                if e_v_u.update_attributes(event_id: event_id, status: 1, position: 1, point: nil)
                   result = [true, '录用成功，将消息推送告知被录用者']
                   CreateNotificationJob.perform_later ({user_id: e_v_u.user_id, message_type: 5, content: "您通过了在#{e_v_u.name}中的申请，职位为：#{event_name.present? ? event_name+' - ' : ''}#{position},请及时参加培训和活动！"})
                 else
@@ -131,6 +132,28 @@ class Admin::EventVolunteersController < AdminController
       end
     else
       result = [false, '参数不规范或不完整']
+    end
+    render json: {status: result[0], message: result[1]}
+  end
+
+  def update_e_v_u_info
+    e_v_u_id = params[:e_v_u_id]
+    point = params[:point]
+    desc = params[:desc]
+
+    if e_v_u_id.present? && point.present?
+      e_v_u = EventVolunteerUser.where(id: e_v_u_id).take
+      if e_v_u.present?
+        if e_v_u.update_attributes(point: point, desc: desc)
+          result = [true, '更新成功']
+        else
+          result = [false, '更新失败']
+        end
+      else
+        result = [false, '该对象不存在']
+      end
+    else
+      result = [false, '参数不完整']
     end
     render json: {status: result[0], message: result[1]}
   end

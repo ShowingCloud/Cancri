@@ -178,6 +178,7 @@ Rails.application.routes.draw do
         get '/volunteer_detail/:id', to: 'event_volunteers#volunteer_detail'
         get '/volunteer_list/:id', to: 'event_volunteers#volunteer_list'
         post '/audit_event_v_user', to: 'event_volunteers#audit_event_v_user'
+        post :update_e_v_u_info
       end
     end
     resources :positions

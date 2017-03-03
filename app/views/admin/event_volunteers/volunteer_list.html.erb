@@ -59,21 +59,26 @@
             <td><%= event_volunteer_user.alipay_account %></td>
             <td id="volunteer-user-<%= volunteer_user_id %>">
               <% if event_volunteer_user.status == 0 %>
-                  <a href="#show-audit-event-volunteer" class="btn btn-xs btn-danger open-audit-event-volunteer" data-name="<%= event_volunteer_user.username %>" data-type="<%= event_volunteer.event_type %>" data-id="<%= event_volunteer.id %>" data-toggle="modal">待审核</a>
+                  <a href="#show-audit-event-volunteer" class="btn btn-xs btn-danger open-audit-event-volunteer" data-name="<%= event_volunteer_user.username %>" data-type="<%= event_volunteer_user.event_type %>" data-id="<%= event_volunteer_user.id %>" data-toggle="modal">待审核</a>
               <% else %>
                   录用
               <% end %>
             </td>
             <td>
-              <a href="#open-write-point" data-toggle="modal" class="btn btn-xs btn-warning" id="volunteer-point-<%= volunteer_user_id %>" data-id="<%= volunteer_user_id %>">
-                <% if event_volunteer_user.point.present? %>
-                    event_volunteer_user.point
-                <% else %>
-                    打分
-                <% end %>
-              </a>
+              <% if event_volunteer_user.status ==1 %>
+                  <a href="#open-write-point" data-toggle="modal" id="volunteer-point-<%= volunteer_user_id %>" class="btn btn-xs btn-info show-update-volunteer" data-id="<%= volunteer_user_id %>">
+                    <% if event_volunteer_user.point.present? %>
+                        <%= event_volunteer_user.point %>
+                    <% else %>
+                        打分
+                    <% end %>
+                  </a>
+              <% end %>
             </td>
-            <td><%= event_volunteer_user.desc %></td>
+            <td id="volunteer-desc-<%= volunteer_user_id %>">
+              <% if event_volunteer_user.status ==1 %><%= event_volunteer_user.desc %>
+              <% end %>
+            </td>
             <td><%= link_to "/admin/volunteers/#{event_volunteer_user.role_id}", title: '查看', class: 'btn btn-xs btn-warn' do %>
                   <i class="icon-eye-open bigger-120"></i>
               <% end %>
@@ -93,11 +98,28 @@
         <div class="modal-content">
           <div class="modal-header widget-header">
             <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
-            <h4 class="blue smaller text-center">打分<span class="red" id="volunteer-username"></span></h4>
+            <h4 class="blue smaller text-center">更新积分及备注<span class="red" id="volunteer-username"></span></h4>
           </div>
           <div class="modal-body overflow-visible">
+
             <div class="row text-center">
-              <input class="" placeholder="请输入积分" value="" id="update-volunteer-point">
+
+              <div class="col-sm-offset-2 col-sm-8">
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">积分:</label>
+                    <div class="col-sm-10">
+                      <input id="update-volunteer-point" class="form-control" placeholder="请输入积分" autofocus value="">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">备注:</label>
+                    <div class="col-sm-10">
+                      <textarea id="update-volunteer-desc" style="resize: none;max-width: 368px" class="form-control" maxlength="200" placeholder="请输入描述（如需备注）"></textarea>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
             <br>
 

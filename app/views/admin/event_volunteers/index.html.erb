@@ -40,6 +40,7 @@
   <tr>
     <th>ID</th>
     <th><%= t('simple_form.labels.defaults.name') %></th>
+    <th>状态</th>
     <th>操作</th>
   </tr>
   </thead>
@@ -49,11 +50,14 @@
       <tr id="row-<%= event_volunteer.id %>">
         <td><%= event_volunteer.id %></td>
         <td><%= event_volunteer.name %></td>
+        <td><%= is_show_status(event_volunteer.status) %></td>
         <td><%= link_to [:admin, event_volunteer], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>
           <% end %>
-          <%= link_to edit_admin_event_volunteer_path(event_volunteer), title: '编辑', class: 'btn btn-xs btn-info' do %>
-              <i class="icon-edit bigger-120"></i>
+          <% if event_volunteer.status != 2 %>
+              <%= link_to edit_admin_event_volunteer_path(event_volunteer), title: '编辑', class: 'btn btn-xs btn-info' do %>
+                  <i class="icon-edit bigger-120"></i>
+              <% end %>
           <% end %>
           <%= link_to "/admin/event_volunteers/volunteer_list/#{event_volunteer.id}", title: '志愿者', class: 'btn btn-xs btn-primary' do %>
               <i class="icon-user bigger-120"></i>

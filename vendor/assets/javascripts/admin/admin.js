@@ -493,6 +493,44 @@ $(function () {
             $(".select-review-status [name='review-status']").prop('checked', false);
         });
     });
+
+    $(".show-update-volunteer").unbind('click').click(function () {
+
+        var e_v_u_id = $(this).attr('data-id');
+        var origin_point = trim($("#volunteer-point-" + e_v_u_id).text());
+        var origin_desc = trim($("#volunteer-desc-" + e_v_u_id).text());
+        var $point_input = $("#update-volunteer-point");
+        var $desc_input = $("#update-volunteer-desc");
+        if (origin_point != '打分') {
+            $point_input.val(origin_point);
+        }
+        $desc_input.text(origin_desc);
+
+        $(".update-volunteer-point-submit").unbind('click').click(function () {
+            var point = $("#update-volunteer-point").val();
+            var desc = $("#update-volunteer-desc").val();
+            var options = {
+                url: '/admin/event_volunteers/update_e_v_u_info',
+                type: 'post',
+                data: {point: point, desc: desc, e_v_u_id: e_v_u_id},
+                success: function (result) {
+                    admin_gritter_notice(result.status, result.message);
+                    if (result.status) {
+                        $("#open-write-point").modal("hide");
+                        $("#volunteer-point-" + e_v_u_id).text(point);
+                        $("#volunteer-desc-" + e_v_u_id).text(desc);
+                    }
+                },
+                error: function (error) {
+                    admin_gritter_notice(false, error.responseText);
+                }
+            };
+            ajax_handle(options);
+
+        });
+    });
+
+
     // 积分审核
     $('.audit-user-point').on('click', function () {
         var upd = $(this).attr('data-id');
