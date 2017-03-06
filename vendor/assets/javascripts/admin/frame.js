@@ -6,7 +6,7 @@ $(function () {
         max_selected_options: 3,
         search_contains: true
     });
-    $('.edit-event-formula,#add-team-player,#update-team-player').on('shown.bs.modal', function () {
+    $('.edit-event-formula,#add-team-player,#update-team-player,#add-ev-position').on('shown.bs.modal', function () {
         $(this).find('.chosen-container').each(function () {
             var self = $(this);
             self.find('a:first-child').css('width', '320px');

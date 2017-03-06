@@ -182,6 +182,7 @@ Rails.application.routes.draw do
       end
     end
     resources :positions
+    resources :event_vol_positions
     resources :score_attributes
     resources :photos #, only: [:new, :create, :index,:show]
     resources :videos

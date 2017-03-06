@@ -2,6 +2,7 @@ class EventVolunteer < ApplicationRecord
   belongs_to :competition, foreign_key: :type_id
   belongs_to :activity, foreign_key: :type_id
   has_many :event_volunteer_users, :dependent => :destroy
+  has_many :event_vol_positions, dependent: :destroy
   scope :lj_e_v_u_u_p_u_r, -> { joins('left join event_volunteer_users e_v_u on e_v_u.event_volunteer_id = event_volunteers.id')
                                     .joins('left join user_roles u_r on u_r.user_id = e_v_u.user_id and u_r.role_id = 3')
                                     .joins('left join user_profiles u_p on u_p.user_id = e_v_u.user_id') }

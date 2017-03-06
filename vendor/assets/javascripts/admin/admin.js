@@ -56,6 +56,30 @@ $(function () {
 
         });
     }
+
+    // add event_volunteer_position
+    $(".add-ev-position-submit").click(function () {
+        var ev_id = $("#event-volunteer-id").val();
+        var positions = $("#select-ev-position").val();
+        if (ev_id && positions) {
+            var options = {
+                url: '/admin/event_vol_positions',
+                type: 'post',
+                dataType: 'json',
+                data: {event_volunteer_id: ev_id, positions: positions},
+                success: function (result) {
+                    admin_gritter_notice(result.status, result.message);
+
+                },
+                error: function (error) {
+                    admin_gritter_notice(false, error.responseText);
+                }
+            };
+            ajax_handle(options);
+        } else {
+            admin_gritter_notice(false, '职位不能为空')
+        }
+    });
     // ======================== event_volunteers end   ==========================
 
 
