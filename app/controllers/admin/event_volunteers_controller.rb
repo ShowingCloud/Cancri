@@ -1,6 +1,6 @@
 class Admin::EventVolunteersController < AdminController
   before_action :authenticate
-  before_action :set_event_volunteer, only: [:show, :edit, :update]
+  before_action :set_event_volunteer, only: [:show, :edit, :update, :volunteer_list]
   before_action do
     authenticate_permissions(['editor', 'admin', 'super_admin'])
   end
@@ -87,7 +87,13 @@ class Admin::EventVolunteersController < AdminController
 
   def volunteer_list
     id = params[:id]
-    @volunteers = EventVolunteer.lj_e_v_u_u_p_u_r.joins('left join users u on u.id = u_p.user_id').where(id: id).select('e_v_u.id', :name, :event_type, :type_id, :positions, 'e_v_u.user_id', 'e_v_u.status', 'u.mobile', 'u_p.username', 'u_p.standby_school', 'e_v_u.status', 'e_v_u.point', 'e_v_u.desc', 'u_p.alipay_account', 'u_r.id as role_id', 'u_r.points', 'u_r.times').page(params[:page]).per(params[:per])
+    event_vol_users = EventVolunteerUser.lj_u_p_u_r.joins(:user).left_joins(:event_vol_position).where(event_volunteer_id: id)
+    if @event_volunteer.event_type == 'Competition'
+      event_vol_users = event_vol_users.left_joins(:event).select(:id, :user_id, :status, :point, :desc, 'event_vol_positions.name as position_name', 'events.name as event_name', 'users.mobile', 'u_p.username', 'u_p.standby_school', 'u_p.alipay_account', 'u_r.id as role_id', 'u_r.points', 'u_r.times')
+    else
+      event_vol_users = event_vol_users.select(:id, :user_id, :status, :point, :desc, 'event_vol_positions.name as position_name', 'users.mobile', 'u_p.username', 'u_p.standby_school', 'u_p.alipay_account', 'u_r.id as role_id', 'u_r.points', 'u_r.times')
+    end
+    @event_vol_users = event_vol_users.page(params[:page]).per(params[:per])
   end
 
 
@@ -98,7 +104,7 @@ class Admin::EventVolunteersController < AdminController
     event_name = params[:event_name]
     e_v_u_id = params[:e_v_u_id]
     if status.in?(%w(1 0)) && e_v_u_id
-      e_v_u = EventVolunteerUser.joins(:event_volunteer).where(id: e_v_u_id).select(:id, :name, :event_volunteer_id, :user_id, :status,:point, 'event_volunteers.event_type').take
+      e_v_u = EventVolunteerUser.joins(:event_volunteer).where(id: e_v_u_id).select(:id, :name, :event_volunteer_id, :user_id, :status, :point, 'event_volunteers.event_type').take
       if e_v_u
         if e_v_u.status == 0
           if status == '0'
@@ -111,7 +117,7 @@ class Admin::EventVolunteersController < AdminController
           else
             if position.present?
               if e_v_u.event_type == 'Activity' || (e_v_u.event_type == 'Competition' && event_id.to_i != 0)
-                if e_v_u.update_attributes(event_id: event_id, status: 1, position: 1, point: nil)
+                if e_v_u.update_attributes(event_id: event_id, status: 1, position: position, point: nil)
                   result = [true, '录用成功，将消息推送告知被录用者']
                   CreateNotificationJob.perform_later ({user_id: e_v_u.user_id, message_type: 5, content: "您通过了在#{e_v_u.name}中的申请，职位为：#{event_name.present? ? event_name+' - ' : ''}#{position},请及时参加培训和活动！"})
                 else

@@ -1,5 +1,5 @@
 <h1 class="page-header">
-  <%= @volunteers[0].name %>
+  <%= @event_volunteer.name %>
   <small class="pull-right">
     <a href="<%= admin_event_volunteers_path %>" class="btn btn-default"><i class="icon icon-list"></i></a>
   </small>
@@ -28,7 +28,7 @@
     </div>
   </div>
 </div>
-<% if @volunteers[0].user_id.present? %>
+<% if @event_vol_users.present? %>
     <table class="table table-bordered table-hover table-striped">
       <thead>
       <tr>
@@ -40,6 +40,7 @@
         <th>平均积分</th>
         <th><%= t('simple_form.labels.defaults.alipay_account') %></th>
         <th>状态</th>
+        <th>职位分配</th>
         <th>本次积分</th>
         <th>描述</th>
         <th>操作</th>
@@ -47,7 +48,7 @@
       </thead>
 
       <tbody>
-      <% @volunteers.each do |event_volunteer_user| %>
+      <% @event_vol_users.each do |event_volunteer_user| %>
           <% volunteer_user_id = event_volunteer_user.id %>
           <tr id="row-<%= volunteer_user_id %>">
             <td><%= volunteer_user_id %></td>
@@ -59,11 +60,12 @@
             <td><%= event_volunteer_user.alipay_account %></td>
             <td id="volunteer-user-<%= volunteer_user_id %>">
               <% if event_volunteer_user.status == 0 %>
-                  <a href="#show-audit-event-volunteer" class="btn btn-xs btn-danger open-audit-event-volunteer" data-name="<%= event_volunteer_user.username %>" data-type="<%= event_volunteer_user.event_type %>" data-id="<%= event_volunteer_user.id %>" data-toggle="modal">待审核</a>
+                  <a href="#show-audit-event-volunteer" class="btn btn-xs btn-danger open-audit-event-volunteer" data-name="<%= event_volunteer_user.username %>" data-type="<%= @event_volunteer.event_type %>" data-id="<%= volunteer_user_id %>" data-toggle="modal">待审核</a>
               <% else %>
                   录用
               <% end %>
             </td>
+            <td id="volunteer-position-<%= volunteer_user_id %>"><%= event_volunteer_user[:event_name] %><%== '<br>'.html_safe if event_volunteer_user[:event_name] %><%= event_volunteer_user.position_name %></td>
             <td>
               <% if event_volunteer_user.status ==1 %>
                   <a href="#open-write-point" data-toggle="modal" id="volunteer-point-<%= volunteer_user_id %>" class="btn btn-xs btn-info show-update-volunteer" data-id="<%= volunteer_user_id %>">
@@ -89,7 +91,7 @@
     </table>
 
     <nav>
-      <%= paginate @volunteers %>
+      <%= paginate @event_vol_users %>
     </nav>
 
     <!-- write-point-modal-start-->
@@ -156,11 +158,11 @@
             </div>
             <br>
             <div id="volunteer-position-show" class="hide">
-              <% if @volunteers.first.event_type == 'Competition' %>
+              <% if @event_volunteer.event_type == 'Competition' %>
                   <div id="event-list">
                     <select id="competition-event-id" class="col-sm-6">
                       <option value="">请选择项目</option>
-                      <% events = Event.where(competition_id: @volunteers.first.type_id, is_father: false).select(:id, :name) %>
+                      <% events = Event.where(competition_id: @event_volunteer.type_id, is_father: false).select(:id, :name) %>
                       <% if events.present? %>
                           <% events.each do |event| %>
                               <option value="<%= event.id %>"><%= event.name %></option>
@@ -172,9 +174,10 @@
               <div class="center">
                 <select id="volunteer-position">
                   <option value="">请选择职位</option>
-                  <% if @volunteers.first.positions.present? %>
-                      <% @volunteers.first.positions.each do |position| %>
-                          <option value="<%= position %>"><%= position %></option>
+
+                  <% if @event_volunteer.event_vol_positions.present? %>
+                      <% @event_volunteer.event_vol_positions.each do |position| %>
+                          <option value="<%= position.id %>"><%= position.name %></option>
                       <% end %>
                   <% end %>
                 </select>

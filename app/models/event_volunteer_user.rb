@@ -1,7 +1,10 @@
 class EventVolunteerUser < ApplicationRecord
   belongs_to :event_volunteer
+  belongs_to :event_vol_position, foreign_key: :position
+  belongs_to :event
   belongs_to :user
-
+  belongs_to :user_profile, foreign_key: :user_id, primary_key: :user_id
+  scope :lj_u_p_u_r, -> { joins('left join user_profiles u_p on u_p.user_id = event_volunteer_users.user_id').joins('left join user_roles u_r on u_r.role_id=3 and u_r.user_id = event_volunteer_users.user_id') }
   validates :status, :user_id, presence: true
   validates :event_volunteer_id, presence: true, uniqueness: {scope: :user_id, message: '同一招募活动不能报名两次'}
   validates :status, inclusion: [0, 1, 2]

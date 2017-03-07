@@ -84,11 +84,11 @@ class Admin::EventVolPositionsController < AdminController
       if @event_vol_position.update(event_vol_position_params)
         format.html { redirect_to [:admin, @event_vol_position], notice: @event_vol_position.name+'更新成功' }
         format.json { head :no_content }
-        format.js { render json: @result = {status: true, message: '更新成功', obj_id: @event_vol_position.id} }
+        format.js
       else
         format.html { render action: 'edit' }
         format.json { render json: @event_vol_position.errors, status: :unprocessable_entity }
-        format.js { render json: @result = {status: false, message: '更新失败'} }
+        format.js
       end
     end
   end
@@ -96,10 +96,12 @@ class Admin::EventVolPositionsController < AdminController
   # DELETE /admin/event_vol_positions/1
   # DELETE /admin/event_vol_positions/1.json
   def destroy
+    # evp = EventVolPosition.find(params[:id])
     @event_vol_position.destroy
     respond_to do |format|
       format.html { redirect_to admin_positions_url, notice: @event_vol_position.name + '已成功删除.' }
       format.json { head :no_content }
+      format.js
     end
   end
 

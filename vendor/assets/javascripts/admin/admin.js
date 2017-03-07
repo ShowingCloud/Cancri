@@ -69,7 +69,14 @@ $(function () {
                 data: {event_volunteer_id: ev_id, positions: positions},
                 success: function (result) {
                     admin_gritter_notice(result.status, result.message);
-
+                    if (result.status) {
+                        $("#add-ev-position").modal('hide');
+                        var selector = '.evp-table';
+                        $.get(location.href, function (html) {
+                            var doc = $(html).find(selector);
+                            $(selector).replaceWith(doc);
+                        });
+                    }
                 },
                 error: function (error) {
                     admin_gritter_notice(false, error.responseText);
@@ -476,6 +483,7 @@ $(function () {
             if (status == '1') {
                 var $position = $("#volunteer-position");
                 var position = $position.val();
+                var position_name = $position.find("option:selected").text();
                 $("#volunteer-position-show").removeClass('hide');
                 var $event_id = $("#competition-event-id");
                 var event_name = $event_id.find("option:selected").text();
@@ -510,6 +518,7 @@ $(function () {
                     if (data.status) {
                         $("#show-audit-event-volunteer").modal('hide');
                         document.getElementById("volunteer-user-" + e_v_u_id).innerHTML = '录用';
+                        document.getElementById("volunteer-position-" + e_v_u_id).innerHTML = (event_name ? event_name + '<br>' : '') + position_name;
                         document.getElementById("joins-times-" + e_v_u_id).innerHTML = parseInt(document.getElementById("joins-times-" + e_v_u_id).innerHTML) + 1;
                     }
                 }
