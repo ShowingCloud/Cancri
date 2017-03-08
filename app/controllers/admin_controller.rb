@@ -31,6 +31,7 @@ class AdminController < ActionController::Base
 
   def authenticate
     unless @current_admin.present?
+      cookies[:after_sign_in_return_to] = request.path
       redirect_to controller: 'admin/accounts', action: 'new'
     end
   end

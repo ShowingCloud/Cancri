@@ -1,12 +1,7 @@
 <div class="main" id="main">
   <div class="container volunteer" id="volunteer-recruit">
     <div class="volunteer-head">
-      <ul class="row text-center">
-        <li class="col-md-4 active">
-          <a class="btn btn-lightblue btn-block" href="<%= volunteers_recruit_path %>">志愿者招募</a></li>
-        <li class="col-md-4"><a class="btn btn-lightblue btn-block" href="<%= volunteers_path %>">志愿者认证</a></li>
-        <li class="col-md-4"><a class="btn btn-lightblue btn-block" href="">积分查询</a></li>
-      </ul>
+      <%= render 'nav' %>
     </div>
     <div class="volunteer-content">
       <% if params[:id].present? %>
@@ -16,7 +11,11 @@
             <% if user_signed_in? && @has_apply.present? %>
                 <%= @has_apply.status == 1 ? '您已报名该招募活动' : '您已报名，请等待审核' %>
             <% else %>
-                <%= link_to "报名", "/volunteers/apply_event_volunteer?event_volunteer_id=#{@event_volunteer.id}", method: :post, class: 'btn btn-lightblue' %>
+                <% if @event_volunteer.apply_end_time > Time.zone.now %>
+                    <%= link_to "报名", "/volunteers/apply_event_volunteer?event_volunteer_id=#{@event_volunteer.id}", method: :post, class: 'btn btn-lightblue' %>
+                <% else %>
+                    <label class="label label-danger">已过报名时间</label>
+                <% end %>
             <% end %>
           </div>
       <% else %>

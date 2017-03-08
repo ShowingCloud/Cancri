@@ -55,8 +55,9 @@
             <td><%= event_volunteer_user.username %></td>
             <td><%= event_volunteer_user.mobile %></td>
             <td><%= event_volunteer_user.standby_school %></td>
-            <td id="joins-times-<%= volunteer_user_id %>"><%= event_volunteer_user.times %></td>
-            <td><%= event_volunteer_user.points %></td>
+            <% join_times = event_volunteer_user.times %>
+            <td id="joins-times-<%= volunteer_user_id %>"><%= join_times %></td>
+            <td id="avg-point-<%= volunteer_user_id %>"><%= (Float(event_volunteer_user.points)/join_times).round(2) if join_times>0 %></td>
             <td><%= event_volunteer_user.alipay_account %></td>
             <td id="volunteer-user-<%= volunteer_user_id %>">
               <% if event_volunteer_user.status == 0 %>

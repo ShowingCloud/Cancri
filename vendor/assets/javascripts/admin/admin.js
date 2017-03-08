@@ -535,30 +535,45 @@ $(function () {
         var $point_input = $("#update-volunteer-point");
         var $desc_input = $("#update-volunteer-desc");
         if (origin_point != '打分') {
+            origin_point = parseFloat(origin_point);
             $point_input.val(origin_point);
+        } else {
+            origin_point = 0;
         }
         $desc_input.text(origin_desc);
 
         $(".update-volunteer-point-submit").unbind('click').click(function () {
-            var point = $("#update-volunteer-point").val();
+            var point = $point_input.val();
             var desc = $("#update-volunteer-desc").val();
-            var options = {
-                url: '/admin/event_volunteers/update_e_v_u_info',
-                type: 'post',
-                data: {point: point, desc: desc, e_v_u_id: e_v_u_id},
-                success: function (result) {
-                    admin_gritter_notice(result.status, result.message);
-                    if (result.status) {
-                        $("#open-write-point").modal("hide");
-                        $("#volunteer-point-" + e_v_u_id).text(point);
-                        $("#volunteer-desc-" + e_v_u_id).text(desc);
+            if (/^[0-9]+$/.test(point)) {
+                var options = {
+                    url: '/admin/event_volunteers/update_e_v_u_info',
+                    type: 'post',
+                    data: {point: point, desc: desc, e_v_u_id: e_v_u_id},
+                    success: function (result) {
+                        admin_gritter_notice(result.status, result.message);
+                        if (result.status) {
+                            $("#open-write-point").modal("hide");
+                            if (point != origin_point) {
+                                var $origin_avg_point = $("#avg-point-" + e_v_u_id);
+                                var origin_avg_point = parseFloat($origin_avg_point.text());
+                                var joins_times = parseInt($("#joins-times-" + e_v_u_id).text());
+                                var avg_point = parseFloat(((parseFloat(point) - origin_point) / joins_times).toFixed(2));
+                                $origin_avg_point.text((origin_avg_point + avg_point).toFixed(2));
+                            }
+                            $("#volunteer-point-" + e_v_u_id).text(point);
+                            $("#volunteer-desc-" + e_v_u_id).text(desc);
+                        }
+                    },
+                    error: function (error) {
+                        admin_gritter_notice(false, error.responseText);
                     }
-                },
-                error: function (error) {
-                    admin_gritter_notice(false, error.responseText);
-                }
-            };
-            ajax_handle(options);
+                };
+                ajax_handle(options);
+            } else {
+                admin_gritter_notice(false, '积分只能是非负整数！');
+                $point_input.focus();
+            }
 
         });
     });

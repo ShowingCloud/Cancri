@@ -66,11 +66,17 @@ class VolunteersController < ApplicationController
     volunteer_role = current_user.user_roles.where(role_id: 3, status: 1).take
     if volunteer_role.present?
       if volunteer_role.status == 1
-        event_volunteer_user = current_user.event_volunteer_users.create(event_volunteer_id: event_volunteer_id, status: 0)
-        if event_volunteer_user.save
-          result = [true, '申请成功,审核结果将消息推送告知您']
+
+        event_volunteer = EventVolunteer.find_by_id(event_volunteer_id)
+        if event_volunteer.present? && event_volunteer.apply_end_time > Time.zone.now
+          event_volunteer_user = current_user.event_volunteer_users.create(event_volunteer_id: event_volunteer_id, status: 0)
+          if event_volunteer_user.save
+            result = [true, '申请成功,审核结果将消息推送告知您']
+          else
+            result = [false, '申请失败']
+          end
         else
-          result = [false, '申请失败']
+          result = [false, '不在报名时间']
         end
       elsif volunteer_role.status == 0
         result = [false, '您的志愿者身份还未审核通过，暂不能报名']
@@ -100,5 +106,9 @@ class VolunteersController < ApplicationController
   end
 
   def points
+    @volunteer_info = current_user.user_roles.where(role_id: 3, status: 1).select(:times, :points, :status).take
+    if @volunteer_info
+      @event_volunteers = EventVolunteer.lj_e_v_u.includes(:competition, :activity).where('e_v_u.point > ?', 0).where('e_v_u.updated_at > ?', "#{Time.current.year}-01-01").where('e_v_u.user_id=?', current_user.id).where('e_v_u.status=?', 1).select(:event_type, :type_id, 'e_v_u.point', 'e_v_u.desc')
+    end
   end
 end

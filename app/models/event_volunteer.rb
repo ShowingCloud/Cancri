@@ -6,6 +6,7 @@ class EventVolunteer < ApplicationRecord
   scope :lj_e_v_u_u_p_u_r, -> { joins('left join event_volunteer_users e_v_u on e_v_u.event_volunteer_id = event_volunteers.id')
                                     .joins('left join user_roles u_r on u_r.user_id = e_v_u.user_id and u_r.role_id = 3')
                                     .joins('left join user_profiles u_p on u_p.user_id = e_v_u.user_id') }
+  scope :lj_e_v_u, -> { joins('left join event_volunteer_users e_v_u on e_v_u.event_volunteer_id = event_volunteers.id') }
   validates :name, :event_type, :type_id, :content, presence: true
   after_validation :check_apply_time
   after_validation :check_start_time, on: :create

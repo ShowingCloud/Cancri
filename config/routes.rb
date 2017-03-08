@@ -60,6 +60,7 @@ Rails.application.routes.draw do
   resources :course_score_attrs
   resources :course_files
   get '/volunteers', to: 'volunteers#index'
+  get '/volunteers/points', to: 'volunteers#points'
   get '/volunteers/recruit', to: 'volunteers#recruit'
   get '/volunteers/recruit/:id', to: 'volunteers#recruit'
   post '/volunteers/apply_volunteer', to: 'volunteers#apply_volunteer'
