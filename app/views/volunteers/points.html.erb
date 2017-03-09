@@ -1,4 +1,4 @@
-<% times = @volunteer_info.times %>
+<% @volunteer_info.present?? times = @volunteer_info.times : times = 0  %>
 <% avg_point = times > 0 ? (Float(@volunteer_info.points)/@volunteer_info.times).round(2) : 0 %>
 
 <% year = Time.current.year %>

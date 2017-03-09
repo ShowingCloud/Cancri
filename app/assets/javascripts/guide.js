@@ -77,7 +77,7 @@
             });
             if (status.index < opts.tips.length - 1) {
                 if (next_callback) {
-                    var next_btn = $('<div class="btn-next">下一步</div>');
+                    var next_btn = $('<div class="btn-next"><span>下一步</span></div>');
                     next_btn.click(function() {
                         next_callback();
                     });
