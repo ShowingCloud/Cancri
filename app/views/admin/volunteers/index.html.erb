@@ -10,10 +10,10 @@
     <a href="<%= admin_event_volunteers_path %>" class="btn btn-warning" title="招募志愿者活动列表">
       招募活动</a>
     <% if @volunteers.length >0 %>
-        <a href="/admin/volunteers?order_by=points<%= params[:field] ? "&field=#{params[:field]}" : "" %><%= params[:keyword] ? "&field=#{params[:keyword]}" : "" %>" class="btn btn-info" title="积分排序">
+        <a href="/admin/volunteers?order_by=avg_point<%= params[:field] ? "&field=#{params[:field]}" : "" %><%= params[:keyword] ? "&keyword=#{params[:keyword]}" : "" %>" class="btn btn-info" title="积分排序">
           积分排序
         </a>
-        <a href="/admin/volunteers?order_by=times<%= params[:field] ? "&field=#{params[:field]}" : "" %><%= params[:keyword] ? "&field=#{params[:keyword]}" : "" %>" class="btn btn-primary" title="次数排序">
+        <a href="/admin/volunteers?order_by=times<%= params[:field] ? "&field=#{params[:field]}" : "" %><%= params[:keyword] ? "&keyword=#{params[:keyword]}" : "" %>" class="btn btn-primary" title="次数排序">
           次数排序
         </a>
     <% end %>
@@ -72,7 +72,7 @@
             <td><%= volunteer.mobile %></td>
             <td><%= volunteer.times %></td>
             <td><%= volunteer.points %></td>
-            <td><%= volunteer.points == 0 ? 0 : (Float(volunteer.points)/volunteer.times).round(2) %></td>
+            <td><%= volunteer.avg_point %></td>
             <td><%= volunteer.updated_at.strftime('%Y-%m-%d') %></td>
             <td><%= volunteer.alipay_account %></td>
             <td><%= link_to admin_volunteer_path(volunteer), title: '查看', class: 'btn btn-xs btn-warn' do %>

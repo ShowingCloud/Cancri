@@ -42,10 +42,8 @@
                       <%= link_to edit_admin_event_vol_position_path(evp), class: 'btn btn-xs btn-primary', remote: true do %>
                           <i class="icon-edit bigger-120"></i>
                       <% end %>
-                      <% unless @current_admin.id == evp.id %>
-                          <%= link_to [:admin, evp], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', remote: true, class: 'btn btn-xs btn-danger' do %>
-                              <i class="icon-trash bigger-120"></i>
-                          <% end %>
+                      <%= link_to [:admin, evp], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', remote: true, class: 'btn btn-xs btn-danger' do %>
+                          <i class="icon-trash bigger-120"></i>
                       <% end %>
                     </td>
                   </tr>
@@ -105,7 +103,9 @@
                 </select>
 
               </div>
-              <div class="col-xs-5"><input type="hidden" id="write-position" style="line-height: 21px" class=""></div>
+              <div class="col-xs-5">
+                <input type="text" id="write-volunteer-position" placeholder="手写添加,多个以_分开" style="line-height: 18px;width:200px">
+              </div>
             </div>
 
           </div>

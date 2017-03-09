@@ -58,11 +58,6 @@
           </div>
         </div>
         <%= f.input :status, collection: Competition::STATUS %>
-        <label>
-          包含职位:
-        </label>
-        <input name="event_volunteer[positions]" class="form-control" type="text" value="<%= @event_volunteer.positions.join(',').gsub(',', '_') if @event_volunteer.positions.present? %>" placeholder="多个职位请以下划线(_)分开"/>
-        <br>
         <label class="select required control-label" for="news_content"><abbr title="必填字段">*</abbr>内容:</label>
         <%= f.kindeditor :content, :window_onload => true, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', 'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
         <div class="form-actions">

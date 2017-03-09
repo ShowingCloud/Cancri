@@ -96,8 +96,12 @@ class Admin::EventVolPositionsController < AdminController
   # DELETE /admin/event_vol_positions/1
   # DELETE /admin/event_vol_positions/1.json
   def destroy
-    # evp = EventVolPosition.find(params[:id])
-    @event_vol_position.destroy
+    has_use = EventVolunteerUser.where(position: params[:id], event_volunteer_id: @event_vol_position.event_volunteer_id).exists?
+    if has_use
+      @event_vol_position.errors[:该职位] << '已被分配到志愿者,不能删除,只能编辑'
+    else
+      @event_vol_position.destroy
+    end
     respond_to do |format|
       format.html { redirect_to admin_positions_url, notice: @event_vol_position.name + '已成功删除.' }
       format.json { head :no_content }

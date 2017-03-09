@@ -7,7 +7,7 @@
   </small>
 </h1>
 <h4>学校: <%= @events.first.standby_school %></h4>
-<h4>平均积分: <%= @events.first.points %></h4>
+<h4>平均积分: <%= @events[0].times >0 ? (@events[0].points/Float(@events[0].times)).round(2) : 0 %></h4>
 <div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
   <div class="widget-header widget-header-small">
     <h5 class="lighter">搜索</h5>

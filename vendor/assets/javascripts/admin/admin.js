@@ -61,6 +61,11 @@ $(function () {
     $(".add-ev-position-submit").click(function () {
         var ev_id = $("#event-volunteer-id").val();
         var positions = $("#select-ev-position").val();
+        var $write_position = $("#write-volunteer-position");
+        var write_position = $write_position.val();
+        if (write_position){
+            positions = write_position.split('_');
+        }
         if (ev_id && positions) {
             var options = {
                 url: '/admin/event_vol_positions',
@@ -70,6 +75,7 @@ $(function () {
                 success: function (result) {
                     admin_gritter_notice(result.status, result.message);
                     if (result.status) {
+                        $write_position.val('');
                         $("#add-ev-position").modal('hide');
                         var selector = '.evp-table';
                         $.get(location.href, function (html) {

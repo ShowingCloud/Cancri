@@ -11,13 +11,14 @@ class Admin::VolunteersController < AdminController
     field = params[:field]
     keyword = params[:keyword]
     order_by = params[:order_by]
-    order_with = order_by.in?(%w(points times)) ? "#{order_by} desc" : "username asc"
-
-    volunteers = UserRole.joins(:user).left_joins(:user_profile).where(role_id: 3, status: 1).select(:id, :updated_at, :times, :points, 'users.mobile', 'user_profiles.username', 'user_profiles.standby_school', 'user_profiles.alipay_account').order(order_with)
+    order_with = order_by.in?(%w(avg_point times)) ? "#{order_by} desc" : "username asc"
     if field.in?(%w(standby_school username)) && keyword.present?
-      volunteers = volunteers.where("user_profiles.#{field} like ?", "%#{keyword}%")
+      search_where = "and u_p.#{field} like '%#{keyword}%'"
+    else
+      search_where = ''
     end
-    @volunteers = volunteers.page(params[:page]).per(params[:per])
+    volunteers = UserRole.find_by_sql("select u_r.id,u_r.updated_at,users.mobile,u_r.times,u_r.points,round(u_r.points/u_r.times,2) as avg_point,u_p.username,u_p.standby_school,u_p.alipay_account from user_roles u_r inner join users on users.id = u_r.user_id left OUTER join user_profiles u_p on u_p.user_id = u_r.user_id where u_r.role_id=3 and u_r.status = 1 #{search_where} order by #{order_with}")
+    @volunteers = Kaminari.paginate_array(volunteers).page(params[:page]).per(params[:per])
   end
 
   # GET /admin/volunteers/1
