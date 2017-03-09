@@ -234,7 +234,7 @@
           </a>
         </li>
         <li class="<%= controller_params.in?(%w(admin/volunteers admin/event_volunteers)) ? 'active' : '' %>">
-          <a href="<%= admin_volunteers_path %>">
+          <a href="<%= admin_event_volunteers_path %>">
             <i class="icon-male"></i>
             <span class="menu-text"> 志愿者 </span>
           </a>
@@ -276,12 +276,6 @@
               <a href="<%= admin_score_attributes_path %>">
                 <i class="icon-hdd"></i>
                 <span class="menu-text"> 成绩属性 </span>
-              </a>
-            </li>
-            <li class="<%= controller_params == 'admin/volunteers' ? 'active' : '' %>">
-              <a href="<%= admin_volunteers_path %>">
-                <i class="icon-glass"></i>
-                <span class="menu-text"> 志愿者 </span>
               </a>
             </li>
             <li class="<%= controller_params == 'admin/vouchers' ? 'active' : '' %>">

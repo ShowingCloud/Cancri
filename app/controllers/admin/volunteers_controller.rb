@@ -64,9 +64,6 @@ class Admin::VolunteersController < AdminController
     @volunteer_r = Regulation.find_by_regulation_type(1)
   end
 
-  def events
-    @event_volunteers = EventVolunteer.includes(:competition, :activity).page(params[:page]).per(params[:per])
-  end
 
   # POST /admin/volunteers
   # POST /admin/volunteers.json

@@ -171,7 +171,6 @@ Rails.application.routes.draw do
         get :edit_regulation
         post :edit_regulation
         get :regulation
-        get :events
       end
     end
     resources :event_volunteers do
