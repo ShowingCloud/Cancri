@@ -1,0 +1,40 @@
+<% @volunteer_info.present?? times = @volunteer_info.times : times = 0  %>
+<% avg_point = times > 0 ? (Float(@volunteer_info.points)/@volunteer_info.times).round(2) : 0 %>
+
+<% year = Time.current.year %>
+<div class="main" id="main">
+  <div class="container volunteer text-center">
+    <div class="volunteer-head">
+      <%= render 'nav' %>
+      <h1><%= avg_point %></h1>
+      <div><%= year %>年的平均积分</div>
+      <h1><%= times %></h1>
+      <div><%= year %>年参加活动的次数</div>
+    </div>
+    <h4>志愿者记录</h4>
+    <% if @event_volunteers.present? %>
+        <table class="table table-bordered">
+          <thead>
+          <tr>
+            <th class="text-center">时间</th>
+            <th class="text-center">活动</th>
+            <th class="text-center">积分</th>
+            <th class="text-center">备注</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @event_volunteers.each do |event_volunteer| %>
+              <tr>
+                <% event_type = event_volunteer.send("#{event_volunteer.event_type.downcase}") %>
+                <td><%= event_type.start_time.strftime('%m.%d') %></td>
+                <td><%= event_type.name %></td>
+                <td><%= event_volunteer.point %></td>
+                <td><%= event_volunteer.desc %></td>
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+        <div><%= year %>年积分将于<%= year %>.12.31清零</div>
+    <% end %>
+  </div>
+</div>

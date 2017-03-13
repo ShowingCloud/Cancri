@@ -1,0 +1,9 @@
+<% if @event_vol_position.errors.any? %>
+admin_gritter_notice(false, '<%= @event_vol_position.errors.full_messages.first %>');
+var html = "<%= j(render('form', remote: true)) %>";
+$('form.edit_event_vol_position').replaceWith(html);
+<% else %>
+admin_gritter_notice(true, "<%= @event_vol_position.name %>更新成功");
+$("#update-evp-" +<%= @event_vol_position.id %>).text('<%= @event_vol_position.name %>');
+bootbox.hideAll();
+<% end %>

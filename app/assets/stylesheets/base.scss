@@ -1,6 +1,22 @@
 body{
   font-family: Helvetica, Tahoma, Arial, STXihei, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
 }
+
+body {
+  padding-right: 0px !important
+}
+
+html, body {
+    height: 100%;
+}
+
+.modal-open {
+  overflow-y: auto;
+}
+
+ul li{
+  list-style: none;
+}
 a {
   text-decoration: none;
 }
@@ -10,10 +26,22 @@ a:hover {
   text-decoration: none;
 }
 
+.default-wrapper{
+  border: 1px solid #FFF;
+  border-radius: 20px;
+}
+
+input[type=search]{
+  border-radius: 40px;
+  color: #000;
+  outline: none;
+}
+
 #top {
   height: 100px;
   background: center center;
   background-size: cover;
+  background-image: image_url('top.png');
 }
 
 #top .logo {
@@ -34,14 +62,6 @@ a:hover {
 #top .user-info {
   height: 40px;
   margin-top: 40px;
-}
-
-#top .user-info .un-login {
-
-}
-
-#top .user-info .login-info {
-
 }
 
 #top .user-info .un-login .btn-robodou {
@@ -158,6 +178,12 @@ a:hover {
   padding-bottom: 26px;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  color: #FFF;
+  background-color: #2a1d27;
+  background-image: image-url('pagebk.jpg');
+  background-size: cover;
+  min-height: 85%;
+  min-height: calc(100% - 164px);
 }
 
 #footer {
@@ -472,10 +498,6 @@ a:hover {
   margin-bottom: 20px;
 }
 
-.user-center .sidebar .sidebar-top {
-
-}
-
 .user-center .sidebar .sidebar-top .username {
   display: block;
   text-align: center;
@@ -518,9 +540,6 @@ a:hover {
 
 .user-center .sidebar .avatar:hover .change-avatar {
   top: 0;
-}
-
-.user-center .sidebar .avatar .change-avatar:hover {
 }
 
 .user-center .sidebar .avatar .change-avatar:hover i {
@@ -691,10 +710,6 @@ div.separator {
   border-color: #6699cc;
 }
 
-.user-center {
-
-}
-
 .user-center .result-table {
   width: 100%;
 }
@@ -706,10 +721,6 @@ div.separator {
 
 .user-center .result-table td {
   padding: 10px;
-}
-
-.passport {
-
 }
 
 .passport {
@@ -783,9 +794,6 @@ div.separator {
   background: #6699cc;
   background-image: linear-gradient(to bottom right, #6699cc, #87e9ff);
   border: none;
-}
-
-.btn-register-submit:hover, .btn-forget-submit:hover, .btn-login-submit:hover, .btn-password-submit:hover {
 }
 
 .passport .other-link {
@@ -933,10 +941,6 @@ legend {
   padding: 20px;
   border-radius: 15px;
   background: #445d79;
-}
-
-.change-avatar-inner {
-
 }
 
 .change-avatar-inner .title {
@@ -1234,10 +1238,6 @@ select {
   cursor: pointer;
 }
 
-#course-score {
-
-}
-
 #course-score .score-inner {
   width: 400px;
   margin: 80px auto 0;
@@ -1417,8 +1417,6 @@ select {
       cursor: pointer;
       font-size: 20px;
     }
-    .audio-main {
-    }
   }
 }
 
@@ -1558,8 +1556,9 @@ select {
           .fold-body {
             opacity: 0;
             display: none;
-            padding: 5px 0;
+            padding: 5px 20px;
             text-align: left;
+            text-indent: 2em;
             &.active {
               opacity: 1;
               display: block;
@@ -1572,38 +1571,37 @@ select {
 }
 
 #event-list {
-  .top {
-    padding: 20px 0;
-    border-bottom: 1px solid #fff;
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    color: #fff;
+  #applied-events-wrapper{
+    th{
+      border-top: 2px solid #ddd;
+    }
   }
+
+  td{
+    width: 25%;
+    text-align: left;
+    vertical-align: baseline;
+  }
+
   .tips {
     font-size: 14px;
-    color: #fff;
+    color: #ADE7F5;
     padding: 10px 0;
     text-align: center;
   }
   .middle {
     padding: 10px 0;
+    width: 70%;
     overflow: hidden;
-    .border-box {
+    .box {
       padding: 20px;
+      margin-bottom: 30px;
       border: 1px solid #fff;
-      border-radius: 15px;
+      border-radius: 5px;
       overflow: hidden;
     }
     .event-item {
-      float: left;
-      width: 25%;
-      padding: 10px;
-      overflow: hidden;
-      text-align: center;
-      a {
-        color: #6699cc;
-      }
+      margin:10px auto;
     }
   }
 }
@@ -1691,14 +1689,18 @@ select {
   }
 }
 
+#viewTeamModal {
+  .info{
+    display: inline-block;
+    text-align: left;
+  }
+}
+
 .school-tag {
   cursor: pointer;
   display: inline-block;
   padding: 0 8px;
   color: #6699cc;
-  &:hover {
-
-  }
 }
 
 .district-tag {
@@ -2104,10 +2106,6 @@ select {
 
 }
 
-#download {
-
-}
-
 #download .download .title {
   font-size: 36px;
   color: #FFFFFF;
@@ -2275,4 +2273,90 @@ select {
 
 .required .control-label::before{
   content: "*";
+}
+
+//competition
+  .competition-top{
+    text-align: center;
+    position: relative;
+
+    .btn-top{
+      position: absolute;
+      right: 0;
+      top: 50px;
+    }
+  }
+  .competition-steps{
+    display: inline-block;
+    margin: 20px 0px auto;
+    list-style: none;
+    text-align: center;
+    color: #FFF;
+
+    .step-wrapper{
+      float: left;
+      padding: 20px 20px 0;
+      position: relative;
+    }
+
+    .active .step,.active .step-desc{
+      color: #ADE7F5;
+    }
+
+    .step-wrapper:last-child .step::after{
+      content: none;
+    }
+
+    .step::after{
+      content: ">";
+      position: absolute;
+      right: 0;
+      color: #FFF;
+      top: 15px;
+      font-size: 22px;
+      font-weight: lighter;
+    }
+  }
+
+  .btn-lightblue{
+    // font-size: 16px;
+    color: #ADE7F5;
+    border: 1px solid #ADE7F5;
+    border-radius: 8px;
+  }
+
+  .btn-lightblue:hover{
+    color: #ADE7F5;
+  }
+
+#competition-flow{
+  width: 80%;
+  margin:0 auto;
+  color: #FFF;
+
+  ol{
+    text-align: left;
+
+    li{
+      padding:10px;
+    }
+  }
+
+  &>.tab-content{
+    border:1px solid #ADE7F5;
+    margin: 20px 0;
+    min-height: 200px;
+  }
+
+  .btn-tab{
+    color: #7E9398;
+  }
+
+  .active .btn-tab{
+    color: #ADE7F5;
+  }
+}
+
+.form-plain{
+    line-height: 32px;
 }

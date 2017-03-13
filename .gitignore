@@ -124,3 +124,7 @@ jquery*.map
 /db/datadump/users.yml
 /db/datadump/videos.yml
 /db/datadump/volunteers.yml
+
+/test_rb
+/xlsx
+/Guardfile

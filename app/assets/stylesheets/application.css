@@ -12,9 +12,10 @@
  *
  *= require bootstrap.min
  *= require bootstrap-dialog
- *= require remodal
- *= require remodal-default-theme
  *= require base
+ *= require theme
+ *= require guide
+ *= require volunteer
  *= require admin/datepicker
  *= //require_tree .
  *= require_self

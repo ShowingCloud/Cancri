@@ -1,0 +1,29 @@
+.volunteer{
+  width: 80%;
+
+  .raw-html{
+    padding-left: 45px;
+  }
+
+  &-head{
+    margin: 30px auto;
+  }
+
+  .event-list{
+
+    .event-item{
+      display: block;
+      width: 70%;
+      margin: 15px auto;
+      padding: 20px;
+      border: 1px solid cadetblue;
+      border-radius: 10px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    
+    a{
+      color: #FFF;
+    }
+  }
+}

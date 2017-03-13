@@ -6,6 +6,7 @@ class Activity < ApplicationRecord
   belongs_to :district
   has_many :photos
   has_many :videos
+  has_one :event_volunteer, -> { where event_type: 'Activity' }, foreign_key: :type_id
 
 
   before_validation :check_include_self

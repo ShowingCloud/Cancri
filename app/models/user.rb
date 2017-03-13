@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many :team_user_ships, :dependent => :destroy
   has_one :user_family, :dependent => :destroy
   has_one :user_hacker, :dependent => :destroy
+  has_many :event_volunteer_users, :dependent => :destroy
   mount_uploader :avatar, AvatarUploader
   accepts_nested_attributes_for :user_profile, allow_destroy: true
   # Include default devise modules. Others available are:
@@ -37,7 +38,6 @@ class User < ApplicationRecord
   attr_accessor :email_code
   attr_accessor :mobile_info
   attr_accessor :return_url
-  attr_accessor :gender
 
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
@@ -59,10 +59,16 @@ class User < ApplicationRecord
     email = '' if email == "--- \n..."
     if user.nil?
       user = create(id: auth.extra.id, nickname: auth.info.nickname, mobile: mobile, email: email)
+      ac_result = user.save
     else
-      user.update_attributes(email: email, mobile: mobile)
+      ac_result = user.update_attributes(email: email, mobile: mobile)
     end
-    user
+    if ac_result
+      result = [true, user]
+    else
+      result = [false, nil, user.errors.full_messages.first]
+    end
+    {status: result[0], user: result[1], errors: result[2]}
   end
 
   private

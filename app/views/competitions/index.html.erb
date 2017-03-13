@@ -1,7 +1,25 @@
-<div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
+<div class="main" id="main">
   <div class="container" id="comp-list">
-    <div class="top">
-      比赛列表
+    <div class="competition-top">
+      <%= link_to "报名流程", apply_process_competitions_path, id: "apply-flow-btn", class: "btn btn-lightblue btn-top" %>
+      <ul class="competition-steps clearfix">
+        <li class="step-wrapper">
+          <p class="step">STEP1</p>
+          <p class="step-desc">选择赛事项目</p>
+        </li>
+        <li class="step-wrapper">
+          <p class="step">STEP2</p>
+          <p class="step-desc">更新选手信息</p>
+        </li>
+        <li class="step-wrapper">
+          <p class="step">STEP3</p>
+          <p class="step-desc">提交报名信息</p>
+        </li>
+        <li class="step-wrapper">
+          <p class="step">STEP4</p>
+          <p class="step-desc">等待审核</p>
+        </li>
+      </ul>
     </div>
     <div class="middle">
       <% @competitions.each do |c| %>
@@ -25,5 +43,6 @@
     </nav>
     <div class="bottom">
     </div>
+    <div class="guide-overlay"></div>
   </div>
 </div>

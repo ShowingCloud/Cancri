@@ -276,6 +276,10 @@ zh-CN:
       course_score_attribute: '评分标准'
       school: '学校'
       notification: '消息'
+      volunteer: '志愿者'
+      regulation: '章程'
+      event_volunteer: '招募志愿者'
+      position: '职位'
   views:
     pagination:
         first: "首页"
@@ -295,7 +299,7 @@ zh-CN:
   status:
      status0: '待显示'
      status1: '显示'
-     status2: '比赛结束'
+     status2: '结束'
   team:
      status0: '报名中'
      status1: '报名成功'
@@ -313,7 +317,12 @@ zh-CN:
      partake3: '以亲子为主'
      situation1: '专用工作台'
      situation2: '专用工作间'
+  gender:
+    gender1: '男'
+    gender2: '女'
+    gender: ''
   attributes:
+     nickname: '昵称'
      name: '名称'
      username: '姓名'
      birthday: '生日'
@@ -342,3 +351,6 @@ zh-CN:
      student_code: '学籍号'
      desc: '描述'
      cover: '文件'
+     identity_card: '身份证'
+     alipay_account: '支付宝账号'
+     apply_start_time: '报名开始时间'

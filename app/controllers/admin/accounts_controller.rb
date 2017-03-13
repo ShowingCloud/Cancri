@@ -34,8 +34,13 @@ class Admin::AccountsController < AdminController
         if status
           flash[:notice] = message
           sing_in(emp)
-          redirect_to '/admin/'
+          if cookies[:after_sign_in_return_to]
+            redirect_to cookies[:after_sign_in_return_to]
+          else
+            redirect_to '/admin/'
+          end
           cookies.delete :job_number
+          cookies.delete :after_sign_in_return_to
         else
           flash[:error] = message
           render action: 'new'
@@ -104,6 +109,7 @@ class Admin::AccountsController < AdminController
   end
 
   def sing_out
-    cookies[:access_token] = nil
+    cookies.delete :access_token
+      # cookies[:access_token] = nil
   end
 end

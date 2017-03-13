@@ -5,13 +5,11 @@
   <%= csrf_meta_tags %>
   <%= action_cable_meta_tag %>
   <link rel="icon" href="<%= asset_path('icon.png') %>"/>
-  <%= javascript_include_tag 'jquery_cookie', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
-
+  <%= stylesheet_link_tag 'application', media: 'all' %>
 </head>
 
-<body>
-<div id="top" data-src="<%= image_path('top.png') %>">
+<body class="<%= get_area %>">
+<div id="top">
   <div class="container">
     <div class="row">
       <div class="col-xs-12">
@@ -65,24 +63,12 @@
           <li><a class="un-do" href="">荣誉榜</a></li>
           <li><a href="<%= activities_path %>">活动</a></li>
           <li><a class="" href="/demeanor">风采</a></li>
-          <li><a class="un-do" href="">下载</a></li>
+          <li><a href="<%= volunteers_recruit_path %>">志愿者</a></li>
         </ul>
       </div>
     </div>
   </div>
 </div>
-<div id="bs-pg" data-bk="<%= image_path('bs-pagebk.png') %>"></div>
-
-<div id="flash" class="remodal" data-remodal-id="modal"
-     data-remodal-options="hashTracking: false, closeOnOutsideClick: false">
-
-  <button data-remodal-action="close" class="remodal-close"></button>
-  <div class="content">
-  </div>
-  <br>
-  <button data-remodal-action="cancel" class="remodal-cancel">确定</button>
-</div>
-
 
 <%= yield %>
 
@@ -99,28 +85,15 @@
 </div>
 <div class="loading hidden"></div>
 
-<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+<%= javascript_include_tag 'application' %>
 
 <script type="text/javascript">
-    function alert_r(msg, cb, param) {
-        if(msg && typeof msg === "string"){
-          $('#flash').find('.content').text(msg);
-          $('#flash').remodal().open();
-          $(document).on('closed', '.remodal', function () {
-              if (cb) {
-                  if (param) {
-                      cb(param);
-                  } else {
-                      cb();
-                  }
-              }
-          });
-        }
-    }
     <% if flash.present? %>
-    alert_r(<% flash.each do |f| %>
-            "<%= f[1] %>"
-            <% end %>);
+      alert_r(
+        <% flash.each do |f| %>
+              "<%= f[1] %>"
+        <% end %>
+      );
     <% end %>
 </script>
 

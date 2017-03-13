@@ -1,0 +1,4 @@
+if ((<%= @notice[:status] %>)) {
+    $('#row-<%= @notice[:obj_id] %>').remove();
+}
+admin_gritter_notice(<%= @notice[:status] %>,'<%= @notice[:message] %>');

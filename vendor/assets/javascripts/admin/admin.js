@@ -2,6 +2,100 @@
  * Created by huaxiukun on 16/2/25.
  */
 $(function () {
+    // ======================== event_volunteers start   ==========================
+
+    var $event_volunteer_type = $("#event_volunteer_event_type");
+    if ($event_volunteer_type.length > 0) {
+        var $event_vol_type_id = $("#event_volunteer_type_id");
+        var $event_volunteer_name = $("#event_volunteer_name");
+        $event_volunteer_type.on('change', function () {
+            $event_volunteer_name.val('');
+            $event_vol_type_id.empty();
+            var _self = this;
+            var event_type = _self.value;
+            if (event_type) {
+                var options = {
+                    url: '/api/v1/competitions/get_obj_by_status',
+                    type: 'get',
+                    data: {event_type: event_type, status: 2},
+                    success: function (result) {
+                        if (result.length > 0) {
+                            $event_vol_type_id.append($('<option>请选择所属项目</option>'));
+                            $.each(result, function (k, v) {
+                                var option = $('<option value="' + v.id + '" data-name="' + v.name + '">' + v.name + '</option>');
+                                $event_vol_type_id.append(option);
+                            })
+                        } else {
+                            admin_gritter_notice(false, '没有在显示的比赛或活动');
+                        }
+                    },
+                    error: function (error) {
+                        admin_gritter_notice(false, error.responseText);
+                    }
+                };
+                ajax_handle(options);
+            }
+        });
+
+        $event_vol_type_id.on('change', function () {
+            var obj_name = $("#event_volunteer_type_id option:selected").attr('data-name');
+            $event_volunteer_name.val(obj_name + '志愿者招募');
+        });
+    }
+
+    var $volunteer_apply_time = $("#volunteer-apply-datetime");
+
+    if ($("#news_type_checkbox").length > 0) {
+        $('input:checkbox').click(function () {
+            var _self = $(this);
+            if (_self.attr('data-name') == '志愿者招聘' && _self.is(':checked')) {
+                $volunteer_apply_time.removeClass('hide');
+            } else {
+                $volunteer_apply_time.addClass('hide');
+            }
+
+        });
+    }
+
+    // add event_volunteer_position
+    $(".add-ev-position-submit").click(function () {
+        var ev_id = $("#event-volunteer-id").val();
+        var positions = $("#select-ev-position").val();
+        var $write_position = $("#write-volunteer-position");
+        var write_position = $write_position.val();
+        if (write_position){
+            positions = write_position.split('_');
+        }
+        if (ev_id && positions) {
+            var options = {
+                url: '/admin/event_vol_positions',
+                type: 'post',
+                dataType: 'json',
+                data: {event_volunteer_id: ev_id, positions: positions},
+                success: function (result) {
+                    admin_gritter_notice(result.status, result.message);
+                    if (result.status) {
+                        $write_position.val('');
+                        $("#add-ev-position").modal('hide');
+                        var selector = '.evp-table';
+                        $.get(location.href, function (html) {
+                            var doc = $(html).find(selector);
+                            $(selector).replaceWith(doc);
+                        });
+                    }
+                },
+                error: function (error) {
+                    admin_gritter_notice(false, error.responseText);
+                }
+            };
+            ajax_handle(options);
+        } else {
+            admin_gritter_notice(false, '职位不能为空')
+        }
+    });
+    // ======================== event_volunteers end   ==========================
+
+
     // ============================== events start ==============================
     // add event schedule score attrs
     $('.add-schedule-attrs-modal').on('click', function () {
@@ -306,6 +400,8 @@ $(function () {
         });
 
     });
+
+
     // 学校审核
     $('.review-user-add-school').on('click', function () {
         var school_id = $(this).attr('data-id');
@@ -333,6 +429,162 @@ $(function () {
             $(".select-review-status [name='review-status']").prop('checked', false);
         });
     });
+
+    // 志愿者审核
+    $('.review-volunteer').on('click', function () {
+        var user_role_id = $(this).attr('data-id');
+        $('.volunteer-review-status-submit').on('click', function () {
+            var status = $(".select-review-status [name='review-status']:checked").val();
+            if (!status) {
+                alert('请选择审核结果');
+                return false;
+            }
+
+            $.ajax({
+                url: '/admin/checks/review_volunteer',
+                type: 'post',
+                data: {
+                    "status": status, "user_role_id": user_role_id
+                },
+                success: function (data) {
+                    admin_gritter_notice(data.status, data.message);
+                    if (data.status) {
+                        $("#modal-form").modal('hide');
+                        $("#volunteer-row-" + user_role_id).addClass('hide');
+                    }
+                }
+            });
+            $(".select-review-status [name='review-status']").prop('checked', false);
+        });
+    });
+
+    $(".select-review-status [name='review-status']").on('click', function () {
+        var status = $(".select-review-status [name='review-status']:checked").val();
+        if (status == 1) {
+            $("#volunteer-position-show").removeClass('hide');
+        } else {
+            $("#volunteer-position-show").addClass('hide');
+        }
+    });
+
+    // 活动志愿者录用审核
+    $('.open-audit-event-volunteer').on('click', function () {
+        var _self = $(this);
+        var volunteer_name = _self.attr('data-name');
+        $('#volunteer-username').text(volunteer_name);
+        var e_v_u_id = _self.attr('data-id');
+        var event_type = _self.attr('data-type');
+
+        $('.event-volunteer-status-submit').unbind('click').click(function () {
+            var status = $(".select-review-status [name='review-status']:checked").val();
+            if (!status) {
+                admin_gritter_notice(false, '请选择审核结果');
+                return false;
+            }
+            var data = {
+                "status": status,
+                "e_v_u_id": e_v_u_id
+            };
+
+            if (status == '1') {
+                var $position = $("#volunteer-position");
+                var position = $position.val();
+                var position_name = $position.find("option:selected").text();
+                $("#volunteer-position-show").removeClass('hide');
+                var $event_id = $("#competition-event-id");
+                var event_name = $event_id.find("option:selected").text();
+                var event_id = $event_id.val();
+                if (status && event_type == 'Competition') {
+                    if (event_id) {
+                        data.event_id = event_id;
+                        data.event_name = event_name;
+                    } else {
+                        $event_id.focus();
+                        admin_gritter_notice(false, '这里是比赛，请选择分配的项目');
+                        return false;
+                    }
+                }
+                if (position) {
+                    data.position = position;
+                } else {
+                    $position.focus();
+                    admin_gritter_notice(false, '请选择职位');
+                    return false;
+                }
+            } else {
+                $("#volunteer-position-show").addClass('hide');
+            }
+
+            $.ajax({
+                url: '/admin/event_volunteers/audit_event_v_user',
+                type: 'post',
+                data: data,
+                success: function (data) {
+                    admin_gritter_notice(data.status, data.message);
+                    if (data.status) {
+                        $("#show-audit-event-volunteer").modal('hide');
+                        document.getElementById("volunteer-user-" + e_v_u_id).innerHTML = '录用';
+                        document.getElementById("volunteer-position-" + e_v_u_id).innerHTML = (event_name ? event_name + '<br>' : '') + position_name;
+                        document.getElementById("joins-times-" + e_v_u_id).innerHTML = parseInt(document.getElementById("joins-times-" + e_v_u_id).innerHTML) + 1;
+                    }
+                }
+            });
+            $(".select-review-status [name='review-status']").prop('checked', false);
+        });
+    });
+
+    $(".show-update-volunteer").unbind('click').click(function () {
+
+        var e_v_u_id = $(this).attr('data-id');
+        var origin_point = trim($("#volunteer-point-" + e_v_u_id).text());
+        var origin_desc = trim($("#volunteer-desc-" + e_v_u_id).text());
+        var $point_input = $("#update-volunteer-point");
+        var $desc_input = $("#update-volunteer-desc");
+        if (origin_point != '打分') {
+            origin_point = parseFloat(origin_point);
+            $point_input.val(origin_point);
+        } else {
+            origin_point = 0;
+        }
+        $desc_input.text(origin_desc);
+
+        $(".update-volunteer-point-submit").unbind('click').click(function () {
+            var point = $point_input.val();
+            var desc = $("#update-volunteer-desc").val();
+            if (/^[0-9]+$/.test(point)) {
+                var options = {
+                    url: '/admin/event_volunteers/update_e_v_u_info',
+                    type: 'post',
+                    data: {point: point, desc: desc, e_v_u_id: e_v_u_id},
+                    success: function (result) {
+                        admin_gritter_notice(result.status, result.message);
+                        if (result.status) {
+                            $("#open-write-point").modal("hide");
+                            if (point != origin_point) {
+                                var $origin_avg_point = $("#avg-point-" + e_v_u_id);
+                                var origin_avg_point = parseFloat($origin_avg_point.text());
+                                var joins_times = parseInt($("#joins-times-" + e_v_u_id).text());
+                                var avg_point = parseFloat(((parseFloat(point) - origin_point) / joins_times).toFixed(2));
+                                $origin_avg_point.text((origin_avg_point + avg_point).toFixed(2));
+                            }
+                            $("#volunteer-point-" + e_v_u_id).text(point);
+                            $("#volunteer-desc-" + e_v_u_id).text(desc);
+                        }
+                    },
+                    error: function (error) {
+                        admin_gritter_notice(false, error.responseText);
+                    }
+                };
+                ajax_handle(options);
+            } else {
+                admin_gritter_notice(false, '积分只能是非负整数！');
+                $point_input.focus();
+            }
+
+        });
+    });
+
+
     // 积分审核
     $('.audit-user-point').on('click', function () {
         var upd = $(this).attr('data-id');
@@ -440,7 +692,11 @@ $(function () {
         $(".teacher-apply-level [name='teacher-apply-level']").prop("checked", false);
     });
     $('.btn-search-toggle').on('click', function () {
-        $('.form-search-toggle').toggleClass('hide show');
+        var form_search_toggle = $('.form-search-toggle');
+        form_search_toggle.toggleClass('hide show');
+        if (form_search_toggle.hasClass('show')) {
+            $('#admin-search-input').focus();
+        }
     });
     //编辑大赛进程
     $(".edit-schedule-submit").on('click', function (e) {

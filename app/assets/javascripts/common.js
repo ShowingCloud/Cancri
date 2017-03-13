@@ -81,3 +81,83 @@ function checkIdcard(num) {
     var identity_code_reg = /^(\d{6})(?:(?!0000)[0-9]{4}(?:(?:0[1-9]|1[0-2])(?:0[1-9]|1[0-9]|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)-02-29)(\d{3})([0-9]|X)$/;
     return identity_code_reg.test(num);
 }
+
+function getAge(dateString) {
+    if(!dateString){
+      return false;
+    }
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+function getGender(num){
+  switch (num) {
+    case 1:
+      return "男";
+    case 2:
+      return "女";
+    default:
+      return "未知";
+  }
+}
+
+function getGrade(num){
+  var grades = ['一', '二', '三', '四', '五', '六(初中预备)', '七(初中一)', '八(初中二)', '九(初中三)', '高一', '高二', '高三'];
+  var result = grades[parseInt(num) - 1];
+  if(result){
+    return result;
+  }else{
+    return "未知";
+  }
+}
+
+function getGroup(group){
+  var map ={
+    '1': '小学',
+    '2': '中学',
+    '3': '初中',
+    '4': '高中'
+  };
+  if(map[group]){
+    return map[group];
+  }else{
+    return "未知";
+  }
+}
+
+function alert_r(msg,callback){
+  if(msg && typeof msg === 'string'){
+    BootstrapDialog.alert(msg,callback);
+  }
+}
+
+$("form.json-submit").submit(function(e){
+  var $form =  $(this);
+  var data = $form.serializeArray();
+  $.ajax({
+    url: $form.attr("action"),
+    data: data,
+    method: 'POST',
+    dataType: 'json',
+    success:function(response){
+      if(response.status === true){
+        alert_r(response.message,function(){
+          window.location.reload();
+        });
+      }else{
+        alert_r(response.message);
+      }
+    }
+  });
+  return false;
+});
+
+BootstrapDialog.DEFAULT_TEXTS[BootstrapDialog.TYPE_PRIMARY] = '提示信息';
+BootstrapDialog.DEFAULT_TEXTS['OK'] = '确认';
+BootstrapDialog.DEFAULT_TEXTS['CANCEL'] = '取消';

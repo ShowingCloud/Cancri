@@ -1,4 +1,4 @@
-<div class="main" id="main" data-src="<%= image_path('pagebk.jpg') %>">
+<div class="main" id="main">
   <div class="container" id="apply-event">
     <% if @event.present? %>
         <div class="top">
@@ -161,10 +161,10 @@
                         <label for="school_name" class="col-sm-2 control-label">学校*</label>
 
                         <div class="col-sm-9 special-row school-field">
-                          <input type="hidden" id="user_profile_school_id" name="user_profile[school_id]" value="<%= @user_info.school_id %>" />
-                          <input type="hidden" id="user_profile_district_id" name="user_profile[district_id]" value="<%= @user_info.district_id %>"/>
+                          <input type="hidden" class="school_input" name="user_profile[school_id]" value="<%= @user_info.school_id %>" />
+                          <input type="hidden" class="district_input" name="user_profile[district_id]" value="<%= @user_info.district_id %>"/>
                           <input type="hidden" id="change_district_id" value="<%= @user_info.district_id %>" />
-                          <span><a href="#select-school-modal" role="button" class="select-user-school" data-toggle="modal"><%= @user_info.school.try(:name) ||'选择学校' %></a></span>
+                          <span><a class="school-tag"><%= @user_info.school.try(:name) ||'选择学校' %></a></span>
                         </div>
                       </div>
                       <div class="form-group">

@@ -23,7 +23,9 @@ Rails.application.routes.draw do
   resources :courses
   resources :competitions, only: [:index, :show] do
     collection do
+      get :apply_process
       get :apply_event
+      post :leader_batch_apply
       post :already_apply
       post :update_user_info
       post :leader_create_team
@@ -57,6 +59,13 @@ Rails.application.routes.draw do
   end
   resources :course_score_attrs
   resources :course_files
+  get '/volunteers', to: 'volunteers#index'
+  get '/volunteers/points', to: 'volunteers#points'
+  get '/volunteers/recruit', to: 'volunteers#recruit'
+  get '/volunteers/recruit/:id', to: 'volunteers#recruit'
+  post '/volunteers/apply_volunteer', to: 'volunteers#apply_volunteer'
+  get '/volunteers/cancel_apply', to: 'volunteers#cancel_apply'
+  post '/volunteers/apply_event_volunteer', to: 'volunteers#apply_event_volunteer'
   get '/test' => 'test#index'
 
   # -----------------------------------------------------------
@@ -108,6 +117,9 @@ Rails.application.routes.draw do
     post '/checks/review_hacker' => 'checks#review_hacker'
     # post '/checks/review_referee' => 'checks#review_referee'
     post '/checks/review_school' => 'checks#review_school'
+    get '/checks/volunteers', to: 'checks#volunteers'
+    get '/checks/volunteer_list', to: 'checks#volunteer_list'
+    post '/checks/review_volunteer' => 'checks#review_volunteer'
     #
     resources :competition_schedules do
       collection do
@@ -154,7 +166,23 @@ Rails.application.routes.draw do
       end
     end
     resources :news_types
-    resources :volunteers
+    resources :volunteers, only: [:index, :show] do
+      collection do
+        get :edit_regulation
+        post :edit_regulation
+        get :regulation
+      end
+    end
+    resources :event_volunteers do
+      collection do
+        get '/volunteer_detail/:id', to: 'event_volunteers#volunteer_detail'
+        get '/volunteer_list/:id', to: 'event_volunteers#volunteer_list'
+        post '/audit_event_v_user', to: 'event_volunteers#audit_event_v_user'
+        post :update_e_v_u_info
+      end
+    end
+    resources :positions
+    resources :event_vol_positions
     resources :score_attributes
     resources :photos #, only: [:new, :create, :index,:show]
     resources :videos
@@ -180,6 +208,7 @@ Rails.application.routes.draw do
         collection do
           get :get_events
           get :get_parent_group
+          get :get_obj_by_status
         end
       end
       resources :events do
@@ -275,7 +304,7 @@ Rails.application.routes.draw do
   match 'user/hacker_audit', to: 'user#hacker_audit', as: 'user_hacker_audit', via: [:get, :post]
   get 'user/hacker_info/:id', to: 'user#hacker_info', as: 'user_hacker_info'
   # get 'user/join_voucher', to: 'user#join_voucher'
-  # get 'user/export_voucher', to: 'user#export_voucher'
+  get 'user/export_voucher', to: 'user#export_voucher'
   mount ActionCable.server => '/cable'
   match '*path', via: :all, to: 'home#error_404'
 

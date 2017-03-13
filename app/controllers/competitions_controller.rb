@@ -1,5 +1,5 @@
 class CompetitionsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show, :invite, :events]
+  before_action :authenticate_user!, except: [:index, :show, :invite, :events, :apply_process]
   before_action :set_competition, only: [:show]
 
   def index
@@ -18,9 +18,25 @@ class CompetitionsController < ApplicationController
   def show
   end
 
+  def apply_process
+
+  end
+
   def events
     @competition = Competition.find(params[:id])
-    @events = Event.where(competition_id: @competition.id, is_father: 0).page(params[:page]).per(params[:per])
+    if current_user
+      current_user_id = current_user.id
+      events = Event.joins("left join team_user_ships t_u on t_u.event_id = events.id and t_u.user_id = #{current_user_id}").joins('left join teams t on t.id = t_u.team_id').where(competition_id: @competition.id, is_father: 0).select(:id, :name, :group, :team_max_num, 't.user_id as leader_id', 't.status as team_status', 't.identifier', 't_u.user_id as player_id', 't_u.team_id', 't_u.status as apply_status')
+      already_events = events.select { |event| event.apply_status != nil }
+      user_info = UserProfile.left_joins(:school, :district).where(user_id: current_user_id).select('user_profiles.*', 'schools.name as school_name', 'districts.name as district_name').take
+      @user_info = user_info || current_user.build_user_profile
+    else
+      events = Event.where(competition_id: @competition.id, is_father: 0).select(:id, :name, :group, :team_max_num)
+      already_events = []
+    end
+    one_events = events.select { |event| event.team_max_num == 1 } - already_events
+    multiple_events = events - one_events - already_events
+    @events = {already: already_events, one: one_events, multiple: multiple_events}
   end
 
   def apply_event
@@ -54,39 +70,35 @@ class CompetitionsController < ApplicationController
     user_id = current_user.id
     username = params[:username]
     gender = params[:gender]
-    district_id = params[:district]
-    school_id = params[:school]
+    school_id = params[:school_id]
     grade = params[:grade]
+    bj = params[:bj]
     birthday = params[:birthday]
     student_code = params[:student_code]
     identity_card = params[:identity_card]
-
     td = params[:td]
 
 
-    if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present? && td.to_i !=0
+    if username.present? && school_id.to_i !=0 && grade.to_i !=0 && bj.present? && gender.present? && student_code.present? && birthday.present? && td.to_i !=0
       if has_teacher_role
-        result = [false, '不规范请求']
+        result = [false, '您是教师，不能报名比赛!']
       else
         user_profile = current_user.user_profile ||= current_user.build_user_profile
-        if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
-          event = Team.joins(:event).joins('left join competitions c on events.competition_id = c.id').where('teams.id=?', td).select('c.apply_end_time', 'events.team_max_num', :players, :identifier, 'events.id as event_id', 'teams.user_id', 'events.name as event_name').take
-          if event.present? && (event.apply_end_time > Time.now) && (event.team_max_num > 1) && (event.team_max_num > event.players)
+        if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, student_code: student_code, birthday: birthday, identity_card: identity_card)
+          event = Team.joins(:event).joins('left join competitions c on events.competition_id = c.id').where('teams.id=?', td).select('c.apply_end_time', 'events.team_max_num', :players, :identifier, 'events.id as event_id', 'teams.user_id', 'teams.status as team_status', 'events.name as event_name').take
+          if event.present? && (event.apply_end_time > Time.zone.now) && (event.team_max_num > 1) && (event.team_max_num > event.players) && (event.team_status == 0)
             already_apply = TeamUserShip.where(user_id: user_id, event_id: event.event_id).exists?
             if already_apply.present?
               result = [false, '该比赛您已报名或等待队长审核']
             else
-              t_u = TeamUserShip.create(team_id: td, user_id: user_id, event_id: event.event_id, district_id: district_id, school_id: school_id, grade: grade, status: false)
-              if t_u.save
-                notify = Notification.create(user_id: event.user_id, content: username+' 申请加入您在比赛项目－'+ event.event_name.to_s + '中创建的队伍－'+ event.identifier, t_u_id: t_u.id, team_id: td, message_type: 2, reply_to: user_id)
-                if notify.save
-                  result = [true, '申请成功,等待队长同意,结果将会通过消息推送告知您!']
-                else
-                  t_u.destroy
-                  result = [false, '申请失败!']
+              begin
+                Notification.transaction do
+                  t_u = TeamUserShip.create!(team_id: td, user_id: user_id, event_id: event.event_id, school_id: school_id, grade: grade, status: 0)
+                  Notification.create!(user_id: event.user_id, content: username+' 申请加入您在比赛项目－'+ event.event_name.to_s + '中创建的队伍－'+ event.identifier, t_u_id: t_u.id, team_id: td, message_type: 2, reply_to: user_id)
                 end
-              else
-                result = [false, '申请失败!']
+                result = [true, '申请成功,等待队长同意,结果将会通过消息推送告知您!']
+              rescue Exception => ex
+                result = [false, ex.message]
               end
             end
           else
@@ -99,15 +111,106 @@ class CompetitionsController < ApplicationController
     else
       result = [false, '信息输入不完整']
     end
-    render json: result
+    render json: {status: result[0], message: result[1]}
   end
 
+
+  def leader_batch_apply
+    user_id = current_user.id
+    username = params[:username]
+    gender = params[:gender]
+    school_id = params[:school_id]
+    district_id = params[:district_id]
+    sk_station = params[:sk_station]
+    grade = params[:grade]
+    bj = params[:bj]
+    birthday = params[:birthday]
+    student_code = params[:student_code]
+    identity_card = params[:identity_card]
+    group = params[:group]
+    teacher = params[:teacher]
+    eds = params[:eds]
+
+    if eds.present? && eds.is_a?(Array) && eds.length < 6 && username.present? && school_id.to_i !=0 && district_id.present? && grade.to_i !=0 && gender.present? && student_code.present? && birthday.present? && teacher.present? && group.present?
+      if has_teacher_role
+        result = [false, '您是老师,不能报名比赛!']
+      else
+        if current_user.mobile.present?
+          events = Event.joins(:competition).where(id: eds).select(:id, :name, :group, 'competitions.apply_end_time')
+          if events.present? && events.length == eds.length
+            if events[0].apply_end_time > Time.zone.now
+              already_apply = TeamUserShip.where(user_id: user_id, event_id: eds).exists?
+              if already_apply
+                result = [false, '您提交的项目中部分您已报名，无需再次报名']
+              else
+                user_profile = current_user.user_profile ||= current_user.build_user_profile
+                if user_profile.update_attributes(username: username, gender: gender, district_id: district_id, school_id: school_id, grade: grade, bj: bj, student_code: student_code, birthday: birthday, identity_card: identity_card)
+                  result_status = true
+                  result = []
+                  success_teams = []
+                  each_index = 0
+                  events.each_with_index do |event, index|
+                    each_index = index
+                    if event.group.include?(group)
+                      if result_status
+                        begin
+                          TeamUserShip.transaction do
+                            team = Team.create!(group: group, user_id: user_id, teacher: teacher, event_id: event.id, district_id: district_id, school_id: school_id, sk_station: sk_station)
+                            team.team_user_ships.create!(team_id: team.id, user_id: user_id, event_id: event.id, district_id: district_id, school_id: school_id, grade: grade, status: true)
+                            result << "#{event.name}报名成功!"
+                            success_teams << {event_name: event.name, team_id: team.id, identifier: team.identifier, event_id: event.id}
+                          end
+                        rescue Exception => ex
+                          result_status = false
+                          result << ex.message
+                        end
+                      else
+                        break
+                      end
+                    else
+                      result = [false, "#{event.name}不包含您所报名的组别！"]
+                      result_status = false
+                      break
+                    end
+                  end
+                  if result_status
+                    result = [true, '提交成功', success_teams]
+                  else
+                    if each_index > 0
+                      result = [true, (result[0..-2]+['剩余项目报名失败']).join(','), success_teams]
+                    else
+                      result = [false, result[1]]
+                    end
+                  end
+                else
+                  result = [false, user_profile.errors.full_messages.first]
+                end
+              end
+            else
+              result = [false, '该比赛已过报名时间']
+            end
+          else
+            result = [false, '项目参数不规范']
+          end
+        else
+          result = [false, '请先添加手机号!']
+        end
+      end
+    else
+      result = [false, '信息输入不完整或不规范']
+    end
+    render json: {status: result[0], message: result[1], success_teams: result[2]}
+  end
+
+
+  ## old
   def leader_create_team
 
     user_id = current_user.id
     username = params[:username]
     gender = params[:gender]
     school_id = params[:school]
+    district_id = params[:district_id]
     grade = params[:grade]
     birthday = params[:birthday]
     student_code = params[:student_code]
@@ -119,12 +222,12 @@ class CompetitionsController < ApplicationController
     ed = params[:team_event]
 
 
-    if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && student_code.present? && birthday.present? && teacher.present? && group.present?
+    if username.present? && school_id.to_i !=0 && district_id.present? && grade.to_i !=0 && gender.present? && student_code.present? && birthday.present? && teacher.present? && group.present?
       if has_teacher_role
         result = [false, '您是老师,不能报名比赛']
       else
         user = current_user.user_profile ||= current_user.build_user_profile
-        if user.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, student_code: student_code, birthday: birthday, identity_card: identity_card)
+        if user.update_attributes(username: username, gender: gender, school_id: school_id, district_id: district_id, grade: grade, student_code: student_code, birthday: birthday, identity_card: identity_card)
           event = Event.joins(:competition).where(id: ed).select(' competitions.apply_end_time ').take
           if event.present? && event.apply_end_time > Time.zone.now
             already_apply = TeamUserShip.where(user_id: user_id, event_id: ed, status: true).exists?
@@ -133,8 +236,8 @@ class CompetitionsController < ApplicationController
             else
               begin
                 TeamUserShip.transaction do
-                  team = Team.create!(group: group, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: school_id)
-                  TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed, school_id: school_id, grade: grade, status: true)
+                  team = Team.create!(group: group, user_id: user_id, teacher: teacher, teacher_mobile: teacher_mobile, event_id: ed, school_id: school_id, district_id: district_id)
+                  TeamUserShip.create!(team_id: team.id, user_id: team.user_id, event_id: ed, school_id: school_id, district_id: district_id, grade: grade, status: true)
                 end
                 result = [true, '队伍创建成功!']
               rescue Exception => ex
@@ -169,7 +272,7 @@ class CompetitionsController < ApplicationController
   def search_user
     invited_name = params[:invited_name]
     if request.method == 'GET' && invited_name.present? && invited_name.length>1
-      users = UserProfile.left_joins(:user, :school).where(['user_profiles.username like ?', "#{invited_name}%"]).where('school_id is not NULL').select(:user_id, :nickname, 'user_profiles.username', 'schools.name as school_name', 'user_profiles.gender', 'user_profiles.grade')
+      users = UserProfile.left_joins(:user, :school).where(['user_profiles.username like ?', "#{invited_name}%"]).where('school_id is not NULL').select(:user_id, :nickname, 'user_profiles.username', 'schools.name as school_name', 'user_profiles.gender', 'user_profiles.grade', 'user_profiles.bj')
       result = [true, users]
     else
       result = [false, '请至少输入名字的前两个字']
@@ -190,7 +293,7 @@ class CompetitionsController < ApplicationController
           if TeamUserShip.where(user_id: ud, event_id: event_info.id).exists?
             result = [false, '该户已报名此项目或已被您或其他人邀请参加']
           else
-            t_u = TeamUserShip.create(team_id: td, user_id: ud, event_id: event_info.id, status: false, school_id: 0)
+            t_u = TeamUserShip.create(team_id: td, user_id: ud, event_id: event_info.id, status: 2, school_id: 0)
             if t_u.save
               result= [true, '邀请成功,等待该队员同意', user_info.nickname, user_info.username]
               Notification.create(user_id: ud, message_type: 1, content: current_user.user_profile.try(:username)+'邀请你参加['+event_info.name+']比赛项目,队伍为:'+event_info.identifier, t_u_id: t_u.id, team_id: td, reply_to: current_user.id)
@@ -213,7 +316,7 @@ class CompetitionsController < ApplicationController
     td = params[:td]
     if td.present?
       team_info = Event.joins(:teams, :competition).where('teams.id=?', td).select(:name, :team_max_num, 'teams.user_id', 'teams.status', 'teams.players', 'competitions.apply_end_time').take
-      if team_info.present? && (team_info.status ==0) && (team_info.user_id == current_user.id) && (team_info.apply_end_time > Time.now)
+      if team_info.present? && (team_info.status != 1) && (team_info.user_id == current_user.id) && (team_info.apply_end_time > Time.now)
         if Team.find(td).destroy
           result = [true, '解散成功']
           if (team_info.team_max_num > 1) && (team_info.players>1)
@@ -237,17 +340,22 @@ class CompetitionsController < ApplicationController
   def leader_delete_player
     td = params[:td]
     ud = params[:ud]
-    team_info = Event.joins(:teams, :competition).where('teams.id=?', td).select(:name, 'teams.user_id', 'teams.status', 'competitions.apply_end_time').take
-    if team_info.present? && (team_info.status ==0) && (team_info.user_id == current_user.id) && (team_info.apply_end_time > Time.now)
-      t_u = TeamUserShip.where(user_id: ud, team_id: td).take
-      if t_u.present? && t_u.destroy
-        result = [true, '清退成功!']
-        Notification.create(user_id: team_info.user_id, message_type: 0, content: '在比赛项目:'+team_info.name+'中,您被队长移出队伍')
-      else
-        result = [false, '清退失败!']
-      end
+    current_user_id = current_user.id
+    if ud == current_user_id.to_s
+      result = [false, '队长不能剔除自己']
     else
-      result = [false, '不规范请求或报名时间已截止']
+      team_info = Event.joins(:teams, :competition).where('teams.id=?', td).select(:name, 'teams.user_id', 'teams.status', 'competitions.apply_end_time').take
+      if team_info.present? && (team_info.status ==0) && (team_info.user_id == current_user_id) && (team_info.apply_end_time > Time.now)
+        t_u = TeamUserShip.where(user_id: ud, team_id: td).take
+        if t_u.present? && t_u.destroy
+          result = [true, '清退成功!']
+          Notification.create(user_id: team_info.user_id, message_type: 0, content: '在比赛项目:'+team_info.name+'中,您被队长移出队伍')
+        else
+          result = [false, '清退失败!']
+        end
+      else
+        result = [false, '不规范请求或报名时间已截止']
+      end
     end
     render json: result
   end
@@ -255,21 +363,20 @@ class CompetitionsController < ApplicationController
   def player_agree_leader_invite
     username = params[:username]
     gender = params[:gender]
-    district_id = params[:district]
-    school_id = params[:school]
+    district_id = params[:district_id]
+    school_id = params[:school_id]
     grade = params[:grade]
     birthday = params[:birthday]
     student_code = params[:student_code]
     identity_card = params[:identity_card]
     td = params[:td]
-    ed = params[:ed]
 
     if username.present? && school_id.to_i !=0 && grade.to_i !=0 && gender.present? && district_id.to_i != 0 && student_code.present? && birthday.present?
       user_profile = current_user.user_profile ||= current_user.build_user_profile
       if user_profile.update_attributes(username: username, gender: gender, school_id: school_id, grade: grade, district_id: district_id, student_code: student_code, birthday: birthday, identity_card: identity_card)
-        event = Event.joins(:competition).left_joins(:teams).where(id: ed).where('teams.id=?', td).select(:name, 'competitions.apply_end_time', 'teams.user_id as leader_user_id', 'teams.status as team_status', 'teams.identifier').take
+        event = Event.joins(:teams, :competition).where('teams.id=?', td).select(:id, :name, 'competitions.apply_end_time', 'teams.user_id as leader_user_id', 'teams.status as team_status', 'teams.identifier').take
         if event.present? && event.apply_end_time > Time.now && event.team_status==0
-          t_u = TeamUserShip.where(user_id: current_user.id, event_id: ed).take
+          t_u = TeamUserShip.where(user_id: current_user.id, event_id: event.id).take
           if t_u.present?
             if t_u.status == 1
               result = [false, '该比赛您已经报名，请不要再次报名!']
@@ -300,35 +407,40 @@ class CompetitionsController < ApplicationController
     t_u_id = params[:tud]
     notification_id = params[:nd]
     reject = params[:reject] # option
-    if t_u_id.present? && notification_id.present?
+    if t_u_id.present? && (request.format.json? || (request.format.html? && notification_id.present?))
       t_u = TeamUserShip.where(id: t_u_id).first
       if t_u.present?
         team_info = Event.joins(:competition).left_joins(:teams).where('teams.id=?', t_u.team_id).select(:name, 'competitions.apply_end_time', 'teams.user_id as leader_user_id', 'teams.status as team_status', 'teams.identifier').take
-        if team_info.present? && (team_info.apply_end_time > Time.now) && (team_info.team_status ==0) && (!t_u.status) && (team_info.leader_user_id == current_user.id)
+        if team_info.present? && (team_info.apply_end_time > Time.now) && (team_info.team_status ==0) && (t_u.status == 0) && (team_info.leader_user_id == current_user.id)
           if reject.present? && reject=='1'
             Notification.create(user_id: t_u.user_id, content: team_info.name+'比赛项目中队伍'+team_info.identifier+'的队长拒绝了你的申请，您未能加入该队', message_type: 0)
             if t_u.destroy
-              flash[:success] = '拒绝成功'
+              result = [true, '拒绝成功']
             else
-              flash[:error] = '拒绝失败'
+              result = [false, '拒绝失败']
             end
           else
-            t_u.status = true
+            t_u.status = 1
             if t_u.save
-              flash[:success] = '接受成功'
+              result = [true, '接受成功']
               Notification.create(user_id: t_u.user_id, content: team_info.name+'比赛项目中'+team_info.identifier+'的队长同意了你的申请，您已成功加入了该队', message_type: 0)
             else
-              flash[:error] = '接受失败'
+              result = [false, '接受失败']
             end
           end
         else
-          flash[:error] = '不规范请求'
+          result = [false, '不规范请求']
         end
       else
-        flash[:error] = '不规范请求'
+        result = [false, '不规范请求']
       end
+    else
+      result = [false, '参数不规范']
     end
-    redirect_to "/user/notify?id=#{notification_id}"
+    respond_to do |format|
+      format.html { redirect_to "/user/notify?id=#{notification_id}", notice: result[1] }
+      format.json { render json: result }
+    end
   end
 
   def school_refuse_teams
