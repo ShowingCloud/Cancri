@@ -1,0 +1,108 @@
+<div class="panel panel-info">
+  <div class="panel-heading"><%= t('activerecord.models.course') %></div>
+  <div class="panel-body">
+    <%= simple_form_for([:admin, @course]) do |f| %>
+        <%= f.error_notification %>
+        <% if @course.errors.any? %>
+            <div id="error_explanation">
+              <% @course.errors[:apply_start_time].each do |msg| %>
+                  <div class="alert alert-danger"><%= msg %>
+                    <button class="close" data-dismiss="alert">
+                      <i class="icon-remove"></i>
+                    </button>
+                  </div>
+              <% end %>
+              <% @course.errors[:start_time].each do |msg| %>
+                  <div class="alert alert-danger"><%= msg %>
+                    <button class="close" data-dismiss="alert">
+                      <i class="icon-remove"></i>
+                    </button>
+                  </div>
+              <% end %>
+              <% @course.errors[:end_time].each do |msg| %>
+                  <div class="alert alert-danger"><%= msg %>
+                    <button class="close" data-dismiss="alert">
+                      <i class="icon-remove"></i>
+                    </button>
+                  </div>
+              <% end %>
+            </div>
+        <% end %>
+
+        <div class="form-inputs">
+          <% if params[:action]=='new' %>
+              <%= f.input :name, autofocus: true %>
+          <% else %>
+              <%= f.input :name %>
+          <% end %>
+          <%= f.input :user_id, label: '所属老师', collection: UserRole.joins('left join user_profiles u_p on u_p.user_id = user_roles.user_id').where(role_id: 1, status: 1).pluck('u_p.user_id', 'u_p.username').map { |t| [t[1], t[0]] } %>
+          <%= f.input :target %>
+          <%= f.input :num, label: '接纳人数' %>
+          <%= f.input :district_id, collection: District.sh_districts %>
+          <%= f.input :run_address %>
+          <label class="select required control-label" for="courses_desc">描述:</label>
+          <%= f.kindeditor :desc, :window_onload => true, :owner_id => @course.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', 'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'media', 'insertfile', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
+          <br>
+          <%= f.input :run_time, label: '每天上课时间', placeholder: '例如:9:30-10:30  14:00-15:30' %>
+          <%= f.input :status, collection: Course::STATUS.map { |key, val| [t('status.'+key.to_s), val] } %>
+          <!-- time start-->
+          <div class="row">
+            <div class="form-group datetime optional col-md-3 required" data-date-merge>
+              <label class="datetime optional control-label">
+                <abbr title="必填字段">*</abbr>
+                报名开始时间</label>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <input data-date-merge-date value="<%= @course.apply_start_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime require form-control" data-date-format="yyyy-mm-dd">
+                </div>
+              </div>
+              <input data-date-merge-result type="hidden" name="course[apply_start_time]" value="<%= @course.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+            </div>
+            <div class="form-group datetime require col-md-3" data-date-merge>
+              <label class="datetime optional control-label">
+                <abbr title="必填字段">*</abbr>
+                报名结束时间
+              </label>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <input data-date-merge-date value="<%= @course.apply_end_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime require form-control" data-date-format="yyyy-mm-dd">
+                </div>
+              </div>
+              <input data-date-merge-result type="hidden" name="course[apply_end_time]" value="<%= @course.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+            </div>
+            <div class="form-group datetime require col-md-3" data-date-merge>
+              <label class="datetime optional control-label">
+                <abbr title="必填字段">*</abbr>
+                课程开始日期</label>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <input data-date-merge-date value="<%= @course.start_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                </div>
+              </div>
+              <input data-date-merge-result type="hidden" name="course[start_time]" value="<%= @course.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+            </div>
+            <div class="form-group datetime require col-md-3" data-date-merge>
+              <label class="datetime optional control-label">
+                <abbr title="必填字段">*</abbr>
+                课程结束日期</label>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <input data-date-merge-date value="<%= @course.end_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                </div>
+              </div>
+              <input data-date-merge-result type="hidden" name="course[end_time]" value="<%= @course.end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+            </div>
+          </div>
+          <!-- time end-->
+
+        </div>
+        <div class="form-actions">
+          <%= f.submit class: 'btn btn-primary' %>
+        </div>
+    <% end %>
+  </div>
+</div>

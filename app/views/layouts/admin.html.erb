@@ -2,16 +2,18 @@
 <html>
 <head>
   <title>豆姆智能科技 － 管理后台</title>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
   <!--<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=false">-->
   <%= csrf_meta_tags %>
   <%= stylesheet_link_tag 'admin', media: 'all', 'data-turbolinks-track' => false %>
 </head>
 <body>
 <% if notice.present? %>
-    <div id="notice"><%= notice %></div>
+    <div id="notice"><%= flash[:notice] %></div>
+    <% flash[:notice] = nil %>
 <% end %>
 <% if alert.present? %>
-    <div id="alert"><%= alert %></div>
+    <div id="alert-error" class="hide"><%= alert %></div>
 <% end %>
 <div class="navbar navbar-default" id="navbar">
   <div class="navbar-container" id="navbar-container">
@@ -120,10 +122,10 @@
 
     <div class="sidebar" id="sidebar">
       <script type="text/javascript">
-          try {
-              ace.settings.check('sidebar', 'fixed')
-          } catch (e) {
-          }
+        try {
+          ace.settings.check('sidebar', 'fixed')
+        } catch (e) {
+        }
       </script>
       <div class="sidebar-shortcuts" id="sidebar-shortcuts">
         <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
@@ -155,97 +157,135 @@
         </div>
       </div>
       <!-- #sidebar-shortcuts -->
+      <% controller_params = params[:controller] %>
       <ul class="nav nav-list">
-        <li class="<%= params[:controller] == 'admin/users' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/users' ? 'active' : '' %>">
           <a href="<%= admin_users_path %>">
             <i class="icon-user"></i>
             <span class="menu-text"> 用户 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/admins' ? 'active' : '' %>">
-          <a href="<%= admin_admins_path %>">
-            <i class="icon-gear"></i>
-            <span class="menu-text"> 管理员 </span>
-          </a>
-        </li>
-        <li class="<%= params[:controller] == 'admin/organizers' ? 'active' : '' %>">
+        <% if authenticate_permissions_show(['super_admin']) %>
+            <li class="<%= controller_params == 'admin/admins' ? 'active' : '' %>">
+              <a href="<%= admin_admins_path %>">
+                <i class="icon-gear"></i>
+                <span class="menu-text"> 管理员 </span>
+              </a>
+            </li>
+        <% end %>
+        <li class="<%= controller_params == 'admin/organizers' ? 'active' : '' %>">
           <a href="<%= admin_organizers_path %>">
             <i class="icon-home"></i>
             <span class="menu-text"> 单位 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/districts' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/districts' ? 'active' : '' %>">
           <a href="<%= admin_districts_path %>">
             <i class="icon-globe"></i>
             <span class="menu-text"> 区县 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/schedules' ? 'active' : '' %>">
-          <a href="<%= admin_schedules_path %>">
-            <i class="icon-calendar"></i>
-            <span class="menu-text"> 赛程名 </span>
-          </a>
-        </li>
-        <li class="<%= params[:controller] == 'admin/roles' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/roles' ? 'active' : '' %>">
           <a href="<%= admin_roles_path %>">
             <i class="icon-leaf"></i>
             <span class="menu-text"> 角色 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/news_types' ? 'active' : '' %>">
-          <a href="<%= admin_news_types_path %>">
-            <i class="icon-list"></i>
-            <span class="menu-text"> 新闻类型 </span>
+        <li class="<%= controller_params == 'admin/courses' ? 'active' : '' %>">
+          <a href="<%= admin_courses_path %>">
+            <i class="icon-book"></i>
+            <span class="menu-text"> 课程 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/news' ? 'active' : '' %>">
-          <a href="<%= admin_news_index_path %>">
-            <i class="icon-comment-alt"></i>
-            <span class="menu-text"> 新闻 </span>
-          </a>
-        </li>
-        <li class="<%= params[:controller] == 'admin/competitions' ? 'active' : '' %>">
+        <li class="<%= (controller_params == 'admin/competitions' || (params[:type_id].present? && params[:type]=='0')) ? 'active' : '' %>">
           <a href="<%= admin_competitions_path %>">
             <i class="icon-beaker"></i>
             <span class="menu-text"> 比赛 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/events' ? 'active' : '' %>">
+        <li class="<%= (controller_params == 'admin/events' || controller_params == 'admin/event_schedules') ? 'active' : '' %>">
           <a href="<%= admin_events_path %>">
             <i class="icon-hand-right"></i>
             <span class="menu-text"> 项目 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/score_attributes' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/notifications' ? 'active' : '' %>">
+          <a href="<%= admin_notifications_path %>">
+            <i class="icon-bell"></i>
+            <span class="menu-text"> 比赛消息 </span>
+          </a>
+        </li>
+        <li class="<%= controller_params == 'admin/score_attributes' ? 'active' : '' %>">
           <a href="<%= admin_score_attributes_path %>">
             <i class="icon-hdd"></i>
             <span class="menu-text"> 成绩属性 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/activities' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/schedules' ? 'active' : '' %>">
+          <a href="<%= admin_schedules_path %>">
+            <i class="icon-calendar"></i>
+            <span class="menu-text"> 赛程名 </span>
+          </a>
+        </li>
+        <li class="<%= (controller_params == 'admin/activities' || (params[:type_id].present? && params[:type]=='1')) ? 'active' : '' %>">
           <a href="<%= admin_activities_path %>">
             <i class="icon-gift"></i>
             <span class="menu-text"> 活动 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/volunteers' ? 'active' : '' %>">
-          <a href="<%= admin_volunteers_path %>">
-            <i class="icon-glass"></i>
+        <li class="<%= controller_params.in?(%w(admin/volunteers admin/event_volunteers)) ? 'active' : '' %>">
+          <a href="<%= admin_event_volunteers_path %>">
+            <i class="icon-male"></i>
             <span class="menu-text"> 志愿者 </span>
           </a>
         </li>
-        <li class="<%= params[:controller] == 'admin/consults' ? 'active' : '' %>">
+        <li class="<%= controller_params == 'admin/news_types' ? 'active' : '' %>">
+          <a href="<%= admin_news_types_path %>">
+            <i class="icon-list"></i>
+            <span class="menu-text"> 新闻类型 </span>
+          </a>
+        </li>
+        <li class="<%= controller_params == 'admin/news' ? 'active' : '' %>">
+          <a href="<%= admin_news_index_path %>">
+            <i class="icon-comment-alt"></i>
+            <span class="menu-text"> 新闻 </span>
+          </a>
+        </li>
+        <li class="<%= controller_params == 'admin/schools' ? 'active' : '' %>">
+          <a href="<%= admin_schools_path %>">
+            <i class="icon-inbox"></i>
+            <span class="menu-text"> 学校 </span>
+          </a>
+        </li>
+        <li class="<%= controller_params == 'admin/consults' ? 'active' : '' %>">
           <a href="<%= admin_consults_path %>">
             <i class="icon-comments"></i>
             <span class="menu-text"> 用户反馈 </span>
           </a>
         </li>
-        <!--<li class="<%= params[:controller] == 'admin/demeanor' ? 'active' : '' %>">-->
-        <!--<a href="<%= admin_photos_path %>">-->
-        <!--<i class="icon-camera"></i>-->
-        <!--<span class="menu-text"> 选手风采 </span>-->
-        <!--</a>-->
-        <!--</li>-->
+
+
+        <% if 2==1 %>
+            <li class="<%= controller_params == 'admin/schedules' ? 'active' : '' %>">
+              <a href="<%= admin_schedules_path %>">
+                <i class="icon-calendar"></i>
+                <span class="menu-text"> 赛程名 </span>
+              </a>
+            </li>
+            <li class="<%= controller_params == 'admin/score_attributes' ? 'active' : '' %>">
+              <a href="<%= admin_score_attributes_path %>">
+                <i class="icon-hdd"></i>
+                <span class="menu-text"> 成绩属性 </span>
+              </a>
+            </li>
+            <li class="<%= controller_params == 'admin/vouchers' ? 'active' : '' %>">
+              <a href="<%= admin_vouchers_path %>">
+                <i class="icon-comment-alt"></i>
+                <span class="menu-text"> 参赛证 </span>
+              </a>
+            </li>
+
+        <% end %>
 
       </ul>
       <!-- /.nav-list -->
@@ -253,10 +293,10 @@
         <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
       </div>
       <script type="text/javascript">
-          try {
-              ace.settings.check('sidebar', 'collapsed')
-          } catch (e) {
-          }
+        try {
+          ace.settings.check('sidebar', 'collapsed')
+        } catch (e) {
+        }
       </script>
     </div>
     <div class="main-content">
@@ -277,30 +317,30 @@
 </div>
 <%= javascript_include_tag 'admin', 'data-turbolinks-track' => true %>
 <script type="text/javascript">
-    jQuery(function ($) {
-        var color_box_params = {
-            reposition: true,
-            scalePhotos: true,
-            scrolling: false,
-            previous: '<i class="icon-arrow-left"></i>',
-            next: '<i class="icon-arrow-right"></i>',
-            close: '&times;',
-            current: '{current} / {total}',
-            maxWidth: '100%',
-            maxHeight: '100%',
-            onOpen: function () {
-                document.body.style.overflow = 'hidden';
-            },
-            onClosed: function () {
-                document.body.style.overflow = 'auto';
-            },
-            onComplete: function () {
-                $.colorbox.resize();
-            }
-        };
-        $('.ace-thumbnails [data-rel="colorbox"]').colorbox(color_box_params);
-        $("#cboxLoadingGraphic").append("<i class='icon-spinner orange'></i>");//loading icon
-    })
+  jQuery(function ($) {
+    var color_box_params = {
+      reposition: true,
+      scalePhotos: true,
+      scrolling: false,
+      previous: '<i class="icon-arrow-left"></i>',
+      next: '<i class="icon-arrow-right"></i>',
+      close: '&times;',
+      current: '{current} / {total}',
+      maxWidth: '100%',
+      maxHeight: '100%',
+      onOpen: function () {
+        document.body.style.overflow = 'hidden';
+      },
+      onClosed: function () {
+        document.body.style.overflow = 'auto';
+      },
+      onComplete: function () {
+        $.colorbox.resize();
+      }
+    };
+    $('.ace-thumbnails [data-rel="colorbox"]').colorbox(color_box_params);
+    $("#cboxLoadingGraphic").append("<i class='icon-spinner orange'></i>");//loading icon
+  })
 </script>
 </body>
 </html>

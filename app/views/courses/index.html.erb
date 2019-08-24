@@ -1,0 +1,47 @@
+<div id="main" class="main">
+  <div class="container">
+    <div class="row">
+      <div class="lesson">
+        <% if @courses.size>0 %>
+            <div class="lesson-screening">
+              <% unless has_teacher_role %>
+                  <div class="pull-right">
+                    <a href="/courses/apply_show" id="go-apply" class="btn-robodou btn-apply-show">去报名</a>
+                  </div>
+              <% end %>
+            </div>
+            <div class="lesson-list">
+              <% @courses.each do |c| %>
+                  <div class="lesson-item <%= 'disable' if c.try(:has_apply) %> <%= 'overtime' if c.apply_end_time<Time.now %>" data-course-id="<%= c.id %>">
+                    <div class="title">
+                      <%= c.name %>
+                    </div>
+
+                    <p>报名结束时间：<%= c.apply_end_time.try(:strftime, '%Y-%m-%d') %></p>
+
+                    <p>招募人数：<%= c.num %> </p>
+
+                    <p>剩余名额：<%= c.num-c.apply_count %></p>
+
+                    <% if c.try(:has_apply) %>
+                        <p><div class="label label-success">您已报名</div></p>
+                    <% end %>
+
+                    <% if c.apply_end_time<Time.now %>
+                        <p><div class="label label-warning">报名结束</div></p>
+                    <% end %>
+
+                    <a href="<%= "/courses/#{c.id}" %>" class="pull-right btn-robodou show-lesson">查看详情</a>
+                  </div>
+              <% end %>
+              <nav>
+                <%= paginate @courses %>
+              </nav>
+            </div>
+        <% else %>
+            <h3>暂无课程信息</h3>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

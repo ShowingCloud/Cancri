@@ -6,7 +6,7 @@ class Users::PasswordsController < Devise::PasswordsController
 
   # POST /resource/password
   def create
-    if verify_rucaptcha?(resource)
+    if verify_rucaptcha?(params[:_rucaptcha])
       self.resource = resource_class.send_reset_password_instructions(resource_params)
       yield resource if block_given?
       if successfully_sent?(resource)
@@ -17,10 +17,10 @@ class Users::PasswordsController < Devise::PasswordsController
     else
       self.resource = resource_class.new
       resource.email = params[resource_name][:email]
+      resource.status = 1000
       render 'new'
     end
   end
-
   # GET /resource/password/edit?reset_password_token=abcdef
   # def edit
   #   super

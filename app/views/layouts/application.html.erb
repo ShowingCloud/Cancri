@@ -2,45 +2,48 @@
 <html>
 <head>
   <%= render_page_title %>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <link rel="icon" href="<%= asset_path('icon.png') %>"/>
   <%= csrf_meta_tags %>
   <%= action_cable_meta_tag %>
-
-  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => false %>
+  <link rel="icon" href="<%= asset_path('icon.png') %>"/>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
 </head>
 
-<body>
-
-<div id="top" data-src="<%= image_path('homepage/top-bk.png') %>">
+<body class="<%= get_area %>">
+<div id="top">
   <div class="container">
     <div class="row">
       <div class="col-xs-12">
         <div class="logo pull-left">
+          <select id="select-area" style="margin-top: 15px">
+            <option>上海</option>
+            <option value="1" <%= 'selected' if cookies[:area] %>>宝山</option>
+          </select>
           <a href="/">
-            <img data-src="<%= image_path('homepage/logo.png') %>" src="" alt=""/>
+            <% if cookies[:area]=='1' %>
+                宝山少科站
+            <% else %>
+                <img src="<%= image_path('logo.png') %>" alt=""/>
+            <% end %>
           </a>
         </div>
         <div class="user-info pull-right">
-          <% if user_signed_in? %>
+          <% if current_user %>
               <div class="login-info">
-                <a class="nickname" href="<%= user_preview_path %>"><%= current_user.nickname %></a>
-                <a href="<%= user_notification_path %>">
-                  <i class="glyphicon glyphicon-bell"></i>
-                  <% if current_user.notifications.unread.count > 0 %>
-                      <span class="badge badge-notify-count"><%= current_user.notifications.unread.count %></span>
-                  <% end %>
-                </a>
-                <%= link_to destroy_user_session_path, method: :delete, data: {confirm: '确认退出登录吗?'}, title: '退出登录', class: 'login-out' do %>
-                    <i class="glyphicon glyphicon-off"></i>
-                <% end %>
+                <div class="dropdown">
+                  <button class="btn-robodou" data-toggle="dropdown">
+                    <%= current_user.nickname %> <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-robodou">
+                    <li><a href="<%= user_preview_path %>">个人中心</a></li>
+                    <li><a href="<%= user_notification_path %>">我的消息</a></li>
+                    <li><%= link_to '退出登录', destroy_user_session_path, id:"logout", method: :delete, data: {confirm: '确认退出登录吗?'} %></li>
+                  </ul>
+                </div>
               </div>
           <% else %>
               <div class="un-login">
-                <a class="btn-robodou btn-robodou-login" href="<%= new_user_session_path %>" data-src="<%= image_path('homepage/btn-login-bk.png') %>" data-toggle="modal">登录我的robodou
-                </a>
+                <%= link_to '登录', new_user_session_path, class: 'btn-robodou btn-login-link' %>
+                <%= link_to '注册', new_user_session_path, class: 'btn-robodou btn-register-link' %>
               </div>
           <% end %>
         </div>
@@ -54,147 +57,46 @@
       <div class="collapse navbar-collapse" id="nav-menu">
         <ul class="nav navbar-nav">
           <li><a href="/">首页</a></li>
-          <li class="news-menu">
-            <a href="<%= news_index_path %>">新闻</a>
-
-            <div class="news-menu-content" data-src="<%= image_path('homepage/news-menu-bk.png') %>">
-              <div class="all-news">
-                <a href="<%= news_index_path %>" class="btn-robodou btn-see-all-news">查看所有新闻</a>
-              </div>
-              <div class="news-tag-list">
-                <div class="item-row">
-                  <div class="item-l">比赛</div>
-                  <div class="item-r">
-                    <a href="<%= news_index_path %>?type=1">报名丨成绩</a>
-                  </div>
-                </div>
-                <div class="item-row">
-                  <div class="item-l">志愿者</div>
-                  <div class="item-r">
-                    <a href="<%= news_index_path %>?type=2">招募</a>
-                  </div>
-                </div>
-                <div class="item-row">
-                  <div class="item-l">活动</div>
-                  <div class="item-r">
-                    <a href="<%= news_index_path %>?type=3">报名</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li><a href="<%= competitions_path %>">比赛</a></li>
-          <li><a href="<%= '/honors' %>">荣誉榜</a></li>
+          <li><a class="" href="<%= news_path %>">新闻</a></li>
+          <li><a href="<%= courses_index_path %>">课程</a></li>
+          <li><a class="" href="<%= competitions_path %>">比赛</a></li>
+          <li><a class="un-do" href="">荣誉榜</a></li>
           <li><a href="<%= activities_path %>">活动</a></li>
-          <li><a href="<%= '/demeanor' %>">选手风采</a></li>
-          <li><a href="<%= '/scenes' %>">我在现场</a></li>
-          <li><a href="<%= volunteers_path %>">志愿者</a></li>
-          <li><a href="<%= '/downloads' %>">下载</a></li>
+          <li><a class="" href="/demeanor">风采</a></li>
+          <li><a href="<%= volunteers_recruit_path %>">志愿者</a></li>
         </ul>
       </div>
     </div>
   </div>
 </div>
-<% if flash.present? %>
-    <div id="flash" class="modal fade">
-      <div class="notify-b">
-        <div class="title">
-          通知
-          <i data-dismiss="modal" class="close-flash glyphicon glyphicon-remove-circle"></i>
-        </div>
-        <div class="content">
-          <% flash.each do |f| %>
-              <%= f[1] %>
-          <% end %>
-        </div>
-      </div>
-    </div>
-<% end %>
-
-
-
 
 <%= yield %>
-<%= javascript_include_tag 'application', 'data-turbolinks-track' => false %>
-<% if flash.present? %>
-    <script type="text/javascript">
-        $('#flash').modal('show');
-    </script>
-<% end %>
-<% if current_user %>
-    <script type="text/javascript" charset="utf-8">
 
-        $(function () {
-            function notify(title, content) {
-                if (!title && !content) {
-                    title = "桌面提醒";
-                    content = "您看到此条信息桌面提醒设置成功";
-                }
-                var iconUrl = "/assets/icon.png";
-                if (window.webkitNotifications) {
-                    //chrome老版本
-                    if (window.webkitNotifications.checkPermission() == 0) {
-                        var notif = window.webkitNotifications.createNotification(iconUrl, title, content);
-                        notif.display = function () {
-                        };
-                        notif.onerror = function () {
-                        };
-                        notif.onclose = function () {
-                        };
-                        notif.onclick = function () {
-                            this.cancel();
-                        };
-                        notif.replaceId = 'Meteoric';
-                        notif.show();
-                    } else {
-                        window.webkitNotifications.requestPermission($jy.notify);
-                    }
-                }
-                else if ("Notification" in window) {
-                    // 判断是否有权限
-                    if (Notification.permission === "granted") {
-                        var notification = new Notification(title, {
-                            "icon": iconUrl,
-                            "body": content
-                        });
-                    }
-                    //如果没权限，则请求权限
-                    else if (Notification.permission !== 'denied') {
-                        Notification.requestPermission(function (permission) {
-                            // Whatever the user answers, we make sure we store the
-                            // information
-                            if (!('permission' in Notification)) {
-                                Notification.permission = permission;
-                            }
-                            //如果接受请求
-                            if (permission === "granted") {
-                                var notification = new Notification(title, {
-                                    "icon": iconUrl,
-                                    "body": content
-                                });
-                            }
-                        });
-                    }
-                }
-            }
+<div id="footer">
+  <div class="container">
+    <div class="footer">
+      <a>关于我们</a>
+      <span class="separator"></span>
+      <a>联系我们</a>
+      <span class="separator"></span>
+      沪ICP备 15036141号
+    </div>
+  </div>
+</div>
+<div class="loading hidden"></div>
 
-            window.roomid = $('.current-user-room').val();
-            MessageBus.start(); // call once at startup
+<%= javascript_include_tag 'application' %>
 
-            MessageBus.callbackInterval = 500;
-            channel = '/channel';
-            if (window.roomid) {
-                channel = channel + '/' + window.roomid;
-            }
-            MessageBus.subscribe(channel, function (data) {
-                $('.badge-notify-count').text(data.count);
-                notify(data.content);
-                $('#content').val('');
-            });
+<script type="text/javascript">
+    <% if flash.present? %>
+      alert_r(
+        <% flash.each do |f| %>
+              "<%= f[1] %>"
+        <% end %>
+      );
+    <% end %>
+</script>
 
 
-        })
-    </script>
-<% end %>
 </body>
 </html>

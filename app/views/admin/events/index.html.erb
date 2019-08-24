@@ -6,10 +6,24 @@
     <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
       <i class="icon-search icon-only"></i>
     </a>
-    <a href="<%= admin_events_path(format: 'xls') %>" class="btn btn-default" title="导出数据">
+    <a href="<%= admin_events_path(format: 'xls') %>?field=<%= params[:field] %>&keyword=<%= params[:keyword] %>" class="btn btn-default" title="导出数据">
       <i class="icon-external-link icon-only"></i>
     </a>
   </small>
+  <div class="form-group pull-right" style="margin: 6px 10px 0 0">
+    <select id="select-competition-events" class="form-control">
+      <option value="">
+        &nbsp;全部
+      </option>
+      <% if @comps.present? %>
+          <% @comps.each do |comp| %>
+              <option <%= 'selected' if params[:comp_name] == comp.name %> value="<%= comp.name %>">
+                <%= comp.name %>
+              </option>
+          <% end %>
+      <% end %>
+    </select>
+  </div>
 </h1>
 <div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
   <div class="widget-header widget-header-small">
@@ -24,6 +38,7 @@
               <span data-search-text class="admin-search-field"><%= t('simple_form.labels.defaults.name') %></span>
               <span class="caret"></span></button>
             <ul class="dropdown-width dropdown-menu">
+              <li data-search-option="competition"><a>所属比赛</a></li>
               <li data-search-option="name"><a><%= t('simple_form.labels.defaults.name') %></a></li>
               <li data-search-option="id"><a>ID</a></li>
             </ul>
@@ -36,63 +51,83 @@
   </div>
 </div>
 
-<table class="table table-bordered table-hover table-striped">
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th><%= t('simple_form.labels.defaults.name') %></th>
-    <th><%= t('simple_form.labels.defaults.competition_id') %></th>
-    <th>分组</th>
-    <th>组名</th>
-    <th>组别</th>
-    <th>项目状态</th>
-    <th>每队人数</th>
-    <th>操作</th>
-  </tr>
-  </thead>
-
-  <tbody>
-  <% @events.each do |event| %>
+<% if @events.present? %>
+    <% time_zone_time = Time.zone.now %>
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
       <tr>
-        <td><%= event.id %></td>
-        <td><%= event.name %></td>
-        <td><%= event.competition.try(:name) %></td>
-        <td><%= event.parent_event.name if event.level==2 %></td>
-        <td><%= show_status(event.is_father) if event.is_father %></td>
-        <td><%= event.group.gsub(/[1-4]/, '1' => '小', '2' => '中', '3' => '初', '4' => '高') %></td>
-        <td><%= t('status.status'+event.status.to_s) %></td>
-        <td><%= "#{event.team_min_num}-" if event.team_min_num != event.team_max_num %><%= event.team_max_num %></td>
-        <td>
-
-          <%= link_to [:admin, event], title: '查看', class: 'btn btn-xs btn-warn' do %>
-              <i class="icon-eye-open bigger-120"></i>
-          <% end %>
-          <!--<%= link_to "#{teams_admin_events_path}?id=#{event.id}", title: '队伍', class: 'btn btn-xs btn-primary' do %>-->
-              <!--<i class="icon-flag-alt bigger-120"></i>-->
-              <!--
-          <% end %>-->
-          <!--<%= link_to "#{scores_admin_events_path}?id=#{event.id}", title: '成绩列表', class: 'btn btn-xs btn-success' do %>-->
-              <!--<i class="icon-book icon-only"></i>-->
-              <!--
-          <% end %>-->
-          <%= link_to edit_admin_event_path(event), title: '编辑', class: 'btn btn-xs btn-info' do %>
-              <i class="icon-edit bigger-120"></i>
-          <% end %>
-          <%= link_to [:admin, event], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
-              <i class="icon-trash bigger-120"></i>
-          <% end %>
-          <% unless event.is_father %>
-              <%= link_to edit_admin_event_schedule_path(event), title: '赛程', class: 'btn btn-xs btn-info' do %>
-                  <i class="icon-edit icon-filter"></i>
-              <% end %>
-          <% end %>
-        </td>
+        <th>ID</th>
+        <th><%= t('simple_form.labels.defaults.name') %></th>
+        <th><%= t('simple_form.labels.defaults.competition_id') %></th>
+        <th>分组</th>
+        <th>组名</th>
+        <th>组别</th>
+        <th>项目状态</th>
+        <th>每队人数</th>
+        <th>操作</th>
       </tr>
-  <% end %>
-  </tbody>
-</table>
+      </thead>
 
-<nav>
-  <%= paginate @events %>
-</nav>
+      <tbody>
+      <% @events.each do |event| %>
+          <tr>
+            <td><%= event.id %></td>
+            <td><%= event.name %></td>
+            <td><%= event.comp_name %></td>
+            <td><%= event.parent_event.try(:name) if event.level==2 %></td>
+            <td><%= show_status(event.is_father) if event.is_father %></td>
+            <td><%= event.group.gsub(/[1-4]/, '1' => '小', '2' => '中', '3' => '初', '4' => '高') %></td>
+            <td><%= t('status.status'+event.status.to_s) %></td>
+            <td><%= "#{event.team_min_num}-" if event.team_min_num != event.team_max_num %><%= event.team_max_num %></td>
+            <td>
+              <% unless event.is_father %>
+                  <%= link_to edit_admin_event_schedule_path(event), title: '赛程', class: 'btn btn-xs btn-info' do %>
+                      <i class="icon-edit icon-filter"></i>
+                  <% end %>
+              <% end %>
+              <%= link_to [:admin, event], title: '查看', class: 'btn btn-xs btn-warn' do %>
+                  <i class="icon-eye-open bigger-120"></i>
+              <% end %>
+              <% first_group = event.group.split(',')[0] %>
+              <% case first_group.to_i when 1 %>
+                  <% first_group = '小学组' %>
+              <% when 2 %>
+                  <% first_group = '中学组' %>
+              <% when 3 %>
+                  <% first_group = '初中组' %>
+              <% when 4 %>
+                  <% first_group = '高中组' %>
+              <% else %>
+                  <% first_group = '中学组' %>
+              <% end %>
+              <% unless event.is_father %>
+                  <%= link_to "#{teams_admin_events_path}?id=#{event.id}", title: '队伍', class: 'btn btn-xs btn-primary' do %>
+                      <i class="icon-flag-alt bigger-120"></i>
+                  <% end %>
+                  <%= link_to "#{scores_admin_events_path}?id=#{event.id}&schedule=决赛&group=#{first_group}", title: '成绩', class: 'btn btn-xs btn-warning' do %>
+                      <i class="icon-list-ol bigger-120"></i>
+                  <% end %>
+              <% end %>
+              <%= link_to "#{school_sort_admin_events_path}?id=#{event.id}&schedule=决赛&group=#{first_group}", title: '学校排名', class: 'btn btn-xs btn-warn' do %>
+                  <i class="icon-home bigger-120"></i>
+              <% end %>
+              <%= link_to edit_admin_event_path(event), title: '编辑', class: 'btn btn-xs btn-info' do %>
+                  <i class="icon-edit bigger-120"></i>
+              <% end %>
+              <% if event.comp_start_time > time_zone_time %>
+                  <%= link_to [:admin, event], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+                      <i class="icon-trash bigger-120"></i>
+                  <% end %>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
 
+    <nav>
+      <%= paginate @events %>
+    </nav>
+<% else %>
+    <div class="alert alert-warning">暂无项目</div>
+<% end %>

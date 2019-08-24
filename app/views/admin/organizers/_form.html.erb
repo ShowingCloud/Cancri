@@ -5,7 +5,11 @@
         <%= f.error_notification %>
 
         <div class="form-inputs">
-          <%= f.input :name %>
+          <% if params[:action]=='new' %>
+              <%= f.input :name, autofocus: true %>
+          <% else %>
+              <%= f.input :name %>
+          <% end %>
           <%= f.input :category, collection: Organizer::CATEGORY.map { |key, val| [t('category.'+key.to_s), val] } %>
           <%= f.input :responsible %>
           <%= f.input :tel %>

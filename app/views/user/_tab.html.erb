@@ -1,21 +1,110 @@
-<ul class="nav nav-tabs" role="tablist">
-  <% if current_user.email.blank? %>
-      <li <%= 'class=active' if action_name == 'email' %>>
-        <a href="<%= user_email_path %>"><span class="hidden-xs">认证</span>邮箱</a>
-      </li>
+<div class="sub-menu">
+  <% if @action_security.include?(action_name) %>
+      <a href="<%= user_email_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'email' or action_name == 'reset_email' %>">
+          邮箱信息
+        </div>
+      </a>
+      <a href="<%= user_mobile_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'mobile' or action_name == 'reset_mobile' %>">
+          手机信息
+        </div>
+      </a>
+      <a href="<%= user_passwd_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'passwd' %>">
+          修改密码
+        </div>
+      </a>
   <% end %>
-  <li <%= 'class=active' if action_name == 'preview' %>>
-    <a href="<%= user_preview_path %>"><span class="hidden-xs">信息</span>概览</a>
-  </li>
+  <% if action_name == 'notification' %>
+      <a href="<%= user_notification_path %>">
+        <div class="sub-menu-item active">
+          我的消息
+        </div>
+      </a>
+  <% end %>
+  <% if action_name == 'notify_show' %>
+      <a href="">
+        <div class="sub-menu-item active">
+          消息详情
+        </div>
+      </a>
+  <% end %>
+  <% if action_name=='apply' %>
+      <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>">
+        <div class="sub-menu-item <%= 'active' if !params[:type].present? %> ">
+          课程
+        </div>
+      </a>
 
-  <li <%= 'class=active' if action_name == 'profile' %>>
-    <a href="<%= user_profile_path %>"><span class="hidden-xs">个人</span>资料</a>
-  </li>
-  <li <%= 'class=active' if action_name == 'passwd' %>>
-    <a href="<%= user_passwd_path %>"><span class="hidden-xs">修改</span>密码</a>
-  </li>
-  <li <%= 'class=active' if action_name == 'mobile' %>>
-    <a href="<%= user_mobile_path %>"><span class="hidden-xs">认证</span>手机</a>
-  </li>
-</ul>
-<br>
+      <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>?type=competition">
+        <div class="sub-menu-item <%= 'active' if params[:type]=='competition' %>">
+          比赛
+        </div>
+      </a>
+      <a href="<%= has_teacher_role ? user_programs_path : user_apply_path %>?type=activity">
+        <div class="sub-menu-item <%= 'active' if params[:type]=='activity' %>">
+          活动
+        </div>
+      </a>
+  <% end %>
+  <% if @action_project_manage.include?(action_name) %>
+      <a href="<%= user_student_manage_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'student_manage' %> ">
+          学生信息
+        </div>
+      </a>
+      <a href="<%= user_comp_student_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'comp_student' %>">
+          学生审核
+        </div>
+      </a>
+      <a href="<%= user_teacher_audit_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'teacher_audit' %>">
+          老师审核
+        </div>
+      </a>
+      <a href="<%= user_teachers_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'teachers' %>">
+          老师信息
+        </div>
+      </a>
+      <a href="<%= user_hacker_audit_path %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'hacker_audit' %>">
+          家庭创客审核
+        </div>
+      </a>
+  <% end %>
+  <% if @action_stu_info.include?(action_name) %>
+      <% params_id = params[:id] %>
+      <a href="<%= user_courses_path(:id => params_id) %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'courses' %> ">
+          课程
+        </div>
+      </a>
+      <a href="<%= user_competitions_path(:id => params_id) %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'competitions' %>">
+          比赛
+        </div>
+      </a>
+      <a href="<%= user_activities_path(:id => params_id) %>">
+        <div class="sub-menu-item <%= 'active' if action_name == 'activities' %>">
+          活动
+        </div>
+      </a>
+  <% end %>
+  <% if action_name == 'role_apply' || action_name == 'hacker_apply' || action_name == 'hacker_apply_post' %>
+
+        <a href="<%= user_role_apply_path %>">
+          <div class="sub-menu-item <%= 'active' if action_name == 'role_apply' %>">
+            老师
+          </div>
+        </a>
+        <a href="<%= user_hacker_apply_path %>">
+          <div class="sub-menu-item <%= 'active' if action_name == 'hacker_apply' || action_name == 'hacker_apply_post' %>">
+            创客
+          </div>
+        </a>
+    <% end %>
+
+</div>

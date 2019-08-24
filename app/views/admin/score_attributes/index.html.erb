@@ -39,27 +39,27 @@
     <th>ID</th>
     <th><%= t('simple_form.labels.defaults.name') %></th>
     <th><%= t('simple_form.labels.defaults.write_type') %></th>
-    <th><%= t('simple_form.labels.defaults.desc') %></th>
+    <th>数值类型</th>
     <th>操作</th>
   </tr>
   </thead>
 
   <tbody>
   <% @score_attributes.each do |sa| %>
-      <tr>
+      <tr id="score-attr-<%= sa.id %>">
         <td><%= sa.id %></td>
         <td><%= sa.name %></td>
         <td>
           <label class="label <%= sa.write_type==1 ? 'label-default' : sa.write_type==2 ? 'label-info' : 'label-danger' %>"><%= t('write_type.write_type'+sa.write_type.to_s) %></label>
         </td>
-        <td><%= sa.desc %></td>
+        <td><%= t('value_type.value_type'+sa.desc) if sa.desc.present? %></td>
         <td><%= link_to [:admin, sa], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>
           <% end %>
           <%= link_to edit_admin_score_attribute_path(sa), title: '编辑', class: 'btn btn-xs btn-info' do %>
               <i class="icon-edit bigger-120"></i>
           <% end %>
-          <%= link_to [:admin, sa], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+          <%= link_to [:admin, sa], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', remote: true, class: 'btn btn-xs btn-danger' do %>
               <i class="icon-trash bigger-120"></i>
           <% end %></td>
       </tr>

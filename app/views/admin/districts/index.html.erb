@@ -22,6 +22,8 @@
               <span class="caret"></span></button>
             <ul class="dropdown-width dropdown-menu">
               <li data-search-option="name"><a><%= t('simple_form.labels.defaults.name') %></a></li>
+              <li data-search-option="city_name"><a>城市</a></li>
+              <li data-search-option="province_name"><a>省份</a></li>
               <li data-search-option="id"><a>ID</a></li>
             </ul>
           </div>
@@ -37,6 +39,8 @@
   <thead>
   <tr>
     <th>ID</th>
+    <th>省份</th>
+    <th><%= t('simple_form.labels.defaults.city') %></th>
     <th><%= t('simple_form.labels.defaults.name') %></th>
     <th>操作</th>
   </tr>
@@ -46,6 +50,8 @@
   <% @districts.each do |district| %>
       <tr>
         <td><%= district.id %></td>
+        <td><%= district.province_name %></td>
+        <td><%= district.city_name %></td>
         <td><%= district.name %></td>
         <td><%= link_to [:admin, district], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>

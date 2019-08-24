@@ -1,767 +1,429 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
-  <div class="container">
-    <div class="row">
-      <div class="event" id="event">
-        <% if @competition.present? %>
-            <div class="sec-t" data-src="<%= image_path('homepage/match-info-t-bk.png') %>">
-              <%= @competition.name %>报名
-            </div>
-            <div class="sec-c">
-              <div id="currentUser" data-userId="<%= current_user.id %>" data-userName="<%= current_user.nickname %>"></div>
-              <!--选择项目-->
-              <div class="event-panel">
-                <div class="title">项目名称</div>
-                <div class="event-select" data-src="<%= image_path('homepage/select-bk.png') %>">
-                  <select id="event-select" data-select-target="now-event">
-                    <option value="0">请选择项目</option>
-                    <% @events.each do |e| %>
-                        <option class="event-option" data-max-num="<%= e.team_max_num %>" data-name="<%= e.name %>" data-val="<%= e.id %>" value="<%= e.id %>"><%= e.name %></option>
-                    <% end %>
-                  </select>
-                  <input id="now-event" type="hidden" name="now-event"/>
-                </div>
-              </div>
+<div class="main" id="main">
+  <div class="container" id="apply-event">
+    <% if @event.present? %>
+        <div class="top">
+          <h3><%= @event.comp_name %>-<%= @event.name %></h3>
+        </div>
+        <input type="hidden" value="<%= @event.id %>" id="event-identify"/>
 
-              <!--user_info start-->
-              <% if 1==3 %>
-                  <%= @user_info.school_name %>
-                  <%= @user_info.grade %>
-                  <%= @user_info.bj %>
-                  <%= @user_info.gender %>
-                  <%= @user_info.birthday %>
-                  <%= @user_info.student_code %>
-                  <%= @user_info.identity_card %>
+        <% if @has_apply[0] %>
+            <div id="team-info">
+              <div class="info-row">
+                <label class="label label-info control-label"><%= @has_apply[1] ? '' : '等待确认加入该队' %></label>
+              </div>
+              <div class="info-row">
+                <div class="left">队伍编号:</div>
+                <div class="right"><%= @team_players.first.identifier %></div>
+              </div>
+              <div class="info-row">
+                <div class="left">报名状态:</div>
+                <div class="right"><%= t('team.status'+ @team_players.first.team_status.to_s) %></div>
+              </div>
+              <div class="info-row">
+                <div class="left">指导老师:</div>
+                <div class="right"><%= @team_players.first.teacher %></div>
+              </div>
+              <!-- <div class="info-row">
+                <div class="left">老师手机:</div>
+                <div class="right"><%= @team_players.first.teacher_mobile %></div>
+              </div> -->
+              <input type="hidden" id="team-identify" value="<%= @team_players.first.team_id %>"/>
+
+              <div class="info-row">
+                <% if (@event.team_max_num >1) && (@team_players.first.players < @event.team_max_num) && (current_user.id == @team_players.first.leader_user_id) && (@team_players.first.team_status==0) %>
+                    <div class="invite-panel">
+                      <p>邀请队友</p>
+                      <input type="text" class="search-player-input input-robodou" value=""/>
+                      <button id="search-player" class="btn btn-sm ">搜索队员</button>
+                      <span class="tips">未完善个人资料、未注册的用户无法添加</span>
+                      <table class="table table-player-show hide">
+                        <thead>
+                        <tr>
+                          <th>用户名</th>
+                          <th>姓名</th>
+                          <th>学校</th>
+                          <th>年级</th>
+                          <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                      </table>
+                    </div>
+                <% end %>
+              </div>
+              <table id="team-players-info" class="table table-bordered">
+                <thead>
+                <tr>
+                  <th>用户名</th>
+                  <th>姓名</th>
+                  <th>学校</th>
+                  <th>年级</th>
+                  <th>角色</th>
+                  <% if current_user.id == @team_players.first.leader_user_id %>
+                      <th>操作</th>
+                  <% end %>
+                </tr>
+                </thead>
+                <tbody>
+                <% @team_players.each do |p| %>
+                    <tr id="<%= "team-player-#{p.user_id}" %>">
+                      <td><%= p.nickname %></td>
+                      <td><%= p.username %></td>
+                      <td><%= p.school_name %></td>
+                      <td><%= p.grade %></td>
+                      <td><%= p.leader_user_id == p.user_id ? '队长' : '队员' %><%= p.player_status==1 ? nil : '--待确认' %></td>
+                      <% if current_user.id == @team_players.first.leader_user_id %>
+                          <td>
+                            <% if p.leader_user_id == p.user_id && current_user.id == p.leader_user_id && (@team_players.first.team_status==0) %>
+                                <button class="btn btn-xs btn-danger" onclick="leader_delete_team(<%= p.team_id %>)"><%= (@event.team_max_num != 1) ? '解散队伍' : '取消报名' %></button>
+                            <% elsif current_user.id == p.leader_user_id && (@team_players.first.team_status==0) %>
+                                <button class="btn btn-xs btn-info" onclick="leader_delete_player(<%= p.user_id %>)">删除队员</button>
+                            <% end %>
+                          </td>
+                      <% end %>
+                    </tr>
+                <% end %>
+                </tbody>
+              </table>
+
+              <% if (current_user.id == @team_players.first.leader_user_id) && (@team_players.first.team_status==0) %>
+                  <div class="submit-team">
+                    <button class="btn-robodou btn-big leader_submit_team" onclick="leader_submit_team(<%= @team_players.first.team_id %>,<%= @event.competition_id %>)">提交报名</button>
+                    <span class="tips">请于报名时间截止前提交报名信息，否则视为未报名</span>
+                  </div>
               <% end %>
-              <!--user_info end-->
-
-
-              <div class="single-event">
-
-                <!--个人信息确认-->
-                <div class="single-confirm apply-part">
-                  <form id="single-confirm-form">
-                    <div class="confirm-t" data-src="<%= image_path('homepage/info-t-bk.png') %>">
-                      报名信息
-                    </div>
-                    <div class="confirm-c">
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-user"></i>
-                          姓&nbsp;&nbsp;&nbsp;&nbsp;名
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="username" value="<%= current_user.username %>"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          学籍号
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="student_code" value=""/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          性&nbsp;&nbsp;&nbsp;&nbsp;别
-                        </div>
-                        <div class="input-c">
-                          <label class="radio-b"><input type="radio" name="gender" value="1"/>男</label>
-                          <label class="radio-b"><input type="radio" name="gender" value="2"/>女</label>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-calendar"></i>
-                          生&nbsp;&nbsp;&nbsp;&nbsp;日
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="date" name="birthday"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-globe"></i>
-                          所属组别
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="group" class="group-choice">
-                            <option value="0">选择组别</option>
-                            <option value="1">小学</option>
-                            <option value="2">初中</option>
-                            <option value="3">高中</option>
-                          </select>
-                          <input type="hidden" name="group"/>
-                        </div>
-                      </div>
-                      <div class="input-row hide idc-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-credit-card"></i>
-                          身份证
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="identity_card"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-globe"></i>
-                          区&nbsp;&nbsp;&nbsp;&nbsp;县
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="district">
-                            <option value="0">选择区县</option>
-                            <% District.all.each do |d| %>
-                                <option value="<%= d.id %>"><%= d.name %></option>
-                            <% end %>
-                          </select>
-                          <input type="hidden" name="district"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          学&nbsp;&nbsp;&nbsp;&nbsp;校
-                        </div>
-                        <div class="input-c school-target">
-                          <a class="open-school">
-                            <i class="glyphicon glyphicon-plus"></i>
-                            选择学校
-                          </a>
-                          <br/>
-                          <a class="add-other-school">没有你的学校？点击添加</a>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          年&nbsp;&nbsp;&nbsp;&nbsp;级
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="grade">
-                            <option value="0">请选择年级</option>
-                            <option value="一">一</option>
-                            <option value="二">二</option>
-                            <option value="三">三</option>
-                            <option value="四">四</option>
-                            <option value="五">五</option>
-                            <option value="六">六</option>
-                            <option value="七">七</option>
-                            <option value="八">八</option>
-                            <option value="九">九</option>
-                            <option value="高一">高一</option>
-                            <option value="高二">高二</option>
-                            <option value="高三">高三</option>
-                          </select>
-                          <input type="hidden" name="grade" value=""/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          班&nbsp;&nbsp;&nbsp;&nbsp;级
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="bj">
-                            <option value="0">请选择班级</option>
-                            <% for n in 1..100 %>
-                                <option value="<%= n %>"><%= n %></option>
-                            <% end %>
-                          </select>
-                          <input type="hidden" name="bj" value=""/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-flag"></i>
-                          指导老师
-                        </div>
-                        <div class="input-c">
-
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-plus"></i>
-                          姓名
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="team_teacher" value=""/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-plus"></i>
-                          电话
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="teacher_mobile" value=""/>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="confirm-b">
-                      <button type="submit" class="apply-submit">确认报名</button>
-                    </div>
-                  </form>
-                </div>
-
-                <!--单人报名信息-->
-                <div class="single-already-info apply-part">
-                  <div class="event-name" data-src="<%= image_path('homepage/info-t-bk.png') %>"></div>
-                  <span class="tips">您已报名参加该项目</span>
-
-                  <div class="single-info">
-                    <div class="info-row">
-                      <div class="row-l">
-                        <i class="glyphicon glyphicon-user"></i>
-                        真实姓名
-                      </div>
-                      <div class="row-r" data-name="username"></div>
-                    </div>
-                    <div class="info-row">
-                      <div class="row-l">
-                        <i class="glyphicon glyphicon-adjust"></i>
-                        性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别
-                      </div>
-                      <div class="row-r" data-name="gender"></div>
-                    </div>
-                    <div class="info-row">
-                      <div class="row-l">
-                        <i class="glyphicon glyphicon-education"></i>
-                        所属学校
-                      </div>
-                      <div class="row-r" data-name="school"></div>
-                    </div>
-                    <div class="info-row">
-                      <div class="row-l">
-                        <i class="glyphicon glyphicon-bookmark"></i>
-                        年级班级
-                      </div>
-                      <div class="row-r" data-name="grade"></div>
-                    </div>
-                    <div class="info-row">
-                      <div class="row-l">
-                        <i class="glyphicon glyphicon-bookmark"></i>
-                        参赛编号
-                      </div>
-                      <div class="row-r" data-name="code"></div>
-                    </div>
-                    <div class="info-row">
-                      <div class="row-l">
-                        <i class="glyphicon glyphicon-bookmark"></i>
-                        指导老师
-                      </div>
-
-                    </div>
-                    <div class="info-row">
-                      <div class="row-l">
-                        <i class="glyphicon glyphicon-plus"></i>
-                        姓名
-                      </div>
-                      <div class="row-r" data-name="teacher"></div>
-                    </div>
-                    <div class="info-row">
-                      <div class="row-l">
-                        <i class="glyphicon glyphicon-plus"></i>
-                        电话
-                      </div>
-                      <div class="row-r" data-name="teacher_mobile"></div>
-                    </div>
-                    <div class="info-row">
-                      <div class="row-l">
-                        <i class="glyphicon glyphicon-qrcode"></i>
-                        二维码
-                      </div>
-                      <div class="row-r" data-name="qrcode"></div>
-                    </div>
-                  </div>
-                  <div class="single-exit">
-                    <button class="btn-robodou btn-exit-event">退出比赛</button>
-                  </div>
-                </div>
-
-              </div>
-
-              <!--团队项目组-->
-              <div class="team-event">
-                <!--搜索队伍-->
-                <div class="search-team apply-part">
-                  <div class="team-panel">
-                    您选择的是多人项目 可以加入他人队伍或者自行创建队伍
-                    <br/>
-                    <br/>
-
-                    <div class="team-search" data-src="<%= image_path('homepage/select-bk.png') %>">
-                      <input type="text" class="team-search-input"/>
-                      <button data-ajax-get="/competitions/search_team" class="btn-robodou btn-search-team">查 询</button>
-                      <button class="btn-robodou btn-create-team">创建队伍</button>
-                    </div>
-                    <div class="team-list">
-                      <table>
-                        <thead>
-                        <tr>
-                          <th class="col-n">队伍</th>
-                          <th class="col-l">队长</th>
-                          <th class="col-t">指导老师</th>
-                          <th class="col-s">学校</th>
-                          <th class="col-o"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-
-                <!--个人信息确认 加入队伍版-->
-                <div class="team-confirm-join apply-part">
-                  <form id="team-confirm-form">
-                    <div class="confirm-t" data-src="<%= image_path('homepage/info-t-bk.png') %>">
-                      确认个人信息
-                    </div>
-                    <div class="confirm-c">
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-user"></i>
-                          姓&nbsp;&nbsp;&nbsp;&nbsp;名
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="username" value="<%= current_user.username %>"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          学籍号
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="student_code" value=""/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          性&nbsp;&nbsp;&nbsp;&nbsp;别
-                        </div>
-                        <div class="input-c">
-                          <label class="radio-b"><input type="radio" name="gender" value="1"/>男</label>
-                          <label class="radio-b"><input type="radio" name="gender" value="2"/>女</label>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-calendar"></i>
-                          生&nbsp;&nbsp;&nbsp;&nbsp;日
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="date" name="birthday"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-globe"></i>
-                          所属组别
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="group" class="group-choice">
-                            <option value="0">选择组别</option>
-                            <option value="1">小学</option>
-                            <option value="2">初中</option>
-                            <option value="3">高中</option>
-                          </select>
-                          <input type="hidden" name="group"/>
-                        </div>
-                      </div>
-                      <div class="input-row hide idc-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-credit-card"></i>
-                          身份证
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="identity_card"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-globe"></i>
-                          区&nbsp;&nbsp;&nbsp;&nbsp;县
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="district">
-                            <option value="0">选择区县</option>
-                            <% District.all.each do |d| %>
-                                <option value="<%= d.id %>"><%= d.name %></option>
-                            <% end %>
-                          </select>
-                          <input type="hidden" name="district"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          学&nbsp;&nbsp;&nbsp;&nbsp;校
-                        </div>
-                        <div class="input-c school-target">
-                          <a class="open-school">
-                            <i class="glyphicon glyphicon-plus"></i>
-                            选择学校
-                          </a>
-                          <br/>
-                          <a class="add-other-school">没有你的学校？点击添加</a>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          年&nbsp;&nbsp;&nbsp;&nbsp;级
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="grade">
-                            <option value="0">请选择年级</option>
-                            <option value="一">一</option>
-                            <option value="二">二</option>
-                            <option value="三">三</option>
-                            <option value="四">四</option>
-                            <option value="五">五</option>
-                            <option value="六">六</option>
-                            <option value="七">七</option>
-                            <option value="八">八</option>
-                            <option value="九">九</option>
-                            <option value="高一">高一</option>
-                            <option value="高二">高二</option>
-                            <option value="高三">高三</option>
-                          </select>
-                          <input type="hidden" name="grade" value=""/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          班&nbsp;&nbsp;&nbsp;&nbsp;级
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="bj">
-                            <option value="0">请选择班级</option>
-                            <% for n in 1..100 %>
-                                <option value="<%= n %>"><%= n %></option>
-                            <% end %>
-                          </select>
-                          <input type="hidden" name="bj" value=""/>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="confirm-b">
-                      <button type="submit" class="apply-submit">提交个人信息</button>
-                    </div>
-                  </form>
-                </div>
-
-                <!--创建队伍-->
-                <div class="create-team apply-part">
-                  <form id="team-create-form">
-                    <div class="create-t" data-src="<%= image_path('homepage/info-t-bk.png') %>">
-                      创建队伍
-                    </div>
-                    <div class="create-c">
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-user"></i>
-                          队伍名称
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="team_name" value=""/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-user"></i>
-                          姓&nbsp;&nbsp;&nbsp;&nbsp;名
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="username" value="<%= current_user.username %>"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          学籍号
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="student_code" value="<%= @user_info.student_code %>"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          性&nbsp;&nbsp;&nbsp;&nbsp;别
-                        </div>
-                        <div class="input-c">
-                          <label class="radio-b"><input type="radio" name="gender" value="1"/>男</label>
-                          <label class="radio-b"><input type="radio" name="gender" value="2"/>女</label>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-calendar"></i>
-                          生&nbsp;&nbsp;&nbsp;&nbsp;日
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="date" name="birthday" value="<%= @user_info.birthday %>"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-globe"></i>
-                          组&nbsp;&nbsp;&nbsp;&nbsp;别
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="group">
-                            <option value="0">选择组别</option>
-                            <option value="1">小学</option>
-                            <option value="2">初中</option>
-                            <option value="3">高中</option>
-                          </select>
-                          <input type="hidden" name="group"/>
-                        </div>
-                      </div>
-                      <div class="input-row hide idc-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-credit-card"></i>
-                          身份证
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="identity_card"/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-globe"></i>
-                          区&nbsp;&nbsp;&nbsp;&nbsp;县
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="district">
-                            <option value="0">选择区县</option>
-                            <% District.all.each do |d| %>
-                                <option value="<%= d.id %>"><%= d.name %></option>
-                            <% end %>
-                          </select>
-                          <input type="hidden" name="district"/>
-                        </div>
-                      </div>
-
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          学&nbsp;&nbsp;&nbsp;&nbsp;校
-                        </div>
-                        <div class="input-c school-target">
-                          <a class="open-school">
-                            <i class="glyphicon glyphicon-plus"></i>
-                            选择学校
-                          </a>
-                          <br/>
-                          <a class="add-other-school">没有你的学校？点击添加</a>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          年&nbsp;&nbsp;&nbsp;&nbsp;级
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="grade">
-                            <option value="0">请选择年级</option>
-                            <option value="一">一</option>
-                            <option value="二">二</option>
-                            <option value="三">三</option>
-                            <option value="四">四</option>
-                            <option value="五">五</option>
-                            <option value="六">六</option>
-                            <option value="七">七</option>
-                            <option value="八">八</option>
-                            <option value="九">九</option>
-                            <option value="高一">高一</option>
-                            <option value="高二">高二</option>
-                            <option value="高三">高三</option>
-                          </select>
-                          <input type="hidden" name="grade" value=""/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-tag"></i>
-                          班&nbsp;&nbsp;&nbsp;&nbsp;级
-                        </div>
-                        <div class="input-c">
-                          <select data-select-target="bj">
-                            <option value="0">请选择班级</option>
-                            <% for n in 1..100 %>
-                                <option value="<%= n %>"><%= n %></option>
-                            <% end %>
-                          </select>
-                          <input type="hidden" name="bj" value=""/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-flag"></i>
-                          指导老师
-                        </div>
-                        <div class="input-c">
-
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-plus"></i>
-                          姓名
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="team_teacher" value=""/>
-                        </div>
-                      </div>
-                      <div class="input-row">
-                        <div class="input-t">
-                          <i class="glyphicon glyphicon-plus"></i>
-                          电话
-                        </div>
-                        <div class="input-c">
-                          <input class="input-b" type="text" name="teacher_mobile" value=""/>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="create-b">
-                      <button type="submit" class="apply-submit">创建队伍</button>
-                    </div>
-                  </form>
-                </div>
-
-                <!--队伍信息-->
-                <div class="team-already-info apply-part">
-                  <div class="already-apply">
-                    <div class="apply-team">
-                      <div class="tips">
-                        您已报名该项目，以下是您的报名信息
-                      </div>
-                      <input class="event-id" type="hidden" value=""/>
-
-                      <div class="apply-row">
-                        <div class="apply-row-left">
-                          报名项目
-                        </div>
-                        <div class="apply-row-right event-name">
-
-                        </div>
-                      </div>
-                      <div class="apply-row apply-team-row">
-                        <div class="apply-row-left">
-                          队伍
-                        </div>
-                        <div class="apply-row-right apply-team-name">
-
-                        </div>
-                      </div>
-                      <div class="apply-row">
-                        <div class="apply-row-left">
-                          队员
-                        </div>
-                        <div class="apply-row-right apply-member-num">
-
-                        </div>
-                      </div>
-                      <div class="apply-row add-member">
-                        <div class="apply-row-left">
-                          添加队员
-                        </div>
-                        <div class="apply-row-right">
-                          <input class="invitation-text" type="text" placeholder="请输入姓名"/>
-                          <input type="hidden" class="hidden-invitation-id"/>
-                          <button class="btn-robodou btn-add-team-member">邀请队员</button>
-                        </div>
-                      </div>
-                      <div class="apply-row add-member">
-                        <div class="apply-row-left">
-                          邀请未注册队员
-                        </div>
-                        <div class="apply-row-right">
-                          <input class="invitation-email" type="text" placeholder="请输入email"/>
-                          <button class="btn-robodou btn-invitation">发送邮件</button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="apply-member">
-                      <table>
-                        <thead>
-                        <tr>
-                          <th class="col-n">名字</th>
-                          <th class="col-x">性别</th>
-                          <th class="col-s">学校</th>
-                          <th class="col-g">年级</th>
-                          <th class="col-o"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
         <% else %>
-            <div class="alert">该地址可能不正确</div>
-        <% end %>
-      </div>
-    </div>
-  </div>
-  <div id="footer">
-    <div class="container">
-      <div class="footer">
-        <a>关于我们</a>
-        <span class="separator"></span>
-        <a>联系我们</a>
-      </div>
-    </div>
-  </div>
-</div>
-<!--选择学校-->
-<div id="school-list" class="modal fade">
-  <div id="add-school">
-    <div class="title" data-src="<%= image_path('homepage/info-t-bk.png') %>">
-      选择学校
-    </div>
-    <div class="school-list">
-      <span class="tips">请选择学校</span>
-      <ul class="items">
+            <% if has_teacher_role %>
+                <h3 class="text-center">您是老师,不能报名比赛</h3>
+            <% else %>
+                <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
+                <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
+                <input type="hidden" id="gender" value="<%= @user_info.gender.to_i %>"/>
+                <input type="hidden" id="max_num" value="<%= @event.team_max_num %>"/>
 
-      </ul>
-    </div>
-    <div class="bottom">
-      <button data-dismiss="modal" class="btn-robodou apply-submit">取消</button>
+                <% if @event.team_max_num != 1 %>
+                    <div class="first-step">
+                      <div id="step-for-new" class="box">
+                        <div class="msg">创建队伍</div>
+                        <div class="new-team-icon">
+                          <i class="glyphicon glyphicon-plus first"></i>
+                          <i class="glyphicon glyphicon-user second"></i>
+                        </div>
+                      </div>
+                      <div id="step-for-join" class="box">
+                        <div class="msg">加入队伍</div>
+                        <div class="team-icon">
+                          <i class="glyphicon glyphicon-user first"></i>
+                          <i class="glyphicon glyphicon-user second"></i>
+                          <i class="glyphicon glyphicon-user third"></i>
+                        </div>
+                      </div>
+                    </div>
+                <% end %>
+                <div id="step-for-update" class="step-part <%= 'hide' if @event.team_max_num != 1 %>">
+                  <div class="step-head"><%= (@event.team_max_num != 1) ? '创建队伍' : '报名信息' %></div>
+                  <div class="form-horizontal">
+                    <form>
+                      <div class="form-group">
+                        <label for="username" class="col-sm-2 control-label">姓名*</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="username" value="<%= @user_info.username %>" placeholder="姓名">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="gender" class="col-sm-2 control-label">性别*</label>
+
+                        <div class="col-sm-9">
+                          <label class="gender-label"><input type="radio" name="user_profile[gender]" value="1" <%= 'checked="checked"' if @user_info.gender.to_i == 1 %>/>男</label>
+                          <label class="gender-label"><input type="radio" name="user_profile[gender]" value="2" <%= 'checked="checked"' if @user_info.gender.to_i == 2 %>/>女</label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="gender" class="col-sm-2 control-label">手机号*</label>
+
+                        <div class="col-sm-9 special-row">
+
+                          <%= current_user.mobile %>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="birthday" class="col-sm-2 control-label">生日*</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control datetime" id="birthday" value="<%= @user_info.birthday %>" data-type="select-date" data-date-format="yyyy-mm-dd">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="school_name" class="col-sm-2 control-label">学校*</label>
+
+                        <div class="col-sm-9 special-row school-field">
+                          <input type="hidden" class="school_input" name="user_profile[school_id]" value="<%= @user_info.school_id %>" />
+                          <input type="hidden" class="district_input" name="user_profile[district_id]" value="<%= @user_info.district_id %>"/>
+                          <input type="hidden" id="change_district_id" value="<%= @user_info.district_id %>" />
+                          <span><a class="school-tag"><%= @user_info.school.try(:name) ||'选择学校' %></a></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="team-group" class="col-sm-2 control-label">队伍组别*</label>
+
+                        <div class="col-sm-9">
+                          <select id="team-group" class="form-control">
+                            <option value="">请选择组别</option>
+                            <% @event.group.split(',').each do |g| %>
+                                <option value="<%= g %>"><%= t('group.group'+g.to_s) %></option>
+                            <% end %>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="grade" class="col-sm-2 control-label">年级*</label>
+
+                        <div class="col-sm-9">
+                          <select id="grade" class="form-control" disabled="disabled">
+                            <option value="0">请选择年级</option>
+                            <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
+                            <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
+                            <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
+                            <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
+                            <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
+                            <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
+                            <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
+                            <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
+                            <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
+                            <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
+                            <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
+                            <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group identity-group <%= 'hide' if @user_info.grade.to_i < 10 %>">
+                        <label for="identity_card" class="col-sm-2 control-label">身份证*</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="identity_card" value="<%= @user_info.identity_card %>">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="student_code" class="col-sm-2 control-label">学籍号*</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="student_code" value="<%= @user_info.student_code %>">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="team-teacher" class="col-sm-2 control-label">指导教师*</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="team-teacher" value="<%= %>">
+                        </div>
+                      </div>
+                      <!-- <div class="form-group">
+                        <label for="team-teacher-mobile" class="col-sm-2 control-label">老师手机</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="team-teacher-mobile" value="<%= %>">
+                        </div>
+                      </div> -->
+                      <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-9">
+                          <button class="btn btn-info btn-block update-user-info-submit">提交</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div id="step-for-search" class="step-part hide">
+                  <div class="step-head">
+                    加入队伍
+                  </div>
+                  <div class="search-part">
+                    <!-- 搜索队伍 -->
+                    <div class="search-team-result input-group">
+                      <input type="text" class="search-team-input form-control" placeholder="请输入队伍编号"/>
+                      <span class="input-group-btn">
+                      <button class="btn btn-primary btn-search-team ">搜索队伍</button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div id="step-for-join-team" class="step-part hide">
+                  <div class="step-head">加入队伍</div>
+                  <div class="form-horizontal">
+                    <form>
+                      <div class="form-group">
+                        <label for="username" class="col-sm-2 control-label">姓名</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="username-join" value="<%= @user_info.username %>" placeholder="姓名">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="gender" class="col-sm-2 control-label">性别</label>
+
+                        <div class="col-sm-9">
+                          <label class="gender-label"><input type="radio" name="user_profile[gender]" value="1" <%= 'checked="checked"' if @user_info.gender.to_i == 1 %>/>男</label>
+                          <label class="gender-label"><input type="radio" name="user_profile[gender]" value="2" <%= 'checked="checked"' if @user_info.gender.to_i == 2 %>/>女</label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="gender" class="col-sm-2 control-label">手机号</label>
+
+                        <div class="col-sm-9 special-row">
+
+                          <%= current_user.mobile %>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="birthday" class="col-sm-2 control-label">生日</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control datetime" id="birthday-join" value="<%= @user_info.birthday %>" data-type="select-date" data-date-format="yyyy-mm-dd">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="school_name" class="col-sm-2 control-label">学校</label>
+
+                        <div class="col-sm-9 special-row school-field">
+                          <% if @user_info.school_id.present? && @user_info.school_id!=0 %>
+                              <span class="change-school school-tag"><%= @user_info.school_name %> </span>
+                          <% else %>
+                              <button class="new-school btn-robodou">选择学校</button>
+                          <% end %>
+                          <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
+                          <input type="hidden" id="school-id" value="<%= @user_info.school_id %>"/>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="grade" class="col-sm-2 control-label">年级</label>
+
+                        <div class="col-sm-9">
+                          <select id="grade-join" class="form-control">
+                            <option value="0">请选择年级</option>
+                            <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
+                            <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
+                            <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
+                            <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
+                            <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
+                            <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
+                            <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
+                            <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
+                            <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
+                            <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
+                            <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
+                            <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group identity-group-join <%= 'hide' if @user_info.grade.to_i < 10 %>">
+                        <label for="identity_card" class="col-sm-2 control-label">身份证</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="identity_card-join" value="<%= @user_info.identity_card %>">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="student_code" class="col-sm-2 control-label">学籍号</label>
+
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="student_code-join" value="<%= @user_info.student_code %>">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-9">
+                          <button class="btn btn-info btn-block join-team-submit">提交</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+            <% end %>
+        <% end %>
+    <% end %>
+  </div>
+</div>
+<div id="select-district-modal" class="modal" data-backdrop="static" tabindex="-1" style="z-index:1060">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="bigger text-center">选择区县</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="col-xs-4">
+                <label>省市</label>
+                <div>
+                  <select id="select-province">
+                    <option value="">请选择省市</option>
+                    <% Province.select(:id, :name).each do |p| %>
+                        <option value="<%= p.id %>"><%= p.name %></option>
+                    <% end %>
+                  </select>
+                </div>
+              </div>
+              <div class="col-xs-4"><label>城市</label>
+                <div>
+                  <select id="select-city">
+                    <option value="">请选择城市</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-xs-4"><label>区县</label>
+                <div>
+                  <select id="select-district">
+                    <option value="">请选择区县</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="space-12"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<!--添加其他学校-->
-<div id="add-other-school" class="modal fade">
-  <div class="modal-panel">
-    <div class="title" data-src="<%= image_path('homepage/info-t-bk.png') %>">
-      添加额外学校
-    </div>
-    <div class="inner">
-      <div class="left">
-        <i class="glyphicon glyphicon-education"></i>
-        学校名称
+
+<div id="select-school-modal" class="modal" tabindex="-1" style="z-index:1050">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="blue bigger text-center">选择学校</h4>
       </div>
-      <div class="right">
-        <input type="text" name="other-school"/>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="col-xs-8">
+                <label for="">区县</label>
+                <label>&nbsp;&nbsp;&nbsp;<a href="#select-district-modal" role="button" class="blue select-user-district" data-toggle="modal"><%= '选择区县' %></a></label>
+              </div>
+              <div class="col-xs-8">
+                <label>学校</label>
+                  <select class="chosen-select" id="select-user-school" data-placeholder="请选择学校">
+                  </select>
+                <div>
+                  <label>没有你的学校？在此添加：</label>
+                  <input id="add-school-input" type="text">
+                  <button type="button" class="btn-robodou btn-add-school">添加</button>
+                </div>
+              </div>
+            </div>
+            <div class="space-12"></div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="bottom">
-      <button class="btn-robodou apply-submit">确认添加</button>
     </div>
   </div>
 </div>

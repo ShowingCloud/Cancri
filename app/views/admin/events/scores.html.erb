@@ -1,0 +1,154 @@
+<h1 class="page-header">
+  <%= @event.name %>
+  成绩排名 <%= "#{params[:group]}" if params[:group].present? %>  <%= "#{params[:schedule]}" if params[:schedule].present? %>
+  <input type="hidden" class="event-id" value="<%= @event.id %>"/>
+  <small class="pull-right">
+    <% event_groups = @event.group.split(',') %>
+    <% event_groups.each do |group| %>
+
+        <% case group.to_i when 1 %>
+            <% g = '小学组' %>
+        <% when 2 %>
+            <% g = '中学组' %>
+        <% when 3 %>
+            <% g = '初中组' %>
+        <% when 4 %>
+            <% g = '高中组' %>
+        <% else %>
+            <% g = '' %>
+        <% end %>
+        <a href="/admin/events/scores?id=<%= params[:id] %>&group=<%= g %>&schedule=<%= params[:schedule] %>" role="button" title="" class="btn <%= 'btn-info' if params[:group] == g %>" data-toggle="modal">
+          <%= g %>
+        </a>
+    <% end %>
+    <% if event_groups.length > 1 %>
+        <a href="/admin/events/scores?id=<%= params[:id] %>&group=不分组别&schedule=<%= params[:schedule] %>" role="button" title="" class="btn <%= 'btn-info' if params[:group] == '不分组别' %>" data-toggle="modal">
+          不分组别
+        </a>
+    <% end %>
+  </small>
+
+  <input type="hidden" class="event-id" value="<%= @event.id %>">
+</h1>
+<% current_admin = @current_admin.id %>
+<small class="pull-right">
+  <% if @group_schedule.present? %>
+      <% @group_schedule.each do |g_s| %>
+          <a href="/admin/events/scores?id=<%= params[:id] %>&group=<%= params[:group] %>&schedule=<%= g_s.name %>" class="btn <%= 'btn-info' if params[:schedule] == g_s.name %>"><%= g_s.name %></a>
+      <% end %>
+  <% end %>
+</small>
+<% unless @event.is_father %>
+    <a href="<%= "#{teams_admin_events_path}?id=#{@event.id}" %>" role="button" title="队伍" class="btn btn-primary">
+      <i class="icon-flag-alt icon-only"></i></a>
+<% end %>
+<a href="/admin/events/<%= @event.id %>" role="button" title="查看项目" class="btn btn-warning">
+  <i class="icon-eye-open icon-only"></i></a>
+<a href="/admin/events/scores.xls?id=<%= params[:id] %>&event_name=<%= @event.name %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" role="button" title="导出成绩(队伍)" class="btn">
+  队伍 <i class="icon-external-link icon-only"></i></a>
+<a href="/admin/events/scores.xls?export_type=1&id=<%= params[:id] %>&event_name=<%= @event.name %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" role="button" title="导出成绩(个人)" class="btn">
+  个人 <i class="icon-external-link icon-only"></i></a>
+<a href="/admin/events/scores?id=<%= params[:id] %>&schedule=<%= params[:schedule] %>&group=<%= params[:group] %>&sort=1" class="btn btn-danger">成绩排名</a>
+<% order_info = {} %>
+
+<% if [31, 29].include?(@event.id) && params[:schedule] == '决赛' %>
+    <button class="btn check-last-score-exist" data-event="<%= @event.id %>" title="创建决赛纪录">
+      <i class="icon-info icon-only"></i></button>
+    <button class="btn btn-danger compute-last-score" data-event="<%= @event.id %>" data-schedule="<%= params[:schedule] %>" data-group="<%= params[:group] %>" title="成绩排名">
+      计算决赛成绩
+    </button>
+    赛制成绩运算 (需比赛全部完成)&nbsp;&nbsp;
+<% end %>
+
+<% if @event_sa.present? %>
+    <% if @event_sa.formula.present? %>
+        <%= @event_sa.formula["compute_type"] == '1' ? '手动' : '自动计算' %>
+        <% order = @event_sa.formula["order"] %>
+        <%= order['1']['name'] %>-<%= order['1']['sort'] == 1 ? '升序;' : '降序;' %>
+        <% order_info['num'] = order['num'].to_i %>
+        <% if order_info['num'] > 1 %>
+            <% order_info['2_name'] = order['2']['name'] %>
+            <%= "#{order_info['2_name']}-#{order['2']['sort'] == 1 ? '升序;' : '降序;'}" %>
+            <% if order_info['num'] == 3 %>
+                <% order_info['3_name'] = order['3']['name'] %>
+                <%= "#{order_info['3_name']}-#{order['3']['sort'] == 1 ? '升序;' : '降序;'}" %>
+            <% end %>
+        <% end %>
+    <% end %>
+<% else %>
+    公式或排序不存在,请补全
+<% end %>
+<hr>
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <% if @scores.present? %>
+        <nav>
+          <%= paginate @scores %>
+        </nav>
+        <table class="table table-bordered table-hover table-striped">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>编号</th>
+            <th>队长</th>
+            <th>学校</th>
+            <th>指导老师</th>
+            <th>成绩属性</th>
+            <th>最终成绩</th>
+            <% if @event_sa.present? %>
+                <% if order_info['num'] > 1 %>
+                    <th><%= order_info['2_name'] %></th>
+                <% end %>
+                <% if order_info['num'] == 3 %>
+                    <th><%= order_info['3_name'] %></th>
+                <% end %>
+            <% end %>
+            <th>排名</th>
+            <% if current_admin == 3 %>
+                <th>操作</th>
+            <% end %>
+          </tr>
+          </thead>
+
+          <tbody>
+          <% @scores.each_with_index do |score, index| %>
+              <tr class="score-identifier-<%= score.score_id %>">
+                <td><%= score.id %></td>
+                <td><%= score.identifier %></td>
+                <td><%= score.username %></td>
+                <td><%= score.school_name %></td>
+                <td><%= score.teacher %></td>
+                <% has_score_attribute = score.score_attribute %>
+                <% score_attribute = has_score_attribute.force_encoding('utf-8') if has_score_attribute %>
+                <td class="<%= 'score-attribute-td' if has_score_attribute %>" data-title="<%= score_attribute if has_score_attribute %>"><%= score_attribute[1..20] if has_score_attribute %></td>
+                <td><%= score.score %></td>
+                <% if @event_sa.present? %>
+                    <% if order_info['num'] >1 %>
+                        <td><%= score.order_score %></td>
+                    <% end %>
+                    <% if order_info['num'] == 3 %>
+                        <td><%= score.sort_score %></td>
+                    <% end %>
+                <% end %>
+                <td><%= score.schedule_rank %></td>
+                <% if score.score_id.present? && current_admin == 3 %>
+                    <td>
+                      <span class="btn btn-xs btn-danger delete-team-score" data-score="<%= score.score_id %>"><i class="icon-trash bigger-120"></i></span>
+                    </td>
+                <% end %>
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+
+
+    <% else %>
+        <div class="alert alert-info">该组别的赛程无队伍参加比赛</div>
+    <% end %>
+
+
+  </div>
+</div>
+

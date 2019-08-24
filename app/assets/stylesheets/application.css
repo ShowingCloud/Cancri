@@ -11,8 +11,26 @@
  * It is generally better to create a new file per style scope.
  *
  *= require bootstrap.min
- *= require bootstrap-theme.min
  *= require bootstrap-dialog
- *= require home
+ *= require base
+ *= require theme
+ *= require guide
+ *= require volunteer
+ *= require admin/datepicker
+ *= //require_tree .
  *= require_self
  */
+#rucaptcha-image-style {
+    position: absolute;
+    width: 110px;
+    height: 32px;
+    right: 18px
+}
+
+.login-dialog .modal-dialog {
+    width: 400px;
+}
+
+.custom-help-error .has-error .control-label, .has-error .help-block {
+    color: #a94442;
+}

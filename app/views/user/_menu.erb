@@ -1,53 +1,113 @@
-<div class="avatar" data-src="<%= image_path('homepage/avatar-bk.png') %>">
-  <div class="avatar-img">
-    <%= image_tag(current_user.avatar_url(:middle), class: 'img-thumbnail') %>
-  </div>
-  <div class="username"><%= current_user.nickname %></div>
-</div>
+<% @action_preview_array = ['preview', 'profile'] %>
+<% @action_notify_array = ['notification', 'notify_show'] %>
+<% @action_apply_array = ['apply', 'programs', 'program', 'create_program', 'program_se'] %>
+<% @action_project_manage = ['student_manage', 'comp_student', 'teacher_audit', 'teachers', 'hacker_audit'] %>
+<% @action_stu_info = ['competitions', 'courses', 'activities'] %>
+<% @action_security = ['security', 'email', 'reset_email', 'mobile', 'passwd', 'reset_mobile'] %>
+<% @action_role_apple_array = ['role_apply', 'hacker_apply_post', 'hacker_apply'] %>
+
 <div class="sidebar">
-  <a href="<%= user_preview_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
-    个人信息
-  </a>
-  <a href="<%= user_comp_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
-    参赛信息
-  </a>
-  <a href="<%= user_notification_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
-    消息通知
-  </a>
-  <a href="<%= user_point_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
-    我的积分
-  </a>
-  <a href="<%= user_consult_path %>" class="center-list" data-src="<%= image_path('homepage/center-list-bk.png') %>">
-    调戏小豆
-  </a>
+  <div class="sidebar-top">
+    <div class="avatar">
+      <div class="change-avatar">
+        修改头像
+        <i class="glyphicon glyphicon-cog"></i>
+      </div>
+      <%= image_tag(current_user.avatar_url(:middle), class: 'img-thumbnail avatar-img') %>
+    </div>
+    <div class="username">
+      <%= current_user.nickname %>
+      <% if @current_roles.present? %>
+          <% @current_roles.each do |role| %>
+              <% if role[0] == 1 && role[1] != 0 %>
+                  <i class="user-icon teacher-icon"></i>
+              <% elsif role[0] == 2 %>
+                <i class="user-icon maker-icon"></i>
+              <% end %>
+          <% end %>
+      <% end %>
+    </div>
+  </div>
+  <% is_teacher = has_teacher_role %>
+  <div class="sidebar-menu">
+    <a href="<%= user_preview_path %>">
+      <div class="sidebar-item <%= 'active' if @action_preview_array.include?(action_name) %>">
+        <i class="glyphicon glyphicon-user"></i>
+        个人信息
+      </div>
+    </a>
+    <a href="<%= user_email_path %>">
+      <div class="sidebar-item <%= 'active' if @action_security.include?(action_name) %>">
+        <i class="glyphicon glyphicon-asterisk"></i>
+        账户安全
+      </div>
+    </a>
+    <a href="<%= user_role_apply_path %>">
+      <div class="sidebar-item <%= 'active' if @action_role_apple_array.include?(action_name) %>">
+        <i class="glyphicon glyphicon-asterisk"></i>
+        身份认证
+      </div>
+    </a>
+    <a href="<%= is_teacher ? user_programs_path : user_apply_path %>">
+      <div class="sidebar-item <%= 'active' if @action_apply_array.include?(action_name) %>">
+        <i class="glyphicon glyphicon-flag"></i>
+        <%= is_teacher ? '项目管理' : '报名信息' %>
+      </div>
+    </a>
+    <a href="<%= is_teacher ? user_student_manage_path : '/user/competitions' %>">
+      <div class="sidebar-item <%= 'active' if @action_stu_info.include?(action_name) %>">
+        <i class="glyphicon glyphicon-cog"></i>
+        <%= is_teacher ? '成员管理' : '个人管理' %>
+      </div>
+    </a>
+    <a href="<%= user_notification_path %>">
+      <div class="sidebar-item <%= 'active' if @action_notify_array.include?(action_name) %>">
+        <i class="glyphicon glyphicon-bell"></i>
+        消息通知
+      </div>
+    </a>
+    <a href="<%= user_point_path %>">
+      <div class="sidebar-item">
+        <i class="glyphicon glyphicon-grain"></i>
+        我的积分
+      </div>
+    </a>
+    <a href="<%= user_consult_path %>">
+      <div class="sidebar-item <%= 'active' if action_name=='consult' %>">
+        <i class="glyphicon glyphicon-comment"></i>
+        调戏小豆
+      </div>
+    </a>
+  </div>
 </div>
 
 <div id="change-avatar" class="modal fade">
-  <div class="change-avatar">
-    <div class="title" data-src="<%= image_path('homepage/info-t-bk.png') %>">
+  <div class="change-avatar-inner">
+    <div class="title">
       修改昵称和头像
     </div>
-    <form action="update_avatar" method="post" enctype="multipart/form-data">
+    <form action="/user/update_avatar" method="post" enctype="multipart/form-data">
       <div class="input-row">
-        <div class="input-l">
+        <div class="left">
           <i class="glyphicon glyphicon-user"></i>
           新昵称
         </div>
-        <div class="input-r">
+        <div class="right">
           <input type="text" name="user[nickname]" placeholder="输入新昵称" value="<%= current_user.nickname %>"/>
         </div>
       </div>
       <div class="input-row">
-        <div class="input-l">
+        <div class="left">
           <i class="glyphicon glyphicon-user"></i>
           新头像
         </div>
-        <div class="input-r">
+        <div class="right">
           <input id="changeAvatar" name="user[avatar]" type="file" class="hide"/>
           <label class="avatar-btn" for="changeAvatar"><i class="glyphicon glyphicon-upload"></i>请选择图片</label>
         </div>
       </div>
       <input type="hidden" name="authenticity_token"/>
+
       <div class="form-b">
         <button type="submit" class="btn-robodou btn-submit-avatar">提交</button>
       </div>

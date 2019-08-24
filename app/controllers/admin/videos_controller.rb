@@ -5,8 +5,21 @@ class Admin::VideosController < AdminController
   # GET /admin/demeanor
   # GET /admin/demeanor.json
   def index
-    @competition = Competition.find(params[:cod])
-    @videos = Video.where(competition_id: params[:cod]).all.page(params[:page]).per(params[:per])
+    type = params[:type]
+    type_id = params[:type_id]
+    if type.present?
+      case type
+        when '0' then
+          @model_type = Competition.find(type_id)
+        when '1' then
+          @model_type = Activity.find(type_id)
+        else
+          render_optional_error(404)
+      end
+      @videos = Video.where(type_id: type_id).all.page(params[:page]).per(params[:per])
+    else
+      render_optional_error(404)
+    end
   end
 
 
@@ -33,11 +46,11 @@ class Admin::VideosController < AdminController
     respond_to do |format|
       if @video.save
 
-        format.html { redirect_to "/admin/videos?cod=#{@video.competition_id}", notice: '上传成功' }
-        format.json { render action: 'show', status: :created, location: @video }
+        format.html { redirect_to "/admin/videos", notice: '上传成功' }
+        format.js
       else
         format.html { render action: 'new' }
-        format.json { render json: @video.errors, status: :unprocessable_entity }
+        format.js
       end
     end
 
@@ -62,7 +75,7 @@ class Admin::VideosController < AdminController
   def destroy
     @video.destroy
     respond_to do |format|
-      format.html { redirect_to "#{admin_videos_url}?cod=#{params[:cod]}", notice: '删除成功' }
+      format.html { redirect_to "#{admin_videos_url}?type_id=#{@video.type_id}&type=#{@video.video_type}", notice: '删除成功' }
       format.json { head :no_content }
     end
   end
@@ -75,6 +88,6 @@ class Admin::VideosController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def video_params
-    params.require(:video).permit(:competition_id, :video, :sort, :desc, :status)
+    params.require(:video).permit(:type_id, :video, :video_type, :sort, :desc, :status)
   end
 end

@@ -1,0 +1,128 @@
+<h1 class="page-header">
+  <%= @event_volunteer.name %>
+  <small class="pull-right">
+    <a href="<%= new_admin_event_volunteer_path %>" title="新增<%= t('activerecord.models.event_volunteer') %>" class="btn btn-default">
+      <i class="icon-plus icon-only"></i></a>
+    <a href="<%= edit_admin_event_volunteer_path(@event_volunteer) %>" title="编辑该<%= t('activerecord.models.event_volunteer') %>" class="btn btn-default">
+      <i class="icon-edit icon-only"></i></a>
+    <a href="<%= admin_event_volunteers_path %>" title="列表<%= t('activerecord.models.event_volunteer') %>" class="btn btn-default">
+      <i class="icon-list icon-only"></i></a>
+  </small>
+</h1>
+
+<% if notice %>
+    <div class="alert alert-success"><%= notice %>
+      <button class="close" data-dismiss="alert">
+        <i class="icon-remove"></i>
+      </button>
+    </div>
+<% end %>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <%= t('activerecord.models.event_volunteer') %>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.name') %>:</h4>
+      <%= @event_volunteer.name %>
+    </li>
+    <li class="list-group-item">
+      <h4>职位: <span class="action-buttons">
+              <a class="blue btn btn-xs btn-primary" data-toggle="modal" role="button" href="#add-ev-position"> 添加 </a>
+            </span></h4>
+      <div style="width: 400px">
+        <table class="evp-table table table-bordered table-hover table-striped">
+
+          <% if @event_volunteer.event_vol_positions.present? %>
+              <tbody>
+              <% @event_volunteer.event_vol_positions.each do |evp| %>
+                  <tr id="evp-<%= evp.id %>">
+                    <td id="update-evp-<%= evp.id %>"><%= evp.name %></td>
+                    <td>
+                      <%= link_to edit_admin_event_vol_position_path(evp), class: 'btn btn-xs btn-primary', remote: true do %>
+                          <i class="icon-edit bigger-120"></i>
+                      <% end %>
+                      <%= link_to [:admin, evp], method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', remote: true, class: 'btn btn-xs btn-danger' do %>
+                          <i class="icon-trash bigger-120"></i>
+                      <% end %>
+                    </td>
+                  </tr>
+              <% end %>
+              </tbody>
+          <% end %>
+        </table>
+      </div>
+    </li>
+
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.status') %>:</h4>
+      <%= t('status.status'+@event_volunteer.status.to_s) %>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.event_type') %>:</h4>
+      <% case @event_volunteer.event_type when 'Competition' %>
+          比赛
+      <% when 'Activity' %>
+          活动
+      <% else %>
+      <% end %>
+    </li>
+    <li class="list-group-item">
+      <h4>报名起始时间</h4>
+      <%= "#{@event_volunteer.apply_start_time.strftime('%Y.%m.%d %H:%M')} -- #{@event_volunteer.apply_end_time.strftime('%Y.%m.%d %H:%M')} " %>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.content') %>:</h4>
+      <%= raw(@event_volunteer.content) %>
+    </li>
+  </ul>
+</div>
+
+<div id="add-ev-position" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="blue bigger text-center">请添加职位</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12">
+            <div class="form-group">
+              <!--<label for="form-field-select-3">课程</label>-->
+              <input type="hidden" id="event-volunteer-id" value="<%= params[:id] %>">
+              <div class="col-xs-7">
+                <select multiple="" id="select-ev-position" class="chosen-select tag-input-style" style="height:40px" data-placeholder="请选择...">
+
+                  <% ['iPad裁判', '纸质裁判', '维持秩序'].each do |c| %>
+                      <option value="<%= c %>"><%= c %></option>
+                  <% end %>
+
+                </select>
+
+              </div>
+              <div class="col-xs-5">
+                <input type="text" id="write-volunteer-position" placeholder="手写添加,多个以_分开" style="line-height: 18px;width:200px">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-sm" data-dismiss="modal">
+          <i class="icon-remove"></i>
+          取消
+        </button>
+
+        <button class="btn btn-sm btn-primary add-ev-position-submit" data-course="<%= %>">
+          <i class="icon-ok"></i>
+          提交
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

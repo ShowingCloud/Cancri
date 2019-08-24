@@ -1,0 +1,69 @@
+<div id="main" class="main">
+  <div class="container">
+    <div class="row">
+      <div class="passport">
+        <div class="title">
+          用户注册
+        </div>
+        <%= simple_form_for(@sing_up, url: register_post_accounts_path, method: :post) do |f| %>
+            <% if @sing_up.errors.any? %>
+                <div class="alert alert-danger">
+                  <div id="error_explanation">
+                    <% if @sing_up.errors[:nickname].present? %>
+                        <p>昵称:<%= @sing_up.errors[:nickname].first %></p>
+                    <% end %>
+                    <% if @sing_up.errors[:mobile].present? %>
+                        <p>手机号:<%= @sing_up.errors[:mobile].first %></p>
+                    <% end %>
+                    <% if @sing_up.errors[:mobile_code].present? %>
+                        <p>手机验证码:<%= @sing_up.errors[:mobile_code].first %></p>
+                    <% end %>
+                    <% if @sing_up.errors[:password].present? %>
+                        <p>密码:<%= @sing_up.errors[:password].first %></p>
+                    <% end %>
+                  </div>
+                </div>
+            <% end %>
+            <div class="passport-box">
+              <div class="passport-sub-box">
+                <i class="glyphicon glyphicon-user"></i>
+                <input class="input-robodou" id="register-username" type="text" name="sing_up[nickname]" value="<%= @sing_up.nickname %>"
+                       placeholder="请输入用户名（只能用数字、字母、_）">
+              </div>
+              <div class="passport-sub-box rucaptcha-special">
+                <i class="glyphicon glyphicon-check"></i>
+                <%= rucaptcha_input_tag(class: 'rucaptcha-input-sepcial input-robodou', placeholder: '请输入校验码') %>
+                <span class="refresh-captcha">
+                  <%= rucaptcha_image_tag(alt: '校验码', id: 'rucaptcha-image-style') %>
+                </span>
+              </div>
+              <div class="passport-sub-box rucaptcha-special">
+                <i class="glyphicon glyphicon-phone"></i>
+                <input class="input-robodou" id="register_mobile" type="tel" name="sing_up[mobile]" value="<%= @sing_up.mobile %>"
+                       placeholder="请输入手机号码">
+                <span class="send-code-special" id="btn_send_mobile_code" data-key="register" data-type="REGISTER">发送验证码</span>
+              </div>
+              <div class="passport-sub-box">
+                <i class="glyphicon glyphicon-edit"></i>
+                <input class="input-robodou" id="register-mobile-code" type="text" name="sing_up[mobile_code]" value="<%= @sing_up.mobile_code %>"
+                       placeholder="请输入手机验证码">
+              </div>
+              <div class="passport-sub-box">
+                <i class="glyphicon glyphicon-lock"></i>
+                <input class="input-robodou" id="register-password" type="password" name="sing_up[password]"
+                       placeholder="请输入密码(6-20位)">
+              </div>
+            </div>
+
+            <div class="other-link">
+              <a class="login-link pull-left" href="<%= new_user_session_path %>">已有账号,去登录</a>
+              <a class="email-link pull-right" href="/account/sign_up">邮箱注册</a>
+            </div>
+
+            <button class="btn-robodou btn-register-submit" type="submit">注册账号</button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>

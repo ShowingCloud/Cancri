@@ -1,0 +1,110 @@
+<div id="main" class="main">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if !params[:type].present? %>
+                <!--课程信息-->
+                <% if @apply_info.size>0 %>
+                    <table class="table">
+                      <tr>
+                        <th>课程名称</th>
+                        <th>课程时间</th>
+                        <th>操作</th>
+                      </tr>
+                      <% @apply_info.each do |a| %>
+                          <tr>
+                            <td><%= a.name %></td>
+                            <td><%= a.end_time.in_time_zone.strftime('%Y-%m-%d') %></td>
+                            <td><%= link_to "#{user_cancel_apply_path}?t=1&identifier=#{a.course_id}", class: 'btn-robodou btn-abort-lesson' do %>
+                                  取消报名
+                              <% end %></td>
+                          </tr>
+                      <% end %>
+                    </table>
+                <% else %>
+                    您暂时没有报名任何课程。
+                <% end %>
+            <% elsif params[:type]=='competition' %>
+                <!--比赛信息-->
+                <% if @apply_info.size>0 %>
+                    <table class="table">
+                      <tr>
+                        <th>比赛名称</th>
+                        <th>项目名称</th>
+                        <th>比赛时间</th>
+                        <th>状态</th>
+                        <th>下载</th>
+                      </tr>
+                      <% @apply_info.each do |a| %>
+                          <tr>
+                            <td><%= a.comp_name %></td>
+                            <td><%= a.event_name %></td>
+                            <td><%= a.start_time.in_time_zone.strftime('%Y-%m-%d') %></td>
+                            <td>
+                              <% case a.team_status when 0 %>
+                                  队长未提交
+                              <% when 1 %>
+                                  报名成功
+                              <% when 2 %>
+                                  待学校审核
+                              <% when 3 %>
+                                  待区县审核
+                              <% when -2 %>
+                                  学校审核未通过
+                              <% when -3 %>
+                                  区县审核未通过
+                              <% else %>
+                                  未知
+                              <% end %>
+                            </td>
+                            <td>
+                              <% if a.team_status == 1 %>
+                                <%= link_to "下载参赛证", "/user/export_voucher?ed=#{a.event_id}",class:"btn btn-xs btn-primary",onclick: "download_comp_voucher(event,#{raw a.to_json})" %>
+                              <% else %>
+                                审核通过后可下载参赛证
+                              <% end %>
+                            </td>
+                          </tr>
+                      <% end %>
+                    </table>
+                    <div style="display:none">
+                      <div id="qrcodeCanvas"></div>
+                      <div>
+                        <%= image_tag('comp_voucher.jpeg', id: 'use-voucher') %>
+                        <canvas id="myCanvas" width="1276" height="1789"></canvas>
+                      </div>
+                    </div>
+                <% else %>
+                    您暂时没有报名任何比赛
+                <% end %>
+            <% elsif params[:type]=='activity' %>
+                <!--活动信息-->
+                <table class="table">
+                  <tr>
+                    <th>活动名称</th>
+                    <th>活动地点</th>
+                    <th>活动时间</th>
+                  </tr>
+                  <% @apply_info.each do |a| %>
+                      <tr>
+                        <td><%= a.name %></td>
+                        <td><%= a.host_address %></td>
+                        <td><%= a.start_time.in_time_zone.strftime('%Y-%m-%d') %></td>
+                      </tr>
+                  <% end %>
+                </table>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%= javascript_include_tag 'jspdf.min' %>

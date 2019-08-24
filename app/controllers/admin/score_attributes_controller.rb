@@ -1,15 +1,16 @@
 class Admin::ScoreAttributesController < AdminController
-  before_action :set_score_attribute, only: [:show, :edit, :update, :destroy]
+  before_action :set_score_attribute, only: [:show, :edit, :update]
 
   # GET /admin/score_attributes
   # GET /admin/score_attributes.json
   def index
-    if params[:field].present? && params[:keyword].present?
-      @score_attributes = ScoreAttribute.all.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"]).page(params[:page]).per(params[:per])
+    field = params[:field]
+    keyword = params[:keyword]
+    if field.present? && keyword.present?
+      @score_attributes = ScoreAttribute.all.where(["#{field} like ?", "%#{keyword}%"]).page(params[:page]).per(params[:per])
     else
       @score_attributes = ScoreAttribute.all.page(params[:page]).per(params[:per])
     end
-
   end
 
   # GET /admin/score_attributes/1
@@ -59,10 +60,23 @@ class Admin::ScoreAttributesController < AdminController
   # DELETE /admin/score_attributes/1
   # DELETE /admin/score_attributes/1.json
   def destroy
-    @score_attribute.destroy
+    id = params[:id]
+    has_use = EventSaShip.where(score_attribute_id: id).exists?
+    if has_use
+      @notice = {status: false, message: '该成绩属性已经被使用，不能删除'}
+    else
+      @score_attribute = ScoreAttribute.find_by_id(id)
+      if @score_attribute && @score_attribute.destroy
+        @notice = {status: true, id: @score_attribute.id, message: '删除成功'}
+      else
+        @notice = {status: false, message: '删除失败'}
+      end
+    end
+
     respond_to do |format|
       format.html { redirect_to admin_score_attributes_url, notice: '成绩属性删除成功.' }
       format.json { head :no_content }
+      format.js
     end
   end
 

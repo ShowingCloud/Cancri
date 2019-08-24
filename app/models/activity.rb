@@ -1,13 +1,42 @@
 class Activity < ApplicationRecord
-  has_many :user_activity_ships
-  has_many :users, through: :user_activity_ships
+  has_many :activity_user_ships
+  has_many :users, through: :activity_user_ships
+  has_many :child_activities, class_name: Activity, foreign_key: :parent_id
+  belongs_to :parent_activity, class_name: Activity, foreign_key: :parent_id
+  belongs_to :district
+  has_many :photos
+  has_many :videos
+  has_one :event_volunteer, -> { where event_type: 'Activity' }, foreign_key: :type_id
 
+
+  before_validation :check_include_self
   validates :name, presence: true, length: {maximum: 50}, uniqueness: true
   validates :host_year, presence: true
   validates :host_address, presence: true
-  validates :cover, presence: true
+  validates :cover, presence: true, if: "parent_id.nil?"
+  validates :status, presence: true
   validate :validate_datetime_parent
+  before_save :set_level
   mount_uploader :cover, CoverUploader
+
+  private
+
+  def check_include_self
+    if district_id == nil
+      self.district_id = 0
+    end
+    if parent_id.present? && parent_id == id
+      errors[:parent_id] << '所属项目不能是自己'
+    end
+  end
+
+  def set_level
+    if parent_id.present?
+      unless level==2
+        self.level = 2
+      end
+    end
+  end
 
   def validate_datetime_parent
 
@@ -25,4 +54,5 @@ class Activity < ApplicationRecord
       errors[:end_time] << '活动报名起始时间和活动举办起始时间为必填项'
     end
   end
+
 end

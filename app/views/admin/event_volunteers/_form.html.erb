@@ -1,0 +1,68 @@
+<div class="panel panel-info">
+  <div class="panel-heading"><%= t('activerecord.models.event_volunteer') %></div>
+  <div class="panel-body">
+
+    <%= simple_form_for([:admin, @event_volunteer]) do |f| %>
+        <%= f.error_notification %>
+        <% if @event_volunteer.errors.any? %>
+            <div class="alert alert-danger"><%= @event_volunteer.errors.full_messages.join(',') %></div>
+        <% end %>
+        <div class="form-inputs">
+
+          <%= f.input :event_type, collection: {'比赛': 'Competition', '活动': 'Activity'} %>
+          <div class="form-group integer required event_volunteer_type_id">
+            <label class="control-label integer required" for="event_volunteer_type_id"><abbr title="必填字段">*</abbr>
+              所属项目</label>
+            <select id="event_volunteer_type_id" class="form-control" name="event_volunteer[type_id]">
+              <option value="">请选择所属项目</option>
+              <% if action_name == 'edit' || @event_volunteer.type_id.present? %>
+                  <% event_obj = @event_volunteer.event_type.constantize.where(id: @event_volunteer.type_id).select(:id, :name).take %>
+                  <% if event_obj.present? %>
+                      <option value="<%= event_obj.id %>" data-name="<%= event_obj.name %>" selected><%= event_obj.name %></option>
+                  <% end %>
+              <% end %>
+            </select>
+          </div>
+          <%= f.input :name %>
+          <div class="row" style="display: table-row;">
+            <div class="form-group datetime optional col-md-6 required" style="padding: 0" data-date-merge>
+              <label class="datetime optional control-label"><abbr title="必填内容">*</abbr> 报名开始时间</label>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <span>日期</span>
+                  <input data-date-merge-date value="<%= @event_volunteer.apply_start_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                </div>
+                <div class="col-md-6 bootstrap-timepicker">
+                  <span>时间</span>
+                  <input data-date-merge-time value="<%= @event_volunteer.apply_start_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
+                </div>
+              </div>
+              <input data-date-merge-result type="hidden" name="event_volunteer[apply_start_time]" value="<%= @event_volunteer.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+            </div>
+            <div class="form-group datetime optional col-md-6" data-date-merge>
+              <label class="datetime optional control-label"><abbr title="必填内容">*</abbr> 报名结束时间</label>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <span>日期</span>
+                  <input data-date-merge-date value="<%= @event_volunteer.apply_end_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                </div>
+                <div class="col-md-6 bootstrap-timepicker">
+                  <span>时间</span>
+                  <input data-date-merge-time value="<%= @event_volunteer.apply_end_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
+                </div>
+              </div>
+              <input data-date-merge-result type="hidden" name="event_volunteer[apply_end_time]" value="<%= @event_volunteer.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+            </div>
+          </div>
+        </div>
+        <%= f.input :status, collection: Competition::STATUS %>
+        <label class="select required control-label" for="news_content"><abbr title="必填字段">*</abbr>内容:</label>
+        <%= f.kindeditor :content, :window_onload => true, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', 'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
+        <div class="form-actions">
+          <%= f.button :submit, class: 'btn btn-primary' %>
+        </div>
+    <% end %>
+  </div>
+</div>

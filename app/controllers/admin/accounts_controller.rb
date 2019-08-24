@@ -11,13 +11,22 @@ class Admin::AccountsController < AdminController
   end
 
   def create
-    if verify_rucaptcha? params[:_rucaptcha]
-      emp = Admin.find_by(job_number: params[:job_number])
+    require 'geetest_sdk'
+
+    challenge = params[:geetest_challenge] || ''
+    validate = params[:geetest_validate] || ''
+    sec_code = params[:geetest_seccode] || ''
+
+    sdk = GeetestSDK.new(Settings.geetest_key)
+    if params[:job_number].present?
       cookies[:job_number] = params[:job_number]
+    end
+    if sdk.validate(challenge, validate, sec_code)
+      emp = Admin.find_by(job_number: params[:job_number])
       if emp.blank?
         flash[:error] = '工号不存在'
         render action: 'new'
-      elsif not emp.auth_permissions(['admin', 'super_admin', 'teacher', 'audit', 'score', 'super_editor' 'editor'])
+      elsif not emp.auth_permissions(['admin', 'super_admin', 'teacher', 'audit', 'score', 'super_editor', 'editor'])
         flash[:error] = '此账号没有权限登录'
         render action: 'new'
       else
@@ -25,7 +34,13 @@ class Admin::AccountsController < AdminController
         if status
           flash[:notice] = message
           sing_in(emp)
-          redirect_to '/admin/'
+          if cookies[:after_sign_in_return_to]
+            redirect_to cookies[:after_sign_in_return_to]
+          else
+            redirect_to '/admin/'
+          end
+          cookies.delete :job_number
+          cookies.delete :after_sign_in_return_to
         else
           flash[:error] = message
           render action: 'new'
@@ -53,8 +68,8 @@ class Admin::AccountsController < AdminController
     status, message = self.change_password_method(@current_admin, params[:password], params[:new_password], params[:confirm_password])
 
     if status
-      session[:admin_id] = nil
-      flash[:success] = message
+      sign_out
+      flash[:error] = message
       redirect_to action: :new
     else
       flash[:error] = message
@@ -94,6 +109,7 @@ class Admin::AccountsController < AdminController
   end
 
   def sing_out
-    cookies[:access_token] = nil
+    cookies.delete :access_token
+      # cookies[:access_token] = nil
   end
 end

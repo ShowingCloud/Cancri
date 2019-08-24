@@ -1,8 +1,8 @@
 <h1 class="page-header">
   <%= t('activerecord.models.user') %>列表
   <small class="pull-right">
-    <!--<a href="<%= new_admin_user_path %>" class="btn btn-default" title="">-->
-      <!--<i class="icon-plus icon-only"></i></a>-->
+    <a href="<%= new_admin_user_path %>" class="btn btn-default" title="">
+    <i class="icon-plus icon-only"></i></a>
     <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
       <i class="icon-search icon-only"></i>
     </a>
@@ -21,13 +21,15 @@
               <span data-search-text class="admin-search-field"><%= t('simple_form.labels.defaults.nickname') %></span>
               <span class="caret"></span></button>
             <ul class="dropdown-width dropdown-menu">
+              <li data-search-option="username"><a><%= t('simple_form.labels.defaults.username') %></a></li>
               <li data-search-option="nickname"><a><%= t('simple_form.labels.defaults.nickname') %></a></li>
+              <li data-search-option="school_name"><a>学校</a></li>
               <li data-search-option="mobile"><a><%= t('simple_form.labels.defaults.mobile') %></a></li>
               <li data-search-option="email"><a><%= t('simple_form.labels.defaults.email') %></a></li>
               <li data-search-option="id"><a>ID</a></li>
             </ul>
           </div>
-          <input type="hidden" name="field" value="<%= params[:field].present? ? params[:field] : 'nickname' %>"/>
+          <input type="hidden" name="field" value="<%= params[:field].present? ? params[:field] : 'username' %>"/>
           <input placeholder="输入关键字，按回车键提交" value="<%= params[:keyword] %>" name="keyword" type="text" class="form-control" aria-label="...">
         </div>
       </form>
@@ -41,11 +43,10 @@
   <tr>
     <th>ID</th>
     <th><%= t('simple_form.labels.defaults.nickname') %></th>
+    <th><%= t('simple_form.labels.defaults.username') %></th>
+    <th>学校</th>
     <th><%= t('simple_form.labels.defaults.mobile') %></th>
     <th><%= t('simple_form.labels.defaults.email') %></th>
-    <th><%= t('simple_form.labels.defaults.username') %></th>
-    <th><%= t('simple_form.labels.defaults.sign_in_count') %></th>
-    <th><%= t('simple_form.labels.defaults.current_sign_in_at') %></th>
 
 
     <th>操作</th>
@@ -58,11 +59,11 @@
       <tr>
         <td><%= user.id %></td>
         <td><%= user.nickname %></td>
+        <td><%= user.username %></td>
+        <td><%= user.school_name %></td>
         <td><%= user.mobile %></td>
         <td><%= user.email %></td>
-        <td><%= user.user_profile.try(:username) %></td>
-        <td><%= user.sign_in_count %></td>
-        <td><%= user.current_sign_in_at.try(:strftime, '%Y-%m-%d %H:%M:%S') %></td>
+
         <td><%= link_to [:admin, user], title: '查看', class: 'btn btn-xs btn-warn' do %>
               <i class="icon-eye-open bigger-120"></i>
           <% end %>

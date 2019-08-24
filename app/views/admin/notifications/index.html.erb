@@ -1,0 +1,43 @@
+<h1 class="page-header">
+  <%= t('activerecord.models.notification') %>列表
+  <small class="pull-right">
+    <a href="<%= new_admin_notification_path %>" class="btn btn-default" title="添加">
+      <i class="icon-only icon-plus"></i></a>
+  </small>
+</h1>
+
+<table class="table table-bordered table-hover table-striped">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th><%= t('simple_form.labels.defaults.content') %></th>
+    <th>类型</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @notifications.each do |notification| %>
+      <tr id="notification-<%= notification.id %>">
+        <td><%= notification.id %></td>
+        <td><%= notification.content[0..20] %></td>
+        <td>裁判消息</td>
+
+        <td><%= link_to [:admin, notification], title: '查看', class: 'btn btn-xs btn-warn' do %>
+              <i class="icon-eye-open bigger-120"></i>
+          <% end %>
+          <%= link_to edit_admin_notification_path(notification), title: '编辑', class: 'btn btn-xs btn-info' do %>
+              <i class="icon-edit bigger-120"></i>
+          <% end %>
+          <%= link_to [:admin, notification], method: :delete, data: {confirm: '确认删除吗?', remote: true}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+              <i class="icon-trash bigger-120"></i>
+          <% end %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<nav>
+  <%= paginate @notifications %>
+</nav>
+

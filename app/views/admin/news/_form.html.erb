@@ -1,30 +1,79 @@
 <style type="text/css">
-    textarea, input[type="text"] {
-        padding: 0 4px;
-    }
+  textarea, input[type="text"] {
+    padding: 0 4px;
+  }
 </style>
 <div class="panel panel-info">
   <div class="panel-heading"><%= t('activerecord.models.news') %></div>
   <div class="panel-body">
     <%= simple_form_for([:admin, @new]) do |f| %>
         <%= f.error_notification %>
-        <div class="form-inputs">
+        <% if @new.errors.any? %>
+            <div class="alert alert-danger">
+              <% if @new.errors[:cover].present? %>
+                  <p>封面:<%= @new.errors[:cover].first %></p>
+              <% end %>
+              <% if @new.errors[:news_type].present? %>
+                  <p>类型:<%= @new.errors[:news_type].first %></p>
+              <% end %>
+              <% if @new.errors[:content].present? %>
+                  <p>内容:<%= @new.errors[:content].first %></p>
+              <% end %>
+            </div>
+        <% end %>
+        <div id="news_type_checkbox" class="form-inputs">
           <%= f.input :name, maxlength: '100' %>
           <label class="control-label">类型</label>
 
           <div class="well">
             <%
-               types = @new.news_type.try(:split, ',')
-               NewsType.all.each do |nt|
+              types = @new.news_type.try(:split, ',')
+              NewsType.all.each do |nt|
             %>
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" name="news[news_type][]" value="<%= nt.id %>" <%= types.try(:include?, nt.id.to_s) ? 'checked' : '' %>> <%= nt.name %>
+                    <input type="checkbox" name="news[news_type][]" data-name="<%= nt.name %>" value="<%= nt.id %>" <%= types.try(:include?, nt.id.to_s) ? 'checked' : '' %>> <%= nt.name %>
                   </label>
                 </div>
             <%
-               end
+              end
             %>
+          </div>
+          <div id="volunteer-apply-datetime" class="hide">
+            <% if 1==2 %>
+                <div class="row" style="display: table-row;">
+                  <div class="form-group datetime optional col-md-6 required" style="padding: 0" data-date-merge>
+                    <label class="datetime optional control-label"><abbr title="必填内容">*</abbr> 报名开始时间</label>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <span>日期</span>
+                        <input data-date-merge-date value="<%= @new.apply_start_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                      </div>
+                      <div class="col-md-6 bootstrap-timepicker">
+                        <span>时间</span>
+                        <input data-date-merge-time value="<%= @new.apply_start_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
+                      </div>
+                    </div>
+                    <input data-date-merge-result type="hidden" name="competition[apply_start_time]" value="<%= @new.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+                  </div>
+                  <div class="form-group datetime optional col-md-6" data-date-merge>
+                    <label class="datetime optional control-label"><abbr title="必填内容">*</abbr> 报名结束时间</label>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <span>日期</span>
+                        <input data-date-merge-date value="<%= @new.apply_end_time.try(:strftime, '%Y-%m-%d') %>" data-control="dateForm" class="datetime optional form-control" data-date-format="yyyy-mm-dd">
+                      </div>
+                      <div class="col-md-6 bootstrap-timepicker">
+                        <span>时间</span>
+                        <input data-date-merge-time value="<%= @new.apply_end_time.try(:strftime, '%H:%M') %>" data-control="timeForm" class="datetime optional form-control"/>
+                      </div>
+                    </div>
+                    <input data-date-merge-result type="hidden" name="competition[apply_end_time]" value="<%= @new.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %>"/>
+                  </div>
+                </div>
+            <% end %>
           </div>
           <% if @new.cover.present? %>
               <div class="form-group">
@@ -32,15 +81,21 @@
               </div>
           <% end %>
           <%= f.input :desc %>
+          <%= f.input :district_id, collection: District.sh_districts %>
+          <%= f.input :status, label: '显示' %>
+          <%= f.input :is_hot, label: '热门' %>
           <div class="form-group">
-            <label for="exampleInputFile">封面</label>
+            <label class="text required control-label" for="news_cover">
+              <abbr title="必填字段">*</abbr>
+              封面
+            </label>
             <%= f.file_field :cover %>
             <%= f.hidden_field :cover_cache %>
             <p class="help-block">格式：jpg jpeg gif png</p>
           </div>
 
           <label class="select required control-label" for="news_content"><abbr title="必填字段">*</abbr>内容:</label>
-          <%= f.kindeditor :content, :window_onload => true, :owner_id => @new.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'media', 'insertfile', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
+          <%= f.kindeditor :content, :window_onload => true, :owner_id => @new.id, :items => ['formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', 'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'media', 'insertfile', 'baidumap', 'link', 'unlink', 'quickformat', 'preview', 'fullscreen'] %>
           <%= f.hidden_field :admin_id, :value => @current_admin.id %>
         </div>
 

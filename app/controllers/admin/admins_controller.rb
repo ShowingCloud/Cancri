@@ -1,9 +1,6 @@
 class Admin::AdminsController < AdminController
+  before_action :has_manage, only: [:index, :show, :edit, :update, :destroy]
   before_action :set_admin, only: [:show, :edit, :update, :destroy]
-
-  before_action do
-    authenticate_permissions(['admin'])
-  end
 
   # GET /admin/admins
   # GET /admin/admins.json
@@ -76,6 +73,10 @@ class Admin::AdminsController < AdminController
   # Use callbacks to share common setup or constraints between actions.
   def set_admin
     @admin = Admin.find(params[:id])
+  end
+
+  def has_manage
+    authenticate_permissions(['super_admin'])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

@@ -1,0 +1,7 @@
+<% if @event_vol_position.errors.any? %>
+admin_gritter_notice(false, '<%= @event_vol_position.errors.full_messages.first %>');
+<% else %>
+admin_gritter_notice(true, "<%= @event_vol_position.name %>删除成功");
+$("#evp-" +<%= @event_vol_position.id %>).remove();
+bootbox.hideAll();
+<% end %>

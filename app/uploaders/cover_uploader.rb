@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 class CoverUploader < CarrierWave::Uploader::Base
-
+  CarrierWave::SanitizedFile.sanitize_regexp = /[^[:word:]\.\-\+_]/
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
   include CarrierWave::MiniMagick
@@ -51,7 +51,11 @@ class CoverUploader < CarrierWave::Uploader::Base
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
   def filename
-    'cover.jpg' if original_filename
+    if mounted_as.to_s == 'image'
+      original_filename if original_filename
+    else
+      'cover.jpg' if original_filename
+    end
   end
 
 end

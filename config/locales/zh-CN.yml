@@ -95,11 +95,13 @@ zh-CN:
       month: 月
       second: 秒
       year: 年
+
+  ## translation missing: zh-CN.errors.messages.custom
   errors:
     format: ! '%{attribute}%{message}'
     messages:
       accepted: 必须是可被接受的
-      blank: 必填项不能为空
+      blank: 不能为空
       present: 必须是空白
 #      confirmation: 确认值不匹配
       empty: 不能留空
@@ -130,6 +132,7 @@ zh-CN:
         one: 长度非法（必须为一个字符）
         other: 长度非法（必须为 %{count} 个字符）
       other_than: 长度非法（不可为 %{count} 个字符
+      extension_white_list_error: 文件格式不允许
     template:
       body: 如下字段出现错误：
       header:
@@ -231,11 +234,22 @@ zh-CN:
     group4: '高中组'
   write_type:
     sd: '手动输入'
-    app: 'app计时'
-    saidao: '赛道计时'
+    miaobiao: '秒表'
+    admin: '后台计算'
+    saidao1: '赛道1'
+    saidao2: '赛道2'
     write_type1: '手动'
-    write_type2: 'app'
-    write_type3: '赛道'
+    write_type2: '秒表'
+    write_type3: '后台'
+    write_type4: '赛道1'
+    write_type5: '赛道2'
+  value_type:
+    integer: '整数'
+    float: '浮点型'
+    boolean: '是/否(布尔)'
+    value_type1: '整数'
+    value_type2: '浮点型'
+    value_type3: '是/否'
   activerecord:
     models:
       user: '用户'
@@ -256,7 +270,16 @@ zh-CN:
       volunteer: '志愿者'
       demeanor: '选手风采'
       photo: '图片'
+      video: '视频'
       consult: '用户反馈'
+      course: '课程'
+      course_score_attribute: '评分标准'
+      school: '学校'
+      notification: '消息'
+      volunteer: '志愿者'
+      regulation: '章程'
+      event_volunteer: '招募志愿者'
+      position: '职位'
   views:
     pagination:
         first: "首页"
@@ -274,6 +297,60 @@ zh-CN:
           more_pages:
             display_entries: "Displaying %{entry_name} <b>%{first}&nbsp;-&nbsp;%{last}</b> of <b>%{total}</b> in total"
   status:
+     status0: '待显示'
+     status1: '显示'
+     status2: '结束'
+  team:
      status0: '报名中'
-     status1: '报名截止'
-     status2: '比赛结束'
+     status1: '报名成功'
+     status2: '待学校审核'
+     status-2: '学校审核未通过'
+     status3: '学校审核通过,待区县审核'
+     status-3: '区县审核未通过'
+  user_hacker:
+     create_way1: '自荐'
+     create_way2: '联合体'
+     create_way3: '学校'
+     create_way4: '个人'
+     partake1: '以孩子为主'
+     partake2: '以家长为主'
+     partake3: '以亲子为主'
+     situation1: '专用工作台'
+     situation2: '专用工作间'
+  gender:
+    gender1: '男'
+    gender2: '女'
+    gender: ''
+  attributes:
+     nickname: '昵称'
+     name: '名称'
+     username: '姓名'
+     birthday: '生日'
+     email: '邮箱'
+     teacher: '教师姓名'
+     teacher_mobile: '教师手机'
+     group: '组别'
+     grade: '年级:'
+     role_type: '角色类型:'
+     end_time: '结束时间'
+     schedule_id: '赛程'
+     group: '组别'
+     kind: '模式/种类'
+     school_id: '学校'
+     square: '面积'
+     active_weekly: '每周活动时间'
+     role_type: '角色类型'
+     create_date: '创建日期'
+     qq: 'qq'
+     wx: '微信'
+     family_hobbies: '家庭爱好'
+     create_way: '推荐或自荐'
+     create_with: '推荐组织'
+     situation: '形式'
+     partake: '参与'
+     student_code: '学籍号'
+     desc: '描述'
+     cover: '文件'
+     identity_card: '身份证'
+     alipay_account: '支付宝账号'
+     apply_start_time: '报名开始时间'

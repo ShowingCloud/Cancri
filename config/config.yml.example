@@ -1,0 +1,23 @@
+defaults: &defaults
+  site_name: 'xx'
+  smtp_address: 'xx'
+  smtp_domain: 'xx'
+  email_username: 'email_username'
+  email_password: 'email_password'
+  email_form: 'xx<email_username>'
+  sms_account: 'xx'
+  sms_key: 'xx'
+  sms_channel: 'xx'
+  geetest_key: 'xx'
+development:
+  <<: *defaults
+  domain: 'xx'
+  auth_url: 'xx'
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
+  domain: 'xx'
+  auth_url: 'xx'

@@ -5,9 +5,9 @@ class Admin::DistrictsController < AdminController
   # GET /admin/districts.json
   def index
     if params[:field].present? && params[:keyword].present?
-      @districts = District.all.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"]).page(params[:page]).per(params[:per])
+      @districts = District.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"]).page(params[:page]).per(params[:per])
     else
-      @districts = District.all.page(params[:page]).per(params[:per])
+      @districts = District.page(params[:page]).per(params[:per])
     end
   end
 
@@ -60,7 +60,7 @@ class Admin::DistrictsController < AdminController
   def destroy
     @district.destroy
     respond_to do |format|
-      format.html { redirect_to admin_districts_url, notice: '区县删除成功!' }
+      format.html { redirect_to admin_districts_url, notice: '删除成功!' }
       format.json { head :no_content }
     end
   end

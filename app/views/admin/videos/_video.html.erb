@@ -1,0 +1,15 @@
+<div class="col-lg-3 col-md-4 col-xs-6 thumb ">
+
+  <video src="<%= video.video_url %>" controls="controls" width="300px" height="220px">
+    您的浏览器不支持 video 标签。
+  </video>
+
+  <div class="actions">
+    <%= link_to edit_admin_video_path(video), title: '编辑', class: 'btn btn-xs btn-info' do %>
+        <i class="icon-edit bigger-120"></i>
+    <% end %>
+    <%= link_to "#{admin_video_path(video)}?cod=#{video.competition_id}", method: :delete, data: {confirm: '确认删除吗?'}, title: '删除', class: 'btn btn-xs btn-danger' do %>
+        <i class="icon-trash bigger-120"></i>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+<div id="main" class="main">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <a href="<%= user_create_program_path %>" class="btn btn-sm btn-info pull-right">创建课程</a>
+            <br><br>
+            <% if @courses %>
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>课程名</th>
+                    <th>开展时间</th>
+                    <th>创建时间</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <% @courses.each do |c| %>
+                      <tr>
+                        <td><%= c.name %></td>
+                        <td><%= c.start_time.strftime('%Y-%m-%d') %><%= " -- #{c.end_time.strftime('%Y-%m-%d')}" if c.end_time.present? %> </td>
+                        <td><%= c.created_at.strftime('%Y-%m-%d') %></td>
+                        <td><%= t('status.status'+c.status.to_s) %></td>
+                        <td>
+                          <a href="<%= "/user/course_ware/#{c.id}" %>" class="label label-primary" title="属性添加">
+                            <i class="glyphicon glyphicon-plus"></i></a>
+                          <% if c.status==1 %>
+                              <a href="<%= "#{user_programs_path}/#{c.id}" %>" class="label label-primary" title="学生名单">
+                                <i class="glyphicon glyphicon-th-list"></i></a>
+                              <a href="<%= "/user/program_se/#{c.id}" %>" class="label label-warning" title="查看编辑">
+                                <i class="glyphicon glyphicon-edit"></i></a>
+                              <a href="<%= "/user/course_opus/#{c.id}" %>" class="label label-info" title="作品">
+                                <i class="glyphicon glyphicon-plus"></i></a>
+                          <% end %>
+                        </td>
+                      </tr>
+
+                  <% end %>
+                  </tbody>
+                </table>
+                <nav>
+                  <%= paginate @courses %>
+                </nav>
+            <% else %>
+                您暂时没有所属课程。
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

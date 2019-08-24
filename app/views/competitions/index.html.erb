@@ -1,47 +1,48 @@
-<!--<div class="container">-->
-<!--
-<% @competitions.each do |comp| %>-->
-    <!--<%= link_to competition_path(comp) do %>-->
-        <!--<h2><%= comp.name %></h2>-->
-        <!--
-    <% end %>-->
-    <!--
-<% end %>-->
-<!--</div>-->
-
-<div id="main" class="main" data-src="<%= image_path('homepage/bk.jpg') %>">
-  <div class="container">
-    <div class="row">
-      <div id="match-list">
-        <div class="sec-t">
-          <select class="year-select" name="" id="">
-            <option value="">2016</option>
-          </select>
-        </div>
-        <div class="sec-c">
-          <div class="list">
-            <% @competitions.each do |comp| %>
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                  <%= link_to competition_path(comp) do %>
-                      <div class="item" data-src="<%= image_path('homepage/match-item-bk.png') %>">
-                        <div class="item-t"><%= comp.name %></div>
-                        <img src="" alt="" data-src="<%= image_path('homepage/jxay-item.jpg') %>"/>
-                      </div>
-                  <% end %>
+<div class="main" id="main">
+  <div class="container" id="comp-list">
+    <div class="competition-top">
+      <%= link_to "报名流程", apply_process_competitions_path, id: "apply-flow-btn", class: "btn btn-lightblue btn-top" %>
+      <ul class="competition-steps clearfix">
+        <li class="step-wrapper">
+          <p class="step">STEP1</p>
+          <p class="step-desc">选择赛事项目</p>
+        </li>
+        <li class="step-wrapper">
+          <p class="step">STEP2</p>
+          <p class="step-desc">更新选手信息</p>
+        </li>
+        <li class="step-wrapper">
+          <p class="step">STEP3</p>
+          <p class="step-desc">提交报名信息</p>
+        </li>
+        <li class="step-wrapper">
+          <p class="step">STEP4</p>
+          <p class="step-desc">等待审核</p>
+        </li>
+      </ul>
+    </div>
+    <div class="middle">
+      <% @competitions.each do |c| %>
+          <div class="comp-item">
+            <a href="<%= competition_path(c) %>">
+              <div class="item-box">
+                <%= image_tag(c.cover, class: 'cover') %>
+                <div class="shade">
+                  <p><%= c.name %></p>
+                  <div class="shade-btn">
+                    <button class="btn-go-comp">查看详情</button>
+                  </div>
                 </div>
-            <% end %>
+              </div>
+            </a>
           </div>
-        </div>
-      </div>
+      <% end %>
     </div>
-  </div>
-  <div id="footer">
-    <div class="container">
-      <div class="footer">
-        <a>关于我们</a>
-        <span class="separator"></span>
-        <a>联系我们</a>
-      </div>
+    <nav>
+      <%= paginate @competitions %>
+    </nav>
+    <div class="bottom">
     </div>
+    <div class="guide-overlay"></div>
   </div>
 </div>

@@ -2,7 +2,9 @@ require 'rexml/document'
 
 class SMSService
 
+  TYPE_CODE_REGISTER = 'REGISTER'
   TYPE_CODE_ADD_MOBILE = 'ADD_MOBILE'
+  TYPE_CODE_RESET_MOBILE = 'RESET_MOBILE'
   TYPE_CODE_RESET_PASSWORD = 'RESET_PASSWORD'
 
   #接口变量定义
@@ -15,7 +17,7 @@ class SMSService
   SEND_TIME = ''; #发送时间,可以为空表示立即发送,yyyyMMddHHmmss 如:20130721182038
   WAIT_MINUTE = 1; # 发送间隔
   EFFECTIVE_TIME = 10; # 有效时间
-  ALLOW_VALIDATE_TIMES = 5; # 允许尝试次数
+  ALLOW_VALIDATE_TIMES = 10; # 允许尝试次数
   IS_TEST = false; # 测试模式不发送短信
 
   # 构造方法
@@ -54,7 +56,7 @@ class SMSService
       return [FALSE, '发送密度过大，请稍等重试']
     end
     user = User.where(mobile: @mobile).exists?
-    if user and type == TYPE_CODE_ADD_MOBILE
+    if user and (type == TYPE_CODE_ADD_MOBILE || type == TYPE_CODE_REGISTER || type == TYPE_CODE_RESET_MOBILE)
       return [FALSE, '该手机已经被使用']
     elsif !user and type == TYPE_CODE_RESET_PASSWORD
       return [FALSE, '该手机还没有被认证']
@@ -72,9 +74,15 @@ class SMSService
       return [FALSE, "验证码发送间隔为#{WAIT_MINUTE}分钟"]
     end
     # 根据类型发送不同消息
-    status = FALSE
-    status = send_code_for_add_mobile(code) if type == TYPE_CODE_ADD_MOBILE
-    status = send_code_for_reset_password(code) if type == TYPE_CODE_RESET_PASSWORD
+
+    if IS_TEST
+      status = true
+    else
+      status = FALSE
+      status = send_code_for_add_mobile(code) if (type == TYPE_CODE_ADD_MOBILE || type == TYPE_CODE_RESET_MOBILE)
+      status = send_code_for_register(code) if type == TYPE_CODE_REGISTER
+      status = send_code_for_reset_password(code) if type == TYPE_CODE_RESET_PASSWORD
+    end
     if status
       [TRUE, '验证码发送成功']
     else
@@ -91,7 +99,7 @@ class SMSService
 
     # 检测手机验证码格式
     unless Regular.is_mobile_code?(code)
-      return [FALSE, '验证码格式错误']
+      return [FALSE, '验证码格式不正确']
     end
 
     # 获取验证码纪录，如果不存在返回 FALSE
@@ -133,6 +141,12 @@ class SMSService
     doc = REXML::Document.new xml
     result = doc.root.attributes['result']
     result == 1
+  end
+
+  #发送验证码 － 注册
+  def send_code_for_register(code)
+    message = "您正通过手机注册豆姆账户，验证码为：#{code}，#{EFFECTIVE_TIME}分钟内有效，请尽快完成验证。"
+    send(message)
   end
 
   #发送验证码 － 添加手机号

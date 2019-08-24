@@ -1,32 +1,27 @@
 class Admin::CompetitionSchedulesController < AdminController
   before_action do
-    authenticate_permissions(['admin'])
+    authenticate_permissions(['admin', 'super_admin', 'edit'])
   end
 
   def edit
-    @comp_schedules=CompetitionSchedule.includes(:competition).where(competition_id: params[:id]).order('start_time asc').order('end_time asc')
+    id = params[:id]
+    @comp_schedules=CompetitionSchedule.includes(:competition).where(competition_id: id).order('start_time asc').order('end_time asc')
     if @comp_schedules.present?
-      @one_cs = CompetitionSchedule.new(competition_id: params[:id])
+      @one_cs = CompetitionSchedule.new(competition_id: id)
       @comp_schedule = @comp_schedules
     else
-      @comp_schedule = CompetitionSchedule.new(competition_id: params[:id])
+      @comp_schedule = CompetitionSchedule.new(competition_id: id)
     end
   end
 
 
   def create
-    if comp_schedule_params[:start_time].present? && comp_schedule_params[:start_time].split(':')[0].length < 2
-      comp_schedule_params[:start_time] = '0'+comp_schedule_params[:start_time]
-    end
-    if comp_schedule_params[:end_time].present? && comp_schedule_params[:end_time].split(':')[0].length < 2
-      comp_schedule_params[:end_time] = '0'+comp_schedule_params[:end_time]
-    end
     @comp_schedule = CompetitionSchedule.new(comp_schedule_params)
     respond_to do |format|
       if @comp_schedule.save
         format.html { redirect_to '/admin/competition_schedules/'+@comp_schedule.competition_id.to_s+'/edit', notice: '比赛进程创建成功.' }
       else
-        format.html { redirect_to '/admin/competition_schedules/'+comp_schedule_params[:competition_id].to_s+'/edit', notice: @comp_schedule.errors }
+        format.html { redirect_to '/admin/competition_schedules/'+comp_schedule_params[:competition_id].to_s+'/edit', notice: @comp_schedule.errors.full_messages.first }
         format.json { render json: @comp_schedule.errors, status: :unprocessable_entity }
       end
     end
@@ -34,18 +29,12 @@ class Admin::CompetitionSchedulesController < AdminController
 
 
   def update_cs
-    if params[:start_time].present? && params[:start_time].split(':')[0].length < 2
-      params[:start_time] = '0'+params[:start_time]
-    end
-    if params[:end_time].present? && params[:end_time].split(':')[0].length < 2
-      params[:end_time] = '0'+params[:end_time]
-    end
     cs = CompetitionSchedule.find(params[:sd])
-    cs.update_attributes!(name: params[:name], start_time: params[:start_time], end_time: params[:end_time])
+    cs.update_attributes(name: params[:name], start_time: params[:start_time], end_time: params[:end_time])
     if cs.save
-      result = [true, '更改成功']
+      result = {status: true, message: '更改成功', end_time: cs.end_time.try(:strftime, '%Y-%m-%d %H:%M')}
     else
-      result = [false, '更改失败']
+      result = {status: false, message: cs.errors.full_messages.first}
     end
     render json: result
   end
@@ -53,10 +42,15 @@ class Admin::CompetitionSchedulesController < AdminController
 
   def destroy
     @comp_schedule = CompetitionSchedule.find(params[:id])
-    @comp_schedule.destroy
+    if @comp_schedule.destroy
+      @notice = {status: true, message: '删除成功', id: @comp_schedule.id}
+    else
+      @notice = {status: false, message: '删除失败'}
+    end
     respond_to do |format|
       format.html { redirect_to "/admin/competition_schedules/#{@comp_schedule.competition_id.to_s}/edit", notice: '已成功删除.' }
       format.json { head :no_content }
+      format.js
     end
   end
 

@@ -1,0 +1,36 @@
+<div class="main" id="main">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <p>参加课程的历史信息</p>
+            <table class="table">
+              <tr>
+                <th>课程名称</th>
+                <th>课程时间</th>
+                <th>成绩</th>
+                <th>课件</th>
+                <th>作品</th>
+              </tr>
+              <% @courses.each do |c| %>
+                  <tr>
+                    <td><%= c.name %></td>
+                    <td><%= "#{c.start_time.strftime('%Y-%m-%d')} -- #{c.end_time.strftime('%Y-%m-%d')}" %></td>
+                    <td></td>
+                    <td><a href="">下载</a></td>
+                    <td><a href="/user/course_stu_opus/<%= c.course_id %>?per=6">查看</a></td>
+                  </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

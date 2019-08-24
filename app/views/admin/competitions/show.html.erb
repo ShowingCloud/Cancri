@@ -29,22 +29,44 @@
       <p><%= @competition.name %></p>
     </li>
     <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.aim') %>:</h4>
+
+      <p><%= @competition.aim %></p>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.date_schedule') %>:</h4>
+
+      <p><%= @competition.date_schedule %></p>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.organizing_committee') %>:</h4>
+
+      <p><%= @competition.organizing_committee %></p>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.apply_method') %>:</h4>
+
+      <p><%= @competition.apply_method %></p>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.apply_require') %>:</h4>
+
+      <p><%= @competition.apply_require %></p>
+    </li>
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.reward_method') %>:</h4>
+
+      <p><%= @competition.reward_method %></p>
+    </li>
+    <li class="list-group-item">
+      <h4>封面:</h4>
+
+      <p><%= image_tag(@competition.cover_url(:middle)) %></p>
+    </li>
+    <li class="list-group-item">
       <h4><%= t('simple_form.labels.defaults.description') %>:</h4>
 
       <p><%= @competition.description %></p>
-    </li>
-    <li class="list-group-item">
-      <h4><%= '举办方:' %></h4>
-
-      <p>指导方: <%= @competition.guide_units %></p>
-
-      <p>主办方: <%= @competition.organizer_units %></p>
-
-      <p>协办方: <%= @competition.help_units %></p>
-
-      <p>承办方: <%= @competition.undertake_units %></p>
-
-      <p>赞助商: <%= @competition.support_units %></p>
     </li>
     <li class="list-group-item">
       <h4><%= '报名起始时间' %>:</h4>
@@ -54,11 +76,34 @@
     </li>
 
     <li class="list-group-item">
+      <h4>学校审核截止时间:</h4>
+
+      <p><%= @competition.school_audit_time.try(:strftime, '%Y-%m-%d %H:%M') %></p>
+    </li>
+    <li class="list-group-item">
+      <h4>区县审核截止时间:</h4>
+
+      <p><%= @competition.district_audit_time.try(:strftime, '%Y-%m-%d %H:%M') %></p>
+    </li>
+
+    <li class="list-group-item">
       <h4>比赛起始时间:</h4>
 
       <p><%= @competition.start_time.try(:strftime, '%Y-%m-%d %H:%M') %>
         － <%= @competition.end_time.try(:strftime, '%Y-%m-%d %H:%M') %></p>
     </li>
+
+    <% if @competition.time_schedule.present? %>
+        <li class="list-group-item">
+          <a href="<%= @competition.time_schedule %>" target="_blank">查看时间安排</a>
+        </li>
+    <% end %>
+
+    <% if @competition.detail_rule.present? %>
+        <li class="list-group-item">
+          <a href="<%= @competition.detail_rule %>" target="_blank">查看详细规则</a>
+        </li>
+    <% end %>
 
   </ul>
 </div>

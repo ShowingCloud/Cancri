@@ -1,0 +1,56 @@
+<div id="main" class="main">
+  <div class="container" id="user-notification">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @teachers.present? %>
+                <input type="hidden" class="district_input"/>
+                <input type="hidden" class="school_input"/>
+                <input type="hidden" id="change_district_id"/>
+                <table class="table vertical-align-middle" id="teacher-edit-table">
+                  <thead>
+                  <tr>
+                    <th>姓名</th>·
+                    <th>学校</th>
+                    <th>级别</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <% @teachers.each do |teacher| %>
+                      <tr>
+                          <input id="teacher_role_id" value="<%= teacher.id %>" type="hidden"/>
+                          <td><%= teacher.username %></td>
+                          <td><span class="school-name"><%= teacher.school_name %></span></td>
+                          <td><span class="role-type"><%= show_teacher_role(teacher.role_type) %></span></td>
+                          <td>
+                            <button class="btn btn-primary teacher-edit" data-role-type= "<%= teacher.role_type %>" data-url="<%= user_teacher_audit_path(status: 1, id: teacher.id) %>">
+                              修改
+                            </button>
+                          </td>
+                      </tr>
+                    <% end %>
+                    <nav>
+                      <%= paginate @teachers %>
+                    </nav>
+                  </tbody>
+                </table>
+
+            <% else %>
+                <p> 暂无老师</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<%= render "user/school_district_modal" %>

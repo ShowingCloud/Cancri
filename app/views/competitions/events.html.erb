@@ -1,0 +1,348 @@
+<div class="main" id="main" >
+  <div class="container text-center" id="event-list">
+    <h3>
+      <%= @competition.name %>
+    </h3>
+
+    <ul class="competition-steps clearfix">
+      <li class="step-wrapper">
+        <p class="step">STEP1</p>
+        <p class="step-desc">选择赛事项目</p>
+      </li>
+      <li class="step-wrapper active">
+        <p class="step">STEP2</p>
+        <p class="step-desc">更新选手信息</p>
+      </li>
+      <li class="step-wrapper">
+        <p class="step">STEP3</p>
+        <p class="step-desc">提交报名信息</p>
+      </li>
+      <li class="step-wrapper">
+        <p class="step">STEP4</p>
+        <p class="step-desc">等待审核</p>
+      </li>
+    </ul>
+
+    <% if @events.is_a?(Hash) %>
+        <div class="middle center-block">
+          <% if @competition.apply_end_time > Time.now %>
+              <% already = @events[:already] %>
+              <% one = @events[:one] %>
+              <% multiple = @events[:multiple] %>
+              <div class="box">
+              <% if current_user %>
+                <% unless already.present? %>
+                  <div id="empty">
+                    您暂没有报名任何项目
+                  </div>
+                <% end %>
+
+                  <div id="applied-events-wrapper" class="<%= "hidden" unless already.present? %>">
+                    <h4>已选项目</h4>
+                    <div class="tips">已提交状态才算是完成报名</div>
+
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>项目</th>
+                          <th>类别</th>
+                          <th>状态</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% already.each do |apply_event| %>
+                          <tr data-identifier="<%= apply_event.identifier %>" data-team-id="<%= apply_event.team_id %>" data-leader-id="<%= apply_event.leader_id %>" data-player-id="<%= apply_event.player_id %>">
+                            <td><%= apply_event.name %></td>
+                            <td><%= apply_event.team_max_num == 1 ? "单人" : "多人" %></td>
+                            <td class="team_status" >
+                              <% if apply_event.team_status == 0 && apply_event.leader_id == apply_event.player_id %>
+                                <a class="btn btn-lightblue submit">提交</a>
+                              <% else %>
+                                <%= show_team_status(apply_event.team_status) %>
+                              <% end %>
+                            </td>
+                            <td>
+                              <% if apply_event.team_max_num > 1 %>
+                                <a class="btn btn-lightblue view-team">查看队伍</a>
+                              <% else %>
+                                <a class="btn btn-lightblue view-info">查看信息</a>
+                              <% end %>
+                            </td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+              <% end %>
+              </div>
+            <div class="box">
+              <h4>可选项目</h4>
+              <div class="box">
+                <% if one.present? %>
+                <div class="clearfix">
+                  <h4>单人项目</h4>
+                  <a id="one-event-apply" class="btn btn-lightblue btn-sm pull-right">报名</a>
+                </div>
+                <div class="row">
+                  <% one.each do |one_events| %>
+                      <div class="col-md-4" id="one-event-<%= one_events.id %>">
+                        <input type="checkbox" name="one-event" value="<%= one_events.id %>">
+                        <label><%= one_events.name %></label>
+                      </div>
+                  <% end %>
+                </div>
+                <% end %>
+              </div>
+              <% if multiple.present? %>
+                <div class="box">
+                  <h4>多人项目</h4>
+                  <div class="row">
+                    <label class="col-md-3 col-md-offset-2">项目</label><%= select_tag 'multiple_events', options_for_select(multiple.collect{ |u| [u.name, u.id] }),class: 'col-md-3', include_blank: "请选择" %>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <label class="col-md-3 col-md-offset-2">队伍编号</label><input type="search" class="col-md-3" id="search-team-input"><a class="btn btn-lightblue" id="search-team-btn">搜索</a>
+                  </div>
+                  <br>
+                  <div class="box hidden" id="teams-table-wrapper">
+                    <table class="table" id="teams-table">
+                      <thead>
+                        <tr>
+                          <th>项目</th>
+                          <th>组别</th>
+                          <th>队长</th>
+                          <th>学校</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                    </table>
+                </div>
+                <p>还没有建立队伍的，可以自行创建邀请小伙伴加入噢</p>
+                <a class="btn btn-lightblue" id="multi-event-apply">创建队伍</a>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+              <h3 class="text-center" style="color: white">已过报名时间</h3>
+          <% end %>
+        </div>
+    <% else %>
+        <div class="tips">该比赛暂无项目</div>
+    <% end %>
+
+  </div>
+</div>
+
+<input type="hidden" id="signed-in" value="<%= user_signed_in? %>"/>
+<% if user_signed_in? %>
+<div id="user-apply-info" class="modal" tabindex="-1"  role="dialog" data-keyboard="false" data-backdrop="static" style="z-index:1050">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="blue bigger text-center">确认报名信息</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row">
+
+          <div class="col-xs-12">
+            <div class="row">
+              <form class="form-horizontal" id="competition-apply-batch">
+                <div class="form-group">
+                  <label for="username" class="col-sm-3 control-label">姓名</label>
+
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" name="username" id="username-join" value="<%= @user_info.try(:username) %>" placeholder="姓名">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="gender" class="col-sm-3 control-label">性别</label>
+
+                  <div class="col-sm-8 form-plain">
+                    <label class="gender-label"><input type="radio" name="gender" value="1" <%= 'checked="checked"' if @user_info.try(:gender).to_i == 1 %>/>男</label>
+                    <label class="gender-label"><input type="radio" name="gender" value="2" <%= 'checked="checked"' if @user_info.try(:gender).to_i == 2 %>/>女</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="mobile" class="col-sm-3 control-label">手机号</label>
+
+                  <div class="col-sm-8 form-plain">
+
+                    <span id="mobile"><%= current_user.try(:mobile) %></span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="birthday" class="col-sm-3 control-label">生日</label>
+
+                  <div class="col-sm-8">
+                    <input type="text" name="birthday" class="form-control datetime" id="birthday-join" value="<%= @user_info.try(:birthday) %>" data-type="select-date" data-date-format="yyyy-mm-dd">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="school_name" class="col-sm-3 control-label">学籍所在学校</label>
+
+                  <div class="col-sm-8 form-plain">
+                    <% if @user_info.school_id.present? && @user_info.school_id!=0 %>
+                        <span class="change-school school-tag"><%= @user_info.school_name %> </span>
+                    <% else %>
+                        <button class="new-school btn-robodou">选择学校</button>
+                    <% end %>
+                    <input type="hidden" class="district_input" id="district-id" value="<%= @user_info.try(:district_id) %>"/>
+                    <input type="hidden" id="change_district_id" value="<%= @user_info.try(:district_id) %>"/>
+                    <input type="hidden" class="school_input" name="school_id" id="school-id" value="<%= @user_info.try(:school_id) %>"/>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="school_name" class="col-sm-3 control-label">报名学校</label>
+
+                  <div class="col-sm-8 form-plain">
+                    <% if @user_info.school_id.present? && @user_info.school_id!=0 %>
+                        <span class="change-school school-tag"><%= @user_info.school_name %> </span>
+                    <% else %>
+                        <button class="new-school btn-robodou">选择学校</button>
+                    <% end %>
+                    <input type="hidden" id="district-id" value="<%= @user_info.district_id %>"/>
+                    <input type="hidden" name="sk_station" id="school-id" value="<%= @user_info.school_id %>"/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="grade" class="col-sm-3 control-label">年级</label>
+
+                  <div class="col-sm-8">
+                    <%= select_tag "grade-join", options_for_select([ ['一年级', '1'], ['二年级', '2'], ['三年级', '3'], ['四年级', '4'], ['五年级', '5'], ['六年级（初中预备）', '6'], ['七年级（初中一年级）', '7'], ['八年级（初中二年级）', '8'], ['九年级（初中三年级）', '9'], ['高中一年级','10'], ['高中二年级','11'], ['高中三年级','12'] ], @user_info.grade.to_i),name: "grade",class: "form-control" %>
+                  </div>
+                </div>
+                <div class="form-group identity-group-join <%= 'hide' if @user_info.grade.to_i < 10 %>">
+                  <label for="identity_card" class="col-sm-3 control-label">身份证</label>
+
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" name="identity_card" id="identity_card-join" value="<%= @user_info.identity_card %>">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="bj" class="col-sm-3 control-label">班级</label>
+
+                  <div class="col-sm-8">
+                     <%= select_tag "bj-join", options_for_select((1..100), @user_info.bj),name: "bj", class: "form-control" %>
+                  </div>
+                </div>
+                <div class="form-group" id="group-join">
+                  <label for="group" id="team-group" class="col-sm-3 control-label">组别</label>
+
+                  <div class="col-sm-8">
+                    <select  class="form-control" name="group">
+                      <option value="">请选择组别</option>
+                      <option value="1">小学</option>
+                      <option value="2">中学</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group" id="teacher-join">
+                  <label for="teacher" class="col-sm-3 control-label">指导教师</label>
+
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" name="teacher" >
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="student_code" class="col-sm-3 control-label">学籍号</label>
+
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" name="student_code" id="student_code-join" value="<%= @user_info.student_code %>">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-8">
+                    <a class="btn btn-info" id="competition-apply-batch-submit">提交</a>
+                  </div>
+                </div>
+                <!--</div>-->
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= render "user/school_district_modal" %>
+
+<div id="viewTeamModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <div class="info">
+            <div>项目</div>
+            <div>编号</div>
+            <div>人数</div>
+            <div>组别</div>
+          </div>
+        </div>
+          <div class="leader-required multi_only">
+          <div class="row text-center">
+            <div class="col-md-4"><label>邀请队员</label></div>
+            <div class="col-md-4">
+              <input type="search" id="search-player-input">
+            </div>
+            <div class="col-md-4">
+              <a class="btn btn-primary" id="search-player-btn">搜索</a>
+            </div>
+          </div>
+
+          <div id="search-player-result" class="box hidden">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>队员姓名</th>
+                  <th>性别</th>
+                  <th>学校</th>
+                  <th>年级</th>
+                  <th>班级</th>
+                </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
+          </div>
+          </div>
+        <table class="table multi_only" id="players-table">
+          <thead>
+            <tr>
+              <th>队员姓名</th>
+              <th>性别</th>
+              <th>学校</th>
+              <th>年级</th>
+              <th>班级</th>
+              <th>状态</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+        <div class="button-row leader-required">
+          <a class="btn btn-primary" id="delete-team">解散队伍</a>
+          <a class="btn btn-primary" id="submit-team">提交</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<% end %>

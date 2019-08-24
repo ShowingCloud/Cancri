@@ -4,25 +4,25 @@ class Admin::EventSchedulesController < AdminController
   end
 
   def edit
-    @event_schedules=EventSchedule.includes(:event, :schedule).where(event_id: params[:id]).order('event_schedules.group asc')
+    id = params[:id]
+    @event = Event.joins(:competition).where(id: id).select(:id, :name, 'competitions.name as comp_name', 'competitions.end_time as comp_end_time').take!
+    @event_schedules = EventSchedule.left_joins(:schedule).where(event_id: id).select(:id, :event_id, :kind, :group, :is_show, 'schedules.name as schedule_name').order('event_schedules.group asc')
     if @event_schedules.present?
-      @one_cs = EventSchedule.new(event_id: params[:id])
+      @one_cs = EventSchedule.new(event_id: id)
       @event_schedule = @event_schedules
     else
-      @event_schedule = EventSchedule.new(event_id: params[:id])
+      @event_schedule = EventSchedule.new(event_id: id)
     end
-    @event_group = Event.find(params[:id]).try(:group)
   end
 
 
   def create
-
     @event_schedule = EventSchedule.new(event_schedule_params)
     respond_to do |format|
       if @event_schedule.save
         format.html { redirect_to '/admin/event_schedules/'+@event_schedule.event_id.to_s+'/edit', notice: '比赛进程创建成功.' }
       else
-        format.html { redirect_to "/admin/event_schedules/#{params[:event_schedule][:event_id]}/edit", notice: @event_schedule.errors }
+        format.html { redirect_to "/admin/event_schedules/#{params[:event_schedule][:event_id]}/edit", alert: @event_schedule.errors.full_messages }
         format.json { render json: @event_schedule.errors, status: :unprocessable_entity }
       end
     end
@@ -37,6 +37,26 @@ class Admin::EventSchedulesController < AdminController
       result = [false, '更改失败']
     end
     render json: result
+  end
+
+  def update_is_show
+    is_show = params[:value]
+    esd = params[:esd]
+    if is_show && esd
+      es = EventSchedule.find_by_id(esd)
+      if es.present?
+        if es.update_attributes(is_show: is_show)
+          result= [true, '更新成功']
+        else
+          result = [false, '更新失败']
+        end
+      else
+        result = [false, '不规范请求']
+      end
+    else
+      result = [false, '参数不完整']
+    end
+    render json: {status: result[0], message: result[1]}
   end
 
 

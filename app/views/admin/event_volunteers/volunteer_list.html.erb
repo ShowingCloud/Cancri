@@ -1,0 +1,209 @@
+<h1 class="page-header">
+  <%= @event_volunteer.name %>
+  <small class="pull-right">
+    <a href="<%= admin_event_volunteers_path %>" class="btn btn-default"><i class="icon icon-list"></i></a>
+  </small>
+</h1>
+<div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
+  <div class="widget-header widget-header-small">
+    <h5 class="lighter">搜索</h5>
+  </div>
+  <div class="widget-body">
+    <div class="widget-main">
+      <form class="form" role="form" method="get">
+        <div class="input-group" data-search="field">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+              <span data-search-text class="admin-search-field"><%= t('simple_form.labels.defaults.name') %></span>
+              <span class="caret"></span></button>
+            <ul class="dropdown-width dropdown-menu">
+              <li data-search-option="name"><a><%= t('simple_form.labels.defaults.name') %></a></li>
+              <li data-search-option="id"><a>ID</a></li>
+            </ul>
+          </div>
+          <input type="hidden" name="field" value="<%= params[:field].present? ? params[:field] : 'name' %>"/>
+          <input placeholder="输入关键字，按回车键提交" value="<%= params[:keyword] %>" name="keyword" type="text" class="form-control" aria-label="...">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<% if @event_vol_users.present? %>
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th><%= t('simple_form.labels.defaults.username') %></th>
+        <th><%= t('simple_form.labels.defaults.mobile') %></th>
+        <th><%= t('simple_form.labels.defaults.standby_school') %></th>
+        <th>次数</th>
+        <th>平均积分</th>
+        <th><%= t('simple_form.labels.defaults.alipay_account') %></th>
+        <th>状态</th>
+        <th>职位分配</th>
+        <th>本次积分</th>
+        <th>描述</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @event_vol_users.each do |event_volunteer_user| %>
+          <% volunteer_user_id = event_volunteer_user.id %>
+          <tr id="row-<%= volunteer_user_id %>">
+            <td><%= volunteer_user_id %></td>
+            <td><%= event_volunteer_user.username %></td>
+            <td><%= event_volunteer_user.mobile %></td>
+            <td><%= event_volunteer_user.standby_school %></td>
+            <% join_times = event_volunteer_user.times %>
+            <td id="joins-times-<%= volunteer_user_id %>"><%= join_times %></td>
+            <td id="avg-point-<%= volunteer_user_id %>"><%= (Float(event_volunteer_user.points)/join_times).round(2) if join_times>0 %></td>
+            <td><%= event_volunteer_user.alipay_account %></td>
+            <td id="volunteer-user-<%= volunteer_user_id %>">
+              <% if event_volunteer_user.status == 0 %>
+                  <a href="#show-audit-event-volunteer" class="btn btn-xs btn-danger open-audit-event-volunteer" data-name="<%= event_volunteer_user.username %>" data-type="<%= @event_volunteer.event_type %>" data-id="<%= volunteer_user_id %>" data-toggle="modal">待审核</a>
+              <% else %>
+                  录用
+              <% end %>
+            </td>
+            <td id="volunteer-position-<%= volunteer_user_id %>"><%= event_volunteer_user[:event_name] %><%== '<br>'.html_safe if event_volunteer_user[:event_name] %><%= event_volunteer_user.position_name %></td>
+            <td>
+              <% if event_volunteer_user.status ==1 %>
+                  <a href="#open-write-point" data-toggle="modal" id="volunteer-point-<%= volunteer_user_id %>" class="btn btn-xs btn-info show-update-volunteer" data-id="<%= volunteer_user_id %>">
+                    <% if event_volunteer_user.point.present? %>
+                        <%= event_volunteer_user.point %>
+                    <% else %>
+                        打分
+                    <% end %>
+                  </a>
+              <% end %>
+            </td>
+            <td id="volunteer-desc-<%= volunteer_user_id %>">
+              <% if event_volunteer_user.status ==1 %><%= event_volunteer_user.desc %>
+              <% end %>
+            </td>
+            <td><%= link_to "/admin/volunteers/#{event_volunteer_user.role_id}", title: '查看', class: 'btn btn-xs btn-warn' do %>
+                  <i class="icon-eye-open bigger-120"></i>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <nav>
+      <%= paginate @event_vol_users %>
+    </nav>
+
+    <!-- write-point-modal-start-->
+    <div id="open-write-point" class="modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header widget-header">
+            <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+            <h4 class="blue smaller text-center">更新积分及备注<span class="red" id="volunteer-username"></span></h4>
+          </div>
+          <div class="modal-body overflow-visible">
+
+            <div class="row text-center">
+
+              <div class="col-sm-offset-2 col-sm-8">
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">积分:</label>
+                    <div class="col-sm-10">
+                      <input id="update-volunteer-point" class="form-control" placeholder="请输入积分" autofocus value="">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">备注:</label>
+                    <div class="col-sm-10">
+                      <textarea id="update-volunteer-desc" style="resize: none;max-width: 368px" class="form-control" maxlength="200" placeholder="请输入描述（如需备注）"></textarea>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <br>
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm" data-dismiss="modal">
+              <i class="icon-remove"></i>
+              取消
+            </button>
+
+            <button class="btn btn-sm btn-primary update-volunteer-point-submit">
+              <i class="icon-ok"></i>
+              提交
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <!-- end -->
+
+    <div id="show-audit-event-volunteer" class="modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header widget-header">
+            <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+            <h4 class="blue smaller text-center">是否录用<span class="red" id="volunteer-username"></span></h4>
+          </div>
+          <div class="modal-body overflow-visible">
+            <div class="row text-center select-review-status">
+              <label class=""><input name="review-status" value="1" type="radio"/> 录用</label>&nbsp;&nbsp;
+              <label class=""><input name="review-status" value="0" type="radio"/> 不录用</label>
+            </div>
+            <br>
+            <div id="volunteer-position-show" class="hide">
+              <% if @event_volunteer.event_type == 'Competition' %>
+                  <div id="event-list">
+                    <select id="competition-event-id" class="col-sm-6">
+                      <option value="">请选择项目</option>
+                      <% events = Event.where(competition_id: @event_volunteer.type_id, is_father: false).select(:id, :name) %>
+                      <% if events.present? %>
+                          <% events.each do |event| %>
+                              <option value="<%= event.id %>"><%= event.name %></option>
+                          <% end %>
+                      <% end %>
+                    </select>
+                  </div>
+              <% end %>
+              <div class="center">
+                <select id="volunteer-position">
+                  <option value="">请选择职位</option>
+
+                  <% if @event_volunteer.event_vol_positions.present? %>
+                      <% @event_volunteer.event_vol_positions.each do |position| %>
+                          <option value="<%= position.id %>"><%= position.name %></option>
+                      <% end %>
+                  <% end %>
+                </select>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm" data-dismiss="modal">
+              <i class="icon-remove"></i>
+              取消
+            </button>
+
+            <button class="btn btn-sm btn-primary event-volunteer-status-submit">
+              <i class="icon-ok"></i>
+              提交
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+<% else %>
+    <div class="alert alert-success">暂无志愿者报名</div>
+<% end %>
+
+

@@ -1,0 +1,11 @@
+<% if @course_score_attr.errors.blank? %>
+var selector = '.course-score-attrs-list';
+$.get(location.href, function (html) {
+  var doc = $(html).find(selector);
+  $(selector).replaceWith(doc);
+});
+bootbox.hideAll();
+<% else %>
+var html = "<%= j(render('form', remote: true)) %>";
+$('form.new_course_score_attribute').replaceWith(html);
+<% end %>

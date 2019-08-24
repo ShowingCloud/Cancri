@@ -1,0 +1,36 @@
+<h1 class="page-header">
+  显示<%= t('activerecord.models.school') %>
+  <small class="pull-right">
+    <a href="<%= new_admin_school_path(@school) %>" title="新增<%= t('activerecord.models.school') %>" class="btn btn-default">
+      <i class="icon-plus icon-only"></i></a>
+    <a href="<%= edit_admin_school_path(@school) %>" title="编辑" class="btn btn-default">
+      <i class="icon-edit icon-only"></i></a>
+    <a href="<%= admin_schools_path %>" title="<%= t('activerecord.models.school') %>列表" class="btn btn-default">
+      <i class="icon-list icon-only"></i></a>
+  </small>
+</h1>
+
+<% if notice %>
+    <div class="alert alert-success"><%= notice %>
+      <button class="close" data-dismiss="alert">
+        <i class="icon-remove"></i>
+      </button>
+    </div>
+<% end %>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <%= t('activerecord.models.school') %>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <h4><%= t('simple_form.labels.defaults.name') %>:</h4>
+
+      <%= @school.name %>
+    </li>
+    <li class="list-group-item">
+      <h4>区县:</h4>
+
+      <%= @school.district_name %>
+    </li>
+  </ul>
+</div>

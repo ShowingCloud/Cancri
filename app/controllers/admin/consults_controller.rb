@@ -37,10 +37,11 @@ class Admin::ConsultsController < AdminController
         if consult_params[:parent_id].present?
           Consult.find(consult_params[:parent_id]).update_attributes(status: true)
         end
-        format.html { redirect_to "/admin/consults/#{@consult.id}?ud=#{@consult.user_id}", notice: t('activerecord.models.consult')+'创建成功!' }
+        format.html { redirect_to "/admin/consults/#{@consult.id}?ud=#{@consult.user_id}", notice: '回复成功!' }
         format.json { render action: 'show', status: :created, location: @consult }
       else
-        format.html { redirect_to "/admin/consults/new?pd=#{consult_params[:parent_id]}&ud=#{consult_params[:user_id]}", notice: '内容至少6个字符' }
+
+        format.html { redirect_to "/admin/consults/new?pd=#{consult_params[:parent_id]}&ud=#{consult_params[:user_id]}&content=#{consult_params[:reply_content]}", notice: '内容至少6个字符' }
         format.json { render json: @consult.errors, status: :unprocessable_entity }
       end
     end
@@ -51,7 +52,7 @@ class Admin::ConsultsController < AdminController
   def update
     respond_to do |format|
       if @consult.update(consult_params)
-        format.html { redirect_to [:admin, @consult], notice: t('activerecord.models.consult')+'更新成功!' }
+        format.html { redirect_to "/admin/consults/#{@consult.id}?ud=#{@consult.user_id}", notice: t('activerecord.models.consult')+'更新成功!' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }

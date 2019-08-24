@@ -1,11 +1,9 @@
 <h1 class="page-header">
   显示<%= t('activerecord.models.demeanor') %>
   <small class="pull-right">
-    <a href="<%= "#{new_admin_photo_path}?cod=#{@photo.competition_id}" %>" title="新建<%= t('activerecord.models.demeanor') %>" class="btn btn-default">
-      <i class="icon-plus icon-only"></i></a>
     <a href="<%= edit_admin_photo_path(@photo) %>" title="编辑" class="btn btn-default">
       <i class="icon-edit icon-only"></i></a>
-    <a href="<%= "#{admin_photos_path}?cod=#{@photo.competition_id}" %>" title="列表" class="btn btn-default">
+    <a href="<%= "#{admin_photos_path}?type_id=#{@photo.type_id}&type=#{@photo.photo_type}" %>" title="列表" class="btn btn-default">
       <i class="icon-list icon-only"></i></a>
   </small>
 </h1>
@@ -23,14 +21,23 @@
   </div>
   <ul class="list-group">
     <li class="list-group-item">
-      <h4><%= t('simple_form.labels.defaults.competition_id') %>:</h4>
+      <h4>归属:</h4>
+      <% if @photo.photo_type == 0 %>
+          <%= @photo.competition.name %>
+      <% elsif @photo.photo_type == 1 %>
+          <%= @photo.activity.name %>
+      <% end %>
 
-      <%= @photo.competition.name %>
     </li>
     <li class="list-group-item">
       <h4>图片:</h4>
 
       <%= image_tag(@photo.image_url(:large)) %>
+    </li>
+    <li class="list-group-item">
+      <h4> 显示:</h4>
+
+      <%= @photo.status ? '是':'否'  %>
     </li>
   </ul>
 </div>

@@ -2,86 +2,115 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-
-  before_action do
-    resource = controller_name.singularize.to_sym
-    method = "#{resource}_params"
-    params[resource] &&= send(method) if respond_to?(method, true)
-    cookies.signed[:user_id] ||= current_user.try(:id)
-  end
-
+  helper_method :has_teacher_role, :is_teacher, :check_teacher_role, :show_teacher_role
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-
-  def render_404
-    render_optional_error_file(404)
+  before_action do
+    cookies.signed[:user_id] ||= current_user.try(:id)
   end
 
-  def render_403
-    render_optional_error_file(403)
+  def new_session_path(scope)
+    new_user_session_path
   end
 
-  def render_optional_error_file(status_code)
-    status = status_code.to_s
-    fname = %w(404 403 422 500).include?(status) ? status : 'unknown'
-    render template: "/errors/#{fname}", format: [:html],
-           handler: [:erb], status: status, layout: 'application'
+  def session_path(scope)
+    new_user_session_path
   end
 
-  def store_location
-    session[:return_to] = request.request_uri
+  def after_sign_in_path_for(resource)
+    request.env['omniauth.origin'] || stored_location_for(resource) || root_path
   end
 
-  # def redirect_back_or_default(default)
-  #   redirect_to(session[:return_to] || default)
-  #   session[:return_to] = nil
-  # end
-
-  # def redirect_referrer_or_default(default)
-  #   redirect_to(request.referrer || default)
-  # end
-
-  def require_user
-    if current_user.blank?
-      respond_to do |format|
-        format.html { authenticate_user! }
-        format.all { head(:unauthorized) }
-      end
-    end
-  end
-
-  def require_email
-    if current_user.present?
-      current_user.email.present?
-    else
-      require_user
-    end
+  def current_user
+    return @current_user if defined? @current_user
+    @current_user ||= warden.authenticate(scope: :user)
   end
 
   def require_mobile
     if current_user.present?
-      current_user.mobile.present?
+      response = Typhoeus.get("#{Settings.auth_url}/user_infos/#{current_user.id}.json", headers: {Authorization: Settings.auth_token})
+      if response.code == 200
+        data = JSON.parse(response.body)
+        return true && current_user.update_attributes(mobile: data["mobile"]) if data["mobile"].present?
+      else
+        logger.error "request user data from #{response.effective_url} failed"
+        current_user.mobile.present?
+      end
     else
-      require_user
+      false
     end
   end
 
-  def require_email_and_mobile
-    if current_user.present?
-      current_user.mobile.present? && current_user.mobile.present?
+  rescue_from ActiveRecord::RecordNotFound do |exception|
+    render_optional_error(404)
+  end
+
+  def render_optional_error(status_code)
+    status = status_code.to_s
+    fname = %w(404 403 422 500).include?(status) ? status : 'unknown'
+    render template: "/errors/#{fname}", formats: [:html],
+           handler: [:erb], status: status, layout: request.fullpath.to_s.index('/admin') ? 'admin_boot' : 'application'
+  end
+
+  def check_teacher_role(ud)
+    if ud.to_i !=0
+      UserRole.where(role_id: 1, user_id: ud, status: 1).exists?
     else
-      require_user
+      false
     end
   end
 
-  protected
+  def has_teacher_role
+    return false if current_user.blank?
+    @has_th_role ||= UserRole.where(user_id: current_user.id, role_id: 1, status: 1).exists?
+  end
+
+  def is_teacher
+    unless has_teacher_role
+      render_optional_error(403)
+    end
+  end
+
+  def super_district_teacher
+    return false if current_user.blank?
+    @district_teacher_role = current_user.user_roles.where(role_id: 1, role_type: 2, status: 1).take
+    unless @district_teacher_role.present?
+      render_optional_error(403)
+    end
+  end
+
+  def the_course_teacher(course_id)
+    if Course.find_by_id(course_id).user_id == current_user.id
+      true
+    else
+      render_optional_error(403)
+    end
+  end
+
+  def show_teacher_role(role_type)
+    case role_type when 1
+                     '市级'
+      when 2
+        '区级（高级）'
+      when 3
+        '校级（高级）'
+      when 4
+        '区级'
+      when 5
+        '校级'
+      when 6
+        '外聘'
+      else
+        '未知'
+    end
+  end
+
+  private
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up) { |u| u.permit(:nickname, :password, :password_confirmation, :remember_me) }
-    devise_parameter_sanitizer.permit(:sign_in) { |u| u.permit(:login, :password, :remember_me) }
+    devise_parameter_sanitizer.permit(:sign_up) { |u| u.permit(:nickname, :email, :password, :password_confirmation, :remember_me) }
+    devise_parameter_sanitizer.permit(:sign_in) { |u| u.permit(:login, :password, :remember_me, :return_to) }
     devise_parameter_sanitizer.permit(:account_update) { |u| u.permit(:username, :email, :password, :password_confirmation, :current_password) }
   end
-
-
 end

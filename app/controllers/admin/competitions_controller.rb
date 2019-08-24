@@ -7,11 +7,15 @@ class Admin::CompetitionsController < AdminController
   # GET /admin/competitions
   # GET /admin/competitions.json
   def index
+    competitions = Competition.left_joins(:district).select('competitions.*', 'districts.name as district_name'); false
     if params[:field].present? && params[:keyword].present?
-      @competitions = Competition.all.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"]).page(params[:page]).per(params[:per])
-    else
-      @competitions = Competition.all.page(params[:page]).per(params[:per])
+      if params[:field] == 'district'
+        competitions = competitions.where(["districts.name like ?", "%#{params[:keyword]}%"])
+      else
+        competitions = competitions.where(["competitions.#{params[:field]} like ?", "%#{params[:keyword]}%"])
+      end
     end
+    @competitions = competitions.page(params[:page]).per(params[:per])
   end
 
   def get_events
@@ -23,56 +27,56 @@ class Admin::CompetitionsController < AdminController
     render json: events
   end
 
-  def events
-    @events = Event.find_by_sql("select a.id,a.name,group_concat(event_workers.user_id) as user_ids,count(event_workers.user_id) as worker_count from events a left join event_workers on a.id = event_workers.event_id where a.competition_id=#{params[:id]} and a.is_father=0 GROUP BY a.id").map { |e| {
-        id: e.id,
-        name: e.name,
-        worker_count: e.worker_count,
-        workers: e.user_ids.blank? ? nil : e.user_ids.split(',').map { |x| [x.to_i, UserProfile.find(x.to_i).username] }
-    } }
-    @events_workers = CompWorker.find_by_sql("select a.user_id as user_id,user_profiles.username as username from comp_workers a left join user_profiles on a.user_id = user_profiles.user_id where a.competition_id=#{params[:id]} and a.status=1 GROUP BY a.user_id")
-  end
+  # def events
+  #   @events = Event.find_by_sql("select a.id,a.name,group_concat(event_workers.user_id) as user_ids,count(event_workers.user_id) as worker_count from events a left join event_workers on a.id = event_workers.event_id where a.competition_id=#{params[:id]} and a.is_father=0 GROUP BY a.id").map { |e| {
+  #       id: e.id,
+  #       name: e.name,
+  #       worker_count: e.worker_count,
+  #       workers: e.user_ids.blank? ? nil : e.user_ids.split(',').map { |x| [x.to_i, UserProfile.find(x.to_i).username] }
+  #   } }
+  #   @events_workers = CompWorker.find_by_sql("select a.user_id as user_id,user_profiles.username as username from comp_workers a left join user_profiles on a.user_id = user_profiles.user_id where a.competition_id=#{params[:id]} and a.status=1 GROUP BY a.user_id")
+  # end
+  #
+  # def workers
+  #   @worker_events = CompWorker.find_by_sql("select a.user_id as user_id,group_concat(events.name) as events,count(event_workers.event_id) as count,user_profiles.username as username,count(event_workers.event_id) as eds, group_concat(event_workers.event_id) from comp_workers a left join event_workers on event_workers.user_id = a.user_id left join events on events.id = event_workers.event_id left join user_profiles on a.user_id = user_profiles.user_id where a.competition_id=#{params[:id]} and a.status=1 GROUP BY a.user_id")
+  # end
 
-  def workers
-    @worker_events = CompWorker.find_by_sql("select a.user_id as user_id,group_concat(events.name) as events,count(event_workers.event_id) as count,user_profiles.username as username,count(event_workers.event_id) as eds, group_concat(event_workers.event_id) from comp_workers a left join event_workers on event_workers.user_id = a.user_id left join events on events.id = event_workers.event_id left join user_profiles on a.user_id = user_profiles.user_id where a.competition_id=#{params[:id]} and a.status=1 GROUP BY a.user_id")
-  end
-
-  def delete_event_worker
-    if params[:ud].present? && params[:ed].present?
-      ew = EventWorker.where(user_id: params[:ud], event_id: params[:ed]).take.delete
-      if ew.delete
-        result = [true, '删除成功']
-      else
-        result = [false, '删除失败']
-      end
-    else
-      result=[false, '不规范操作']
-    end
-    render json: result
-  end
-
-  def add_event_worker
-    user_ids = params[:user_ids]
-    ed = params[:ed]
-    if user_ids.length == 0
-      result = [false, '选择的裁判人数不能为零']
-    else
-      message = ''
-      user_ids.each do |ud|
-        ewe = EventWorker.where(event_id: ed, user_id: ud).exists?
-        unless ewe
-          ew = EventWorker.create!(event_id: ed, user_id: ud)
-          if ew.save
-            message = '添加成功' + message.to_s
-          else
-            message = '添加失败' + message.to_s
-          end
-        end
-      end
-      result = [true, message]
-    end
-    render json: result
-  end
+  # def delete_event_worker
+  #   if params[:ud].present? && params[:ed].present?
+  #     ew = EventWorker.where(user_id: params[:ud], event_id: params[:ed]).take.delete
+  #     if ew.delete
+  #       result = [true, '删除成功']
+  #     else
+  #       result = [false, '删除失败']
+  #     end
+  #   else
+  #     result=[false, '不规范操作']
+  #   end
+  #   render json: result
+  # end
+  #
+  # def add_event_worker
+  #   user_ids = params[:user_ids]
+  #   ed = params[:ed]
+  #   if user_ids.length == 0
+  #     result = [false, '选择的裁判人数不能为零']
+  #   else
+  #     message = ''
+  #     user_ids.each do |ud|
+  #       ewe = EventWorker.where(event_id: ed, user_id: ud).exists?
+  #       unless ewe
+  #         ew = EventWorker.create!(event_id: ed, user_id: ud)
+  #         if ew.save
+  #           message = '添加成功' + message.to_s
+  #         else
+  #           message = '添加失败' + message.to_s
+  #         end
+  #       end
+  #     end
+  #     result = [true, message]
+  #   end
+  #   render json: result
+  # end
 
   # GET /admin/competitions/1
   # GET /admin/competitions/1.json
@@ -136,32 +140,6 @@ class Admin::CompetitionsController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def competition_params
-    params.require(:competition).permit(:name, :host_year, {:guide_units => []}, {:organizer_units => []}, {:support_units => []}, {:help_units => []}, {:undertake_units => []}, :team_min_num, :team_max_num, :description, :cover, :time_schedule, :detail_rule, :status, :apply_start_time, :apply_end_time, :start_time, :end_time, :keyword).tap do |list|
-      if params[:competition][:guide_units].present?
-        list[:guide_units] = params[:competition][:guide_units].join(',')
-      else
-        list[:guide_units] = nil
-      end
-      if params[:competition][:organizer_units].present?
-        list[:organizer_units] = params[:competition][:organizer_units].join(',')
-      else
-        list[:organizer_units] = nil
-      end
-      if params[:competition][:support_units].present?
-        list[:support_units] = params[:competition][:support_units].join(',')
-      else
-        list[:support_units] = nil
-      end
-      if params[:competition][:help_units].present?
-        list[:help_units] = params[:competition][:help_units].join(',')
-      else
-        list[:help_units] = nil
-      end
-      if params[:competition][:undertake_units].present?
-        list[:undertake_units] = params[:competition][:undertake_units].join(',')
-      else
-        list[:undertake_units] = nil
-      end
-    end
+    params.require(:competition).permit!
   end
 end

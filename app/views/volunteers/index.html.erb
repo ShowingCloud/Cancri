@@ -1,30 +1,115 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
-  <div class="container">
-    <div class="row">
-      <div id="volunteer" class="volunteer">
-        <div class="v-list">
-          <% @volunteers.each do |vol| %>
-              <%= link_to "#{volunteers_path}/#{vol.id}", title: '查看' do %>
-                  <div class="v-item" data-src="<%= image_path('homepage/v-item-bk.png') %>">
-                    <div class="v-title"><%= vol.competition.name %></div>
-                    <div class="v-circle">志愿者开始招募</div>
-                  </div>
+<div class="main" id="main">
+    <div class="container volunteer">
+        <div class="volunteer-head">
+          <%= render 'nav' %>
+        </div>
+        <% if @has_apply[:regulation].present? %>
+        <h3 class="text-center"><%= @has_apply[:regulation].name %></h3>
+        <div class="raw-html">
+            <%= raw @has_apply[:regulation].content %>
+        </div>
+        <div class="text-center">
+            <% if @has_apply[:has_apply] == 1 %>
+            <a class='btn btn-lightblue' data-toggle="modal" data-target="#volunteer-info">你已是DOME志愿者</a>
+            <% elsif @has_apply[:has_apply] == 0 %>
+            <a class='btn btn-lightblue' data-toggle="modal" data-target="#volunteer-info">你已提交申请，待审核</a>
+        <% else %>
+            <a class='btn btn-lightblue' data-toggle="modal" data-target="#volunteer-apply">我自愿遵守志愿者章程，前往认证</a>
+            <% end %>
+        </div>
+        <% end %>
+
+    </div>
+</div>
+
+<div id="volunteer-info" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">
+                <% if @has_apply[:has_apply] == 1 %>
+                    你已认证为DOME志愿者
+                <% elsif @has_apply[:has_apply] == 0 %>
+                    DOME志愿者的认证申请已提交，请等待审核
+                <% else %>
+                    未申请
+                <% end %>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <p>姓名:<%= @user_info.username %></p>
+                <p>性别:<%= @user_info.gender %></p>
+                <p>手机:<%= @user_info.mobile %></p>
+                <p>学校:<%= @user_info.standby_school %></p>
+                <p>身份证:<%= @user_info.identity_card %></p>
+                <p>支付宝:<%= @user_info.alipay_account %></p>
+              <% if @has_apply[:has_apply] == 1 %>
+                <a href="<%= user_profile_path %>" class="btn btn-primary">修改信息</a>
+              <% elsif @has_apply[:has_apply] == 0 %>
+                <a href="<%= volunteers_cancel_apply_path %>" class="btn btn-primary">取消认证</a>
+              <% else %>
+                未申请
               <% end %>
-          <% end %>
+            </div>
+        </div>
+    </div>
+</div>
+<% if @has_apply[:has_apply] == false %>
+<div id="volunteer-apply" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">志愿者申请</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+              <%= simple_form_for(@user_info, url: volunteers_apply_volunteer_path, html:{id:"volunteer-apply-form", class:"json-submit",method: "post"}) do |f| %>
+                <div class="form-inputs">
+                    <div class="form-group user_username">
+                        <label class="control-label" for="user_username">姓名</label>
+                        <input class="form-control" type="text" value="<%= @user_info.username %>" name="user[username]" id="user_username">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">手机</label>
+                        <%= current_user.mobile %>
+                    </div>
+                    <div class="form-group user_gender">
+                        <label class="control-label" for="user_gender">性别
+                        </label>
+
+                        <label><input type="radio" value="1" <%= "checked" if @user_info.gender ==1 %> name="user[gender]">
+                            男</label>
+                        <label><input type="radio" value="2" <%= "checked" if @user_info.gender ==2 %> name="user[gender]">
+                            女</label>
+                    </div>
+                    <div class="form-group user_standby_school">
+                        <label class="control-label" for="user_standby_school">学校</label>
+                        <input class="form-control" type="text" value="<%= @user_info.standby_school %>" name="user[standby_school]" id="user_standby_school">
+                    </div>
+                    <div class="form-group user_identity_card">
+                        <label class="control-label" for="user_identity_card">身份证号</label>
+                        <input class="form-control" type="text" value="<%= @user_info.identity_card %>" name="user[identity_card]" id="user_identity_card">
+                    </div>
+                    <div class="form-group user_alipay_account">
+                        <label class="control-label" for="user_alipay_account">支付宝账号</label>
+                        <input class="form-control" type="text" value="<%= @user_info.alipay_account %>" name="user[alipay_account]" id="user_alipay_account">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <%= f.button :submit, class: 'btn btn-primary btn-block',id:'volunteer-apply-submit', value: '申请认证', 'data-disable-with': '正在提交' %>
+                </div>
+              <% end %>
+            </div>
         </div>
       </div>
-      <nav>
-        <%= paginate @volunteers %>
-      </nav>
-    </div>
-  </div>
-  <div id="footer">
-    <div class="container">
-      <div class="footer">
-        <a>关于我们</a>
-        <span class="separator"></span>
-        <a>联系我们</a>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
       </div>
     </div>
+
   </div>
 </div>
+<% end %>

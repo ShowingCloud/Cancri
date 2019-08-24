@@ -1,0 +1,97 @@
+<h1 class="page-header">
+  <%= @activity.name %>报名列表
+  <small class="pull-right">
+    <a href="#" class="btn btn-default btn-search-toggle" title="搜索">
+      <i class="icon-search icon-only"></i>
+    </a>
+  </small>
+</h1>
+<div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
+  <div class="widget-header widget-header-small">
+    <h5 class="lighter">搜索</h5>
+  </div>
+  <div class="widget-body">
+    <div class="widget-main">
+      <form class="form" role="form" method="get">
+        <div class="input-group" data-search="field">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+              <span data-search-text class="admin-search-field"><%= t('simple_form.labels.defaults.name') %></span>
+              <span class="caret"></span></button>
+            <ul class="dropdown-width dropdown-menu">
+              <li data-search-option="username"><a>姓名</a></li>
+              <li data-search-option="mobile"><a>手机</a></li>
+              <li data-search-option="school_name"><a>学校</a></li>
+            </ul>
+          </div>
+          <input type="hidden" name="field" value="<%= params[:field].present? ? params[:field] : 'username' %>"/>
+          <input placeholder="输入关键字，按回车键提交" value="<%= params[:keyword] %>" name="keyword" type="text" class="form-control" aria-label="...">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<table class="table table-bordered table-hover table-striped">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>姓名</th>
+    <th>手机号</th>
+    <th>学校</th>
+    <th>年级</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @users.each do |u| %>
+      <tr>
+        <td><%= u.id %></td>
+        <td><%= u.username %></td>
+        <td><%= u.mobile %></td>
+        <td><%= u.school_name %></td>
+        <td><%= u.grade %></td>
+        <td>
+          <% if u.score.present? %>
+              <span id="activity-score-<%= u.id %>" class="update-activity-score btn btn-xs btn-warning" style="width: 40px; display: inline-block;" data-id="<%= u.id %>" data-name="<%= u.username %>"><%= u.score %></span>
+          <% else %>
+              <span id="activity-score-<%= u.id %>" class="create-activity-score btn btn-xs btn-info" style="width: 40px; display: inline-block;" data-id="<%= u.id %>" data-name="<%= u.username %>">打分</span>
+          <% end %>
+          </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<nav>
+  <%= paginate @users %>
+</nav>
+
+<div id="activity-score-form" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="widget-header model-header">
+        <button type="button" title="关闭" class="close" data-dismiss="modal" style="margin-right: 10px">&times;</button>
+        <h4 class="blue smaller text-center">打分</h4>
+      </div>
+
+      <div class="modal-body overflow-visible">
+        <div class="row text-center select-review-status">
+          <label class=""><input name="review-status" value="1" type="radio"/> 通过</label>&nbsp;&nbsp;
+          <label class=""><input name="review-status" value="0" type="radio"/> 未通过</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm" data-dismiss="modal">
+          <i class="icon-remove"></i>
+          取消
+        </button>
+
+        <button class="btn btn-sm btn-primary school-review-status-submit">
+          <i class="icon-ok"></i>
+          提交
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

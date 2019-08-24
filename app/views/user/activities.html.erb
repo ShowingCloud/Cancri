@@ -1,0 +1,32 @@
+<div class="main" id="main">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <p>参加活动的历史信息</p>
+            <table class="table">
+              <tr>
+                <th>活动名称</th>
+                <th>活动时间</th>
+                <th>成绩</th>
+              </tr>
+              <% @activities.each do |c| %>
+                  <tr>
+                    <td><%= c.name %></td>
+                    <td><%= c.start_time.strftime('%Y-%m-%d') %></td>
+                    <td></td>
+                  </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,200 +1,49 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
+<div id="main" class="main">
   <div class="container">
     <div class="row">
-      <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
-        <div class="sec-t">
-          <%= render 'user/menu' %>
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
         </div>
-        <div class="sec-c">
-          <div class="content">
-            <div class="user-panel">
-              <%= simple_form_for(@user_profile, html: {id: 'form_change_profile', multipart: true}, url: user_profile_path, method: :post) do |f| %>
-                  <div class="row">
-                    <div class="col-sm-12">
-                      <div class="form-inputs">
-                        <%= f.input :username %>
-                        <div class="form-group string optional user_profile_roles">
-                          <label class="string optional control-label" for="user_profile_roles">身份</label>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <div class="sub-header">基本信息</div>
+            <%= simple_form_for(@user_profile, html: {id: 'user-profile-form', class:"form-horizontal", multipart: true}, url: user_profile_path, method: :post,wrapper: :horizontal_form) do |f| %>
 
-                          <div>
-                            <% Role.all.each do |r| %>
-                                <% if r.name=='教师' && @th_role_status.present? %>
-                                    <%= label_tag '老师' %> <%= "(待审核)" if @th_role_status.status.blank? %>
-                                <% else %>
-                                    <%= check_box_tag 'user_profile[roles][]', r.name, (true if @user_profile.roles.present? && @user_profile.roles.split(',').include?(r.name.to_s)) %>
-                                    <%= label_tag r.name %>
-                                <% end %>
-                            <% end %>
-                          </div>
-                        </div>
-                        <div class="teacher-part hide">
-                          <%= f.input :teacher_no %>
-                        </div>
-                        <div class="form-group teacher-part hide">
-                          <label for="user_avatar">上传教师证</label>
-                          <%= f.file_field :certificate %>
-                        </div>
+                  <%= f.input :username, label_html: { class: 'col-sm-2' } %>
+                  <%= f.input :gender, label_html: { class: 'col-sm-2' }, as: :radio_buttons, :collection => [ ['男', '1'], ['女', '2'] ], :checked => @user_profile.gender, :item_wrapper_class => 'radio-inline' %>
 
-                        <div class="form-group">
-                          学校
-                          <div>
-                            <% if @user_profile.school.present? %>
-                                <%= @user_profile.schools.try(:name) %>
-                            <% end %>
-                          </div>
-                        </div>
-                        <% if @user_profile.grade.present? && @user_profile.bj.present? %>
-                            <div class="form-group">
-                              班级
-                              <div>
-                                <%= @user_profile.grade %>年级 <%= @user_profile.bj %>班
-                              </div>
-                            </div>
-                        <% end %>
-                        <div class="school-part">
-                          <div class="title">修改学校相关信息</div>
-                          <div class="form-group">
-                            <label>类型</label>
-
-                            <div class="input-c">
-                              <select data-select-target="group">
-                                <option value="0">选择类型</option>
-                                <option value="1">小学</option>
-                                <option value="2">初中</option>
-                                <option value="3">高中</option>
-                                <option value="4">大学</option>
-                              </select>
-                              <input type="hidden" name="group"/>
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <label>区县</label>
-
-                            <div class="input-c">
-                              <select data-select-target="district">
-                                <option value="0">选择区县</option>
-                                <% District.all.each do |d| %>
-                                    <option value="<%= d.name %>"><%= d.name %></option>
-                                <% end %>
-                              </select>
-                              <input type="hidden" name="district"/>
-                            </div>
-                          </div>
-                          <div class="form-group school-target">
-                            <a class="open-school">
-                              <i class="glyphicon glyphicon-plus"></i>
-                              选择学校
-                            </a>
-                            <br/>
-                            <a class="add-other-school">没有你的学校？点击添加</a>
-                            <input type="hidden" name="user_profile[school]" value="<%= @user_profile.school %>"/>
-                          </div>
-                          <div class="form-group">
-                            <label>修改年级</label>
-
-                            <div class="input-c">
-                              <select data-select-target="user_profile[grade]">
-                                <option value="0">请选择年级</option>
-                                <option value="一">一</option>
-                                <option value="二">二</option>
-                                <option value="三">三</option>
-                                <option value="四">四</option>
-                                <option value="五">五</option>
-                                <option value="六">六</option>
-                                <option value="七">七</option>
-                                <option value="八">八</option>
-                                <option value="九">九</option>
-                                <option value="高一">高一</option>
-                                <option value="高二">高二</option>
-                                <option value="高三">高三</option>
-                              </select>
-                              <input type="hidden" name="user_profile[grade]" id="user_profile_grade" value="<%= @user_profile.grade %>"/>
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <label>修改班级</label>
-
-                            <div class="input-c">
-                              <select data-select-target="user_profile[bj]">
-                                <option value="0">请选择班级</option>
-                                <% for n in 1..100 %>
-                                    <option value="<%= n %>"><%= n %></option>
-                                <% end %>
-                              </select>
-                              <input type="hidden" name="user_profile[bj]" id="user_profile_bj" value="<%= @user_profile.bj %>"/>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label>性别</label>
-
-                          <div>
-                            <label>
-                              <input name="user_profile[gender]" type="radio" <%= 'checked' if @user_profile.gender==1 %> value="1"/>男
-                            </label>
-                            <label>
-                              <input name="user_profile[gender]" type="radio" <%= 'checked' if @user_profile.gender==2 %> value="2"/>女
-                            </label>
-                          </div>
-                        </div>
-                        <%= f.input :address %>
-                      </div>
-                      <div class="form-actions">
-                        <%= f.submit class: 'btn-robodou btn-submit-profile', value: '更新详细信息', 'data-disable-with' => '更新详细信息' %>
-                      </div>
-                    </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="user_profile[district_id]">区县</label>
+                    <a href="#select-district-modal" role="button" class="select-user-district" data-toggle="modal"><%= @user_profile.district_id.present? ? "#{@user_profile.district.try(:province_name)}--#{@user_profile.district.try(:city_name)}--#{@user_profile.district.try(:name)}" : '选择区县' %></a>
                   </div>
-              <% end %>
-            </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="user_profile[school_id]">学校</label>
+                    <input type="hidden" class="school_input" name="user_profile[school_id]" value="<%= @user_profile.try(:school_id) %>"/>
+                    <input type="hidden" id="change_district_id" value="<%= @user_profile.try(:district_id) %>"/>
+                    <input type="hidden" class="district_input" name="user_profile[district_id]" value="<%= @user_profile.district_id %>"/>
+                    <a class="school-tag form-plain"><%= @user_profile.school_id.present? ? @user_profile.school.try(:name) : '选择学校' %></a>
+                  </div>
+
+                  <%= f.input :grade, label_html: { class: 'col-sm-2' }, as: :select, :include_blank => false,
+                   :collection => [ ['一年级', '1'], ['二年级', '2'], ['三年级', '3'], ['四年级', '4'], ['五年级', '5'], ['六年级（初中预备）', '6'], ['七年级（初中一年级）', '7'], ['八年级（初中二年级）', '8'], ['九年级（初中三年级）', '9'], ['高中一年级','10'], ['高中二年级','11'], ['高中三年级','12'] ],
+                    :checked => @user_profile.try(:grade)
+                  %>
+                  <%= f.input :bj, label_html: { class: 'col-sm-2' } %>
+                  <%= f.input :birthday, as: :string, label_html: { class: 'col-sm-2' }%>
+                  <%= f.input :student_code, label_html: { class: 'col-sm-2' } %>
+                  <%= f.input :identity_card, label_html: { class: 'col-sm-2' } %>
+                <%= f.input :alipay_account, label_html: { class: 'col-sm-2' } %>
+                  <%= f.submit class: 'btn-robodou col-sm-offset-1', value: '更新详细信息', 'data-disable-with' => '更新详细信息' %>
+            <% end %>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div id="footer">
-    <div class="container">
-      <div class="footer">
-        <a>关于我们</a>
-        <span class="separator"></span>
-        <a>联系我们</a>
-      </div>
-    </div>
-  </div>
 </div>
-<!--选择学校-->
-<div id="school-list" class="modal fade">
-  <div id="add-school">
-    <div class="title" data-src="<%= image_path('homepage/info-t-bk.png') %>">
-      选择学校
-    </div>
-    <div class="school-list">
-      <span class="tips">请选择学校</span>
-      <ul class="items">
 
-      </ul>
-    </div>
-    <div class="bottom">
-      <button data-dismiss="modal" class="btn-robodou apply-submit">取消</button>
-    </div>
-  </div>
-</div>
-<!--添加其他学校-->
-<div id="add-other-school" class="modal fade">
-  <div class="modal-panel">
-    <div class="title" data-src="<%= image_path('homepage/info-t-bk.png') %>">
-      添加额外学校
-    </div>
-    <div class="inner">
-      <div class="left">
-        <i class="glyphicon glyphicon-education"></i>
-        学校名称
-      </div>
-      <div class="right">
-        <input type="text" name="other-school"/>
-      </div>
-    </div>
-    <div class="bottom">
-      <button class="btn-robodou apply-submit">确认添加</button>
-    </div>
-  </div>
-</div>
+<%= render "user/school_district_modal" %>

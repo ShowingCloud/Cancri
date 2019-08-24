@@ -1,0 +1,36 @@
+<div id="main" class="main">
+  <div class="container" id="user-notification">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @hackers.present? %>
+                  <% @hackers.each do |hacker| %>
+                      <div class="row round-border">
+                        <div class="col-sm-10">
+                          姓名：<%= hacker.username %>
+                        <br>
+                          学校：<%= hacker.school_name %>
+                        </div>
+                        <div class="col-sm-2">
+                          <a class="btn btn-primary" href="/user/hacker_info/<%= hacker.id %>">查看详情</a>
+                        </div>
+                      </div>
+                  <% end %>
+                <nav>
+                  <%= paginate @hackers %>
+                </nav>
+            <% else %>
+                <p> 暂无待审核创客</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

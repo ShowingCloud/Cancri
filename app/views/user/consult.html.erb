@@ -1,50 +1,59 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
+<div id="main" class="main">
   <div class="container">
     <div class="row">
-      <div id="user-center" class="user-center" data-src="<%= image_path('homepage/user-center-bk.png') %>">
-        <div class="sec-t">
-          <%= render 'user/menu' %>
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
         </div>
-        <div class="sec-c">
-          <div class="content">
-            <div class="consults-panel">
-              <div class="consult-in">
-                有什么疑问和麻烦都可以和小豆吐槽哦
-                <%= simple_form_for(@consult, html: {}, url: user_consult_path, method: :post) do |f| %>
-                    <%= f.input :content %>
-                    <div class="form-actions">
-                      <%= f.submit class: 'btn-robodou btn-submit-consult', value: '提交', 'data-disable-with' => '提交' %>
-                    </div>
-                <% end %>
-              </div>
-
-              <div class="consult-out">
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <div class="sub-content">
+            <div class="consults">
+              <div class="win-panel">
                 <% if @consults.present? %>
                     <% @consults.each do |c| %>
-                        <div class="consult-i <%= c.admin_reply ? 'left' : 'right' %>">
-                          <span class="time"><%= c.created_at.try(:strftime, '%Y-%m-%d') %></span>
-                          <br/>
-                          <div class="talk"><%= c.content %></div>
+                        <div class="consult">
+                          <div class="<%= c.admin_reply ? 'left' : 'right' %>">
+                          <span class="time"><%= c.created_at.try(:strftime, '%Y-%m-%d %H:%M:%S') %>&nbsp;<strong><%= c.admin_reply ? '小豆' : current_user.nickname %>
+                            ：</strong></span>
+                            <br/>
+
+                            <div class="talk"><%= c.content %></div>
+                          </div>
                         </div>
                     <% end %>
                 <% else %>
-                    您还没有调戏过哦
+                    <div class="consult">
+                      <div class="left">
+                        <span class="time"><%= Time.now.try(:strftime, '%Y-%m-%d %H:%M:%S') %>&nbsp;<strong>小豆：</strong></span>
+
+                        <div class="talk">
+                          欢迎来到调戏小豆！如果你有任何意见或者建议，都可以发送给我！
+                        </div>
+                      </div>
+                    </div>
                 <% end %>
               </div>
-
+              <hr/>
+              <div class="input-panel">
+                <%= simple_form_for(@consult, html: {}, url: user_consult_path, method: :post) do |f| %>
+                    <div class="input-group">
+                      <input type="text" id="consult_content" class="form-control" name="consult[content]" placeholder="请输入想要发送的内容(6-225)">
+                      <span class="input-group-btn">
+                        <button class="btn btn-robodou" data-disable-with="发送" type="submit">
+                          <i class="glyphicon glyphicon-send"></i>
+                        </button>
+                      </span>
+                    </div>
+                <% end %>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div id="footer">
-    <div class="container">
-      <div class="footer">
-        <a>关于我们</a>
-        <span class="separator"></span>
-        <a>联系我们</a>
-      </div>
+
     </div>
   </div>
 </div>
+
+

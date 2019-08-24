@@ -1,46 +1,66 @@
 <h1 class="page-header">
-  显示<%= t('activerecord.models.volunteer') %>
+  <%= @events[0].username %>
   <small class="pull-right">
-    <a href="<%= edit_admin_volunteer_path(@volunteer) %>" title="编辑" class="btn btn-default">
-      <i class="icon-edit icon-only"></i></a>
-    <a href="<%= admin_volunteers_path %>" title="列表" class="btn btn-default">
-      <i class="icon-list icon-only"></i></a>
+    <a href="<%= admin_volunteers_path %>" class="btn btn-default" title="项目活动">
+      <i class="icon icon-list"></i>
+    </a>
   </small>
 </h1>
-
-<% if notice %>
-    <div class="alert alert-success"><%= notice %>
-      <button class="close" data-dismiss="alert">
-        <i class="icon-remove"></i>
-      </button>
-    </div>
-<% end %>
-<div class="panel panel-info">
-  <div class="panel-heading">
-    <%= t('activerecord.models.volunteer') %>
+<h4>学校: <%= @events.first.standby_school %></h4>
+<h4>平均积分: <%= @events[0].times >0 ? (@events[0].points/Float(@events[0].times)).round(2) : 0 %></h4>
+<div class="widget-box form-search-toggle <%= params[:field].present? && params[:keyword].present? ? 'show' : 'hide' %>">
+  <div class="widget-header widget-header-small">
+    <h5 class="lighter">搜索</h5>
   </div>
-  <ul class="list-group">
-    <li class="list-group-item">
-      <h4><%= t('simple_form.labels.defaults.name') %>:</h4>
-
-      <%= @volunteer.competition.name %>
-    </li>
-    <li class="list-group-item">
-      <h4>类型:</h4>
-
-      <%= @volunteer.news_type.name %>
-    </li>
-    <li class="list-group-item">
-      <h4>内容:</h4>
-
-      <%= @volunteer.content %>
-    </li>
-    <li class="list-group-item">
-      <h4>报名起始时间:</h4>
-
-      <p><%= @volunteer.apply_start_time.try(:strftime, '%Y-%m-%d %H:%M') %>
-        － <%= @volunteer.apply_end_time.try(:strftime, '%Y-%m-%d %H:%M') %></p>
-    </li>
-
-  </ul>
+  <div class="widget-body">
+    <div class="widget-main">
+      <form class="form" role="form" method="get">
+        <div class="input-group" data-search="field">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+              <span data-search-text class="admin-search-field"><%= t('simple_form.labels.defaults.name') %></span>
+              <span class="caret"></span></button>
+            <ul class="dropdown-width dropdown-menu">
+              <li data-search-option="name"><a><%= t('simple_form.labels.defaults.name') %></a></li>
+              <li data-search-option="id"><a>ID</a></li>
+            </ul>
+          </div>
+          <input type="hidden" name="field" value="<%= params[:field].present? ? params[:field] : 'name' %>"/>
+          <input placeholder="输入关键字，按回车键提交" value="<%= params[:keyword] %>" name="keyword" type="text" class="form-control" aria-label="...">
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+<% if @events.length >1 %>
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+      <tr>
+        <th>时间</th>
+        <th>活动</th>
+        <th>积分</th>
+        <th>备注</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @events.each do |event_volunteer| %>
+          <tr>
+            <td><%= event_volunteer.updated_at.strftime('%Y.%m.%d') %></td>
+            <td><%= event_volunteer.name[0..-6] %></td>
+            <td><%= event_volunteer.point %></td>
+            <td><%= event_volunteer.desc %></td>
+
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <nav>
+      <%= paginate @events %>
+    </nav>
+<% else %>
+    <div class="alert alert-success">暂无参加任何活动</div>
+<% end %>
+
+

@@ -4,7 +4,7 @@ class Admin < ApplicationRecord
   has_secure_password
   include AccountConcern
 
-  validates :job_number, presence: true, length: {minimum: 3, maximum: 5}, uniqueness: true
+  validates :job_number, presence: true, length: {minimum: 3, maximum: 10}, uniqueness: true
   validates :password, length: {minimum: 6, maximum: 20}, allow_blank: true
   validates :password, presence: true, on: :create
   validates :name, presence: true
@@ -13,7 +13,7 @@ class Admin < ApplicationRecord
   PERMISSIONS = {
       super_admin: '超级管理员',
       admin: '管理员',
-      supr_editor: '总编',
+      super_editor: '总编',
       editor: '编辑',
       score: '成绩录入员',
       audit: '审核员',

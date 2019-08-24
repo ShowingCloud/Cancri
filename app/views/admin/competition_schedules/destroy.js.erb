@@ -1,0 +1,4 @@
+<% if @notice[:status] %>
+$('#comp-schedule-tr-<%= @notice[:id] %>').remove();
+<% end %>
+admin_gritter_notice(<%= @notice[:status] %>, '<%= @notice[:message] %>');

@@ -11,6 +11,7 @@
     <th>姓名</th>
     <th>性别</th>
     <th>级别</th>
+    <th>教师证</th>
     <th>手机</th>
     <th>学校</th>
   </tr>
@@ -19,14 +20,34 @@
   <% @teacher_array.each do |th| %>
       <tr>
         <td><%= th[:username] %></td>
-        <td><%= th[:gender] == 1 ? '男' : '女' %></td>
         <td>
-          <% if th[:role]=='1' %>
-              <label class="label label-danger">市级</label>
-          <% elsif th[:role]=='2' %>
-              <label class="label label-warning">区级</label>
-          <% elsif th[:role]=='3' %>
-              <label class="label label-info">校级</label>
+          <% case th[:gender] %>
+          <% when 1 then %>
+              男
+          <% when 2 then %>
+              女
+          <% else %>
+          <% end %></td>
+        <td>
+          <% case th[:role] %>
+          <% when 1 then %>
+              市级老师
+          <% when 2 then %>
+              区县(唯一)
+          <% when 3 then %>
+              学校(唯一)
+          <% when 4 then %>
+              区县
+          <% when 5 then %>
+              学校
+          <% else %>
+          <% end %>
+        </td>
+        <td class="ace-thumbnails">
+          <% if th[:certificate].present? %>
+              <a href="<%= th[:certificate] %>" title="<%= th[:username] %>" data-rel="colorbox">
+                教师证
+              </a>
           <% end %>
         </td>
         <td><%= th[:mobile] %></td>

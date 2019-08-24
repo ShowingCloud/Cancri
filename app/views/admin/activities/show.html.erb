@@ -36,9 +36,16 @@
       <%= @activity.host_address %>
     </li>
     <li class="list-group-item">
-      <h4>海报:</h4>
-      <%= image_tag(@activity.cover_url(:middle), class: 'img-thumbnail') %>
+      <h4>显示:</h4>
+
+      <%= show_status(@activity.status) %>
     </li>
+    <% if @activity.cover.present? %>
+        <li class="list-group-item">
+          <h4>封面:</h4>
+          <%= image_tag(@activity.cover_url(:middle), class: 'img-thumbnail') %>
+        </li>
+    <% end %>
     <li class="list-group-item">
       <h4><%= t('simple_form.labels.defaults.content') %>:</h4>
 

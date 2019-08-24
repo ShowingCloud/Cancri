@@ -2,5 +2,6 @@
 
 set -x
 
-thin -p 3240 -e production stop
-thin -d -p 3240 -e production --tag "Robodou Production" start
+sidekiqctl stop tmp/pids/sidekiq.pid 60
+pumactl restart
+sidekiq -C config/sidekiq.yml -d -e production --tag "Robodou Production"

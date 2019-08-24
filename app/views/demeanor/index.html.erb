@@ -1,37 +1,36 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
-  <div class="container">
-    <div class="row">
-      <div id="user-display" class="">
-        <div class="sec-t">
-          <div class="photo active" data-src="<%= image_path('homepage/photo-active.png') %>"></div>
-          <div class="video" data-src="<%= image_path('homepage/video.png') %>"></div>
-          <div class="pull-right">
-            <select class="demeanor-year" name="" id="">
-              <option value="">2015年</option>
-            </select>
-          </div>
-        </div>
-        <div class="sec-c">
-
-          <% @photos.each do |item| %>
-              <div class="col-sm-4 col-xs-12 text-center">
-                <div class="video-item" data-src="<%= image_path('homepage/photo-border.png') %>">
-                  <a href="<%= "/demeanor/#{item.id}" %>"><%= image_tag(item.image_url) %></a>
+<div id="main" class="main">
+  <div class="container" id="demeanor-photo">
+    <div class="top">
+      <span class="">图片</span>
+      <a href="/demeanor/videos">视频</a>
+    </div>
+    <div class="middle">
+      <% if @photos.present? %>
+          <% @photos.each do |p| %>
+              <div class="thumb-box">
+                <div class="image-border">
+                  <%= image_tag(p.image.large.url, class: 'thumb',:data => { :url => p.image_url}) %>
                 </div>
-                <p class="video-title">2015 未来工程师大赛</p>
+                <div class="dec">
+                  <%= p.comp_name %>
+                </div>
               </div>
           <% end %>
-        </div>
-      </div>
+      <% end %>
+    </div>
+    <div class="bottom">
+      <nav>
+        <%= paginate @photos %>
+      </nav>
     </div>
   </div>
-  <div id="footer">
-    <div class="container">
-      <div class="footer">
-        <a>关于我们</a>
-        <span class="separator"></span>
-        <a>联系我们</a>
-      </div>
+</div>
+
+<div id="thumb-win" class="modal fade">
+  <div class="inner">
+    <div class="off" data-dismiss="modal">
+      <i class="glyphicon glyphicon-remove"></i>
     </div>
+    <img class="inner-img" src="" alt=""/>
   </div>
 </div>

@@ -73,9 +73,25 @@ zh-CN:
         host_year: '举办年份'
         host_address: '举办地点'
         student_code: '学籍号'
+        identity_card: '身份证号'
         sort: '排序'
         desc: '描述'
         write_type: '计分方式'
+        city: '所属城市'
+        target: '对象'
+        district_id: '区县'
+        run_address: '上课地点'
+        aim: '宗旨'
+        organizing_committee: '组委会'
+        date_schedule: '日程安排'
+        apply_require: '参赛要求'
+        reward_method: '奖励方法'
+        apply_method: '参赛方法'
+        emc_contact: '紧急联系人'
+        event_type: '项目类别'
+        type_id: '所属项目'
+        standby_school: '学校'
+        alipay_account: '支付宝账号'
 
     "yes": '是'
     "no": '否'
@@ -87,7 +103,7 @@ zh-CN:
       # When using html, text and mark won't be used.
       # html: '<abbr title="required">*</abbr>'
     error_notification:
-      default_message: "很抱歉, 操作出现了错误。。。"
+      default_message: "很抱歉, 出现了以下错误。。。"
     # Labels and hints examples
     # labels:
     #   defaults:

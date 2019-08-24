@@ -8,20 +8,31 @@ class Admin::NewsController < AdminController
   # GET /admin/news
   # GET /admin/news.json
   def index
-    if params[:field].present? && params[:keyword].present?
-      @news = News.all.where(["#{params[:field]} like ?", "%#{params[:keyword]}%"]).page(params[:page]).per(params[:per])
-    else
-      @news = News.left_joins(:admin).where("admins.id=news.admin_id").select(:id, :name, :content, :news_type, :created_at, :updated_at, "admins.name as admin_name").all.page(params[:page]).per(params[:per])
-      @news_array = @news.map { |n| {
-          id: n.id,
-          name: n.name,
-          content: n.content,
-          publisher: n.admin_name,
-          type: n.news_type.split(',').map { |x| NewsType.find(x.to_i).name }.join(' , '),
-          created_at: n.created_at,
-          updated_at: n.updated_at
-      } }
+    field = params[:field]
+    keyword = params[:keyword]
+    news = News.left_joins(:district, :admin).select(:id, :name, :content, :status, :is_hot, :news_type, :created_at, :updated_at, "admins.name as admin_name", "districts.name as district_name"); false
+    if field.present? && keyword.present?
+      if field == 'district'
+        news = news.where(["districts.name like ?", "%#{keyword}%"])
+      elsif field == 'publisher'
+        news = news.where(["admins.name like ?", "%#{keyword}%"])
+      else
+        news = news.where(["news.#{field} like ?", "%#{keyword}%"])
+      end
     end
+    @news = news.page(params[:page]).per(params[:per])
+    @news_array = @news.map { |n| {
+        id: n.id,
+        name: n.name,
+        content: n.content,
+        status: n.status,
+        is_hot: n.is_hot,
+        publisher: n.admin_name,
+        district_name: n.district_name,
+        type: n.news_type.split(',').map { |x| NewsType.find(x.to_i).name }.join(' , '),
+        created_at: n.created_at,
+        updated_at: n.updated_at
+    } }
   end
 
   # GET /admin/news/1
@@ -86,7 +97,7 @@ class Admin::NewsController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def news_params
-    params.require(:news).permit(:name, {:news_type => []}, :content, :cover, :desc, :admin_id).tap do |list|
+    params.require(:news).permit(:name, {:news_type => []}, :content, :cover, :desc, :district_id, :status, :is_hot, :admin_id).tap do |list|
       if params[:news][:news_type].present?
         list[:news_type] = params[:news][:news_type].join(',')
       else

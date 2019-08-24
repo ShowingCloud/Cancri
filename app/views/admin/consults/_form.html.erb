@@ -12,10 +12,13 @@
             回复内容:
           </label>
           <textarea id="consult_content" class="string required form-control" autofocus="autofocus" name="consult[content]"><%= @consult.content %></textarea>
-          <%= f.hidden_field :parent_id, value: params[:pd] %>
-          <%= f.hidden_field :user_id, value: params[:ud] %>
+          <%= f.hidden_field :parent_id, value: params[:pd].present? ? params[:pd] : @consult.parent_id %>
+          <%= f.hidden_field :user_id, value: params[:ud].present? ? params[:ud] : @consult.user_id %>
           <%= f.hidden_field :admin_reply, value: true %>
           <%= f.hidden_field :admin_id, value: @current_admin.id %>
+          <% if action_name=='new' %>
+              <%= f.hidden_field :reply_content, value: params[:content] %>
+          <% end %>
         </div>
 
         <div class="form-actions">

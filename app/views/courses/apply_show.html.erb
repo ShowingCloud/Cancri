@@ -1,0 +1,77 @@
+<div id="main" class="main">
+  <div class="container">
+    <div class="row">
+      <div class="apply-show">
+        <div class="apply-lessons">
+          <div class="title">
+            请确认报名课程
+          </div>
+          <div class="content" data-lesson-cookie="true">
+
+          </div>
+        </div>
+        <div class="apply-info">
+          <div class="title">
+            请确认报名信息
+          </div>
+          <form action="" method="post" id="apply-lesson-form">
+            <div class="input-box">
+              <div class="input-row">
+                <div class="left">
+                  姓名
+                </div>
+                <div class="right">
+                  <input id="user-info-username" class="input-robodou" type="text" value="<%= @user_info.username %>"/>
+                </div>
+              </div>
+              <div class="input-row">
+                <div class="left">
+                  学校
+                </div>
+                <div class="right">
+                  <div class="little-panels school-field">
+                    <input type="hidden" class="school_input" name="user_profile[school_id]" value="<%= @user_info.school_id %>" />
+                    <input type="hidden" class="district_input" name="user_profile[district_id]" value="<%= @user_info.district_id %>"/>
+                    <input type="hidden" id="change_district_id" value="<%= @user_info.district_id %>" />
+                    <span><a class="school-tag"><%= @user_info.school.try(:name) ||'选择学校' %></a></span>
+                  </div>
+                  <span class="special-tips">注意！幼儿园学生请<a class="add-school ">点击这里</a>填写学校</span>
+                </div>
+              </div>
+              <div class="input-row">
+                <div class="left">
+                  年级
+                </div>
+                <div class="right">
+                  <select name="user-info-grade" id="user-info-grade">
+                    <option value="0">请选择年级</option>
+                    <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
+                    <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
+                    <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
+                    <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
+                    <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
+                    <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
+                    <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
+                    <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
+                    <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
+                    <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
+                    <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
+                    <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+        <div class="apply-action">
+          <hr/>
+          <button class="btn-robodou btn-big btn-confirm-apply">确认报名</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<%= render "user/school_district_modal" %>

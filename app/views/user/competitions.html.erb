@@ -1,0 +1,33 @@
+<div class="main" id="main">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <p>参加比赛的历史信息</p>
+            <table class="table">
+              <tr>
+                <th>比赛名称</th>
+                <th>项目名称</th>
+                <th>比赛时间</th>
+              </tr>
+              <% @competitions.each do |c| %>
+                <tr>
+                  <td><%= c.comp_name %></td>
+                  <td><%= c.event_name %></td>
+                  <td><%= c.start_time.strftime('%Y-%m-%d') %></td>
+                </tr>
+              <% end %>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

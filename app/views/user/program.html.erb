@@ -1,0 +1,126 @@
+<div id="main" class="main">
+  <div class="container">
+    <div class="row">
+      <div class="user-center">
+        <div class="main-title">
+          个人中心
+        </div>
+        <%= render 'user/menu' %>
+        <div class="user-main">
+          <%= render 'user/tab' %>
+          <div class="sub-content">
+            <% if @apply_info.present? %>
+                <h4 class="text-center"><%= @apply_info[0].course_name %>--学生信息</h4>
+                <table class="result-table">
+                  <thead>
+                  <tr>
+                    <th>姓名</th>
+                    <th>手机</th>
+                    <th>学校</th>
+                    <th>年级</th>
+                    <th>上传作品数</th>
+                    <th>评分详情</th>
+                    <th>成绩</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% @apply_info.each do |c| %>
+                      <tr>
+                        <td><%= c.username %></td>
+                        <td><%= c.mobile %></td>
+                        <td><%= c.school_name %></td>
+                        <td><%= c.grade %></td>
+                        <td><%= c.opus_count %></td>
+                        <td>
+                          <% if @course_score_attrs.length > 0 %>
+                              <div class="course-score-attrs-list">
+                                <% @course_score_attrs.each do |csa| %>
+                                    <div class="course-attr" data-id="<%= csa.id %>" data-max="<%= csa.score_per %>">
+                                      <%= csa.name %>：
+                                      <% c.course_user_scores.each do |s| %>
+                                          <span class="text-primary"><%= s.try(:score) if (s.course_sa_id == csa.id) %></span>
+                                      <% end %>
+                                    </div>
+                                <% end %>
+                              </div>
+                          <% else %>
+                              仅总分
+                          <% end %>
+                        </td>
+                        <td>
+                          <% if c.end_time > Time.now %>
+                              课程未结束
+                          <% elsif (Time.now-c.end_time) > 5.days %>
+                              <%= c.score.present? ? c.score : '未打分' %>
+                          <% else %>
+                              <% if c.score.present? %>
+                                  <label class="btn btn-xs btn-info open-course-score" id="<%= c.id %>" data-id="<%= c.id %>" data-name="<%= c.username %>" data-type="update" title="更改成绩"><%= c.score %></label>
+                              <% else %>
+                                  <label class="btn btn-xs btn-default open-course-score" id="<%= c.id %>" data-id="<%= c.id %>" data-name="<%= c.username %>" title="打分">打分</label>
+                              <% end %>
+                          <% end %>
+                        </td>
+                      </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+
+                <nav>
+                  <%= paginate @apply_info %>
+                </nav>
+            <% else %>
+                <div class="alert alert-info">暂时还没有学生报名</div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="course-score" class="course-score-add-panel modal fade">
+  <div class="score-inner">
+    <div class="title">
+      学生打分
+    </div>
+    <div class="content">
+      <div class="score-list">
+        <% if @course_score_attrs.length > 0 %>
+            <% @course_score_attrs.each do |csa| %>
+                <div class="item">
+                  <div class="left">
+                    <%= csa.name %>
+                  </div>
+                  <div class="right">
+                    <input data-id="<%= csa.id %>" data-max="<%= csa.score_per %>" name="" type="text" class="attr-input"
+                           value=""/>
+                  </div>
+                </div>
+            <% end %>
+            <div class="item">
+              <div class="left">
+                总分：
+              </div>
+              <div class="right">
+                <span class="total"></span>
+              </div>
+            </div>
+        <% else %>
+            <div class="item">
+              <div class="left">
+                总分：
+              </div>
+              <div class="right">
+                <input data-type="total" data-id="last_score" data-max="100" class="attr-input" type="text" value=""/>
+              </div>
+            </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="score-control">
+        <button class="btn-robodou btn-submit-course">提交</button>
+        <button data-dismiss="modal" class="btn-robodou btn-dismiss">取消</button>
+      </div>
+    </div>
+  </div>
+</div>

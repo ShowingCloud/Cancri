@@ -1,10 +1,10 @@
 class Admin::SchedulesController < AdminController
-  before_action :set_schedule, only: [:show, :edit, :update, :destroy]
+  before_action :set_schedule, only: [:show, :edit, :update]
 
   # GET /admin/schedules
   # GET /admin/schedules.json
   def index
-    @schedules = Schedule.all.page(params[:page]).per(params[:per])
+    @schedules = Schedule.all.order(:sort).page(params[:page]).per(params[:per])
   end
 
   # GET /admin/schedules/1
@@ -54,10 +54,23 @@ class Admin::SchedulesController < AdminController
   # DELETE /admin/schedules/1
   # DELETE /admin/schedules/1.json
   def destroy
-    @schedule.destroy
+    id = params[:id]
+    has_use = EventSchedule.where(schedule_id: id).exists?
+    if has_use
+      @notice = {status: false, message: '该赛程已经被使用，不能删除'}
+    else
+      @schedule = Schedule.find_by_id(id)
+      if @schedule && @schedule.destroy
+        @notice = {status: true, id: @schedule.id, message: '删除成功'}
+      else
+        @notice = {status: false, message: '删除失败'}
+      end
+    end
+
     respond_to do |format|
-      format.html { redirect_to admin_schedules_url, notice: '赛程删除成功' }
+      format.html { redirect_to admin_schedules_url, notice: '赛程删除成功.' }
       format.json { head :no_content }
+      format.js
     end
   end
 
@@ -69,6 +82,6 @@ class Admin::SchedulesController < AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def schedule_params
-    params.require(:schedule).permit(:name)
+    params.require(:schedule).permit(:name, :sort)
   end
 end

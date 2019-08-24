@@ -1,136 +1,128 @@
-<div id="main" class="main" data-src="<%= image_path('homepage/register-pagebk.jpg') %>">
-  <div class="container">
+<div class="main" id="main">
+  <div class="container" id="activity-show" data-id="<%= @activity.id %>">
     <div class="row">
-      <div id="volunteer" class="volunteer">
-        <div class="volunteer-inner">
-          <div class="sec-t" data-src="<%= image_path('homepage/v-title-bk.png') %>">
-            <span class="tags">活动丨报名</span>
+      <div class="col-sm-12">
+        <div class="box" data-src="<%= image_path('act-bk.png') %>">
+          <div class="top">
+            <div class="ad"><%= @activity.host_address %></div>
             <%= @activity.name %>
-            <span class="time"><%= @activity.created_at.try(:strftime, '%Y-%m-%d') %></span>
           </div>
-          <div class="sec-c">
-            <div class="sec-top" data-src="<%= image_path('homepage/sec-top.png') %>"></div>
-            <div class="sec-middle">
-              <div class="img">
-                <img src="" alt="" data-src="<%= image_path('homepage/news-image01.png') %>"/>
+          <div class="box-inner">
+            <div class="middle">
+              <div class="images">
+                <%= image_tag(@activity.cover) %>
               </div>
-              <div class="text">
-                <h3>活动介绍</h3>
+              <%= @activity.content.html_safe %>
+            </div>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum
-                  laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin
-                  sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient
-                  montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate,
-                  felis tellus mollis orci, sed rhoncus sapien nunc eget odio.Lorem ipsum dolor sit
-                  amet, cons dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales
-                  pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes,
-                  nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus
-                  mollis orci, sed rhoncus sapien nunc eget odio.
-                </p>
-
-                <h3>主办方</h3>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aenean euismod bibendum laoreet.
-                   Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>
-
-                <div class="volunteer-bottom">
+            <% if @activity.is_father %>
+                <div class="bottom">
+                  <div class="sub-act">
+                    <div class="sub-act-title">
+                      详细活动
+                    </div>
+                    <div class="sub-act-content">
+                      <% @child_activities.each do |c| %>
+                          <a href="<%= "#{activities_path}/#{c.id}" %>">
+                            <div class="sub-activity">
+                              <div class="dec">
+                                <%= c.name %>
+                                <strong><%= c.has_apply ==1 ? '(已报名)' : '' if current_user.present? %></strong>
+                              </div>
+                            </div>
+                          </a>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+            <% else %>
+                <div class="bottom">
                   <% if @already_apply %>
                       <p>您已经报名</p>
                   <% else %>
                       <% if current_user.present? %>
-                          <% if require_email %>
-                              <button data-toggle="modal" data-target="#join-activity" class="btn-robodou btn-show-form">报名参加</button>
+                          <% if current_user.mobile.present? %>
+                              <button class="btn btn-primary go-activity">报名参加</button>
+                              <div class="content form-horizontal hide">
+                                <form>
+                                  <div class="form-group">
+                                    <label for="username" class="col-sm-2 control-label">姓名</label>
+
+                                    <div class="col-sm-9">
+                                      <input type="text" class="form-control" id="username" value="<%= @user_info.username %>" placeholder="姓名">
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="mobile" class="col-sm-2 control-label">手机</label>
+
+                                    <div class="col-sm-9">
+                                      <input type="text" class="form-control" id="mobile" disabled="disabled" value="<%= @user_info.mobile %>" placeholder="手机">
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="birthday" class="col-sm-2 control-label">生日</label>
+
+                                    <div class="col-sm-9">
+                                      <input type="text" class="form-control datetime" id="birthday" value="<%= @user_info.birthday %>" data-type="select-date" data-date-format="yyyy-mm-dd">
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="school_name" class="col-sm-2 control-label">学校</label>
+
+                                    <div class="col-sm-9 special-row school-field">
+                                      <% if @user_info.school_id.present? && @user_info.school_id!=0 %>
+                                          <span class="change-school school-tag"><%= @user_info.school_name %> </span>
+                                      <% else %>
+                                          <button class="new-school btn-robodou">选择学校</button>
+                                      <% end %>
+                                      <input type="hidden" class="district-id" id="district-id" value="<%= @user_info.district_id %>"/>
+                                      <input type="hidden" class="school-id" id="school-id" value="<%= @user_info.school_id %>"/>
+                                      <input type="hidden" id="change_district_id" value="<%= @user_info.district_id %>" />
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="grade" class="col-sm-2 control-label">年级</label>
+
+                                    <div class="col-sm-9">
+                                      <select id="grade" class="form-control">
+                                        <option value="0">请选择年级</option>
+                                        <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
+                                        <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
+                                        <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
+                                        <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
+                                        <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
+                                        <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
+                                        <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
+                                        <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
+                                        <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
+                                        <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
+                                        <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
+                                        <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-9">
+                                      <button class="btn btn-info btn-block apply-activity">提交</button>
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
                           <% else %>
-                              <!-- 请验证邮箱 -->
-                              <button class="alert-info btn-robodou btn-show-form">报名参加</button>
+                              <a href="<%= require_add_mobile_accounts_path %>">报名参加</a>
                           <% end %>
                       <% else %>
-                          <a class="btn-robodou btn-show-form" href="<%= "#{apply_require_activities_path}?id=#{@activity.id}" %>">报名参加</a>
+                          <a class="btn btn-primary" href="<%= "#{apply_require_activities_path}?id=#{@activity.id}" %>">报名参加</a>
                       <% end %>
                   <% end %>
                 </div>
-              </div>
-            </div>
-            <div class="sec-bottom" data-src="<%= image_path('homepage/sec-bottom.png') %>"></div>
+            <% end %>
+
+
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div id="footer">
-    <div class="container">
-      <div class="footer">
-        <a>关于我们</a>
-        <span class="separator"></span>
-        <a>联系我们</a>
-      </div>
-    </div>
-  </div>
 </div>
-
-<div id="join-activity" class="modal fade">
-  <div class="join-activity">
-    <div class="activity-t" data-src="<%= image_path('homepage/info-t-bk.png') %>">
-      报名活动
-    </div>
-    <div class="activity-c">
-      <form id="activity-form" action="">
-        <input type="hidden" name="act_id" value="<%= @activity.id %>"/>
-
-        <div class="item-row">
-          <div class="item-first">
-            <i class="glyphicon glyphicon-pencil"></i>
-            姓名
-          </div>
-          <div class="item-second">
-            <input type="text" name="username" class="" value=""/>
-          </div>
-        </div>
-        <div class="item-row">
-          <div class="item-first">
-            <i class="glyphicon glyphicon-certificate"></i>
-            年龄
-          </div>
-          <div class="item-second">
-            <input type="text" name="age" class="" value=""/>
-          </div>
-        </div>
-        <div class="item-row">
-          <div class="item-first">
-            <i class="glyphicon glyphicon-education"></i>
-            学校
-          </div>
-          <div class="item-second">
-            <input type="text" name="school" value=""/>
-          </div>
-        </div>
-        <div class="item-row">
-          <div class="item-first">
-            <i class="glyphicon glyphicon-bookmark"></i>
-            年级
-          </div>
-          <div class="item-second">
-            <select class="" name="grade" id="">
-              <option value="一">一</option>
-              <option value="二">二</option>
-              <option value="三">三</option>
-              <option value="四">四</option>
-              <option value="五">五</option>
-              <option value="六">六</option>
-              <option value="七">七</option>
-              <option value="八">八</option>
-              <option value="九">九</option>
-              <option value="高一">高一</option>
-              <option value="高二">高二</option>
-              <option value="高三">高三</option>
-            </select>
-          </div>
-        </div>
-      </form>
-    </div>
-    <div class="activity-f">
-      <button class="btn-robodou btn-join-activity">报名活动</button>
-    </div>
-  </div>
-</div>
+<%= render "user/school_district_modal" %>

@@ -1,0 +1,118 @@
+<div id="main" class="main">
+  <div class="container">
+    <div class="row">
+      <div class="lesson-show">
+        <div id="lesson-id" class="title" data-id="<%= @course.id %>">
+          <%= @course.name %>
+        </div>
+        <div class="content">
+
+        <p>对象：<%= @course.target %></p>
+
+          <p>下载课件：
+            <% if @course.course_files.present? %>
+                <% @course.course_files.each_with_index do |cf, i| %>
+                    <a href="<%= cf.course_ware %>">
+                      下载课件<%= i+1 %>
+                    </a>
+                <% end %>
+            <% end %>
+          </p>
+
+          <p class="already_time">报名时间：<%= @course.apply_start_time.strftime('%Y-%m-%d') %>
+            -- <%= @course.apply_end_time.strftime('%Y-%m-%d') %></p>
+
+          <p>开课时间：<%= @course.start_time.strftime('%Y-%m-%d') %> -- <%= @course.end_time.strftime('%Y-%m-%d') %></p>
+
+          <p>上课时间：<%= @course.run_time %></p>
+
+          <p>上课地点：<%= @course.run_address %></p>
+
+          <p>招募人数：<%= @course.num %></p>
+          <div class="text-center">
+            <% if @has_apply %>
+                <span class="label label-info">您已报名</span>
+            <% else %>
+                <% if @course.apply_end_time < Time.now %>
+                    <span class="label label-warning">报名结束</span>
+                <% else %>
+                    <% unless has_teacher_role %>
+                        <% if current_user %>
+                            <button type="button" class="btn-robodou <%= current_user.mobile.present? ? 'go-apply' : 'alert-add-mobile' %>">我要报名</button>
+                        <% else %>
+                            <a class="btn-robodou" href="<%= "/account/sign_in?return_url=#{url_encode(request.fullpath)}" %>">我要报名</a>
+                        <% end %>
+                    <% end %>
+                <% end %>
+            <% end %>
+          </div>
+          <p class="already_num">已报名人数：<%= @course.apply_count %></p>
+          <br>
+          <br>
+          <p>课程描述:<%= @course.desc.html_safe %></p>
+          <input type="hidden" id="apply-course" value="<%= @course.id %>">
+
+
+          <% if current_user.present? %>
+              <div class="apply">
+                <div class="title">
+                  请填写报名信息
+                </div>
+                <form>
+                  <div class="input-row">
+                    <label for="user-info-username" class=""><i class="glyphicon glyphicon-user"></i> 姓名:</label>
+                    <input type="text" class="" id="user-info-username" value="<%= @user_info.username %>">
+                  </div>
+                  <div class="input-row">
+                    <label for="user_profile_district_id" class=""><i class="glyphicon glyphicon-globe"></i> 区县:</label>
+                    <input type="hidden" class="district_input" name="user_profile[district_id]" value="<%= @user_info.district_id %>"/>
+                    <span><a href="#select-district-modal" role="button" class="select-user-district" data-toggle="modal"><%= @user_info.district_id.present? ? "#{@user_info.district.try(:province_name)}--#{@user_info.district.try(:city_name)}--#{@user_info.district.try(:name)}" : '选择区县' %></a></span>
+                  </div>
+
+                  <div class="input-row">
+                    <div class="left">
+                      <label for="user_profile_school_id" class="control-label"><i class="glyphicon glyphicon-education"></i>
+                        学校:</label>
+                    </div>
+                    <div class="right">
+                      <div class="little-panels school-panel">
+                        <input type="hidden" class="school_input" name="user_profile[school_id]" value="<%= @user_info.school_id %>" />
+                        <input type="hidden" class="district_input" name="user_profile[district_id]" value="<%= @user_info.district_id %>"/>
+                        <input type="hidden" id="change_district_id" value="<%= @user_info.district_id %>" />
+                        <span><a class="school-tag"><%= @user_info.school.try(:name) ||'选择学校' %></a></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <label for="user-info-grade" class="control-label"><i class="glyphicon glyphicon-registration-mark"></i>
+                      年级:</label>
+                    <select name="user-info-grade" id="user-info-grade">
+                      <option value="0">请选择年级</option>
+                      <option value="1" <%= 'selected="selected"' if @user_info.grade.to_i == 1 %>>一年级</option>
+                      <option value="2" <%= 'selected="selected"' if @user_info.grade.to_i == 2 %>>二年级</option>
+                      <option value="3" <%= 'selected="selected"' if @user_info.grade.to_i == 3 %>>三年级</option>
+                      <option value="4" <%= 'selected="selected"' if @user_info.grade.to_i == 4 %>>四年级</option>
+                      <option value="5" <%= 'selected="selected"' if @user_info.grade.to_i == 5 %>>五年级</option>
+                      <option value="6" <%= 'selected="selected"' if @user_info.grade.to_i == 6 %>>六年级（初中预备）</option>
+                      <option value="7" <%= 'selected="selected"' if @user_info.grade.to_i == 7 %>>七年级（初中一年级）</option>
+                      <option value="8" <%= 'selected="selected"' if @user_info.grade.to_i == 8 %>>八年级（初中二年级）</option>
+                      <option value="9" <%= 'selected="selected"' if @user_info.grade.to_i == 9 %>>九年级（初中三年级）</option>
+                      <option value="10" <%= 'selected="selected"' if @user_info.grade.to_i == 10 %>>高中一年级</option>
+                      <option value="11" <%= 'selected="selected"' if @user_info.grade.to_i == 11 %>>高中二年级</option>
+                      <option value="12" <%= 'selected="selected"' if @user_info.grade.to_i == 12 %>>高中三年级</option>
+                    </select>
+                  </div>
+                  <div class="button-row">
+                    <button class="btn-robodou apply-lesson">确认报名</button>
+                    <button class="btn-robodou apply-cancel">取消</button>
+                  </div>
+                </form>
+              </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= render "user/school_district_modal" %>

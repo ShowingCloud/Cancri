@@ -1,0 +1,105 @@
+<style>
+  #event_information span {
+    position: absolute;
+    font-size: 30px;
+    font-weight: bolder
+  }
+
+  .background-img {
+    position: relative;
+  }
+
+  #qrcodeCanvas {
+    position: relative;
+    top: -485px;
+    left: 721px
+  }
+
+  .username {
+    left: 289px;
+    top: 123px;
+  }
+
+  .age {
+    top: 123px;
+    left: 799px
+  }
+
+  .gender {
+    left: 289px;
+    top: 198px;
+  }
+
+  .school {
+    left: 289px;
+    top: 281px;
+  }
+
+  .competition {
+    left: 359px;
+    top: 685px
+  }
+
+  .event {
+    left: 289px;
+    top: 1060px
+  }
+
+  .identifier {
+    left: 289px;
+    top: 1158px
+  }
+
+  .teacher {
+    left: 289px;
+    top: 1250px
+  }
+
+  .mobile {
+    left: 289px;
+    top: 1335px
+  }
+</style>
+
+
+<div id="event_information" style="color:black">
+  <div class="background-img" style=""><%= wicked_pdf_image_tag('comp_voucher01.jpg') %></div>
+  <div id="qrcodeCanvas"></div>
+  <span class="username"><%= @apply_info.try(:username) %></span>
+  <span class="age"><%= (Time.now.year - @apply_info.birthday.year) %></span>
+  <span class="gender"><%= @apply_info.try(:gender) == 1 ? '男' : '女' %></span>
+  <span class="school"><%= @apply_info.try(:school_name) %></span>
+  <span class="competition" style="color: white"><%= @apply_info.try(:comp_name) %></span>
+  <span class="event"><%= @apply_info.try(:event_name) %></span>
+  <span class="identifier"><%= @apply_info.try(:identifier) %></span>
+  <span class="teacher"><%= @apply_info.try(:teacher) %></span>
+  <span class="mobile"><%= @apply_info.try(:teacher_mobile) %></span>
+
+
+</div>
+<script>
+  $('#qrcodeCanvas').qrcode({
+    width: 230,
+    height: 230,
+    text: utf16to8("<%= "编号:#{@apply_info.identifier};姓名:#{@apply_info.try(:username)};项目:#{@apply_info.try(:event_name)}" %>")
+  });
+  function utf16to8(str) {
+    var out, i, len, c;
+    out = "";
+    len = str.length;
+    for (i = 0; i < len; i++) {
+      c = str.charCodeAt(i);
+      if ((c >= 0x0001) && (c <= 0x007F)) {
+        out += str.charAt(i);
+      } else if (c > 0x07FF) {
+        out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
+        out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
+        out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+      } else {
+        out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F));
+        out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+      }
+    }
+    return out;
+  }
+</script>

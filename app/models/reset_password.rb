@@ -8,27 +8,18 @@ class ResetPassword
 
   attribute :mobile, String
   attribute :password, String
-  attribute :password_confirmation, String
   attribute :mobile_code, String
 
   validates :mobile, presence: true, length: {is: 11}, numericality: true
-  validates :password, presence: true, length: {in: 6..30}, format: {with: /\A[\x21-\x7e]+\Z/i, message: '密码只能包含数字、字母、特殊字符'}
-  validates :password_confirmation, presence: true
-  validates :mobile_code, presence: true, length: {is: 6}
+  validates :password, presence: true, length: {minimum: 6, maximum: 128}, on: :create
+  validates :mobile_code, presence: true
 
   validate :mobile_validation
   validate :mobile_code_validation
-  validate :password_validation
 
   def mobile_validation
     unless User.find_by_mobile(self.mobile).present?
-      errors[:mobile] << "该手机号码尚未验证"
-    end
-  end
-
-  def password_validation
-    unless password == password_confirmation
-      errors[:password_confirmation] << "与新密码不一致"
+      errors[:mobile] << "手机号码尚未注册"
     end
   end
 

@@ -1,0 +1,12 @@
+<%= simple_form_for([:admin, @event_vol_position], method: :PATCH, remote: true) do |f| %>
+    <%= f.error_notification %>
+    <div class="row">
+      <div class="col-xs-6">
+        <%= f.input :name, maxlength: 50 %>
+      </div>
+    </div>
+    <div class="form-actions">
+      <%= f.submit class: 'btn btn-primary update-evp-check', value: '提交', 'data-disable-with' => '提交' %>
+    </div>
+<% end %>
+

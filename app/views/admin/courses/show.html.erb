@@ -1,0 +1,70 @@
+<h1 class="page-header">
+  显示<%= t('activerecord.models.course') %>
+  <small class="pull-right">
+    <a href="<%= new_admin_course_path(@course) %>" title="新增<%= t('activerecord.models.course') %>" class="btn btn-default">
+      <i class="icon-plus icon-only"></i></a>
+    <a href="<%= edit_admin_course_path(@course) %>" title="编辑该<%= t('activerecord.models.course') %>" class="btn btn-default">
+      <i class="icon-edit icon-only"></i></a>
+    <a href="<%= admin_courses_path %>" title="列表<%= t('activerecord.models.course') %>" class="btn btn-default">
+      <i class="icon-list icon-only"></i></a>
+  </small>
+</h1>
+
+<% if notice %>
+    <div class="alert alert-success"><%= notice %>
+      <button class="close" data-dismiss="alert">
+        <i class="icon-remove"></i>
+      </button>
+    </div>
+<% end %>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <%= t('activerecord.models.course') %>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <span class="text-primary show-span-width"><%= t('simple_form.labels.defaults.name') %>:</span>
+      <%= @course.name %>
+    </li>
+    <li class="list-group-item">
+      <span class="text-primary show-span-width"><%= t('simple_form.labels.defaults.district_id') %>:</span>
+      <%= @course.district.name %>
+    </li>
+    <li class="list-group-item">
+      <span class="text-primary show-span-width">所属老师:</span>
+      <%= @course.user.user_profile.username %>
+    </li>
+    <li class="list-group-item">
+      <span class="text-primary show-span-width">人数:</span>
+      <%= @course.num %>
+    </li>
+    <li class="list-group-item">
+      <span class="text-primary show-span-width">报名时间:</span>
+      <%= @course.apply_start_time.strftime('%Y-%m-%d') %> - <%= @course.apply_end_time.strftime('%Y-%m-%d') %>
+    </li>
+    <li class="list-group-item">
+      <span class="text-primary show-span-width">开课时间:</span>
+      <%= @course.start_time.strftime('%Y-%m-%d') %> - <%= @course.end_time.strftime('%Y-%m-%d') %>
+    </li>
+    <li class="list-group-item">
+      <span class="text-primary show-span-width">上课地点:</span>
+      <%= @course.run_address %>
+    </li>
+    <li class="list-group-item">
+      <span class="text-primary show-span-width"> 上课时间:</span>
+      <%= @course.run_time %>
+    </li>
+    <li class="list-group-item">
+      <span class="text-primary"><%= t('simple_form.labels.defaults.desc') %>:</span>
+      <% if @course.desc.present? %>
+          <%= @course.desc.html_safe %>
+      <% end %>
+    </li>
+    <li class="list-group-item">
+      <span class="text-primary">课件:</span>
+      <% if @course.course_files.present? %>
+          课件已上传（<%= @course.course_files.count %>）
+      <% end %>
+    </li>
+  </ul>
+</div>

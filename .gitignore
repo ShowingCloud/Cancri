@@ -36,6 +36,8 @@ config/secrets.yml
 !/log/.keep
 !/tmp/.keep
 
+**/.DS_Store
+
 # Ignore Byebug command history file.
 .byebug_history
 /.idea
@@ -122,3 +124,16 @@ jquery*.map
 /db/datadump/users.yml
 /db/datadump/videos.yml
 /db/datadump/volunteers.yml
+
+/test_rb
+/xlsx
+/Guardfile
+/lib/ruby
+/lib/xlsx
+
+/config/initializers/sidekiq.rb
+/config/newrelic.yml
+/config/cable.yml
+/config/initializers/redis.rb
+/config/environments/production.rb
+/config/initializers/session_store.rb

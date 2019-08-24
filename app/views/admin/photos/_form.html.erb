@@ -3,6 +3,13 @@
   <div class="panel-body">
     <%= simple_form_for([:admin, @photo]) do |f| %>
         <%= f.error_notification %>
+        <% if @photo.errors.any? %>
+            <div id="error_explanation">
+              <% @photo.errors[:image].each do |msg| %>
+                  <div class="alert alert-danger"><%= msg %></div>
+              <% end %>
+            </div>
+        <% end %>
 
         <div class="form-inputs">
           <%= f.hidden_field :competition_id, value: params[:cod].present? ? params[:cod] : @photo.competition_id %>
@@ -15,13 +22,16 @@
               </div>
           <% else %>
               <%= f.file_field :image, multiple: true %>
+              <p class="help-block">格式: jpg jpeg gif png</p>
           <% end %>
           <%= f.hidden_field :image_cache %>
         </div>
 
-        <div class="form-actions">
-          <%= f.button :submit, class: 'btn btn-primary' %>
-        </div>
+        <% if action_name=='edit' %>
+            <div class="form-actions">
+              <%= f.button :submit, class: 'btn btn-primary' %>
+            </div>
+        <% end %>
     <% end %>
   </div>
 </div>
