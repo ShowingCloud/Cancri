@@ -130,3 +130,6 @@ jquery*.map
 /Guardfile
 /lib/ruby
 /lib/xlsx
+
+/config/initializers/sidekiq.rb
+/config/newrelic.yml
