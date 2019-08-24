@@ -128,3 +128,5 @@ jquery*.map
 /test_rb
 /xlsx
 /Guardfile
+/lib/ruby
+/lib/xlsx
