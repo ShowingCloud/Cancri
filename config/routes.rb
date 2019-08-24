@@ -8,7 +8,6 @@ Rails.application.routes.draw do
     get 'account/sign_in', to: redirect('/account/auth/cas'), :as => :new_user_session
     delete "account/sign_out", :to => 'users/sessions#destroy', :as => :destroy_user_session
   end
-  mount RuCaptcha::Engine => '/rucaptcha'
 
   get '/demeanor' => 'demeanor#index'
   get '/demeanor/videos' => 'demeanor#videos'
