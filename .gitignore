@@ -133,3 +133,7 @@ jquery*.map
 
 /config/initializers/sidekiq.rb
 /config/newrelic.yml
+/config/cable.yml
+/config/initializers/redis.rb
+/config/environments/production.rb
+/config/initializers/session_store.rb

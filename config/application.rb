@@ -11,8 +11,8 @@ module DomeType
 
     config.autoload_paths.push(*%W(#{config.root}/lib))
 
-    config.time_zone = 'Asia/Shanghai'
-    config.active_record.default_timezone = :local
+    config.time_zone = 'Beijing'
+    config.active_record.default_timezone = :utc
     config.i18n.default_locale = 'zh-CN'
     config.encoding = 'utf-8'
     config.active_job.queue_adapter = :sidekiq
