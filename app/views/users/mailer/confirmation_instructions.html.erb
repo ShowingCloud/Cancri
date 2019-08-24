@@ -1,7 +1,7 @@
 <p>您好： <%= @email %>!</p>
 <p>非常感谢您注册豆姆账户，请点击激活按钮来激活您的豆姆账户！</p>
 <% if Rails.env.development? %>
-    <% @url= "http://dev.domelab.com/account/confirmation?confirmation_token=#{@token}" %>
+    <% @url= "http://robodou.scs.im/account/confirmation?confirmation_token=#{@token}" %>
 <% else %>
     <% @url = "#{confirmation_url(@resource, confirmation_token: @token)}" %>
 <% end %>
