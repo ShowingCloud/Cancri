@@ -30,16 +30,12 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-
-gem 'whenever', require: false
-
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
-  gem 'guard-livereload', '~> 2.5', require: false
 end
 
 group :development do
@@ -64,6 +60,7 @@ gem 'simple_form'
 gem 'virtus'
 gem 'rucaptcha'
 gem 'carrierwave'
+gem 'mime-types'
 gem 'mini_magick'
 gem 'roo'
 gem 'kaminari', github: 'amatsuda/kaminari'
@@ -80,3 +77,7 @@ gem 'redis-rails'
 gem "typhoeus"
 gem 'wicked_pdf'
 gem 'wkhtmltopdf_binary'
+
+gem 'faye-websocket'
+
+gem 'newrelic_rpm'
