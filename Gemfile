@@ -5,26 +5,26 @@ source 'https://rubygems.org'
 #end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.0'
+gem 'rails'#, '~> 5.0.0'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use Puma as the app server
 gem 'puma'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails'#, '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier'#, '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2'
+gem 'coffee-rails'#, '~> 4.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
+gem 'turbolinks'#, '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
+gem 'jbuilder'#, '~> 2.5'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
@@ -41,10 +41,10 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console'
-  gem 'listen', '~> 3.0.5'
+  gem 'listen'#, '~> 3.0.5'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-watcher-listen'#, '~> 2.0.0'
   gem 'better_errors'
   gem 'binding_of_caller'
 end
@@ -53,7 +53,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'thin'
 gem 'yaml_db', github: 'jetthoughts/yaml_db'
-gem 'mysql2', '~> 0.4.2'
+gem 'mysql2'#, '~> 0.4.2'
 gem 'devise'
 gem 'settingslogic'
 gem 'simple_form'
@@ -64,7 +64,7 @@ gem 'mime-types'
 gem 'mini_magick'
 gem 'roo'
 gem 'kaminari', github: 'amatsuda/kaminari'
-gem 'rails_kindeditor', github: 'javyliu/rails_kindeditor'
+gem 'rails_kindeditor', github: 'Macrow/rails_kindeditor'
 gem 'carrierwave-video'
 gem 'sidekiq'
 gem 'sinatra', git: 'https://github.com/sinatra/sinatra.git', require: false
