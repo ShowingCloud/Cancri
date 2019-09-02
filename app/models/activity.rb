@@ -1,8 +1,8 @@
 class Activity < ApplicationRecord
   has_many :activity_user_ships
   has_many :users, through: :activity_user_ships
-  has_many :child_activities, class_name: Activity, foreign_key: :parent_id
-  belongs_to :parent_activity, class_name: Activity, foreign_key: :parent_id
+  has_many :child_activities, class_name: 'Activity', foreign_key: :parent_id
+  belongs_to :parent_activity, class_name: 'Activity', foreign_key: :parent_id
   belongs_to :district
   has_many :photos
   has_many :videos
@@ -13,7 +13,7 @@ class Activity < ApplicationRecord
   validates :name, presence: true, length: {maximum: 50}, uniqueness: true
   validates :host_year, presence: true
   validates :host_address, presence: true
-  validates :cover, presence: true, if: "parent_id.nil?"
+  validates :cover, presence: true, if: -> {parent_id.nil?}
   validates :status, presence: true
   validate :validate_datetime_parent
   before_save :set_level

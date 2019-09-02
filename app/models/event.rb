@@ -1,8 +1,8 @@
 class Event < ApplicationRecord
   belongs_to :competition
   has_many :teams, :dependent => :destroy
-  has_many :child_events, class_name: Event, foreign_key: :parent_id, :dependent => :destroy
-  belongs_to :parent_event, class_name: Event, foreign_key: :parent_id
+  has_many :child_events, class_name: 'Event', foreign_key: :parent_id, :dependent => :destroy
+  belongs_to :parent_event, class_name: 'Event', foreign_key: :parent_id
   has_many :team_user_ships
   has_many :event_schedules, :dependent => :destroy
   TIMER = {wu: 0, app: 1, saidao: 2, has_limit: 3} # 3 有时限但不记录时间
