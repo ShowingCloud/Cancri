@@ -1,5 +1,5 @@
 threads 0,16
-workers 3
+workers 1
 preload_app!
 
 environment 'production'
